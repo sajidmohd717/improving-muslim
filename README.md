@@ -11,3 +11,11 @@ npm run dev
 ```
 
 The site is plain HTML, CSS, and JavaScript. It fetches live category data from the public `series-api` repository and falls back to a small local collection if that request fails.
+
+## Current video experience
+
+The Change of Heart series has a dedicated episode list at `series-change-of-heart.html`.
+Individual episodes open in `watch.html` with a focused HTML5 video player and simple next/previous navigation.
+
+Self-hosted MP4 files should be added under `assets/videos/change-of-heart/` using filenames like `episode-01.mp4`.
+Only host video files that you have permission to distribute.

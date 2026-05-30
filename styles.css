@@ -467,9 +467,275 @@ h2 {
   font-weight: 800;
 }
 
+.page-menu {
+  display: flex;
+}
+
+.primary-link,
+.quiet-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 800;
+}
+
+.primary-link {
+  background: var(--accent);
+  color: white;
+  padding: 13px 18px;
+}
+
+.primary-link:hover,
+.primary-link:focus-visible {
+  background: var(--accent-strong);
+  outline: none;
+}
+
+.quiet-link {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--accent-strong);
+  padding: 11px 15px;
+}
+
+.quiet-link:hover,
+.quiet-link:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.series-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
+  gap: 34px;
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(34px, 7vw, 76px) 0 24px;
+}
+
+.series-hero h1,
+.watch-info h1 {
+  font-size: clamp(2.45rem, 6vw, 5.2rem);
+}
+
+.series-hero img {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.episode-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.episode-card {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: 0 10px 28px rgba(24, 32, 27, 0.08);
+}
+
+.episode-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.episode-card span,
+.episode-card strong {
+  margin-inline: 14px;
+}
+
+.episode-number {
+  margin-top: 13px;
+  color: var(--rose);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.episode-card strong {
+  margin-top: 6px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.episode-date {
+  margin-top: 10px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.watch-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  width: min(1280px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 54px;
+}
+
+.watch-main,
+.episode-sidebar {
+  min-width: 0;
+}
+
+.video-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0d0f0e;
+  box-shadow: var(--shadow);
+}
+
+.video-frame video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #0d0f0e;
+}
+
+.video-unavailable {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(13, 15, 14, 0.84);
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+.video-unavailable strong {
+  font-size: 1.1rem;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.watch-info {
+  padding: 22px 0 0;
+}
+
+.watch-info h1 {
+  font-size: clamp(2rem, 4vw, 3.8rem);
+}
+
+.watch-info p:not(.eyebrow) {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.watch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.episode-sidebar {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  max-height: calc(100vh - 116px);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.82);
+  padding: 16px;
+}
+
+.compact-episode-list {
+  display: grid;
+  gap: 10px;
+}
+
+.compact-episode {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.compact-episode:hover,
+.compact-episode:focus-visible,
+.compact-episode.is-current {
+  border-color: var(--accent);
+  background: rgba(23, 107, 91, 0.08);
+  outline: none;
+}
+
+.compact-episode img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.compact-episode span {
+  min-width: 0;
+}
+
+.compact-episode small {
+  display: block;
+  color: var(--rose);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.compact-episode strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+.compact-episode em {
+  display: block;
+  margin-top: 5px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
+  }
+
+  .series-hero,
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .episode-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .episode-sidebar {
+    position: static;
+    max-height: none;
   }
 
   .hero-panel {
@@ -562,6 +828,14 @@ h2 {
 
   .series-grid {
     grid-template-columns: 1fr;
+  }
+
+  .episode-list {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-episode {
+    grid-template-columns: 96px minmax(0, 1fr);
   }
 
   .row-heading {

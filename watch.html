@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta
+      name="description"
+      content="Focused video player for Islamic lecture series episodes."
+    />
+    <link rel="icon" type="image/png" href="./public/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Watch | Islamic Lecture Series</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Islamic Lecture Series Collections home">
+          <img src="./public/icon.png" alt="" />
+          <span>Islamic Lecture Series</span>
+        </a>
+        <div class="site-menu page-menu">
+          <a href="./series-change-of-heart.html">Series</a>
+          <a href="./index.html">Home</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="watch-layout">
+      <section class="watch-main" aria-labelledby="watch-title">
+        <div class="video-frame">
+          <video id="video-player" controls preload="metadata" poster="./assets/thumbnail/heart-softeners/changeofheart.jpg">
+            <source id="video-source" src="" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-unavailable is-hidden" id="video-unavailable">
+            <strong>Video could not be loaded</strong>
+            <span>Check that this episode has a valid MP4 source.</span>
+          </div>
+        </div>
+        <div class="watch-info">
+          <p class="eyebrow" id="watch-kicker">Change of Heart</p>
+          <h1 id="watch-title">Loading episode...</h1>
+          <p id="watch-meta"></p>
+          <div class="watch-actions">
+            <a class="quiet-link" id="previous-link" href="./series-change-of-heart.html">Previous</a>
+            <a class="primary-link" id="next-link" href="./series-change-of-heart.html">Next episode</a>
+          </div>
+        </div>
+      </section>
+
+      <aside class="episode-sidebar" aria-labelledby="playlist-title">
+        <div class="section-heading">
+          <p class="eyebrow">Up next</p>
+          <h2 id="playlist-title">Change of Heart</h2>
+        </div>
+        <div class="compact-episode-list" id="watch-episode-list"></div>
+      </aside>
+    </main>
+
+    <script src="./change-of-heart-data.js"></script>
+    <script src="./watch-page.js" defer></script>
+  </body>
+</html>

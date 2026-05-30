@@ -216,6 +216,14 @@ function seriesMatchesSearch(series) {
   return haystack.includes(state.searchTerm);
 }
 
+function getSeriesUrl(series) {
+  if (series.title === "Change of Heart") {
+    return "./series-change-of-heart.html";
+  }
+
+  return series.link;
+}
+
 function renderSeries() {
   const series = flattenSeries(state.sections).filter(seriesMatchesSearch);
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
@@ -233,18 +241,19 @@ function renderSeries() {
   setStatus("", false);
   els.seriesGrid.innerHTML = series
     .map((item) => {
+      const seriesUrl = getSeriesUrl(item);
       const description =
         item.description ||
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
       return `
         <article class="series-card">
-          <a class="series-link" href="${item.link}" target="_blank" rel="noreferrer">
+          <a class="series-link" href="${seriesUrl}">
             <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" />
           </a>
           <div class="series-body">
             <span class="series-topic">${escapeHtml(item.topic || "Series")}</span>
-            <a class="series-title" href="${item.link}" target="_blank" rel="noreferrer">
+            <a class="series-title" href="${seriesUrl}">
               ${escapeHtml(item.title)}
             </a>
             <div class="series-meta">

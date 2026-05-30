@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta
+      name="description"
+      content="Watch the Change of Heart series by Ali Hammuda in a focused Islamic lecture experience."
+    />
+    <link rel="icon" type="image/png" href="./public/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Change of Heart | Islamic Lecture Series</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Islamic Lecture Series Collections home">
+          <img src="./public/icon.png" alt="" />
+          <span>Islamic Lecture Series</span>
+        </a>
+        <div class="site-menu page-menu">
+          <a href="./index.html">Home</a>
+          <a href="#episodes">Episodes</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="series-hero">
+        <div>
+          <p class="eyebrow">Purification of the Heart</p>
+          <h1>Change of Heart</h1>
+          <p class="hero-copy">
+            A focused watch space for Ali Hammuda's series on sincerity, certainty,
+            reliance, patience, contentment, and the renewal of the heart.
+          </p>
+          <a class="primary-link" id="start-series-link" href="./watch.html">Start episode 1</a>
+        </div>
+        <img
+          src="./assets/thumbnail/heart-softeners/changeofheart.jpg"
+          alt="Change of Heart series thumbnail"
+        />
+      </section>
+
+      <section class="content-section" id="episodes" aria-labelledby="episodes-title">
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow">15 episodes</p>
+            <h2 id="episodes-title">Episodes</h2>
+          </div>
+          <a
+            class="quiet-link"
+            href="https://www.youtube.com/playlist?list=PL9OPVukugS7xZ-PY008PN6_kGInouP0rz"
+            target="_blank"
+            rel="noreferrer"
+          >
+            YouTube playlist
+          </a>
+        </div>
+        <div class="episode-list" id="episode-list"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for easy discovery and quiet study.</p>
+      <a href="./index.html">Back to collection</a>
+    </footer>
+
+    <script src="./change-of-heart-data.js"></script>
+    <script src="./series-page.js" defer></script>
+  </body>
+</html>
