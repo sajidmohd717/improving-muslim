@@ -14,8 +14,30 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `watch.html` is the focused video player page.
 - `watch-page.js` loads the selected episode, handles native playback, progress saving, and media-session controls.
 - `change-of-heart-data.js` is the data source for the Change of Heart series.
+- `assets/captions/change-of-heart/` contains WebVTT captions for uploaded Change of Heart episodes.
+- `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into short WebVTT cues.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
 - `CNAME` pins the GitHub Pages custom domain to `improvingmuslim.com`.
+
+## Current Content State
+
+The first active series is:
+
+```txt
+Change of Heart
+Speaker: Ali Hammuda
+Topic/category: Purification of the Heart
+```
+
+For now, only episodes 1-5 are treated as watchable on the platform. They have R2-hosted MP4 files, captions where transcripts have been processed, and episode learning material in `change-of-heart-data.js`.
+
+Episodes 6-16 remain visible as the future roadmap for the series, but they should not link to broken placeholder videos. These planned episodes use:
+
+```js
+statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah."
+```
+
+Do not add local placeholder `videoSrc` values such as `./assets/videos/...` for episodes that are not actually uploaded. The UI treats an episode with no `videoSrc` as unavailable and displays an `Uploading soon` label.
 
 ## Hosting
 
@@ -57,6 +79,25 @@ videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/c
 ```
 
 Do not commit real video files to the repository. The `assets/videos/change-of-heart/.gitkeep` file only preserves the intended local folder structure.
+
+## Episode Publishing Workflow
+
+When adding a new watchable episode:
+
+1. Upload the MP4 to Cloudflare R2 using the naming pattern above.
+2. Confirm the public R2 URL responds successfully.
+3. Update the matching episode object in `change-of-heart-data.js` with `videoSrc`.
+4. If a transcript is available, generate a VTT file under `assets/captions/change-of-heart/`.
+5. Add `captionsSrc` to the episode object.
+6. Add `takeaways` and `recap` in the same style as episodes 1-5.
+7. Keep `episode.id` unchanged so watch progress does not reset.
+8. Run syntax checks and test locally through the dev server.
+
+When an episode is not uploaded yet:
+
+- Do not set `videoSrc`.
+- Add or keep `statusNote`.
+- Let the series page and watch sidebar show it as `Uploading soon`.
 
 ## Uploading Large Videos To R2
 
@@ -106,6 +147,8 @@ Important implications:
 
 The watch page uses a native HTML5 `<video>` element, not a YouTube iframe. This avoids YouTube embed errors and keeps the experience focused.
 
+Captions use the browser's native `<track kind="captions">` support. Do not reintroduce a custom caption overlay unless native captions become impossible to support. The native captions menu may not appear when opening `watch.html` directly as a `file://` page; test captions through `npm run dev`, GitHub Pages, or the custom domain.
+
 Mobile support currently includes:
 
 - `playsinline`
@@ -128,6 +171,39 @@ https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg
 ```
 
 If the platform should become fully independent from YouTube, move episode thumbnails to local assets or R2 and update the helper functions in `watch-page.js` and `series-page.js`.
+
+## Captions And Episode Notes
+
+Transcript files are usually pasted from YouTube-style transcript output. Convert them with:
+
+```powershell
+cmd /c "node scripts\transcript-to-vtt.js C:\path\to\pasted-text.txt > assets\captions\change-of-heart\episode-05.vtt"
+```
+
+The converter:
+
+- Skips chapter heading lines.
+- Supports timestamps such as `0:11`, `59:55`, and `1:05:41`.
+- Splits captions into short cues, currently capped at 8 words per cue.
+- Outputs WebVTT suitable for native video captions.
+
+After generating captions, spot-check:
+
+```powershell
+node --check scripts\transcript-to-vtt.js
+```
+
+Then verify the VTT file is reachable through the local server, not `file://`.
+
+Episode objects can include:
+
+```js
+captionsSrc: "./assets/captions/change-of-heart/episode-05.vtt",
+takeaways: ["..."],
+recap: `# Powerful Recap: ...`
+```
+
+The watch page automatically shows Key Takeaways and Recap panels when those fields exist.
 
 ## Local Development
 
@@ -156,6 +232,7 @@ node --check script.js
 node --check series-page.js
 node --check watch-page.js
 node --check change-of-heart-data.js
+node --check scripts\transcript-to-vtt.js
 ```
 
 ## Deployment Workflow

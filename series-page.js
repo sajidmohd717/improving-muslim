@@ -14,6 +14,10 @@ function episodeUrl(episode) {
   return `./watch.html?series=${series.slug}&video=${episode.id}`;
 }
 
+function isEpisodeAvailable(episode) {
+  return Boolean(episode.videoSrc);
+}
+
 function formatDate(dateString) {
   return new Intl.DateTimeFormat("en", {
     day: "numeric",
@@ -26,8 +30,12 @@ startLink.href = episodeUrl(series.episodes[0]);
 
 episodeList.innerHTML = series.episodes
   .map(
-    (episode) => `
-      <a class="episode-card" href="${episodeUrl(episode)}">
+    (episode) => {
+      const available = isEpisodeAvailable(episode);
+      const tagName = available ? "a" : "article";
+      const href = available ? ` href="${episodeUrl(episode)}"` : "";
+      return `
+      <${tagName} class="episode-card ${available ? "" : "is-unavailable"}"${href}>
         <img
           src="https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg"
           alt=""
@@ -37,12 +45,15 @@ episodeList.innerHTML = series.episodes
           <span class="episode-number">
             Episode ${episode.number}
             ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
+            ${available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
           </span>
           <strong>${episode.title}</strong>
           <span class="episode-date">${formatDate(episode.published)}</span>
           ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
+          ${available ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
         </div>
-      </a>
-    `,
+      </${tagName}>
+    `;
+    },
   )
   .join("");

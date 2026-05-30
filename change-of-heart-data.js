@@ -187,6 +187,64 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       published: "2022-02-04",
       views: 78000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-4.mp4",
+      captionsSrc: "./assets/captions/change-of-heart/episode-04.vtt",
+      takeaways: [
+        "**Seek the hidden strength behind great Muslims**: The lecture presents certainty as one of the secrets that made the early Muslims so steady, resilient, detached from dunya, quick to repent, and firm against doubts and temptations.",
+        "**Understand yaqeen as settled knowledge**: Certainty is not just learning information. It is knowledge settling in the heart so firmly that it does not change, disappear, or get shaken by confusion, anxiety, or pressure.",
+        "**Know the levels of certainty**: There is knowledge of certainty, seeing with the eye of certainty, and experiencing the truth of certainty. The believer begins with revelation as reliable knowledge, then longs for a heart that lives as though the unseen realities are near.",
+        "**Let certainty become inner light**: Yaqeen brings a light to the heart that pushes away the darkness of doubt, hesitation, and panic. It allows the believer to be content with Allah, hopeful in Him, fearful of Him, and at peace with His decree.",
+        "**Join patience with certainty**: Allah made people leaders in religion when they had patience and certainty. Patience closes the door of desires, and certainty closes the door of doubts; together they make a person stable enough to guide others.",
+        "**Use certainty to move from knowledge to action**: Knowledge tells you what is true, but certainty carries you into action. If a person knows the reward of charity, the danger of riba, or the reality of Hell but does not move, the weakness may be in yaqeen.",
+        "**Let certainty make you brave**: A heart certain of Allah is less controlled by fear of people, loss, exile, criticism, or hardship. The lecture shows how people of yaqeen stood firm because they knew who truly controls harm and benefit.",
+        "**Do not give doubts an attentive ear**: Run from environments, voices, content, and conversations that weaken faith. The lecture warns that hearts are weak, and not every doubt deserves your attention.",
+        "**Build certainty through contemplation**: Look at the heavens, earth, stars, rivers, mountains, and the precision of creation. Deep thought about Allah's signs can carry the heart toward tawhid and certainty.",
+        "**Stay active in good work**: Empty time gives doubts room to grow. Keep yourself busy with worship, service, learning, and beneficial projects so the heart is occupied in the path of Allah.",
+      ],
+      recap: `# Powerful Recap: Change of Heart - Certainty (Yaqin)
+
+This lecture studies yaqeen, certainty, as one of the hidden qualities that made the early Muslims so different. The speaker begins by asking what made the righteous people before us so strong in worship, quick in repentance, resilient before doubts and temptations, and less attached to dunya. The answer is described as a secret that settled in their hearts.
+
+Several statements are mentioned about Abu Bakr, Imam Malik, and Ibrahim ibn Adham. Their distinction was not merely extra outward worship, prayer, or fasting. There was something hidden in the heart. The lecture then connects that hidden jewel to the hadith describing the righteousness of the early generations as being due to two qualities: zuhd, or detachment from dunya, and yaqeen, certainty in Allah and His promises.
+
+The speaker explains that certainty is to iman what the soul is to the body. It is not a small accessory to faith. It is what gives faith life, movement, stability, and power.
+
+The lecture then defines yaqeen. Knowledge has levels: weak assumption, doubt, strong likelihood, and then certainty. Yaqeen is the highest level: being completely sure. Al-Junaid's definition is used: certainty is knowledge settling in the heart in such a way that it does not change, alter, or disappear. A person of yaqeen has no hesitation about Allah, revelation, the Hereafter, Paradise, Hell, reward, punishment, or the promises of the religion.
+
+The lecture then explains the levels of certainty. The first is knowledge of certainty, like knowing something is true because it has been reliably conveyed. The second is the eye of certainty, seeing the reality directly. The third is the truth of certainty, experiencing it fully. The example of Paradise and Hell is used: believers know they exist through revelation, they will see them on the Day of Judgment, and people will eventually experience them.
+
+After defining yaqeen, the lecture moves into its fruits.
+
+The first fruit is light in the heart. Certainty brings a light that removes the darkness of doubt, hesitation, anxiety, and confusion. Doubt agitates the heart, but yaqeen soothes it. It brings contentment with Allah, reliance upon Him, fear of Him, hope in Him, longing for Him, and acceptance of His decree.
+
+The example of Ibn Taymiyyah in prison is used to show this light. Even while imprisoned, threatened, and persecuted, he spoke of gratitude, worship, and inner freedom. He said the true prisoner is the one imprisoned by desires, and the true captive is the one cut off from Allah's remembrance. A person with certainty can be outwardly restricted while inwardly free.
+
+The second fruit is being made a guide in the religion. Allah mentions making people leaders when they had patience and certainty. The lecture explains that patience guards a person against desires, while certainty guards a person against doubts. When both doors are closed, a person becomes stable enough to guide others, whether in the family, community, workplace, or wider ummah.
+
+The third fruit is motivation and power. Knowledge alone does not always move people. Two people may know the same verse or hadith, but only one acts. What carries knowledge into action is certainty. A person who is certain about the reward of charity gives; a person who is certain about the danger of riba avoids it; a person who is certain about Paradise and Hell moves toward one and flees from the other.
+
+The fourth fruit is courage. Yaqeen removes excessive fear of people and circumstances because the heart knows that Allah controls benefit and harm. The lecture mentions examples of Muslims whose certainty gave them extraordinary bravery, including those who faced enemies and tyrants without being shaken.
+
+The fifth fruit is resilience upon truth. The people of certainty do not bounce in and out of Islam with every difficulty, insult, hardship, temptation, or doubt. They are planted. The sweetness of faith has mixed with their hearts, so they do not abandon it when pressure arrives. The lecture gives examples of people who recognized falsehood and fitnah because their certainty was firm.
+
+The sixth fruit is that calamities feel smaller. When the heart is certain of Allah's reward, decree, wisdom, and the Hereafter, worldly pain does not disappear, but it shrinks into its proper size. The believer sees beyond the immediate wound.
+
+The seventh fruit is that despair is evicted. Certainty gives the believer hope because the promises of Allah are more real to them than the temporary darkness around them.
+
+The final section gives practical ways to build yaqeen.
+
+The first is knowledge. Certainty cannot be built on ignorance. The heart needs revelation, learning, and sound understanding.
+
+The second is protecting yourself from doubts. The speaker warns against giving doubtful content an attentive ear. Hearts are weak, and the Prophet sallallahu alaihi wasallam taught believers to run from the Dajjal rather than overestimate themselves. Not every doubt needs to be entertained.
+
+The third is contemplation. The heavens, earth, sun, moon, stars, mountains, rivers, and signs within creation are all open doors to certainty. Allah placed signs in the universe so people would think and arrive at stronger faith.
+
+The fourth is righteous companionship. Sit with people of iman and yaqeen. Sometimes a conversation, a face, or the company of someone close to Allah can dissolve anxieties and turn weakness into strength.
+
+The fifth is du'a. Ask Allah directly for certainty. The Prophet sallallahu alaihi wasallam taught that after certainty, one of the greatest gifts a person can receive is well-being.
+
+The sixth is staying active as a Muslim. Empty time gives doubt space to grow. When a person is busy with worship, service, learning, and beneficial projects, certainty is protected and strengthened. Sometimes the problem is not the strength of the doubt, but the emptiness of the heart.
+
+The lecture closes with humility and aspiration: bring yourself as close as you can to perfection, even though none of us will fully attain it. Ask Allah for yaqeen and iman, and keep walking toward the kind of certainty that gives faith life, courage, peace, and direction.`,
     },
     {
       number: 5,
@@ -195,6 +253,56 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       published: "2022-02-18",
       views: 70000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-5.mp4",
+      captionsSrc: "./assets/captions/change-of-heart/episode-05.vtt",
+      takeaways: [
+        "**Understand muraqabah as living awareness**: Muraqabah is not merely knowing that Allah watches you. It is carrying a constant certainty in the heart that Allah sees your outward actions and inward states wherever you are.",
+        "**Treat watchfulness as the root of heart worship**: Sincerity, certainty, love, fear, hope, and shame all grow from awareness that Allah sees, hears, knows, and is near. Without muraqabah, the other actions of the heart weaken.",
+        "**Use privacy as the real test**: Your relationship with Allah is exposed most clearly when no human being is watching. What you click, type, say, watch, desire, hide, or leave in private shapes who you become in public.",
+        "**Do not make Allah the least of all observers**: If being caught by people scares you more than being seen by Allah, something is upside down. Train the heart to feel Allah's gaze as more serious than any human exposure.",
+        "**Know that hidden deeds leave a fragrance**: Private obedience and private restraint create a light and love that people may sense without knowing its source. Private sins also leak out through the face, tongue, and public life over time.",
+        "**Let muraqabah become a wall against sin**: When a person remembers that Allah sees the glance, the message, the conversation, the transaction, and the hidden desire, that awareness becomes an iron barrier between them and disobedience.",
+        "**Connect watchfulness to the sweetness of iman**: The lecture links tasting iman with realizing that Allah is with you wherever you are. Muraqabah is not only restraint; it is sweetness, nearness, and life in the heart.",
+        "**Seek the shade of Allah through private sincerity**: The seven shaded on the Day of Judgment all display forms of muraqabah: justice, youth in worship, love for Allah, secret charity, resisting temptation, attachment to the masjid, and private tears.",
+        "**Build muraqabah through Allah's names**: Study names such as the All-Seeing, All-Hearing, All-Knowing, the Subtle, the Witness, and the All-Encompassing until they become part of how you move through the world.",
+        "**Use stories of the watchful as a mirror**: Stories of the shepherd, the protected woman, and the righteous who resisted temptation show what muraqabah looks like when it leaves theory and becomes reflex.",
+      ],
+      recap: `# Powerful Recap: Change of Heart - Watchfulness (Muraqabah)
+
+This lecture studies muraqabah, the watchfulness of Allah, as one of the most important actions of the heart. The speaker begins by describing the unique challenges of the modern age: sins available on demand, fame accessible through a phone, backbiting and slander possible from a keyboard, fake news, scams, deception, boasting, and private disobedience made easier than ever. These challenges cannot be navigated safely without Allah's help and without living actions of the heart.
+
+Muraqabah is introduced as the believer's awareness that Allah's watchful eye is always upon them. It is not merely the fact that Allah watches; it is your consciousness of that fact. Ibn al-Qayyim's definition is highlighted: muraqabah is the constant knowledge and certainty that Allah observes your outward and inward states.
+
+The lecture connects muraqabah to ihsan, the highest level of religion: worshipping Allah as though you see Him, and if you cannot see Him, knowing that He sees you. Because of this, muraqabah is not just one item on a list of heart actions. It is the foundation from which the others grow. Sincerity depends on it, because you cannot be truly sincere unless you know Allah sees the intention. Certainty depends on it. Love, fear, hope, and shame before Allah all spring from the same fountain.
+
+The speaker then turns to the rewards given to people of muraqabah.
+
+The first reward is establishment and safety. The lecture links the wellbeing of individuals and the ummah to people who fear standing before their Lord. When a community establishes its relationship with Allah, worldly strength and safety come as a byproduct.
+
+The second reward is tasting the sweetness of iman. A hadith is mentioned describing people who experience the taste of faith: those who single out Allah in worship, give zakah willingly, and purify themselves. When the companions asked what purification meant, the Prophet sallallahu alaihi wasallam explained that it is for a person to know Allah is with them wherever they go. Muraqabah is therefore not only fear; it is sweetness.
+
+The third reward is shade on the Day of Judgment. The famous hadith of the seven shaded by Allah is unpacked through the lens of muraqabah. The just ruler is just because he knows Allah watches. The young person grows in worship because they restrain desire under Allah's gaze. The heart attached to the masjid, the two who love each other for Allah, the one who refuses temptation, the secret giver, and the one who remembers Allah alone and weeps all share this quality: Allah is real to them when people are absent.
+
+Another gift is farasah, a kind of insight and discernment. The person who watches Allah is given a light by which they can better distinguish truth from falsehood, especially in an age of confusion, hoaxes, scams, and illusions.
+
+The lecture then explains that hidden private conduct eventually becomes public in some form. If a person honors Allah in private and leaves a desire for His sake, it is as though a beautiful fragrance is released from them. People may love them, respect them, or feel drawn to them without knowing the secret. Likewise, private sins eventually leak through the face, tongue, choices, and public life. What is hidden does not stay spiritually hidden forever.
+
+One of the greatest fruits of muraqabah is an iron wall between a person and sin. The believer reads the verses that Allah sees the glance, knows what hearts hide, hears secret conversations, and is present with people wherever they are. That awareness becomes a barrier before clicking, typing, responding, entering a relationship, consuming something haram, or crossing a boundary. The speaker warns: do not make Allah the least significant of all observers.
+
+The lecture presses this point strongly. Many people would be terrified if another person caught them during a sin, or if a private conversation, browser tab, or relationship were exposed. Yet Allah was already watching. The person of muraqabah asks the soul: if you think Allah cannot see you, how severe is that disbelief? And if you know He sees you, how little is your shame before Him?
+
+The next reward is Jannah. The Qur'an promises that the one who fears standing before their Lord and restrains the soul from desire will have Paradise as their home. The lecture explains that this refers to someone on the edge of sin who remembers the standing before Allah and walks away.
+
+The final section gives practical ways to build muraqabah.
+
+The first path is to know Allah through His names and attributes, especially the names connected to His seeing, hearing, knowledge, subtle awareness, witnessing, and encompassing power. The more a person knows who Allah is, the more naturally watchfulness grows. The story of Khawlah bint Tha'labah is used: Aishah could barely hear her complaint from nearby, yet Allah heard it from above the heavens and revealed Qur'an about it.
+
+The second path is reciting the Qur'an with contemplation. Qur'an places the heart under Allah's gaze and reminds the believer of the standing before Him. One of the predecessors said he was prevented from many night sins by remembering the verse promising two gardens for the one who fears standing before his Lord.
+
+The third path is remembering the consequences of abusing muraqabah. The lecture mentions a terrifying hadith about people who come on the Day of Judgment with mountains of good deeds, only for Allah to turn them into dust because when they were alone with Allah's limits, they crossed them. The listener is asked to imagine their entire life as a film. If we would be ashamed for people to watch it, then we should pay attention to the script we are writing before Allah.
+
+The fourth path is learning the stories of people of muraqabah and trying to join their ranks. The shepherd who refused to lie to his master because "Where is Allah?" freed himself in dunya and, it is hoped, in the Hereafter. A woman protected from assault by reminding her attacker of the door between him and Allah was saved through muraqabah. A righteous man resisted seduction by seeing the Hereafter beyond the beauty in front of him. Another scholar turned a woman's temptation into repentance by asking her whether she would want that sin at death, in the grave, at the weighing of deeds, on the bridge over Hell, or before Allah.
+
+The lecture leaves the listener with a vivid picture: muraqabah is not theory. It is a cloud above the believer, a voice within the heart, a shield before sin, a fragrance after private obedience, and a road to Jannah. It is the ability to live knowing Allah is near, watching, hearing, and aware, and to let that knowledge govern both public and private life.`,
     },
     {
       number: 6,
@@ -202,7 +310,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Reliance (Tawakkul)",
       published: "2022-03-04",
       views: 61000,
-      videoSrc: "./assets/videos/change-of-heart/episode-06.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 7,
@@ -210,7 +318,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Humble Submissiveness (Khushu)",
       published: "2022-03-18",
       views: 48000,
-      videoSrc: "./assets/videos/change-of-heart/episode-07.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 8,
@@ -218,7 +326,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Love of Allah (Mahabbah)",
       published: "2022-04-04",
       views: 40000,
-      videoSrc: "./assets/videos/change-of-heart/episode-08.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 9,
@@ -226,7 +334,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Healthy Shame (Haya)",
       published: "2022-07-18",
       views: 59000,
-      videoSrc: "./assets/videos/change-of-heart/episode-09.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 10,
@@ -234,7 +342,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Gratitude (Shukr)",
       published: "2022-07-25",
       views: 38000,
-      videoSrc: "./assets/videos/change-of-heart/episode-10.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 11,
@@ -242,7 +350,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Patience (Sabr, Part 1)",
       published: "2022-08-01",
       views: 45000,
-      videoSrc: "./assets/videos/change-of-heart/episode-11.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 12,
@@ -250,7 +358,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Patience (Sabr, Part 2)",
       published: "2022-08-05",
       views: 42000,
-      videoSrc: "./assets/videos/change-of-heart/episode-12.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 13,
@@ -258,7 +366,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Ever-Returning (Inabah)",
       published: "2026-04-21",
       views: 8600,
-      videoSrc: "./assets/videos/change-of-heart/episode-13.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 14,
@@ -266,7 +374,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Contentment (Al-Rida, Part 1)",
       published: "2026-04-28",
       views: 8700,
-      videoSrc: "./assets/videos/change-of-heart/episode-14.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 15,
@@ -274,7 +382,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Contentment (Al-Rida, Part 2)",
       published: "2026-05-05",
       views: 5000,
-      videoSrc: "./assets/videos/change-of-heart/episode-15.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 16,
@@ -282,7 +390,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Neediness before Allah (Al-Iftiqār)",
       published: "2026-05-12",
       views: 4600,
-      videoSrc: "./assets/videos/change-of-heart/episode-16.mp4",
+      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
   ],
 };

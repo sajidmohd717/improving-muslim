@@ -857,6 +857,10 @@ details[open] .takeaways-toggle::after {
   box-shadow: 0 10px 28px rgba(24, 32, 27, 0.08);
 }
 
+.episode-card.is-unavailable {
+  opacity: 0.72;
+}
+
 .episode-card img {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -899,6 +903,19 @@ details[open] .takeaways-toggle::after {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 700;
+}
+
+.episode-status {
+  margin-top: 8px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.muted-badge {
+  background: rgba(98, 105, 99, 0.12);
+  color: var(--muted);
 }
 
 .watch-layout {
@@ -1013,6 +1030,15 @@ details[open] .takeaways-toggle::after {
   border-color: var(--accent);
   background: rgba(23, 107, 91, 0.08);
   outline: none;
+}
+
+.compact-episode.is-unavailable {
+  opacity: 0.68;
+}
+
+.compact-episode.is-unavailable:hover {
+  border-color: transparent;
+  background: transparent;
 }
 
 .compact-episode img {
@@ -1246,7 +1272,8 @@ details[open] .takeaways-toggle::after {
   .episode-number,
   .episode-card strong,
   .episode-date,
-  .episode-views {
+  .episode-views,
+  .episode-status {
     margin-inline: 0;
   }
 
@@ -1263,7 +1290,8 @@ details[open] .takeaways-toggle::after {
     margin-top: 4px;
   }
 
-  .episode-views {
+  .episode-views,
+  .episode-status {
     margin-top: 2px;
     margin-bottom: 0;
   }

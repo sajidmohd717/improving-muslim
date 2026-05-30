@@ -36,8 +36,11 @@ const requestedVideoId = params.get("video");
 const currentEpisode =
   series.episodes.find((episode) => episode.id === requestedVideoId) || series.episodes[0];
 const currentIndex = series.episodes.findIndex((episode) => episode.id === currentEpisode.id);
-const previousEpisode = series.episodes[currentIndex - 1];
-const nextEpisode = series.episodes[currentIndex + 1];
+const previousEpisode = series.episodes
+  .slice(0, currentIndex)
+  .reverse()
+  .find(isEpisodeAvailable);
+const nextEpisode = series.episodes.slice(currentIndex + 1).find(isEpisodeAvailable);
 
 const player = document.querySelector("#video-player");
 const source = document.querySelector("#video-source");
@@ -62,6 +65,10 @@ player.setAttribute("x-webkit-airplay", "allow");
 
 function episodeUrl(episode) {
   return `./watch.html?series=${seriesSlug}&video=${episode.id}`;
+}
+
+function isEpisodeAvailable(episode) {
+  return Boolean(episode.videoSrc);
 }
 
 function episodeThumbnailUrl(episode, quality = "hqdefault") {
@@ -238,6 +245,10 @@ if (currentEpisode.videoSrc) {
   }
   player.load();
 } else {
+  unavailable.innerHTML = `
+    <strong>Video not added yet</strong>
+    <span>${currentEpisode.statusNote || "This episode will be uploaded in the future, insha'Allah."}</span>
+  `;
   unavailable.classList.remove("is-hidden");
 }
 
@@ -283,15 +294,19 @@ episodeList.innerHTML = series.episodes
   .map(
     (episode) => {
       const progressLabel = formatProgress(episode);
+      const available = isEpisodeAvailable(episode);
+      const tagName = available ? "a" : "div";
+      const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
-        <a class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""}" href="${episodeUrl(episode)}">
+        <${tagName} class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""} ${available ? "" : "is-unavailable"}"${href}>
           <img src="${episodeThumbnailUrl(episode, "mqdefault")}" alt="" loading="lazy" />
           <span>
             <small>Episode ${episode.number}</small>
             <strong>${episode.title}</strong>
             ${progressLabel ? `<em>${progressLabel}</em>` : ""}
+            ${available ? "" : "<em>Uploading soon</em>"}
           </span>
-        </a>
+        </${tagName}>
       `;
     },
   )

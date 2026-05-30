@@ -28,9 +28,10 @@ const raw = inputFile
 const lines = raw.split("\n").map((l) => l.trim()).filter(Boolean);
 
 // Parse each line into { startSecs, text }
-// Timestamp pattern: M:SS or MM:SS at start of line
-// Human duration: "9 seconds", "1 minute, 7 seconds", "3 minutes", etc.
-const TIMESTAMP_RE = /^(\d+):(\d{2})(\d+ minutes?, \d+ seconds?|\d+ minutes?|\d+ seconds?)(.*)/;
+// Timestamp pattern: M:SS, MM:SS, or H:MM:SS at start of line
+// Human duration: "9 seconds", "1 minute, 7 seconds", "1 hour, 2 seconds", etc.
+const TIMESTAMP_RE =
+  /^(?:(\d+):)?(\d+):(\d{2})(\d+ hours?(?:, \d+ minutes?)?(?:, \d+ seconds?)?|\d+ minutes?(?:, \d+ seconds?)?|\d+ seconds?)(.*)/;
 
 const cues = [];
 
@@ -40,10 +41,11 @@ for (const line of lines) {
     // Skip chapter headers and blank lines
     continue;
   }
-  const mins = parseInt(match[1], 10);
-  const secs = parseInt(match[2], 10);
-  const startSecs = mins * 60 + secs;
-  const text = match[4]
+  const hours = parseInt(match[1] || "0", 10);
+  const mins = parseInt(match[2], 10);
+  const secs = parseInt(match[3], 10);
+  const startSecs = hours * 3600 + mins * 60 + secs;
+  const text = match[5]
     .trim()
     .replaceAll("â€œ", "\"")
     .replaceAll("â€", "\"")
