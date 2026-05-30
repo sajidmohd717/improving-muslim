@@ -27,7 +27,7 @@ const speakers = [
 const imageMap = {
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
   angels1: "./assets/thumbnail/heart-softeners/angels1.jpg",
-  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart.jpg",
+  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart.png",
   heartmatters: "./assets/thumbnail/heart-softeners/heartmatters.jpg",
   messageQuran: "./assets/thumbnail/general-quran-tafsir/message-quran.jpg",
   parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",

@@ -25,6 +25,10 @@ function episodeUrl(episode) {
   return `./watch.html?series=change-of-heart&video=${episode.id}`;
 }
 
+function episodeThumbnailUrl(episode, quality = "hqdefault") {
+  return `https://i.ytimg.com/vi/${episode.id}/${quality}.jpg`;
+}
+
 function progressKey(episode) {
   return `lecture-progress:${series.playlistId}:${episode.id}`;
 }
@@ -88,8 +92,8 @@ function setupMediaSession() {
     album: series.title,
     artwork: [
       {
-        src: "./assets/thumbnail/heart-softeners/changeofheart.jpg",
-        sizes: "336x188",
+        src: episodeThumbnailUrl(currentEpisode),
+        sizes: "480x360",
         type: "image/jpeg",
       },
     ],
@@ -132,6 +136,7 @@ document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Is
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
 kicker.textContent = `${series.title} | ${series.speaker}`;
 meta.textContent = `${series.topic} - Published ${formatDate(currentEpisode.published)}`;
+player.poster = episodeThumbnailUrl(currentEpisode);
 setupMediaSession();
 
 player.addEventListener("loadstart", () => {
@@ -207,7 +212,7 @@ episodeList.innerHTML = series.episodes
       const progressLabel = formatProgress(episode);
       return `
         <a class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""}" href="${episodeUrl(episode)}">
-          <img src="https://i.ytimg.com/vi/${episode.id}/mqdefault.jpg" alt="" loading="lazy" />
+          <img src="${episodeThumbnailUrl(episode, "mqdefault")}" alt="" loading="lazy" />
           <span>
             <small>Episode ${episode.number}</small>
             <strong>${episode.title}</strong>
