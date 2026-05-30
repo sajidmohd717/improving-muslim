@@ -50,6 +50,8 @@ const nextLink = document.querySelector("#next-link");
 const episodeList = document.querySelector("#watch-episode-list");
 const recapPanel = document.querySelector("#recap-panel");
 const recapBody = document.querySelector("#watch-recap");
+const takeawaysPanel = document.querySelector("#takeaways-panel");
+const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
 const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
 
@@ -178,6 +180,14 @@ if (playlistTitle) playlistTitle.textContent = series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
 
 setupMediaSession();
+
+if (currentEpisode.takeaways && currentEpisode.takeaways.length) {
+  const applyBold = (s) => escapeHtml(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  takeawaysList.innerHTML = currentEpisode.takeaways
+    .map((step) => `<li>${applyBold(step)}</li>`)
+    .join("");
+  takeawaysPanel.hidden = false;
+}
 
 if (currentEpisode.recap) {
   recapBody.innerHTML = renderRecap(currentEpisode.recap);

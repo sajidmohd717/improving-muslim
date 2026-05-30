@@ -15,6 +15,16 @@ window.changeOfHeartSeries = {
       published: "2021-11-26",
       views: 231000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4",
+      takeaways: [
+        "**Audit your heart in three moments**: When you hear Qur'an recited, when you are in a gathering of remembrance like a lecture, and when you are completely alone. If your heart feels absent or unmoved in all three, make du'a asking Allah sincerely to give you a living, responsive heart.",
+        "**Guard what enters through your eyes and ears** — they are gutters that pour everything directly into your heart. Be intentional about what you watch, listen to, and read, because that content lands in the heart and leaves a mark, either a white dot or a black one.",
+        "**Identify which heart you currently have**: Does an Islamic reminder stay with you and produce change (fertile heart)? Does it pass through without truly affecting you (rocky heart)? Or does it leave no impression at all (barren heart)? Be honest — your answer tells you what work lies ahead.",
+        "**Trace your spiritual struggles back to the heart**: The next time you miss Fajr, fall into something haram, or feel spiritually numb, instead of only addressing the surface behaviour, ask yourself: what is the actual condition of my heart right now? The limbs follow wherever the heart leads.",
+        "**Give conscious attention to the inward acts of worship**: Alongside your prayers and fasting, nurture sincerity (ikhlas), reliance on Allah (tawakkul), love, fear, and hope. These are required every second of the day — not only during ritual times — and they are a higher category of deed than the physical acts alone.",
+        "**Make du'a for a sound heart regularly**: The Prophet Ibrahim ﷺ asked Allah for a qalb saleem — a sound, pure heart — to present on the Day of Judgment. Wealth and children will not help anyone that day; only the one who comes with a sound heart will benefit. Add this to your daily du'a.",
+        "**Understand that fitnah is a heart attack, not just a sin**: When temptation enters through your eyes or ears, it goes straight to the heart. Turning away with patience places a white dot on your heart; absorbing it places a black one. Over time, these marks either brighten or darken your heart entirely — every choice counts.",
+        "**Attend gatherings of remembrance consistently**: The heart is treated by being in places where Allah is remembered. Commit to attending at least one regular gathering — a Friday khutbah, a weekly lecture, or a study circle — and notice how the heart feels lighter and more alive when it is fed this way.",
+      ],
       recap: `# Powerful Recap: Change of Heart — Why the Heart Matters
 
 This lecture opens with a deeply emotional return to the masjid after a long period of separation. The speaker reflects on how difficult it was to be away from the house of Allah, but also frames that pain as a sign of īmān: the fact that believers missed the masjid is itself something to thank Allah for.
