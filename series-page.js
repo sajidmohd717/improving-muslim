@@ -1,9 +1,17 @@
-const series = window.changeOfHeartSeries;
+function formatViews(n) {
+  if (!n) return "";
+  if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
+  if (n >= 10_000) return `${Math.round(n / 1_000)}K views`;
+  if (n >= 1_000) return `${+(n / 1_000).toFixed(1)}K views`;
+  return `${n} views`;
+}
+
+const series = window.currentSeries;
 const episodeList = document.querySelector("#episode-list");
 const startLink = document.querySelector("#start-series-link");
 
 function episodeUrl(episode) {
-  return `./watch.html?series=change-of-heart&video=${episode.id}`;
+  return `./watch.html?series=${series.slug}&video=${episode.id}`;
 }
 
 function formatDate(dateString) {
@@ -25,9 +33,15 @@ episodeList.innerHTML = series.episodes
           alt=""
           loading="lazy"
         />
-        <span class="episode-number">Episode ${episode.number}</span>
-        <strong>${episode.title}</strong>
-        <span class="episode-date">${formatDate(episode.published)}</span>
+        <div class="episode-info">
+          <span class="episode-number">
+            Episode ${episode.number}
+            ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
+          </span>
+          <strong>${episode.title}</strong>
+          <span class="episode-date">${formatDate(episode.published)}</span>
+          ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
+        </div>
       </a>
     `,
   )

@@ -1,5 +1,37 @@
-const series = window.changeOfHeartSeries;
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderRecap(text) {
+  return text
+    .trim()
+    .split(/\n\n+/)
+    .map((block) => {
+      const trimmed = block.trim();
+      const applyBold = (s) => escapeHtml(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      if (trimmed.startsWith("# ")) {
+        return `<h3 class="recap-heading">${applyBold(trimmed.slice(2))}</h3>`;
+      }
+      return `<p>${applyBold(trimmed)}</p>`;
+    })
+    .join("");
+}
+
+const seriesRegistry = {
+  "change-of-heart": window.changeOfHeartSeries,
+  "why-me": window.whyMeSeries,
+};
+
 const params = new URLSearchParams(window.location.search);
+const seriesSlug = params.get("series") || "change-of-heart";
+const series = seriesRegistry[seriesSlug] || window.changeOfHeartSeries;
+const seriesPageUrl = series.seriesPageUrl || "./index.html";
+
 const requestedVideoId = params.get("video");
 const currentEpisode =
   series.episodes.find((episode) => episode.id === requestedVideoId) || series.episodes[0];
@@ -16,13 +48,17 @@ const meta = document.querySelector("#watch-meta");
 const previousLink = document.querySelector("#previous-link");
 const nextLink = document.querySelector("#next-link");
 const episodeList = document.querySelector("#watch-episode-list");
+const recapPanel = document.querySelector("#recap-panel");
+const recapBody = document.querySelector("#watch-recap");
+const playlistTitle = document.querySelector("#playlist-title");
+const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
 
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
 
 function episodeUrl(episode) {
-  return `./watch.html?series=change-of-heart&video=${episode.id}`;
+  return `./watch.html?series=${seriesSlug}&video=${episode.id}`;
 }
 
 function episodeThumbnailUrl(episode, quality = "hqdefault") {
@@ -116,11 +152,11 @@ function setupMediaSession() {
   });
 
   navigator.mediaSession.setActionHandler("previoustrack", () => {
-    window.location.href = previousEpisode ? episodeUrl(previousEpisode) : "./series-change-of-heart.html";
+    window.location.href = previousEpisode ? episodeUrl(previousEpisode) : seriesPageUrl;
   });
 
   navigator.mediaSession.setActionHandler("nexttrack", () => {
-    window.location.href = nextEpisode ? episodeUrl(nextEpisode) : "./series-change-of-heart.html";
+    window.location.href = nextEpisode ? episodeUrl(nextEpisode) : seriesPageUrl;
   });
 }
 
@@ -132,12 +168,21 @@ function updateMediaSessionState(state) {
   navigator.mediaSession.playbackState = state;
 }
 
-document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Islamic Lecture Series`;
+document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Improving Muslim`;
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
 kicker.textContent = `${series.title} | ${series.speaker}`;
 meta.textContent = `${series.topic} - Published ${formatDate(currentEpisode.published)}`;
 player.poster = episodeThumbnailUrl(currentEpisode);
+
+if (playlistTitle) playlistTitle.textContent = series.title;
+if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
+
 setupMediaSession();
+
+if (currentEpisode.recap) {
+  recapBody.innerHTML = renderRecap(currentEpisode.recap);
+  recapPanel.hidden = false;
+}
 
 player.addEventListener("loadstart", () => {
   unavailable.classList.add("is-hidden");
@@ -165,8 +210,12 @@ player.addEventListener("loadedmetadata", () => {
   }
 });
 
-source.src = currentEpisode.videoSrc;
-player.load();
+if (currentEpisode.videoSrc) {
+  source.src = currentEpisode.videoSrc;
+  player.load();
+} else {
+  unavailable.classList.remove("is-hidden");
+}
 
 player.addEventListener("timeupdate", () => {
   saveProgress();
@@ -194,7 +243,7 @@ if (previousEpisode) {
   previousLink.href = episodeUrl(previousEpisode);
   previousLink.textContent = "Previous episode";
 } else {
-  previousLink.href = "./series-change-of-heart.html";
+  previousLink.href = seriesPageUrl;
   previousLink.textContent = "Back to series";
 }
 
@@ -202,7 +251,7 @@ if (nextEpisode) {
   nextLink.href = episodeUrl(nextEpisode);
   nextLink.textContent = "Next episode";
 } else {
-  nextLink.href = "./series-change-of-heart.html";
+  nextLink.href = seriesPageUrl;
   nextLink.textContent = "Series overview";
 }
 

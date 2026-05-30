@@ -65,7 +65,7 @@ button {
   top: 0;
   z-index: 20;
   border-bottom: 1px solid rgba(222, 214, 200, 0.8);
-  background: rgba(255, 253, 248, 0.88);
+  background: rgba(247, 243, 236, 0.92);
   backdrop-filter: blur(18px);
 }
 
@@ -168,7 +168,7 @@ h2 {
 }
 
 .search-form {
-  display: flex;
+  display: none;
   width: min(100%, 680px);
   padding: 6px;
   border: 1px solid var(--line);
@@ -467,6 +467,152 @@ h2 {
   font-weight: 800;
 }
 
+.recap-badge {
+  display: inline-block;
+  margin-left: 7px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 1px 5px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.recap-panel {
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  overflow: hidden;
+}
+
+.recap-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 20px;
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1rem;
+  font-weight: 700;
+  list-style: none;
+  user-select: none;
+}
+
+.recap-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.recap-toggle::after {
+  content: "▾";
+  flex-shrink: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  transition: transform 200ms ease;
+}
+
+details[open] .recap-toggle::after {
+  transform: rotate(180deg);
+}
+
+.recap-body {
+  border-top: 1px solid var(--line);
+  padding: 6px 24px 28px;
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.06rem;
+  line-height: 1.85;
+}
+
+.recap-body p {
+  margin: 1.35em 0 0;
+  color: #252e28;
+}
+
+.recap-body p:first-of-type {
+  font-size: 1.12rem;
+  color: var(--ink);
+}
+
+.recap-body strong {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.recap-heading {
+  margin: 24px 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--gold);
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.series-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sort-select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.sort-select:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  border-top: 1px solid var(--line);
+  background: rgba(247, 243, 236, 0.96);
+  backdrop-filter: blur(18px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px 12px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.bottom-nav-item.is-active {
+  color: var(--accent);
+}
+
+.bottom-nav-item svg {
+  flex-shrink: 0;
+}
+
 .about-hero,
 .about-section {
   width: min(920px, calc(100% - 32px));
@@ -616,6 +762,10 @@ h2 {
   object-fit: cover;
 }
 
+.episode-info {
+  display: contents;
+}
+
 .episode-card span,
 .episode-card strong {
   margin-inline: 14px;
@@ -637,9 +787,16 @@ h2 {
 
 .episode-date {
   margin-top: 10px;
-  margin-bottom: 14px;
   color: var(--muted);
   font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.episode-views {
+  margin-top: 4px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -835,80 +992,218 @@ h2 {
 }
 
 @media (max-width: 680px) {
+  body {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+
   .nav-shell {
     min-height: 64px;
   }
 
+  .site-menu,
+  .page-menu,
   .icon-button {
-    display: inline-grid;
-    width: 44px;
-    height: 44px;
-    place-items: center;
-  }
-
-  .menu-line {
-    width: 24px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--ink);
-  }
-
-  .site-menu {
-    position: fixed;
-    inset: 64px 16px auto 16px;
     display: none;
-    flex-direction: column;
-    align-items: stretch;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--surface-strong);
-    box-shadow: var(--shadow);
-    padding: 8px;
   }
 
-  .site-menu.is-open {
-    display: flex;
-  }
-
-  .site-menu a {
-    padding: 14px;
+  h1 {
+    font-size: clamp(1.9rem, 7vw, 5.9rem);
   }
 
   .hero {
-    padding-top: 36px;
+    padding-top: 20px;
+    padding-bottom: 12px;
   }
 
-  .search-form {
-    display: grid;
+  .hero .hero-copy {
+    display: none;
   }
 
-  .search-form button {
-    width: 100%;
+  .series-hero .hero-copy {
+    font-size: 0.92rem;
+    margin: 10px 0 16px;
   }
 
   .hero-panel {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 10px 12px;
   }
 
   .hero-panel div {
-    display: flex;
-    justify-items: stretch;
+    display: grid;
+    justify-items: center;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+    padding: 4px 8px;
+    text-align: center;
+  }
+
+  .hero-panel div:last-child {
     border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 0 0 12px;
-    text-align: left;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+  }
+
+  .content-section {
+    padding: 16px 0;
+  }
+
+  .section-heading {
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: clamp(1.3rem, 3vw, 2.3rem);
   }
 
   .series-grid {
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .series-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 12px 0;
+  }
+
+  .series-card:last-child {
+    border-bottom: none;
+  }
+
+  .series-link {
+    width: 120px;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+  }
+
+  .series-body {
+    padding: 2px 0 0;
+  }
+
+  .details-toggle,
+  .series-description {
+    display: none;
+  }
+
+  .series-meta {
+    margin-top: 6px;
   }
 
   .episode-list {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .episode-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+    padding: 14px 0;
+  }
+
+  .episode-card:last-child {
+    border-bottom: none;
+  }
+
+  .episode-card img {
+    width: 130px;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+  }
+
+  .episode-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+  }
+
+  .episode-number,
+  .episode-card strong,
+  .episode-date,
+  .episode-views {
+    margin-inline: 0;
+  }
+
+  .episode-number {
+    margin-top: 0;
+  }
+
+  .episode-card strong {
+    margin-top: 4px;
+    font-size: 0.9rem;
+  }
+
+  .episode-date {
+    margin-top: 4px;
+  }
+
+  .episode-views {
+    margin-top: 2px;
+    margin-bottom: 0;
   }
 
   .compact-episode {
     grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .watch-layout {
+    width: 100%;
+    gap: 0;
+    padding: 0 0 20px;
+  }
+
+  .video-frame {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .watch-info {
+    padding: 16px 16px 0;
+  }
+
+  .watch-info h1 {
+    font-size: clamp(1.35rem, 5vw, 2rem);
+  }
+
+  .watch-actions .primary-link,
+  .watch-actions .quiet-link {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .watch-note {
+    display: none;
+  }
+
+  .episode-sidebar {
+    display: none;
   }
 
   .row-heading {
@@ -922,5 +1217,9 @@ h2 {
 
   .result-count {
     margin-top: 8px;
+  }
+
+  .bottom-nav {
+    display: flex;
   }
 }

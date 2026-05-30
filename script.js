@@ -1,7 +1,7 @@
 const API_ROOT = "https://sajidmohd717.github.io/series-api";
 
 const categories = [
-  { name: "For You", value: "foryou" },
+  { name: "All", value: "foryou" },
   { name: "Tafsir", value: "tafsir" },
   { name: "Hadith", value: "hadith" },
   { name: "Aqeedah", value: "aqeedah" },
@@ -68,7 +68,7 @@ const fallbackData = [
       {
         title: "Why Me | 2024 Ramadan Series",
         speaker: "Omar Suleiman",
-        episodes: "32 Lectures",
+        episodes: "30 Lectures",
         thumbnailImage: "whyMe",
         link: "https://www.youtube.com/playlist?list=PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
         viewcount: "14.3M views",
@@ -125,7 +125,42 @@ const state = {
   activeCategory: "foryou",
   sections: [],
   searchTerm: "",
+  sortBy: "views",
 };
+
+function formatViewCount(n) {
+  if (!n) return "";
+  if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
+  if (n >= 10_000) return `${Math.round(n / 1_000)}K views`;
+  if (n >= 1_000) return `${+(n / 1_000).toFixed(1)}K views`;
+  return `${n} views`;
+}
+
+function enrichSeries(item) {
+  if (item.title === "Change of Heart" && window.changeOfHeartSeries) {
+    const total = window.changeOfHeartSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+  }
+  return item;
+}
+
+function parseViewCount(str) {
+  if (!str) return -1;
+  const num = parseFloat(str);
+  if (/[Mm]/.test(str)) return num * 1_000_000;
+  if (/[Kk]/.test(str)) return num * 1_000;
+  return num || -1;
+}
+
+function getSortedSeries(list) {
+  if (state.sortBy === "views") {
+    return [...list].sort((a, b) => parseViewCount(b.viewcount) - parseViewCount(a.viewcount));
+  }
+  if (state.sortBy === "az") {
+    return [...list].sort((a, b) => a.title.localeCompare(b.title));
+  }
+  return list;
+}
 
 const els = {
   menuToggle: document.querySelector(".menu-toggle"),
@@ -138,6 +173,7 @@ const els = {
   seriesCount: document.querySelector("#series-count"),
   searchForm: document.querySelector(".search-form"),
   searchInput: document.querySelector("#series-search"),
+  sortSelect: document.querySelector("#sort-select"),
   activeCategoryLabel: document.querySelector("#active-category-label"),
 };
 
@@ -221,11 +257,15 @@ function getSeriesUrl(series) {
     return "./series-change-of-heart.html";
   }
 
+  if (series.title === "Why Me | 2024 Ramadan Series") {
+    return "./series-why-me.html";
+  }
+
   return series.link;
 }
 
 function renderSeries() {
-  const series = flattenSeries(state.sections).filter(seriesMatchesSearch);
+  const series = getSortedSeries(flattenSeries(state.sections).filter(seriesMatchesSearch).map(enrichSeries));
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
   els.activeCategoryLabel.textContent = state.searchTerm ? `Search in ${categoryName}` : categoryName;
@@ -298,19 +338,21 @@ async function loadCategory(category) {
 }
 
 function bindEvents() {
-  els.menuToggle.addEventListener("click", () => {
-    const isOpen = els.siteMenu.classList.toggle("is-open");
-    document.body.classList.toggle("menu-open", isOpen);
-    els.menuToggle.setAttribute("aria-expanded", String(isOpen));
-  });
+  if (els.menuToggle) {
+    els.menuToggle.addEventListener("click", () => {
+      const isOpen = els.siteMenu.classList.toggle("is-open");
+      document.body.classList.toggle("menu-open", isOpen);
+      els.menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
 
-  els.siteMenu.addEventListener("click", (event) => {
-    if (event.target.matches("a")) {
-      els.siteMenu.classList.remove("is-open");
-      document.body.classList.remove("menu-open");
-      els.menuToggle.setAttribute("aria-expanded", "false");
-    }
-  });
+    els.siteMenu.addEventListener("click", (event) => {
+      if (event.target.matches("a")) {
+        els.siteMenu.classList.remove("is-open");
+        document.body.classList.remove("menu-open");
+        els.menuToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 
   els.categoryList.addEventListener("click", (event) => {
     const button = event.target.closest("[data-category]");
@@ -346,6 +388,11 @@ function bindEvents() {
     if (event.target.matches(".retry-button")) {
       loadCategory(state.activeCategory);
     }
+  });
+
+  els.sortSelect.addEventListener("change", () => {
+    state.sortBy = els.sortSelect.value;
+    renderSeries();
   });
 }
 
