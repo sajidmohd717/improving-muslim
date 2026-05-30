@@ -2,12 +2,109 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Islamic Series</title>
+    <meta
+      name="description"
+      content="A curated collection of Islamic lecture series organized by topic and speaker."
+    />
+    <link rel="icon" type="image/png" href="./public/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Islamic Lecture Series Collections</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Islamic Lecture Series Collections home">
+          <img src="./public/icon.png" alt="" />
+          <span>Islamic Lecture Series</span>
+        </a>
+
+        <button class="icon-button menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+          <span class="sr-only">Open menu</span>
+        </button>
+
+        <div class="site-menu" id="site-menu">
+          <a href="#speakers">Speakers</a>
+          <a href="#categories">Categories</a>
+          <a href="#series">Series</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Curated Islamic knowledge</p>
+          <h1>Find meaningful lecture series without the noise.</h1>
+          <p class="hero-copy">
+            Browse organized playlists from trusted speakers across tafsir, hadith, seerah,
+            purification of the heart, and more.
+          </p>
+          <form class="search-form" role="search">
+            <label class="sr-only" for="series-search">Search lectures</label>
+            <input id="series-search" type="search" placeholder="Search by title, speaker, or topic" autocomplete="off" />
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        <div class="hero-panel" aria-label="Collection statistics">
+          <div>
+            <span class="stat-value" id="series-count">0</span>
+            <span class="stat-label">series indexed</span>
+          </div>
+          <div>
+            <span class="stat-value">10</span>
+            <span class="stat-label">topics</span>
+          </div>
+          <div>
+            <span class="stat-value">8</span>
+            <span class="stat-label">speakers</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section" id="speakers" aria-labelledby="speakers-title">
+        <div class="section-heading">
+          <p class="eyebrow">Featured voices</p>
+          <h2 id="speakers-title">Speakers</h2>
+        </div>
+        <div class="speaker-strip" id="speaker-list"></div>
+      </section>
+
+      <section class="content-section" id="categories" aria-labelledby="categories-title">
+        <div class="section-heading">
+          <p class="eyebrow">Browse by topic</p>
+          <h2 id="categories-title">Categories</h2>
+        </div>
+        <div class="category-strip" id="category-list" role="list"></div>
+      </section>
+
+      <section class="content-section series-section" id="series" aria-labelledby="series-title">
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow" id="active-category-label">For You</p>
+            <h2 id="series-title">Lecture Series</h2>
+          </div>
+          <p class="result-count" id="result-count"></p>
+        </div>
+        <div class="status-message" id="status-message" role="status">Loading series...</div>
+        <div class="series-grid" id="series-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for easy discovery and quiet study.</p>
+      <a href="https://discord.com/" target="_blank" rel="noreferrer">Join the community</a>
+    </footer>
+
+    <script src="./script.js" defer></script>
   </body>
 </html>
