@@ -41,6 +41,7 @@ const nextEpisode = series.episodes[currentIndex + 1];
 
 const player = document.querySelector("#video-player");
 const source = document.querySelector("#video-source");
+const captionTrack = document.querySelector("#caption-track");
 const unavailable = document.querySelector("#video-unavailable");
 const title = document.querySelector("#watch-title");
 const kicker = document.querySelector("#watch-kicker");
@@ -184,7 +185,7 @@ setupMediaSession();
 if (currentEpisode.takeaways && currentEpisode.takeaways.length) {
   const applyBold = (s) => escapeHtml(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   takeawaysList.innerHTML = currentEpisode.takeaways
-    .map((step) => `<li>${applyBold(step)}</li>`)
+    .map((step) => `<li><span>${applyBold(step)}</span></li>`)
     .join("");
   takeawaysPanel.hidden = false;
 }
@@ -222,6 +223,17 @@ player.addEventListener("loadedmetadata", () => {
 
 if (currentEpisode.videoSrc) {
   source.src = currentEpisode.videoSrc;
+  if (currentEpisode.captionsSrc && captionTrack) {
+    captionTrack.src = currentEpisode.captionsSrc;
+    captionTrack.addEventListener("load", () => {
+      captionTrack.track.mode = "showing";
+    });
+    if (captionTrack.track) {
+      captionTrack.track.mode = "showing";
+    }
+  } else if (captionTrack) {
+    captionTrack.remove();
+  }
   player.load();
 } else {
   unavailable.classList.remove("is-hidden");
