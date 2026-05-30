@@ -17,6 +17,10 @@ const previousLink = document.querySelector("#previous-link");
 const nextLink = document.querySelector("#next-link");
 const episodeList = document.querySelector("#watch-episode-list");
 
+player.setAttribute("playsinline", "");
+player.setAttribute("webkit-playsinline", "");
+player.setAttribute("x-webkit-airplay", "allow");
+
 function episodeUrl(episode) {
   return `./watch.html?series=change-of-heart&video=${episode.id}`;
 }
@@ -73,10 +77,62 @@ function formatDate(dateString) {
   }).format(new Date(`${dateString}T00:00:00`));
 }
 
+function setupMediaSession() {
+  if (!("mediaSession" in navigator) || !("MediaMetadata" in window)) {
+    return;
+  }
+
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
+    artist: series.speaker,
+    album: series.title,
+    artwork: [
+      {
+        src: "./assets/thumbnail/heart-softeners/changeofheart.jpg",
+        sizes: "336x188",
+        type: "image/jpeg",
+      },
+    ],
+  });
+
+  navigator.mediaSession.setActionHandler("play", () => {
+    player.play();
+  });
+
+  navigator.mediaSession.setActionHandler("pause", () => {
+    player.pause();
+  });
+
+  navigator.mediaSession.setActionHandler("seekbackward", (details) => {
+    player.currentTime = Math.max(0, player.currentTime - (details.seekOffset || 10));
+  });
+
+  navigator.mediaSession.setActionHandler("seekforward", (details) => {
+    player.currentTime = Math.min(player.duration || player.currentTime, player.currentTime + (details.seekOffset || 10));
+  });
+
+  navigator.mediaSession.setActionHandler("previoustrack", () => {
+    window.location.href = previousEpisode ? episodeUrl(previousEpisode) : "./series-change-of-heart.html";
+  });
+
+  navigator.mediaSession.setActionHandler("nexttrack", () => {
+    window.location.href = nextEpisode ? episodeUrl(nextEpisode) : "./series-change-of-heart.html";
+  });
+}
+
+function updateMediaSessionState(state) {
+  if (!("mediaSession" in navigator)) {
+    return;
+  }
+
+  navigator.mediaSession.playbackState = state;
+}
+
 document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Islamic Lecture Series`;
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
 kicker.textContent = `${series.title} | ${series.speaker}`;
 meta.textContent = `${series.topic} - Published ${formatDate(currentEpisode.published)}`;
+setupMediaSession();
 
 player.addEventListener("loadstart", () => {
   unavailable.classList.add("is-hidden");
@@ -113,6 +169,7 @@ player.addEventListener("timeupdate", () => {
 
 player.addEventListener("pause", () => {
   saveProgress();
+  updateMediaSessionState("paused");
 });
 
 player.addEventListener("ended", () => {
@@ -121,6 +178,11 @@ player.addEventListener("ended", () => {
   } catch (error) {
     return;
   }
+  updateMediaSessionState("none");
+});
+
+player.addEventListener("play", () => {
+  updateMediaSessionState("playing");
 });
 
 if (previousEpisode) {

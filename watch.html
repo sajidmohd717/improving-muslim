@@ -35,7 +35,15 @@
     <main class="watch-layout">
       <section class="watch-main" aria-labelledby="watch-title">
         <div class="video-frame">
-          <video id="video-player" controls preload="metadata" poster="./assets/thumbnail/heart-softeners/changeofheart.jpg">
+          <video
+            id="video-player"
+            controls
+            playsinline
+            webkit-playsinline
+            x-webkit-airplay="allow"
+            preload="metadata"
+            poster="./assets/thumbnail/heart-softeners/changeofheart.jpg"
+          >
             <source id="video-source" src="" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -48,6 +56,9 @@
           <p class="eyebrow" id="watch-kicker">Change of Heart</p>
           <h1 id="watch-title">Loading episode...</h1>
           <p id="watch-meta"></p>
+          <p class="watch-note">
+            Use the fullscreen control only when you want a full-screen view.
+          </p>
           <div class="watch-actions">
             <a class="quiet-link" id="previous-link" href="./series-change-of-heart.html">Previous</a>
             <a class="primary-link" id="next-link" href="./series-change-of-heart.html">Next episode</a>

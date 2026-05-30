@@ -642,6 +642,12 @@ h2 {
   font-weight: 700;
 }
 
+.watch-note {
+  max-width: 620px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .watch-actions {
   display: flex;
   flex-wrap: wrap;
