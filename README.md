@@ -2,6 +2,8 @@
 
 A lightweight static website for browsing curated Islamic lecture playlists by topic and speaker.
 
+Visit the live site: https://sajidmohd717.github.io/islamic-lectures-react/
+
 ## Run locally
 
 Open `index.html` directly in a browser, or serve the folder locally:
