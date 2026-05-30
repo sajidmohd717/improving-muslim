@@ -2,6 +2,7 @@ const API_ROOT = "https://sajidmohd717.github.io/series-api";
 
 const categories = [
   { name: "All", value: "foryou" },
+  { name: "Purification", value: "purification" },
   { name: "Tafsir", value: "tafsir" },
   { name: "Hadith", value: "hadith" },
   { name: "Aqeedah", value: "aqeedah" },
@@ -109,6 +110,10 @@ const fallbackData = [
     ],
   },
 ];
+
+const localCategoryFallbacks = {
+  purification: [fallbackData[0]],
+};
 
 const descriptions = {
   "Why Me | 2024 Ramadan Series":
@@ -328,7 +333,7 @@ async function loadCategory(category) {
     state.sections = normalizeSections(JSON.parse(cleanJson(rawText)));
   } catch (error) {
     console.warn(error);
-    state.sections = normalizeSections(fallbackData);
+    state.sections = normalizeSections(localCategoryFallbacks[category] || fallbackData);
     setStatus(
       `Live data could not be loaded, so a saved starter collection is shown. <button class="retry-button" type="button">Retry</button>`,
     );

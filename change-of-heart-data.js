@@ -15,6 +15,7 @@ window.changeOfHeartSeries = {
       published: "2021-11-26",
       views: 231000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4",
+      captionsSrc: "./assets/captions/change-of-heart/episode-01.vtt",
       takeaways: [
         "**Audit your heart in three moments**: When you hear Qur'an recited, when you are in a gathering of remembrance like a lecture, and when you are completely alone. If your heart feels absent or unmoved in all three, make du'a asking Allah sincerely to give you a living, responsive heart.",
         "**Guard what enters through your eyes and ears** — they are gutters that pour everything directly into your heart. Be intentional about what you watch, listen to, and read, because that content lands in the heart and leaves a mark, either a white dot or a black one.",
