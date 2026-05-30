@@ -46,10 +46,9 @@
             poster="./assets/thumbnail/heart-softeners/changeofheart.png"
           >
             <source id="video-source" src="" type="video/mp4" />
-            <track id="caption-track" kind="captions" srclang="en" label="English" />
+            <track id="caption-track" kind="captions" srclang="en" label="English" default />
             Your browser does not support the video tag.
           </video>
-          <div class="custom-caption is-hidden" id="custom-caption" aria-live="off"></div>
           <div class="video-unavailable is-hidden" id="video-unavailable">
             <strong>Video could not be loaded</strong>
             <span>Check that this episode has a valid MP4 source.</span>
@@ -65,9 +64,6 @@
           <div class="watch-actions">
             <a class="quiet-link" id="previous-link" href="./series-change-of-heart.html">Previous</a>
             <a class="primary-link" id="next-link" href="./series-change-of-heart.html">Next episode</a>
-            <button class="quiet-link caption-toggle" id="caption-toggle" type="button" aria-pressed="true" hidden>
-              Captions on
-            </button>
           </div>
 
           <details class="takeaways-panel" id="takeaways-panel" hidden>

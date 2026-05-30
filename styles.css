@@ -932,29 +932,6 @@ details[open] .takeaways-toggle::after {
   background: #0d0f0e;
 }
 
-.video-frame video::cue {
-  color: transparent;
-  background: transparent;
-}
-
-.custom-caption {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(42px, 8%, 76px);
-  width: min(88%, 780px);
-  border-radius: 6px;
-  background: rgba(13, 15, 14, 0.86);
-  color: white;
-  font-size: clamp(0.88rem, 2vw, 1.08rem);
-  font-weight: 700;
-  line-height: 1.45;
-  padding: 8px 12px;
-  text-align: center;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 2;
-}
-
 .video-unavailable {
   position: absolute;
   inset: 0;
@@ -1001,10 +978,6 @@ details[open] .takeaways-toggle::after {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
-}
-
-.caption-toggle {
-  border: 1px solid var(--line);
 }
 
 .episode-sidebar {

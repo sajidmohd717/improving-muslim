@@ -42,8 +42,6 @@ const nextEpisode = series.episodes[currentIndex + 1];
 const player = document.querySelector("#video-player");
 const source = document.querySelector("#video-source");
 const captionTrack = document.querySelector("#caption-track");
-const customCaption = document.querySelector("#custom-caption");
-const captionToggle = document.querySelector("#caption-toggle");
 const unavailable = document.querySelector("#video-unavailable");
 const title = document.querySelector("#watch-title");
 const kicker = document.querySelector("#watch-kicker");
@@ -57,9 +55,6 @@ const takeawaysPanel = document.querySelector("#takeaways-panel");
 const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
 const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
-
-let captionsEnabled = true;
-let captionCues = [];
 
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
@@ -176,89 +171,6 @@ function updateMediaSessionState(state) {
   navigator.mediaSession.playbackState = state;
 }
 
-function syncCaptionDisplay() {
-  if (!customCaption || !captionsEnabled || !captionCues.length) {
-    customCaption?.classList.add("is-hidden");
-    return;
-  }
-
-  const activeCue = captionCues.find(
-    (cue) => player.currentTime >= cue.start && player.currentTime < cue.end,
-  );
-  if (!activeCue?.text) {
-    customCaption.classList.add("is-hidden");
-    customCaption.textContent = "";
-    return;
-  }
-
-  customCaption.textContent = activeCue.text;
-  customCaption.classList.remove("is-hidden");
-}
-
-function setCaptionsEnabled(enabled) {
-  captionsEnabled = enabled;
-  if (captionTrack?.track) {
-    captionTrack.track.mode = "disabled";
-  }
-  if (captionToggle) {
-    captionToggle.textContent = enabled ? "Captions on" : "Captions off";
-    captionToggle.setAttribute("aria-pressed", String(enabled));
-  }
-  syncCaptionDisplay();
-}
-
-function parseVttTimestamp(timestamp) {
-  const [hours, minutes, seconds] = timestamp.split(":");
-  return Number(hours) * 3600 + Number(minutes) * 60 + Number(seconds);
-}
-
-function parseVtt(text) {
-  return text
-    .replace(/^\uFEFF/, "")
-    .split(/\n\n+/)
-    .map((block) => {
-      const lines = block.trim().split(/\n/);
-      const timeLine = lines.find((line) => line.includes("-->"));
-      if (!timeLine) {
-        return null;
-      }
-
-      const [start, end] = timeLine.split("-->").map((part) => part.trim().split(/\s+/)[0]);
-      const cueText = lines.slice(lines.indexOf(timeLine) + 1).join(" ").trim();
-      if (!start || !end || !cueText) {
-        return null;
-      }
-
-      return {
-        start: parseVttTimestamp(start),
-        end: parseVttTimestamp(end),
-        text: cueText,
-      };
-    })
-    .filter(Boolean);
-}
-
-async function loadCaptions(src) {
-  if (!src) {
-    captionToggle.hidden = true;
-    return;
-  }
-
-  try {
-    const response = await fetch(src);
-    if (!response.ok) {
-      throw new Error("Captions could not be loaded");
-    }
-    captionCues = parseVtt(await response.text());
-    captionToggle.hidden = captionCues.length === 0;
-    setCaptionsEnabled(captionCues.length > 0);
-  } catch (error) {
-    captionCues = [];
-    captionToggle.hidden = true;
-    customCaption?.classList.add("is-hidden");
-  }
-}
-
 document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Improving Muslim`;
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
 kicker.textContent = `${series.title} | ${series.speaker}`;
@@ -296,6 +208,10 @@ player.addEventListener("error", () => {
 player.addEventListener("loadedmetadata", () => {
   unavailable.classList.add("is-hidden");
 
+  if (captionTrack?.track) {
+    captionTrack.track.mode = currentEpisode.captionsSrc ? "showing" : "disabled";
+  }
+
   const progress = readProgress(currentEpisode);
   const resumeTime = Number(progress.currentTime) || 0;
   const almostFinished = resumeTime > player.duration - 30;
@@ -313,13 +229,12 @@ if (currentEpisode.videoSrc) {
   source.src = currentEpisode.videoSrc;
   if (currentEpisode.captionsSrc && captionTrack) {
     captionTrack.src = currentEpisode.captionsSrc;
+    captionTrack.default = true;
     if (captionTrack.track) {
-      captionTrack.track.mode = "disabled";
+      captionTrack.track.mode = "showing";
     }
-    loadCaptions(currentEpisode.captionsSrc);
   } else if (captionTrack) {
     captionTrack.remove();
-    loadCaptions(null);
   }
   player.load();
 } else {
@@ -328,7 +243,6 @@ if (currentEpisode.videoSrc) {
 
 player.addEventListener("timeupdate", () => {
   saveProgress();
-  syncCaptionDisplay();
 });
 
 player.addEventListener("pause", () => {
@@ -347,10 +261,6 @@ player.addEventListener("ended", () => {
 
 player.addEventListener("play", () => {
   updateMediaSessionState("playing");
-});
-
-captionToggle?.addEventListener("click", () => {
-  setCaptionsEnabled(!captionsEnabled);
 });
 
 if (previousEpisode) {
