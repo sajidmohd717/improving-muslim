@@ -133,13 +133,14 @@ const themeSelect = document.querySelector("#theme-select");
 const SETTINGS_THEME_KEY = "improving-muslim:theme";
 if (themeSelect) {
   try {
-    themeSelect.value = localStorage.getItem(SETTINGS_THEME_KEY) || "system";
+    const savedTheme = localStorage.getItem(SETTINGS_THEME_KEY);
+    themeSelect.value = savedTheme === "dark" ? "dark" : "light";
   } catch {
-    themeSelect.value = "system";
+    themeSelect.value = "light";
   }
 
   themeSelect.addEventListener("change", () => {
-    const selectedTheme = ["light", "dark"].includes(themeSelect.value) ? themeSelect.value : "system";
+    const selectedTheme = themeSelect.value === "dark" ? "dark" : "light";
     try {
       localStorage.setItem(SETTINGS_THEME_KEY, selectedTheme);
     } catch {

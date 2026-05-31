@@ -1,15 +1,15 @@
 const THEME_KEY = "improving-muslim:theme";
 
 function applyTheme(theme) {
-  const selectedTheme = ["light", "dark"].includes(theme) ? theme : "system";
+  const selectedTheme = theme === "dark" ? "dark" : "light";
   document.documentElement.dataset.theme = selectedTheme;
 }
 
 function readTheme() {
   try {
-    return localStorage.getItem(THEME_KEY) || "system";
+    return localStorage.getItem(THEME_KEY) || "light";
   } catch (error) {
-    return "system";
+    return "light";
   }
 }
 
