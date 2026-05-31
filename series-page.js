@@ -18,6 +18,34 @@ function isEpisodeAvailable(episode) {
   return Boolean(episode.videoSrc);
 }
 
+function progressKey(episode) {
+  return `lecture-progress:${series.playlistId}:${episode.id}`;
+}
+
+function readProgress(episode) {
+  try {
+    return JSON.parse(localStorage.getItem(progressKey(episode))) || {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function progressLabel(episode) {
+  const progress = readProgress(episode);
+  if (progress.completed) {
+    return "Watched";
+  }
+
+  const currentTime = Number(progress.currentTime) || 0;
+  const duration = Number(progress.duration) || 0;
+  if (!duration || currentTime < 10) {
+    return "";
+  }
+
+  const percent = Math.min(99, Math.round((currentTime / duration) * 100));
+  return percent >= 2 ? `${percent}% watched` : "";
+}
+
 function formatDate(dateString) {
   return new Intl.DateTimeFormat("en", {
     day: "numeric",
@@ -32,10 +60,12 @@ episodeList.innerHTML = series.episodes
   .map(
     (episode) => {
       const available = isEpisodeAvailable(episode);
+      const watchStatus = progressLabel(episode);
+      const isWatched = watchStatus === "Watched";
       const tagName = available ? "a" : "article";
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
-      <${tagName} class="episode-card ${available ? "" : "is-unavailable"}"${href}>
+      <${tagName} class="episode-card ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${href}>
         <img
           src="https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg"
           alt=""
@@ -45,11 +75,13 @@ episodeList.innerHTML = series.episodes
           <span class="episode-number">
             Episode ${episode.number}
             ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
+            ${isWatched ? '<span class="recap-badge watched-badge">Watched</span>' : ""}
             ${available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
           </span>
           <strong>${episode.title}</strong>
           <span class="episode-date">${formatDate(episode.published)}</span>
           ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
+          ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
           ${available ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
         </div>
       </${tagName}>

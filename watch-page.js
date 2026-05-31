@@ -25,6 +25,7 @@ function renderRecap(text) {
 const seriesRegistry = {
   "change-of-heart": window.changeOfHeartSeries,
   "enjoy-your-prayer": window.enjoyYourPrayerSeries,
+  "forty-hadith-nawawi": window.fortyHadithSeries,
   "why-me": window.whyMeSeries,
 };
 
@@ -105,10 +106,12 @@ function saveProgress() {
     return;
   }
 
+  const existing = readProgress(currentEpisode);
   const payload = {
     currentTime: player.currentTime,
     duration: player.duration,
     updatedAt: Date.now(),
+    completed: Boolean(existing.completed),
   };
 
   try {
@@ -120,6 +123,10 @@ function saveProgress() {
 
 function formatProgress(episode) {
   const progress = readProgress(episode);
+  if (progress.completed) {
+    return "Watched";
+  }
+
   if (!progress.duration || !progress.currentTime) {
     return "";
   }
@@ -276,7 +283,26 @@ player.addEventListener("pause", () => {
 
 player.addEventListener("ended", () => {
   try {
-    localStorage.removeItem(progressKey(currentEpisode));
+    localStorage.setItem(
+      progressKey(currentEpisode),
+      JSON.stringify({
+        currentTime: player.duration || currentEpisode.duration || 0,
+        duration: player.duration || currentEpisode.duration || 0,
+        updatedAt: Date.now(),
+        completed: true,
+      }),
+    );
+    const currentCompactEpisode = episodeList.querySelector(".compact-episode.is-current");
+    if (currentCompactEpisode) {
+      currentCompactEpisode.classList.add("is-watched");
+      const details = currentCompactEpisode.querySelector("span");
+      const existingProgress = details?.querySelector("em");
+      if (existingProgress) {
+        existingProgress.textContent = "Watched";
+      } else if (details) {
+        details.insertAdjacentHTML("beforeend", "<em>Watched</em>");
+      }
+    }
   } catch (error) {
     return;
   }
@@ -307,11 +333,12 @@ episodeList.innerHTML = series.episodes
   .map(
     (episode) => {
       const progressLabel = formatProgress(episode);
+      const isWatched = progressLabel === "Watched";
       const available = isEpisodeAvailable(episode);
       const tagName = available ? "a" : "div";
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
-        <${tagName} class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""} ${available ? "" : "is-unavailable"}"${href}>
+        <${tagName} class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""} ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${href}>
           <img src="${episodeThumbnailUrl(episode, "mqdefault")}" alt="" loading="lazy" />
           <span>
             <small>Episode ${episode.number}</small>

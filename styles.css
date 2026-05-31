@@ -901,6 +901,29 @@ details[open] .takeaways-toggle::after {
   padding: clamp(34px, 7vw, 76px) 0 24px;
 }
 
+.speaker-hero {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 68px) 0 22px;
+}
+
+.speaker-hero img {
+  width: 180px;
+  height: 180px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+.speaker-hero h1 {
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+}
+
 .series-hero h1,
 .watch-info h1 {
   font-size: clamp(2.45rem, 6vw, 5.2rem);
@@ -988,6 +1011,22 @@ details[open] .takeaways-toggle::after {
 .muted-badge {
   background: rgba(98, 105, 99, 0.12);
   color: var(--muted);
+}
+
+.watched-badge {
+  border-color: var(--accent);
+  background: rgba(23, 107, 91, 0.1);
+  color: var(--accent);
+}
+
+.episode-card.is-watched img,
+.compact-episode.is-watched img {
+  filter: saturate(0.85);
+}
+
+.episode-card.is-watched strong,
+.compact-episode.is-watched strong {
+  color: #3f4a44;
 }
 
 .watch-layout {
@@ -1150,10 +1189,80 @@ details[open] .takeaways-toggle::after {
   font-weight: 800;
 }
 
+.settings-hero,
+.settings-section {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.settings-hero {
+  padding: clamp(42px, 8vw, 84px) 0 28px;
+}
+
+.settings-hero h1 {
+  font-size: clamp(2.45rem, 6vw, 5rem);
+}
+
+.settings-hero p,
+.settings-panel p,
+.settings-note {
+  color: #3e4842;
+  line-height: 1.65;
+}
+
+.settings-section {
+  padding: 16px 0;
+}
+
+.settings-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+}
+
+.settings-panel h2 {
+  margin-bottom: 10px;
+}
+
+.settings-panel p,
+.settings-note {
+  max-width: 680px;
+  margin: 0;
+}
+
+.danger-button {
+  flex-shrink: 0;
+  border: 1px solid rgba(166, 72, 79, 0.35);
+  border-radius: 6px;
+  background: rgba(166, 72, 79, 0.09);
+  color: var(--rose);
+  font-weight: 800;
+  padding: 12px 15px;
+}
+
+.danger-button:hover,
+.danger-button:focus-visible {
+  border-color: var(--rose);
+  outline: none;
+}
+
+.danger-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 @media (max-width: 900px) {
   .series-hero,
+  .speaker-hero,
   .watch-layout {
     grid-template-columns: 1fr;
+  }
+
+  .speaker-hero {
+    justify-items: start;
   }
 
   .episode-list {
@@ -1205,6 +1314,23 @@ details[open] .takeaways-toggle::after {
   .series-hero .hero-copy {
     font-size: 0.92rem;
     margin: 10px 0 16px;
+  }
+
+  .speaker-hero {
+    gap: 16px;
+    padding-top: 22px;
+    padding-bottom: 10px;
+  }
+
+  .speaker-hero img {
+    width: 104px;
+    height: 104px;
+  }
+
+  .speaker-hero .hero-copy {
+    margin: 10px 0 0;
+    font-size: 0.94rem;
+    line-height: 1.55;
   }
 
   .content-section {
@@ -1449,6 +1575,15 @@ details[open] .takeaways-toggle::after {
   .principle-item {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+
+  .settings-panel {
+    display: grid;
+    gap: 16px;
+  }
+
+  .danger-button {
+    width: 100%;
   }
 
   .result-count {

@@ -4,8 +4,8 @@ const categories = [
   { name: "All", value: "foryou" },
   { name: "Purification", value: "purification" },
   { name: "Prayer", value: "prayer" },
-  { name: "Tafsir", value: "tafsir" },
   { name: "Hadith", value: "hadith" },
+  { name: "Tafsir", value: "tafsir" },
   { name: "Aqeedah", value: "aqeedah" },
   { name: "Prophets", value: "prophets" },
   { name: "Angels", value: "angels" },
@@ -15,15 +15,7 @@ const categories = [
   { name: "Hereafter", value: "hereafter" },
 ];
 
-const speakers = [
-  { name: "Ali Hammuda", image: "./assets/speaker/ah.jpg" },
-  { name: "Omar Suleiman", image: "./assets/speaker/os.jpg" },
-  { name: "Yasir Qadhi", image: "./assets/speaker/yq.jpg" },
-  { name: "Belal Assad", image: "./assets/speaker/ba.jpg" },
-  { name: "Majed Mahmoud", image: "./assets/speaker/mm.jpg" },
-  { name: "Yahya Al-Raaby", image: "./assets/speaker/yr.jpg" },
-  { name: "Mufti Menk", image: "./assets/speaker/mufti.jpeg" },
-];
+const speakers = window.speakers || [];
 
 const excludedSpeakerNames = new Set([
   [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
@@ -45,9 +37,23 @@ const imageMap = {
   fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
   baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
   enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+  fortyHadithNawawi: "https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg",
 };
 
 const fallbackData = [
+  {
+    sectionTitle: "Hadith",
+    seriesList: [
+      {
+        title: "40 Hadith of Imam Nawawi",
+        speaker: "Navaid Aziz",
+        episodes: "46 Lectures",
+        thumbnailImage: "fortyHadithNawawi",
+        link: "./series-forty-hadith-nawawi.html",
+        viewcount: "136K views",
+      },
+    ],
+  },
   {
     sectionTitle: "Salah & Worship",
     seriesList: [
@@ -131,9 +137,12 @@ const fallbackData = [
 ];
 
 const localCategoryFallbacks = {
-  prayer: [fallbackData[0]],
-  purification: [fallbackData[1]],
+  prayer: [fallbackData[1]],
+  purification: [fallbackData[2]],
+  hadith: [fallbackData[0]],
 };
+
+const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
 
 const descriptions = {
   "Enjoy Your Prayer":
@@ -146,6 +155,8 @@ const descriptions = {
     "Short daily reminders exploring spiritual diseases, emotional repair, and practical ways to soften the heart.",
   "Angels in Your Presence":
     "A study of angels and how belief in the unseen can reshape worship, character, and daily awareness.",
+  "40 Hadith of Imam Nawawi":
+    "A structured study of Imam an-Nawawi's foundational hadith collection with lessons for belief, worship, and character.",
 };
 
 const state = {
@@ -171,6 +182,10 @@ function enrichSeries(item) {
   }
   if (item.title === "Enjoy Your Prayer" && window.enjoyYourPrayerSeries) {
     const total = window.enjoyYourPrayerSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+  }
+  if (item.title === "40 Hadith of Imam Nawawi" && window.fortyHadithSeries) {
+    const total = window.fortyHadithSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
   return item;
@@ -244,13 +259,13 @@ function isAllowedSeries(series) {
 }
 
 function availableLocalSeries() {
-  return [window.changeOfHeartSeries, window.enjoyYourPrayerSeries].filter(Boolean);
+  return [window.changeOfHeartSeries, window.enjoyYourPrayerSeries, window.fortyHadithSeries].filter(Boolean);
 }
 
-function localSeriesSections() {
+function localSeriesSections(category = "foryou") {
   const sections = [];
 
-  if (window.enjoyYourPrayerSeries) {
+  if (window.enjoyYourPrayerSeries && ["foryou", "prayer"].includes(category)) {
     sections.push({
       sectionTitle: "Salah & Worship",
       seriesList: [
@@ -266,18 +281,34 @@ function localSeriesSections() {
     });
   }
 
+  if (window.fortyHadithSeries && ["foryou", "hadith"].includes(category)) {
+    sections.push({
+      sectionTitle: "Hadith",
+      seriesList: [
+        {
+          title: window.fortyHadithSeries.title,
+          speaker: window.fortyHadithSeries.speaker,
+          episodes: `${window.fortyHadithSeries.episodes.length} Lectures`,
+          thumbnailImage: "https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg",
+          link: window.fortyHadithSeries.seriesPageUrl,
+          description: window.fortyHadithSeries.description,
+        },
+      ],
+    });
+  }
+
   return sections;
 }
 
 function mergeLocalSeries(sections, category) {
-  if (!["foryou", "prayer"].includes(category)) {
+  if (!["foryou", "prayer", "hadith"].includes(category)) {
     return sections;
   }
 
   const existingTitles = new Set(flattenSeries(sections).map((series) => series.title));
   const merged = [...sections];
 
-  localSeriesSections().forEach((localSection) => {
+  localSeriesSections(category).forEach((localSection) => {
     const newSeries = localSection.seriesList.filter((series) => !existingTitles.has(series.title));
     if (!newSeries.length) {
       return;
@@ -393,11 +424,10 @@ function renderSpeakers() {
   els.speakerList.innerHTML = speakers
     .map(
       (speaker) => `
-        <article class="speaker-card ${speaker.name === state.activeSpeaker ? "is-active" : ""}"
-          role="button" tabindex="0" data-speaker="${escapeHtml(speaker.name)}">
+        <a class="speaker-card" href="./speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
           <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
           <span>${escapeHtml(speaker.name)}</span>
-        </article>
+        </a>
       `,
     )
     .join("");
@@ -444,6 +474,10 @@ function getSeriesUrl(series) {
 
   if (series.title === "Enjoy Your Prayer") {
     return "./series-enjoy-your-prayer.html";
+  }
+
+  if (series.title === "40 Hadith of Imam Nawawi") {
+    return "./series-forty-hadith-nawawi.html";
   }
 
   if (series.title === "Why Me | 2024 Ramadan Series") {
@@ -516,6 +550,13 @@ async function loadCategory(category) {
   setStatus("Loading series...");
   els.seriesGrid.innerHTML = "";
 
+  if (localFirstCategories.has(category)) {
+    state.sections = mergeLocalSeries(normalizeSections(localCategoryFallbacks[category]), category);
+    renderSpeakers();
+    renderSeries();
+    return;
+  }
+
   try {
     const response = await fetch(`${API_ROOT}/${category}-data.json?t=${Date.now()}`);
     if (!response.ok) {
@@ -560,30 +601,6 @@ function bindEvents() {
     }
     state.activeSpeaker = null;
     loadCategory(button.dataset.category);
-  });
-
-  els.speakerList.addEventListener("click", async (event) => {
-    const card = event.target.closest("[data-speaker]");
-    if (!card) return;
-    const name = card.dataset.speaker;
-    state.activeSpeaker = state.activeSpeaker === name ? null : name;
-    renderSpeakers();
-    if (state.activeSpeaker && state.activeCategory !== "foryou") {
-      await loadCategory("foryou");
-    } else {
-      renderSeries();
-    }
-    document.querySelector("#series").scrollIntoView({ behavior: "smooth" });
-  });
-
-  els.speakerList.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      const card = event.target.closest("[data-speaker]");
-      if (card) {
-        event.preventDefault();
-        card.click();
-      }
-    }
   });
 
   els.seriesGrid.addEventListener("click", (event) => {
