@@ -819,8 +819,8 @@ h2 {
 }
 
 #save-episode-button[aria-pressed="true"] svg {
-  fill: var(--accent);
-  stroke: var(--accent);
+  fill: var(--ink);
+  stroke: var(--ink);
 }
 
 .mini-action {
@@ -1494,11 +1494,27 @@ details[open] .takeaways-toggle::after {
   padding: 22px 0 36px;
 }
 
+.watch-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.watch-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .watch-breadcrumb {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 10px;
+  flex: 1;
+  min-width: 0;
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--muted);
@@ -1532,13 +1548,6 @@ details[open] .takeaways-toggle::after {
   max-width: 620px;
   font-size: 0.92rem;
   line-height: 1.5;
-}
-
-.watch-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
 }
 
 .episode-sidebar {
@@ -2536,12 +2545,6 @@ details[open] .takeaways-toggle::after {
 
   .watch-info h1 {
     font-size: clamp(1.35rem, 5vw, 2rem);
-  }
-
-  .watch-actions .primary-link,
-  .watch-actions .quiet-link {
-    flex: 1;
-    justify-content: center;
   }
 
   .watch-note {
