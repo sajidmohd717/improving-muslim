@@ -18,8 +18,6 @@
 
 import fs from "node:fs";
 
-const MAX_WORDS_PER_CUE = 8;
-
 const inputFile = process.argv[2];
 const raw = inputFile
   ? fs.readFileSync(inputFile, "utf8")
@@ -75,17 +73,6 @@ function toVtt(totalSecs) {
   );
 }
 
-function splitText(text) {
-  const words = text.split(/\s+/).filter(Boolean);
-  const chunks = [];
-
-  for (let i = 0; i < words.length; i += MAX_WORDS_PER_CUE) {
-    chunks.push(words.slice(i, i + MAX_WORDS_PER_CUE).join(" "));
-  }
-
-  return chunks.length ? chunks : [text];
-}
-
 // Build VTT output
 const lines_out = ["WEBVTT", ""];
 
@@ -93,17 +80,9 @@ for (let i = 0; i < cues.length; i++) {
   const start = cues[i].startSecs;
   // End time = next cue's start, or +7s for the last cue
   const end = i + 1 < cues.length ? cues[i + 1].startSecs : start + 7;
-  const chunks = splitText(cues[i].text);
-  const duration = Math.max(0.5, end - start);
-  const chunkDuration = duration / chunks.length;
-
-  for (let j = 0; j < chunks.length; j++) {
-    const chunkStart = start + chunkDuration * j;
-    const chunkEnd = j === chunks.length - 1 ? end : start + chunkDuration * (j + 1);
-    lines_out.push(`${toVtt(chunkStart)} --> ${toVtt(chunkEnd)}`);
-    lines_out.push(chunks[j]);
-    lines_out.push("");
-  }
+  lines_out.push(`${toVtt(start)} --> ${toVtt(end)}`);
+  lines_out.push(cues[i].text);
+  lines_out.push("");
 }
 
 process.stdout.write(lines_out.join("\n"));
