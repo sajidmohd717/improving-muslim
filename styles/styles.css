@@ -1533,16 +1533,16 @@ details[open] .takeaways-toggle::after {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--surface);
-  color: var(--accent-strong);
-  font-size: 0.9rem;
+  color: var(--muted);
+  font-size: 0.78rem;
   font-weight: 800;
-  padding: 11px 15px;
-  min-width: 56px;
+  padding: 6px 9px;
+  min-width: 38px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, color 0.15s;
 }
 
 .speed-button:hover,
