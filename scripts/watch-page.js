@@ -138,9 +138,7 @@ function isEpisodeSaved() {
 
 function updateSaveButton() {
   if (!saveEpisodeButton) return;
-  const saved = isEpisodeSaved();
-  saveEpisodeButton.textContent = saved ? "Saved" : "Save";
-  saveEpisodeButton.setAttribute("aria-pressed", String(saved));
+  saveEpisodeButton.setAttribute("aria-pressed", String(isEpisodeSaved()));
 }
 
 function toggleSavedEpisode() {
