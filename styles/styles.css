@@ -1541,29 +1541,6 @@ details[open] .takeaways-toggle::after {
   margin-top: 18px;
 }
 
-.speed-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 800;
-  padding: 6px 9px;
-  min-width: 38px;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.speed-button:hover,
-.speed-button:focus-visible {
-  border-color: var(--accent);
-  outline: none;
-}
-
 .episode-sidebar {
   position: sticky;
   top: 92px;

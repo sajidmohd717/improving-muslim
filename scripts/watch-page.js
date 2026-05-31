@@ -62,32 +62,10 @@ const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
 const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
 
-const speedButton = document.querySelector("#speed-button");
 const saveEpisodeButton = document.querySelector("#save-episode-button");
 const shareEpisodeButton = document.querySelector("#share-episode-button");
 const actionStatus = document.querySelector("#watch-action-status");
-const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
-const SPEED_KEY = "improving-muslim:playback-speed";
 const SAVED_KEY = "improving-muslim:saved-items";
-
-let currentSpeedIndex = (() => {
-  try {
-    const saved = parseFloat(localStorage.getItem(SPEED_KEY));
-    const idx = SPEEDS.indexOf(saved);
-    return idx >= 0 ? idx : 1;
-  } catch { return 1; }
-})();
-
-function applySpeed(index) {
-  currentSpeedIndex = index;
-  const speed = SPEEDS[index];
-  player.playbackRate = speed;
-  speedButton.textContent = speed === 1 ? "1×" : speed + "×";
-  try { localStorage.setItem(SPEED_KEY, String(speed)); } catch {}
-}
-
-applySpeed(currentSpeedIndex);
-speedButton.addEventListener("click", () => applySpeed((currentSpeedIndex + 1) % SPEEDS.length));
 
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
