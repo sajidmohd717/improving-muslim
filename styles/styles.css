@@ -845,11 +845,11 @@ h2 {
 
 .action-status {
   flex-basis: 100%;
-  min-height: 1.3em;
   margin: 0;
   color: var(--accent);
   font-size: 0.82rem;
   font-weight: 800;
+  min-height: 0;
 }
 
 .series-description {
@@ -1491,7 +1491,7 @@ details[open] .takeaways-toggle::after {
 }
 
 .watch-info {
-  padding: 22px 0 0;
+  padding: 22px 0 36px;
 }
 
 .watch-breadcrumb {
