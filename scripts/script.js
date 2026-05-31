@@ -424,15 +424,19 @@ function renderContinueWatching() {
         <a class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" href="${episodeUrl(series, episode)}">
           <div class="continue-thumb">
             <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
-            <span>${percent}% watched</span>
+            <div class="continue-ring" role="img" aria-label="${percent}% watched">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <circle class="ring-track" cx="18" cy="18" r="15.9"/>
+                <circle class="ring-fill" cx="18" cy="18" r="15.9"
+                  stroke-dasharray="${percent} 100"
+                  stroke-dashoffset="25"/>
+              </svg>
+            </div>
           </div>
           <div class="continue-body">
             <small>${escapeHtml(series.title)} - Episode ${episode.number}</small>
             <strong>${escapeHtml(episode.title)}</strong>
             <em>Resume at ${formatDuration(progress.currentTime)}</em>
-          </div>
-          <div class="continue-progress" aria-hidden="true">
-            <span style="width: ${Math.min(100, Math.max(0, percent))}%"></span>
           </div>
         </a>
       `;
@@ -661,3 +665,20 @@ renderCategories();
 renderContinueWatching();
 bindEvents();
 loadCategory(state.activeCategory);
+
+const sectionObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        sectionObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.06, rootMargin: "0px 0px -32px 0px" },
+);
+
+document.querySelectorAll("[data-reveal]").forEach((el) => {
+  el.classList.add("section-reveal");
+  sectionObserver.observe(el);
+});
