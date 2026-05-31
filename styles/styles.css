@@ -1258,6 +1258,29 @@ details[open] .takeaways-toggle::after {
   margin-top: 18px;
 }
 
+.speed-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent-strong);
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 11px 15px;
+  min-width: 56px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.speed-button:hover,
+.speed-button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
 .episode-sidebar {
   position: sticky;
   top: 92px;
