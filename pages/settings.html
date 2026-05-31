@@ -59,16 +59,17 @@
         <p class="settings-note" id="settings-status" role="status"></p>
       </section>
 
-      <section class="settings-section" aria-labelledby="future-settings-title">
+      <section class="settings-section" aria-labelledby="playback-title">
         <div class="settings-panel">
           <div>
-            <p class="eyebrow">Coming later</p>
-            <h2 id="future-settings-title">Personal preferences</h2>
-            <p>
-              Theme controls, display preferences, and other personalization can live here as the
-              platform grows.
-            </p>
+            <p class="eyebrow">Playback</p>
+            <h2 id="playback-title">Autoplay next episode</h2>
+            <p>When an episode ends, automatically start the next one after a short countdown. You can cancel at any time.</p>
           </div>
+          <label class="toggle-switch" for="autoplay-toggle">
+            <input type="checkbox" id="autoplay-toggle" aria-label="Autoplay next episode" />
+            <span class="toggle-track" aria-hidden="true"></span>
+          </label>
         </div>
       </section>
     </main>

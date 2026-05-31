@@ -319,6 +319,36 @@ player.addEventListener("play", () => {
   updateMediaSessionState("playing");
 });
 
+const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
+const autoplayToast       = document.querySelector("#autoplay-toast");
+const autoplayCountdown   = document.querySelector("#autoplay-countdown");
+const autoplayToastLink   = document.querySelector("#autoplay-toast-link");
+const autoplayToastCancel = document.querySelector("#autoplay-toast-cancel");
+let autoplayTimer = null;
+
+function cancelAutoplay() {
+  clearInterval(autoplayTimer);
+  autoplayTimer = null;
+  if (autoplayToast) autoplayToast.classList.add("is-hidden");
+}
+
+player.addEventListener("ended", () => {
+  if (localStorage.getItem(AUTOPLAY_KEY) !== "on" || !nextEpisode || !autoplayToast) return;
+  const nextUrl = episodeUrl(nextEpisode);
+  autoplayToastLink.href = nextUrl;
+  autoplayToast.classList.remove("is-hidden");
+  let remaining = 5;
+  autoplayCountdown.textContent = remaining;
+  autoplayTimer = setInterval(() => {
+    remaining -= 1;
+    autoplayCountdown.textContent = remaining;
+    if (remaining <= 0) { cancelAutoplay(); window.location.href = nextUrl; }
+  }, 1000);
+});
+
+autoplayToastCancel?.addEventListener("click", cancelAutoplay);
+autoplayToastLink?.addEventListener("click", () => clearInterval(autoplayTimer));
+
 if (previousEpisode) {
   previousLink.href = episodeUrl(previousEpisode);
   previousLink.textContent = "Previous episode";
@@ -357,3 +387,15 @@ episodeList.innerHTML = series.episodes
     },
   )
   .join("");
+
+const currentCompact = episodeList.querySelector(".compact-episode.is-current");
+if (currentCompact) {
+  if (window.matchMedia("(max-width: 900px)").matches) {
+    const chip = document.createElement("div");
+    chip.className = "now-playing-chip";
+    chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Now playing: Episode ${currentEpisode.number}`;
+    episodeList.insertBefore(chip, episodeList.firstChild);
+  } else {
+    currentCompact.scrollIntoView({ block: "nearest", behavior: "instant" });
+  }
+}

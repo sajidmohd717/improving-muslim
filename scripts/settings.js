@@ -48,3 +48,13 @@ resetButton.addEventListener("click", () => {
 });
 
 renderSummary();
+
+const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
+const autoplayToggle = document.querySelector("#autoplay-toggle");
+if (autoplayToggle) {
+  autoplayToggle.checked = localStorage.getItem(AUTOPLAY_KEY) === "on";
+  autoplayToggle.addEventListener("change", () => {
+    try { localStorage.setItem(AUTOPLAY_KEY, autoplayToggle.checked ? "on" : "off"); }
+    catch { /* ignore */ }
+  });
+}

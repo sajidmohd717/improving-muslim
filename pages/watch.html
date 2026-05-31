@@ -36,6 +36,12 @@
     </header>
 
     <main class="watch-layout">
+      <div class="autoplay-toast is-hidden" id="autoplay-toast" role="status" aria-live="polite">
+        <span>Up next in <strong id="autoplay-countdown">5</strong>s</span>
+        <a class="autoplay-toast-next" id="autoplay-toast-link" href="#">Play now</a>
+        <button class="autoplay-toast-cancel" id="autoplay-toast-cancel" type="button">Cancel</button>
+      </div>
+
       <section class="watch-main" aria-labelledby="watch-title">
         <div class="video-frame">
           <video

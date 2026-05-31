@@ -411,9 +411,26 @@ function renderContinueWatching() {
     return;
   }
 
-  els.continueSection.classList.toggle("is-hidden", items.length === 0);
   if (!items.length) {
-    els.continueList.innerHTML = "";
+    const hasHistory = (() => {
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          if (localStorage.key(i).startsWith("lecture-progress:")) return true;
+        }
+      } catch { /* ignore */ }
+      return false;
+    })();
+    els.continueList.innerHTML = hasHistory
+      ? `<div class="continue-empty">
+           <p class="continue-empty-heading">All caught up</p>
+           <p class="continue-empty-body">You've finished everything in progress. Start the next series when you're ready.</p>
+           <a class="primary-link" href="./pages/series.html">Browse series</a>
+         </div>`
+      : `<div class="continue-empty">
+           <p class="continue-empty-heading">No lectures started yet</p>
+           <p class="continue-empty-body">Pick a series to begin — your progress saves automatically so you can pick up where you left off.</p>
+           <a class="primary-link" href="./pages/series.html">Browse series</a>
+         </div>`;
     return;
   }
 
