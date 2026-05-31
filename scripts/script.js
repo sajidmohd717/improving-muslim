@@ -679,6 +679,8 @@ const sectionObserver = new IntersectionObserver(
 );
 
 document.querySelectorAll("[data-reveal]").forEach((el) => {
-  el.classList.add("section-reveal");
-  sectionObserver.observe(el);
+  if (el.getBoundingClientRect().top > window.innerHeight) {
+    el.classList.add("section-reveal");
+    sectionObserver.observe(el);
+  }
 });
