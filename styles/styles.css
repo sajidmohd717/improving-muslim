@@ -74,22 +74,22 @@ button {
   align-items: center;
   justify-content: space-between;
   width: min(1120px, calc(100% - 32px));
-  min-height: 72px;
+  min-height: 64px;
   margin: 0 auto;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-family: "Inria Serif", Georgia, serif;
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
   font-weight: 700;
 }
 
 .brand img {
-  width: 42px;
-  height: 42px;
+  width: 1.45em;
+  height: 1.45em;
   border-radius: 8px;
 }
 
@@ -1289,7 +1289,7 @@ details[open] .takeaways-toggle::after {
   }
 
   .nav-shell {
-    min-height: 64px;
+    min-height: 58px;
   }
 
   .site-menu,
@@ -1455,9 +1455,21 @@ details[open] .takeaways-toggle::after {
     padding: 2px 0 0;
   }
 
-  .details-toggle,
-  .series-description {
+  .series-card .details-toggle {
     display: none;
+  }
+
+  .series-card .series-description {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 7px 0 0;
+    border-top: 0;
+    color: #4f5b55;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    padding-top: 0;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .series-meta {
@@ -1565,7 +1577,13 @@ details[open] .takeaways-toggle::after {
   }
 
   .episode-sidebar {
-    display: none;
+    position: static;
+    max-height: none;
+    overflow: visible;
+    border-width: 1px 0 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 18px 16px 0;
   }
 
   .row-heading {

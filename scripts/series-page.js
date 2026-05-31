@@ -11,7 +11,7 @@ const episodeList = document.querySelector("#episode-list");
 const startLink = document.querySelector("#start-series-link");
 
 function episodeUrl(episode) {
-  return `./watch.html?series=${series.slug}&video=${episode.id}`;
+  return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
 }
 
 function isEpisodeAvailable(episode) {

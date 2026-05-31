@@ -66,7 +66,7 @@ player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
 
 function episodeUrl(episode) {
-  return `./watch.html?series=${seriesSlug}&video=${episode.id}`;
+  return `./pages/watch.html?series=${seriesSlug}&video=${episode.id}`;
 }
 
 function isEpisodeAvailable(episode) {
@@ -206,6 +206,12 @@ setPlayerPoster(currentEpisode);
 
 if (playlistTitle) playlistTitle.textContent = series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
+
+try {
+  localStorage.setItem("improving-muslim:last-series-url", seriesPageUrl);
+} catch (error) {
+  // Ignore storage failures so the watch page still works in private modes.
+}
 
 setupMediaSession();
 

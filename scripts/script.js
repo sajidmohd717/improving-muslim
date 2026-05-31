@@ -49,7 +49,7 @@ const fallbackData = [
         speaker: "Navaid Aziz",
         episodes: "46 Lectures",
         thumbnailImage: "fortyHadithNawawi",
-        link: "./series-forty-hadith-nawawi.html",
+        link: "./pages/series-forty-hadith-nawawi.html",
         viewcount: "136K views",
       },
     ],
@@ -62,7 +62,7 @@ const fallbackData = [
         speaker: "Ali Hammuda",
         episodes: "21 Lectures",
         thumbnailImage: "enjoyYourPrayer",
-        link: "./series-enjoy-your-prayer.html",
+        link: "./pages/series-enjoy-your-prayer.html",
         viewcount: "1M views",
       },
     ],
@@ -336,7 +336,7 @@ function progressKey(series, episode) {
 }
 
 function episodeUrl(series, episode) {
-  return `./watch.html?series=${series.slug}&video=${episode.id}`;
+  return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
 }
 
 function episodeThumbnailUrl(episode, quality = "mqdefault") {
@@ -424,7 +424,7 @@ function renderSpeakers() {
   els.speakerList.innerHTML = speakers
     .map(
       (speaker) => `
-        <a class="speaker-card" href="./speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
+        <a class="speaker-card" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
           <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
           <span>${escapeHtml(speaker.name)}</span>
         </a>
@@ -469,19 +469,19 @@ function seriesMatchesSpeaker(series) {
 
 function getSeriesUrl(series) {
   if (series.title === "Change of Heart") {
-    return "./series-change-of-heart.html";
+    return "./pages/series-change-of-heart.html";
   }
 
   if (series.title === "Enjoy Your Prayer") {
-    return "./series-enjoy-your-prayer.html";
+    return "./pages/series-enjoy-your-prayer.html";
   }
 
   if (series.title === "40 Hadith of Imam Nawawi") {
-    return "./series-forty-hadith-nawawi.html";
+    return "./pages/series-forty-hadith-nawawi.html";
   }
 
   if (series.title === "Why Me | 2024 Ramadan Series") {
-    return "./series-why-me.html";
+    return "./pages/series-why-me.html";
   }
 
   return series.link;

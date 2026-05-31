@@ -7,6 +7,13 @@ window.speakers = [
       "Ali Hammuda is an Islamic lecturer and educator whose series often focus on spiritual growth, worship, repentance, family life, and strengthening the heart through practical reminders.",
   },
   {
+    name: "Navaid Aziz",
+    slug: "navaid-aziz",
+    image: "./assets/speaker/navaid-aziz.jpg",
+    bio:
+      "Navaid Aziz is an Islamic educator and speaker known for teaching hadith, fiqh, character, and practical religious guidance in a clear and approachable way.",
+  },
+  {
     name: "Omar Suleiman",
     slug: "omar-suleiman",
     image: "./assets/speaker/os.jpg",
@@ -47,12 +54,5 @@ window.speakers = [
     image: "./assets/speaker/mufti.jpeg",
     bio:
       "Mufti Menk is known for clear, accessible reminders on faith, manners, family, repentance, and living as a Muslim with hope and consistency.",
-  },
-  {
-    name: "Navaid Aziz",
-    slug: "navaid-aziz",
-    image: "./assets/speaker/navaid-aziz.jpg",
-    bio:
-      "Navaid Aziz is an Islamic educator and speaker known for teaching hadith, fiqh, character, and practical religious guidance in a clear and approachable way.",
   },
 ];

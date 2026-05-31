@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
     <meta name="referrer" content="origin" />
     <meta
       name="description"
@@ -15,7 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles/styles.css" />
     <title>Watch | Improving Muslim</title>
   </head>
   <body>
@@ -26,9 +27,9 @@
           <span>Improving Muslim</span>
         </a>
         <div class="site-menu page-menu">
-          <a href="./series-change-of-heart.html">Series</a>
-          <a href="./about.html">About</a>
-          <a href="./settings.html">Settings</a>
+          <a class="js-last-series-link" href="./pages/series-change-of-heart.html">Series</a>
+          <a href="./pages/about.html">About</a>
+          <a href="./pages/settings.html">Settings</a>
           <a href="./index.html">Home</a>
         </div>
       </nav>
@@ -63,8 +64,8 @@
             Use the fullscreen control only when you want a full-screen view.
           </p>
           <div class="watch-actions">
-            <a class="quiet-link" id="previous-link" href="./series-change-of-heart.html">Previous</a>
-            <a class="primary-link" id="next-link" href="./series-change-of-heart.html">Next episode</a>
+            <a class="quiet-link" id="previous-link" href="./pages/series-change-of-heart.html">Previous</a>
+            <a class="primary-link" id="next-link" href="./pages/series-change-of-heart.html">Next episode</a>
           </div>
 
           <details class="takeaways-panel" id="takeaways-panel" hidden>
@@ -91,29 +92,36 @@
       </aside>
     </main>
 
-    <script src="./change-of-heart-data.js"></script>
-    <script src="./enjoy-your-prayer-data.js"></script>
-    <script src="./forty-hadith-data.js"></script>
-    <script src="./why-me-data.js"></script>
-    <script src="./watch-page.js" defer></script>
+    <footer class="site-footer">
+      <p>Built for easy discovery and quiet study.</p>
+      <a href="./pages/about.html">Why this exists</a>
+      <a href="./pages/feedback.html">Feedback</a>
+    </footer>
+
+    <script src="./data/change-of-heart-data.js"></script>
+    <script src="./data/enjoy-your-prayer-data.js"></script>
+    <script src="./data/forty-hadith-data.js"></script>
+    <script src="./data/why-me-data.js"></script>
+    <script src="./scripts/watch-page.js" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" id="bottom-nav-series-link" href="./series-change-of-heart.html">
+      <a class="bottom-nav-item is-active js-last-series-link" id="bottom-nav-series-link" href="./pages/series-change-of-heart.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
       </a>
-      <a class="bottom-nav-item" href="./about.html">
+      <a class="bottom-nav-item" href="./pages/about.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span>About</span>
       </a>
-      <a class="bottom-nav-item" href="./settings.html">
+      <a class="bottom-nav-item" href="./pages/settings.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
         <span>Settings</span>
       </a>
     </nav>
+    <script src="./scripts/nav-state.js" defer></script>
   </body>
 </html>

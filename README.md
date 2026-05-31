@@ -16,8 +16,17 @@ The site is plain HTML, CSS, and JavaScript. It fetches live category data from 
 
 ## Current video experience
 
-The Change of Heart series has a dedicated episode list at `series-change-of-heart.html`.
-Individual episodes open in `watch.html` with a focused HTML5 video player and simple next/previous navigation.
+Dedicated pages live under `pages/`. For example, the Change of Heart series is at `pages/series-change-of-heart.html`, and individual episodes open in `pages/watch.html` with a focused HTML5 video player and simple next/previous navigation.
 
-Self-hosted MP4 files should be added under `assets/videos/change-of-heart/` using filenames like `episode-01.mp4`.
+Large MP4 files are hosted outside Git on Cloudflare R2 and referenced from the matching files in `data/`.
 Only host video files that you have permission to distribute.
+
+## Checks
+
+Run syntax and accessibility checks before pushing:
+
+```bash
+npm run check
+```
+
+Feedback is collected through `pages/feedback.html` and is intended to route to `feedback@improvingmuslim.com`.

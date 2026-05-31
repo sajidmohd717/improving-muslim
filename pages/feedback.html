@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
     <meta name="referrer" content="origin" />
     <meta
       name="description"
-      content="Watch the Enjoy Your Prayer series by Ali Hammuda in a focused Islamic lecture experience."
+      content="Send feedback about Improving Muslim without leaving the platform."
     />
     <link rel="icon" type="image/png" href="./public/icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,8 +16,8 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
-    <title>Enjoy Your Prayer | Improving Muslim</title>
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <title>Feedback | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -27,65 +28,69 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
-          <a href="./about.html">About</a>
-          <a href="./settings.html">Settings</a>
-          <a href="#episodes">Episodes</a>
+          <a class="js-last-series-link" href="./pages/series-change-of-heart.html">Series</a>
+          <a href="./pages/about.html">About</a>
+          <a href="./pages/settings.html">Settings</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="series-hero">
-        <div>
-          <p class="eyebrow">Salah &amp; Worship</p>
-          <h1>Enjoy Your Prayer</h1>
-          <p class="hero-copy">
-            An essential series for those whose Salah feels dry, chore-like, and joyless.
-            Ali Hammuda walks through the entire prayer step by step, restoring wonder,
-            meaning, and presence.
-          </p>
-          <a class="primary-link" id="start-series-link" href="./watch.html">Start episode 1</a>
-        </div>
-        <img
-          src="./assets/thumbnail/salah/enjoy-your-prayer.png"
-          alt="Enjoy Your Prayer series thumbnail"
-        />
+      <section class="feedback-hero">
+        <p class="eyebrow">Help improve the platform</p>
+        <h1>Feedback</h1>
+        <p>
+          Share bugs, broken videos, content suggestions, or anything that would make the learning
+          experience calmer and more useful.
+        </p>
       </section>
 
-      <section class="content-section" id="episodes" aria-labelledby="episodes-title">
-        <div class="section-heading row-heading">
+      <section class="feedback-section" aria-labelledby="feedback-title">
+        <form class="feedback-form" id="feedback-form">
           <div>
-            <p class="eyebrow">21 episodes</p>
-            <h2 id="episodes-title">Episodes</h2>
+            <p class="eyebrow">Message</p>
+            <h2 id="feedback-title">Send a note</h2>
           </div>
-        </div>
-        <div class="episode-list" id="episode-list"></div>
+
+          <label for="feedback-email">
+            Your email, optional
+          </label>
+          <input id="feedback-email" type="email" autocomplete="email" placeholder="Only if you want a reply" />
+
+          <label for="feedback-message">
+            Feedback
+          </label>
+          <textarea id="feedback-message" rows="8" required placeholder="What should we fix, add, or improve?"></textarea>
+
+          <button class="primary-link" type="submit">Send feedback</button>
+          <p class="settings-note" id="feedback-status" role="status"></p>
+        </form>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>Built for easy discovery and quiet study.</p>
-      <a href="./about.html">Why this exists</a>
+      <a href="./pages/about.html">Why this exists</a>
+      <a href="./pages/feedback.html">Feedback</a>
     </footer>
 
-    <script src="./enjoy-your-prayer-data.js"></script>
-    <script>window.currentSeries = window.enjoyYourPrayerSeries;</script>
-    <script src="./series-page.js" defer></script>
+    <script src="./scripts/feedback.js" defer></script>
+    <script src="./scripts/nav-state.js" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./series-enjoy-your-prayer.html">
+      <a class="bottom-nav-item js-last-series-link" href="./pages/series-change-of-heart.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
       </a>
-      <a class="bottom-nav-item" href="./about.html">
+      <a class="bottom-nav-item" href="./pages/about.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span>About</span>
       </a>
-      <a class="bottom-nav-item" href="./settings.html">
+      <a class="bottom-nav-item" href="./pages/settings.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
         <span>Settings</span>
       </a>

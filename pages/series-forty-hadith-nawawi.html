@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
     <meta name="referrer" content="origin" />
     <meta
       name="description"
-      content="Watch the Why Me? series by Omar Suleiman in a focused Islamic lecture experience."
+      content="Explore the 40 Hadith of Imam Nawawi series by Navaid Aziz in a focused Islamic lecture experience."
     />
     <link rel="icon" type="image/png" href="./public/icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,8 +16,8 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
-    <title>Why Me? | Improving Muslim</title>
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <title>40 Hadith of Imam Nawawi | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -27,8 +28,8 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
-          <a href="./about.html">About</a>
-          <a href="./settings.html">Settings</a>
+          <a href="./pages/about.html">About</a>
+          <a href="./pages/settings.html">Settings</a>
           <a href="#episodes">Episodes</a>
         </div>
       </nav>
@@ -37,24 +38,24 @@
     <main>
       <section class="series-hero">
         <div>
-          <p class="eyebrow">Reflection and Contemplation</p>
-          <h1>Why Me?</h1>
+          <p class="eyebrow">Hadith</p>
+          <h1>40 Hadith of Imam Nawawi</h1>
           <p class="hero-copy">
-            A focused watch space for Omar Suleiman's Ramadan series on hardship, divine decree,
-            and learning to see every test through a more faithful lens.
+            Navaid Aziz walks through Imam an-Nawawi's famous collection of foundational hadith,
+            drawing out lessons for belief, worship, character, and everyday Muslim life.
           </p>
-          <a class="primary-link" id="start-series-link" href="./watch.html">Start episode 1</a>
+          <a class="primary-link" id="start-series-link" href="./pages/watch.html">Start episode 1</a>
         </div>
         <img
-          src="./assets/thumbnail/heart-softeners/whyme.jpg"
-          alt="Why Me? series thumbnail"
+          src="https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg"
+          alt="40 Hadith of Imam Nawawi series thumbnail"
         />
       </section>
 
       <section class="content-section" id="episodes" aria-labelledby="episodes-title">
         <div class="section-heading row-heading">
           <div>
-            <p class="eyebrow">30 episodes</p>
+            <p class="eyebrow">46 episodes</p>
             <h2 id="episodes-title">Episodes</h2>
           </div>
         </div>
@@ -64,30 +65,32 @@
 
     <footer class="site-footer">
       <p>Built for easy discovery and quiet study.</p>
-      <a href="./about.html">Why this exists</a>
+      <a href="./pages/about.html">Why this exists</a>
+      <a href="./pages/feedback.html">Feedback</a>
     </footer>
 
-    <script src="./why-me-data.js"></script>
-    <script>window.currentSeries = window.whyMeSeries;</script>
-    <script src="./series-page.js" defer></script>
+    <script src="./data/forty-hadith-data.js"></script>
+    <script>window.currentSeries = window.fortyHadithSeries;</script>
+    <script src="./scripts/series-page.js" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./series-why-me.html">
+      <a class="bottom-nav-item is-active" href="./pages/series-forty-hadith-nawawi.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
       </a>
-      <a class="bottom-nav-item" href="./about.html">
+      <a class="bottom-nav-item" href="./pages/about.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span>About</span>
       </a>
-      <a class="bottom-nav-item" href="./settings.html">
+      <a class="bottom-nav-item" href="./pages/settings.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
         <span>Settings</span>
       </a>
     </nav>
+    <script src="./scripts/nav-state.js" defer></script>
   </body>
 </html>

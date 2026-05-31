@@ -1,7 +1,7 @@
 window.fortyHadithSeries = {
   "title": "40 Hadith of Imam Nawawi",
   "slug": "forty-hadith-nawawi",
-  "seriesPageUrl": "./series-forty-hadith-nawawi.html",
+  "seriesPageUrl": "./pages/series-forty-hadith-nawawi.html",
   "speaker": "Navaid Aziz",
   "topic": "Hadith",
   "playlistId": "PLANmApGKw_OoBaN2C0Y983cwJGL47842I",
@@ -13,7 +13,7 @@ window.fortyHadithSeries = {
       "title": "Biography of Imam Al-Nawawi",
       "published": "2013-03-24",
       "views": 61504,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-1.mp4"
     },
     {
       "number": 2,
@@ -21,7 +21,7 @@ window.fortyHadithSeries = {
       "title": "Introduction",
       "published": "2013-04-13",
       "views": 20179,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-2.mp4"
     },
     {
       "number": 3,
@@ -29,7 +29,7 @@ window.fortyHadithSeries = {
       "title": "Hadith No. 1",
       "published": "2013-04-22",
       "views": 46287,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-3.mp4"
     },
     {
       "number": 4,
