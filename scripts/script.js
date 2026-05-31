@@ -331,6 +331,26 @@ function setStatus(message, isVisible = true) {
   els.statusMessage.classList.toggle("is-visible", isVisible);
 }
 
+const skelLabelW = ["38%", "43%", "35%", "41%", "37%", "44%", "36%", "42%", "39%"];
+const skelTitleW = ["78%", "65%", "83%", "70%", "76%", "68%", "80%", "63%", "74%"];
+const skelMetaW  = ["56%", "48%", "63%", "52%", "59%", "46%", "61%", "50%", "55%"];
+
+function showSkeletons(count = 6) {
+  setStatus("", false);
+  els.seriesGrid.innerHTML = Array.from({ length: count }, (_, i) => {
+    const delay = i * 90;
+    return `
+      <div class="series-card" aria-hidden="true">
+        <div class="skel skel-thumb" style="animation-delay:${delay}ms"></div>
+        <div class="series-body">
+          <div class="skel skel-label" style="width:${skelLabelW[i % 9]};animation-delay:${delay}ms"></div>
+          <div class="skel skel-title" style="width:${skelTitleW[i % 9]};animation-delay:${delay + 50}ms"></div>
+          <div class="skel skel-meta"  style="width:${skelMetaW[i % 9]};animation-delay:${delay + 100}ms"></div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
 function progressKey(series, episode) {
   return `lecture-progress:${series.playlistId}:${episode.id}`;
 }
@@ -398,10 +418,10 @@ function renderContinueWatching() {
   }
 
   els.continueList.innerHTML = items
-    .map(({ series, episode, progress }) => {
+    .map(({ series, episode, progress }, i) => {
       const percent = Math.round(progress.percent * 100);
       return `
-        <a class="continue-card" href="${episodeUrl(series, episode)}">
+        <a class="continue-card reveal-anim" style="--reveal-delay:${i * 50}ms" href="${episodeUrl(series, episode)}">
           <div class="continue-thumb">
             <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
             <span>${percent}% watched</span>
@@ -423,8 +443,8 @@ function renderContinueWatching() {
 function renderSpeakers() {
   els.speakerList.innerHTML = speakers
     .map(
-      (speaker) => `
-        <a class="speaker-card" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
+      (speaker, i) => `
+        <a class="speaker-card reveal-anim" style="--reveal-delay:${i * 40}ms" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
           <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
           <span>${escapeHtml(speaker.name)}</span>
         </a>
@@ -512,14 +532,14 @@ function renderSeries() {
 
   setStatus("", false);
   els.seriesGrid.innerHTML = series
-    .map((item) => {
+    .map((item, i) => {
       const seriesUrl = getSeriesUrl(item);
       const description =
         item.description ||
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
       return `
-        <article class="series-card">
+        <article class="series-card reveal-anim" style="--reveal-delay:${i * 50}ms">
           <a class="series-link" href="${seriesUrl}">
             <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" />
           </a>
@@ -547,8 +567,7 @@ async function loadCategory(category) {
   state.searchTerm = "";
   els.searchInput.value = "";
   renderCategories();
-  setStatus("Loading series...");
-  els.seriesGrid.innerHTML = "";
+  showSkeletons(6);
 
   if (localFirstCategories.has(category)) {
     state.sections = mergeLocalSeries(normalizeSections(localCategoryFallbacks[category]), category);

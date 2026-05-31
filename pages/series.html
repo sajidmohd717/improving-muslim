@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
+    <meta name="referrer" content="origin" />
+    <meta
+      name="description"
+      content="Browse all available Islamic lecture series on Improving Muslim."
+    />
+    <link rel="icon" type="image/png" href="./public/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <title>Series | Improving Muslim</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Improving Muslim home">
+          <img src="./public/icon.png" alt="" />
+          <span>Improving Muslim</span>
+        </a>
+        <div class="site-menu page-menu">
+          <a href="./index.html">Home</a>
+          <a href="./pages/about.html">About</a>
+          <a href="./pages/settings.html">Settings</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="about-hero">
+        <p class="eyebrow">All series</p>
+        <h1>Browse</h1>
+        <p>
+          Focused lecture series from trusted speakers. Pick one to start, or pick up where you
+          left off.
+        </p>
+      </section>
+
+      <section class="content-section series-section" aria-label="Available series">
+        <ul class="series-grid series-browse-grid" role="list">
+
+          <li class="series-card">
+            <a class="series-link" href="./pages/series-change-of-heart.html" aria-label="Change of Heart series">
+              <img src="./assets/thumbnail/heart-softeners/changeofheart.png" alt="Change of Heart thumbnail" loading="lazy" />
+            </a>
+            <div class="series-body">
+              <span class="series-topic">Purification of the Heart</span>
+              <p class="series-title">Change of Heart</p>
+              <div class="series-meta">
+                <span>Ali Hammuda</span>
+                <span>12 lectures</span>
+              </div>
+              <a class="primary-link" href="./pages/series-change-of-heart.html">Watch series</a>
+            </div>
+          </li>
+
+          <li class="series-card">
+            <a class="series-link" href="./pages/series-enjoy-your-prayer.html" aria-label="Enjoy Your Prayer series">
+              <img src="./assets/thumbnail/salah/enjoy-your-prayer.png" alt="Enjoy Your Prayer thumbnail" loading="lazy" />
+            </a>
+            <div class="series-body">
+              <span class="series-topic">Salah &amp; Worship</span>
+              <p class="series-title">Enjoy Your Prayer</p>
+              <div class="series-meta">
+                <span>Ali Hammuda</span>
+                <span>21 lectures</span>
+              </div>
+              <a class="primary-link" href="./pages/series-enjoy-your-prayer.html">Watch series</a>
+            </div>
+          </li>
+
+          <li class="series-card">
+            <a class="series-link" href="./pages/series-forty-hadith-nawawi.html" aria-label="40 Hadith of Imam Nawawi series">
+              <img src="https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg" alt="40 Hadith of Imam Nawawi thumbnail" loading="lazy" referrerpolicy="origin" />
+            </a>
+            <div class="series-body">
+              <span class="series-topic">Hadith</span>
+              <p class="series-title">40 Hadith of Imam Nawawi</p>
+              <div class="series-meta">
+                <span>Navaid Aziz</span>
+                <span>46 lectures</span>
+              </div>
+              <a class="primary-link" href="./pages/series-forty-hadith-nawawi.html">Watch series</a>
+            </div>
+          </li>
+
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for easy discovery and quiet study.</p>
+      <a href="./pages/about.html">Why this exists</a>
+      <a href="./pages/feedback.html">Feedback</a>
+    </footer>
+
+    <script src="./scripts/nav-state.js" defer></script>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <a class="bottom-nav-item" href="./index.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="bottom-nav-item is-active" href="./pages/series.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
+        <span>Series</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/settings.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </body>
+</html>

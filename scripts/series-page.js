@@ -58,14 +58,14 @@ startLink.href = episodeUrl(series.episodes[0]);
 
 episodeList.innerHTML = series.episodes
   .map(
-    (episode) => {
+    (episode, i) => {
       const available = isEpisodeAvailable(episode);
       const watchStatus = progressLabel(episode);
       const isWatched = watchStatus === "Watched";
       const tagName = available ? "a" : "article";
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
-      <${tagName} class="episode-card ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${href}>
+      <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${i * 40}ms"${href}>
         <img
           src="https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg"
           alt=""

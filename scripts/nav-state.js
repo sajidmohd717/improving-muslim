@@ -1,5 +1,5 @@
 const LAST_SERIES_KEY = "improving-muslim:last-series-url";
-const DEFAULT_SERIES_URL = "./pages/series-change-of-heart.html";
+const DEFAULT_SERIES_URL = "./pages/series.html";
 
 function normalizeSeriesUrl(url) {
   try {

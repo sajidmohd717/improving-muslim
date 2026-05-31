@@ -28,7 +28,7 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
-          <a class="js-last-series-link" href="./pages/series-change-of-heart.html">Series</a>
+          <a class="js-last-series-link" href="./pages/series.html">Series</a>
           <a href="./pages/about.html">About</a>
           <a href="./pages/settings.html">Settings</a>
         </div>
@@ -47,20 +47,20 @@
 
       <section class="feedback-section" aria-labelledby="feedback-title">
         <form class="feedback-form" id="feedback-form">
-          <div>
+          <div class="feedback-form-header">
             <p class="eyebrow">Message</p>
             <h2 id="feedback-title">Send a note</h2>
           </div>
 
-          <label for="feedback-email">
-            Your email, optional
-          </label>
-          <input id="feedback-email" type="email" autocomplete="email" placeholder="Only if you want a reply" />
+          <div class="form-field">
+            <label for="feedback-email">Your email <span>(optional)</span></label>
+            <input id="feedback-email" type="email" autocomplete="email" placeholder="Only if you want a reply" />
+          </div>
 
-          <label for="feedback-message">
-            Feedback
-          </label>
-          <textarea id="feedback-message" rows="8" required placeholder="What should we fix, add, or improve?"></textarea>
+          <div class="form-field">
+            <label for="feedback-message">Feedback</label>
+            <textarea id="feedback-message" rows="8" required placeholder="What should we fix, add, or improve?"></textarea>
+          </div>
 
           <button class="primary-link" type="submit">Send feedback</button>
           <p class="settings-note" id="feedback-status" role="status"></p>
@@ -82,13 +82,9 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item js-last-series-link" href="./pages/series-change-of-heart.html">
+      <a class="bottom-nav-item js-last-series-link" href="./pages/series.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
-      </a>
-      <a class="bottom-nav-item" href="./pages/about.html">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        <span>About</span>
       </a>
       <a class="bottom-nav-item" href="./pages/settings.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
