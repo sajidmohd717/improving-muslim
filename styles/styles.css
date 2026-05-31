@@ -2555,7 +2555,7 @@ details[open] .takeaways-toggle::after {
     position: static;
     max-height: none;
     overflow: visible;
-    border-width: 1px 0 0;
+    border: none;
     border-radius: 0;
     background: transparent;
     padding: 18px 16px 0;
