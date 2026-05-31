@@ -788,6 +788,57 @@ h2 {
   padding: 8px 10px;
 }
 
+.card-actions,
+.series-utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.series-utility-actions {
+  align-items: center;
+}
+
+.mini-action,
+.utility-button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.mini-action {
+  padding: 7px 10px;
+  font-size: 0.78rem;
+}
+
+.mini-action[aria-pressed="true"],
+.utility-button[aria-pressed="true"] {
+  border-color: rgba(23, 107, 91, 0.35);
+  background: rgba(23, 107, 91, 0.1);
+  color: var(--accent);
+}
+
+.mini-action:hover,
+.mini-action:focus-visible,
+.utility-button:hover,
+.utility-button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.action-status {
+  flex-basis: 100%;
+  min-height: 1.3em;
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .series-description {
   display: none;
   margin: 12px 0 0;
@@ -1359,6 +1410,51 @@ details[open] .takeaways-toggle::after {
   object-fit: cover;
 }
 
+.video-frame video::cue {
+  background: rgba(10, 14, 12, 0.74);
+  color: #fffdf8;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-size: clamp(0.88rem, 2vw, 1.08rem);
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+}
+
+.video-frame video::cue(b) {
+  color: #fff4cf;
+  font-weight: 800;
+}
+
+.video-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(13, 15, 14, 0.38);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(255, 255, 255, 0.34);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .video-unavailable {
   position: absolute;
   inset: 0;
@@ -1909,6 +2005,79 @@ details[open] .takeaways-toggle::after {
   min-height: 1.4em;
 }
 
+.feedback-honey {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.feedback-fallback {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.feedback-fallback p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.feedback-fallback textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.saved-items-list {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 14px;
+}
+
+.saved-item {
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 12px 14px;
+}
+
+.saved-item:hover,
+.saved-item:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.saved-item span {
+  color: var(--rose);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.saved-item strong {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.saved-item em {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 700;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .hero-copy,
   :root:not([data-theme="light"]) .about-hero p,
@@ -1977,6 +2146,10 @@ details[open] .takeaways-toggle::after {
     animation: none !important;
     opacity: 1;
     transform: none !important;
+  }
+
+  .loading-spinner {
+    animation: none !important;
   }
 
   .section-reveal {
@@ -2240,7 +2413,20 @@ details[open] .takeaways-toggle::after {
   }
 
   .series-card .details-toggle {
-    display: none;
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .card-actions {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .mini-action {
+    padding: 6px 8px;
+    font-size: 0.72rem;
   }
 
   .series-progress-track {
@@ -2262,6 +2448,10 @@ details[open] .takeaways-toggle::after {
     padding-top: 0;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  }
+
+  .series-card.is-expanded .series-description {
+    display: block;
   }
 
   .series-meta {

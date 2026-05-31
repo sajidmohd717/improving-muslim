@@ -167,6 +167,8 @@ const state = {
   activeSpeaker: null,
 };
 
+const SAVED_KEY = "improving-muslim:saved-items";
+
 function formatViewCount(n) {
   if (!n) return "";
   if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
@@ -371,6 +373,81 @@ function episodeThumbnailUrl(series, episode) {
   }
 
   return series.thumbnailSrc || "./public/icon.png";
+}
+
+function readSavedItems() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSavedItems(items) {
+  try {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function savedSeriesItem(series, url) {
+  return {
+    key: `series:${url}`,
+    type: "series",
+    title: series.title,
+    subtitle: [series.speaker, series.episodes].filter(Boolean).join(" - "),
+    url,
+    savedAt: Date.now(),
+  };
+}
+
+function isSeriesSaved(url) {
+  return readSavedItems().some((item) => item.key === `series:${url}`);
+}
+
+function toggleSavedSeries(series, url, button) {
+  const item = savedSeriesItem(series, url);
+  const items = readSavedItems();
+  const existing = items.findIndex((saved) => saved.key === item.key);
+  const nextItems =
+    existing >= 0
+      ? items.filter((saved) => saved.key !== item.key)
+      : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
+
+  if (!writeSavedItems(nextItems)) {
+    button.textContent = "Could not save";
+    return;
+  }
+
+  const saved = existing < 0;
+  button.textContent = saved ? "Saved" : "Save";
+  button.setAttribute("aria-pressed", String(saved));
+}
+
+async function shareSeries(series, url, button) {
+  const absoluteUrl = new URL(url, document.baseURI).href;
+  const shareData = {
+    title: series.title,
+    text: [series.title, series.speaker].filter(Boolean).join(" by "),
+    url: absoluteUrl,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+
+    await navigator.clipboard.writeText(absoluteUrl);
+    button.textContent = "Copied";
+    setTimeout(() => {
+      button.textContent = "Share";
+    }, 1800);
+  } catch {
+    button.textContent = "Could not share";
+  }
 }
 
 function formatDuration(seconds) {
@@ -604,6 +681,12 @@ function renderSeries() {
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
             ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
+            <div class="card-actions">
+              <button class="mini-action save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${isSeriesSaved(seriesUrl)}">
+                ${isSeriesSaved(seriesUrl) ? "Saved" : "Save"}
+              </button>
+              <button class="mini-action share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}">Share</button>
+            </div>
             <button class="details-toggle" type="button" aria-expanded="false">Details</button>
             <p class="series-description">${escapeHtml(description)}</p>
           </div>
@@ -674,6 +757,24 @@ function bindEvents() {
   });
 
   els.seriesGrid.addEventListener("click", (event) => {
+    const saveButton = event.target.closest(".save-series-button");
+    if (saveButton) {
+      const card = saveButton.closest(".series-card");
+      const title = card?.querySelector(".series-title")?.textContent.trim();
+      const item = flattenSeries(state.sections).find((series) => series.title === title);
+      if (item) toggleSavedSeries(item, saveButton.dataset.seriesUrl, saveButton);
+      return;
+    }
+
+    const shareButton = event.target.closest(".share-series-button");
+    if (shareButton) {
+      const card = shareButton.closest(".series-card");
+      const title = card?.querySelector(".series-title")?.textContent.trim();
+      const item = flattenSeries(state.sections).find((series) => series.title === title);
+      if (item) shareSeries(item, shareButton.dataset.seriesUrl, shareButton);
+      return;
+    }
+
     const button = event.target.closest(".details-toggle");
     if (!button) {
       return;

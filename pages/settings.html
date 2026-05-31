@@ -60,6 +60,20 @@
         <p class="settings-note" id="settings-status" role="status"></p>
       </section>
 
+      <section class="settings-section" aria-labelledby="saved-items-title">
+        <div class="settings-panel">
+          <div>
+            <p class="eyebrow">Saved for later</p>
+            <h2 id="saved-items-title">Bookmarks</h2>
+            <p id="saved-items-summary">Checking saved items...</p>
+          </div>
+          <button class="danger-button" id="reset-saved-items" type="button">
+            Clear saved items
+          </button>
+        </div>
+        <div class="saved-items-list" id="saved-items-list"></div>
+      </section>
+
       <section class="settings-section" aria-labelledby="playback-title">
         <div class="settings-panel">
           <div>
@@ -109,7 +123,7 @@
       <a href="./pages/feedback.html">Feedback</a>
     </footer>
 
-    <script src="./scripts/settings.js" defer></script>
+    <script src="./scripts/settings.js?v=20260601" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

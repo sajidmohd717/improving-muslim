@@ -18,7 +18,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/watch-page.js` loads the selected episode, handles native playback, progress saving, completion state, and media-session controls.
 - `data/*-data.js` files are the series data sources.
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
-- `assets/captions/change-of-heart/` contains WebVTT captions for uploaded Change of Heart episodes.
+- `assets/captions/` contains WebVTT captions, grouped by series slug.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
@@ -34,17 +34,20 @@ The active self-hosted series are:
 Change of Heart
 Speaker: Ali Hammuda
 Topic/category: Purification of the Heart
+Watchable: episodes 1-5
 
 Enjoy Your Prayer
 Speaker: Ali Hammuda
 Topic/category: Salah & Worship
+Watchable: episodes 1-8
 
 40 Hadith of Imam Nawawi
 Speaker: Navaid Aziz
 Topic/category: Hadith
+Watchable: episodes 1-3
 ```
 
-For Change of Heart, episodes 1-5 are treated as watchable on the platform. They have R2-hosted MP4 files, captions where transcripts have been processed, and episode learning material in `data/change-of-heart-data.js`.
+For Change of Heart, episodes 1-5 have R2-hosted MP4 files, native VTT captions, key takeaways, and episode recaps in `data/change-of-heart-data.js`.
 
 Episodes 6-16 remain visible as the future roadmap for the series, but they should not link to broken placeholder videos. These planned episodes use:
 
@@ -54,7 +57,13 @@ statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah
 
 Do not add local placeholder `videoSrc` values such as `./assets/videos/...` for episodes that are not actually uploaded. The UI treats an episode with no `videoSrc` as unavailable and displays an `Uploading soon` label.
 
-For 40 Hadith of Imam Nawawi, episodes 1-3 are currently unlocked with R2-hosted MP4 files. Later episodes remain visible as `Uploading soon` until their `videoSrc` is added.
+Enjoy Your Prayer has 21 listed episodes. Episodes 1-8 are currently unlocked with R2-hosted MP4 files. Episodes 9-21 remain visible as `Uploading soon`.
+
+40 Hadith of Imam Nawawi has 46 listed episodes. Episodes 1-3 are currently unlocked with R2-hosted MP4 files. Later episodes remain visible as `Uploading soon` until their `videoSrc` is added.
+
+Why Me is currently a visible catalogue/roadmap series only. It has local episode thumbnails but no watchable MP4 files yet.
+
+The homepage topic order should stay intentional and learning-led. Current main topics include All, Purification, Prayer, Hadith, and Tafsir. Series should appear in the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
 ## Hosting
 
@@ -111,11 +120,12 @@ When adding a new watchable episode:
 1. Upload the MP4 to Cloudflare R2 using the naming pattern above.
 2. Confirm the public R2 URL responds successfully.
 3. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`.
-4. If a transcript is available, generate a VTT file under `assets/captions/change-of-heart/`.
+4. If a transcript is available, generate a VTT file under `assets/captions/{series-slug}/`.
 5. Add `captionsSrc` to the episode object.
-6. Add `takeaways` and `recap` in the same style as episodes 1-5.
+6. Add `takeaways` and `recap` when the transcript has been reviewed enough to produce useful notes.
 7. Keep `episode.id` unchanged so watch progress does not reset.
-8. Run syntax checks and test locally through the dev server.
+8. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
+9. Run syntax checks and test locally through the dev server.
 
 When an episode is not uploaded yet:
 
@@ -147,6 +157,22 @@ aws s3 cp "C:\Users\sajid\Downloads\change-of-heart-ep-1.mp4" "s3://islamic-lect
 ```
 
 Never commit or paste production R2 secrets into the repository or docs.
+
+## Adding A New Series
+
+Use this flow when bringing in a new series:
+
+1. Pick a stable kebab-case `series.slug`, for example `forty-hadith-nawawi`.
+2. Add `data/{series-slug}-data.js` with `title`, `slug`, `seriesPageUrl`, `speaker`, `topic`, `thumbnailSrc`, `episodeThumbnailPath`, `playlistId`, `description`, and `episodes`.
+3. Add a dedicated series page in `pages/series-{series-slug}.html` that loads the data file and `scripts/series-page.js`.
+4. Add the series to the homepage data/rendering in `scripts/script.js`, including the correct category.
+5. Add or update speaker metadata in `data/speaker-data.js`.
+6. If the speaker needs a profile page, make sure `pages/speaker.html` can resolve the speaker slug and that the speaker is listed in `pages/speakers.html`.
+7. Add local series artwork and local episode thumbnails under `assets/thumbnail/{series-slug}/`.
+8. Add R2 `videoSrc` only for episodes that have actually been uploaded.
+9. Run `npm run check` and test the homepage, series page, watch page, speaker page, settings page, and mobile layout.
+
+Series pages are static HTML shells, but episode lists are data-driven. Prefer adding data and letting shared scripts render the repeated UI rather than hand-writing each episode card.
 
 ## Watch Progress
 
@@ -191,7 +217,24 @@ Browser and OS rules still decide whether background or lock-screen playback con
 
 Homepage series thumbnails and speaker photos mostly use local assets.
 
-Episode thumbnails and video posters should not depend on YouTube's thumbnail CDN at runtime. Series data should provide a local `thumbnailSrc` for the series artwork, plus `episodeThumbnailPath` for episode artwork saved as `episode-01.jpg`, `episode-02.jpg`, and so on. Individual episodes can still override this with their own local `thumbnailSrc` when a custom image is needed.
+Episode thumbnails and video posters must not depend on YouTube's thumbnail CDN at runtime. Series data should provide:
+
+```js
+thumbnailSrc: "./assets/thumbnail/{topic-or-series}/series-image.jpg",
+episodeThumbnailPath: "./assets/thumbnail/{series-slug}/episodes",
+```
+
+Episode artwork should be saved as:
+
+```txt
+assets/thumbnail/{series-slug}/episodes/episode-01.jpg
+assets/thumbnail/{series-slug}/episodes/episode-02.jpg
+...
+```
+
+The shared helpers in `scripts/script.js`, `scripts/series-page.js`, and `scripts/watch-page.js` resolve episode images from `episodeThumbnailPath`. Individual episodes can still override this with their own local `thumbnailSrc` when a custom image is needed.
+
+It is acceptable to download source thumbnails from YouTube during development, but the committed site should load local files. After adding thumbnails, search for `i.ytimg.com` and remove runtime references.
 
 The UI also includes `prefers-reduced-motion` handling. When adding animations, hover transforms, shimmer effects, or scrolling behavior, make sure they are disabled or reduced inside the reduced-motion media query.
 
@@ -200,14 +243,13 @@ The UI also includes `prefers-reduced-motion` handling. When adding animations, 
 Transcript files are usually pasted from YouTube-style transcript output. Convert them with:
 
 ```powershell
-cmd /c "node scripts\transcript-to-vtt.js C:\path\to\pasted-text.txt > assets\captions\change-of-heart\episode-05.vtt"
+cmd /c "node scripts\transcript-to-vtt.js C:\path\to\pasted-text.txt > assets\captions\{series-slug}\episode-05.vtt"
 ```
 
 The converter:
 
 - Skips chapter heading lines.
 - Supports timestamps such as `0:11`, `59:55`, and `1:05:41`.
-- Splits captions into short cues, currently capped at 8 words per cue.
 - Outputs WebVTT suitable for native video captions.
 
 After generating captions, spot-check:
@@ -228,6 +270,16 @@ recap: `# Powerful Recap: ...`
 
 The watch page automatically shows Key Takeaways and Recap panels when those fields exist.
 
+If the pasted transcript already has good timestamps, preserve those timings. Do not split or rewrite captions merely to force a word count. Native captions should track the provided transcript timing as closely as possible.
+
+## Speaker Pages And Ordering
+
+The homepage shows a compact speaker strip. `pages/speakers.html` is the full directory.
+
+Speaker ordering is controlled in `data/speaker-data.js`. Prioritize speakers with fully or partially hosted series on the platform. Currently Navaid Aziz should appear after Ali Hammuda because the platform has watchable Ali Hammuda series and the first uploaded Navaid Aziz series.
+
+Speaker photos belong in `assets/speaker/`. Series thumbnails should remain separate from speaker portraits unless a real series image is not available yet.
+
 ## Feedback
 
 Every page footer links to `pages/feedback.html`. The current static implementation opens the user's email app and addresses feedback to:
@@ -237,6 +289,22 @@ feedback@improvingmuslim.com
 ```
 
 Set up Cloudflare Email Routing, a mailbox, or a privacy-preserving form backend for that address before relying on it in production. Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
+
+## UI And Accessibility Direction
+
+The site should feel quiet, focused, and useful for repeated study rather than like a marketing landing page.
+
+Current UX principles:
+
+- Keep mobile real estate precious. Avoid noisy metadata when it does not help the learner choose what to watch.
+- Returning users should see low-friction resume paths through continue-watching cards and saved progress.
+- Desktop can use richer sidebars; mobile should show equivalent episode navigation below the player or through compact controls.
+- Support light, dark, and system themes from Settings.
+- Respect `prefers-reduced-motion`.
+- Use local image assets for predictable rendering and privacy.
+- Use native browser video features where possible: captions, playback controls, picture-in-picture, and Media Session API.
+
+When changing UI, run the accessibility checks and inspect at least one mobile-width viewport.
 
 ## Local Development
 

@@ -47,24 +47,34 @@
       </section>
 
       <section class="feedback-section" aria-labelledby="feedback-title">
-        <form class="feedback-form" id="feedback-form">
+        <form class="feedback-form" id="feedback-form" action="https://formsubmit.co/ajax/feedback@improvingmuslim.com" method="POST">
           <div class="feedback-form-header">
             <p class="eyebrow">Message</p>
             <h2 id="feedback-title">Send a note</h2>
           </div>
 
+          <input type="hidden" name="_subject" value="Improving Muslim feedback" aria-label="Feedback subject" />
+          <input type="hidden" name="_captcha" value="false" aria-label="Captcha setting" />
+          <input type="hidden" name="_template" value="table" aria-label="Email template" />
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="feedback-honey" aria-label="Leave this field empty" aria-hidden="true" />
+
           <div class="form-field">
             <label for="feedback-email">Your email <span>(optional)</span></label>
-            <input id="feedback-email" type="email" autocomplete="email" placeholder="Only if you want a reply" />
+            <input id="feedback-email" name="reply_to" type="email" autocomplete="email" placeholder="Only if you want a reply" />
           </div>
 
           <div class="form-field">
             <label for="feedback-message">Feedback</label>
-            <textarea id="feedback-message" rows="8" required placeholder="What should we fix, add, or improve?"></textarea>
+            <textarea id="feedback-message" name="message" rows="8" required placeholder="What should we fix, add, or improve?"></textarea>
           </div>
 
           <button class="primary-link" type="submit">Send feedback</button>
           <p class="settings-note" id="feedback-status" role="status"></p>
+          <div class="feedback-fallback is-hidden" id="feedback-fallback">
+            <p>If sending fails on this device, copy this message and send it to feedback@improvingmuslim.com.</p>
+            <textarea id="feedback-copy" rows="7" readonly></textarea>
+            <button class="quiet-link utility-button" id="copy-feedback" type="button">Copy message</button>
+          </div>
         </form>
       </section>
     </main>

@@ -9,6 +9,7 @@ function formatViews(n) {
 const series = window.currentSeries;
 const episodeList = document.querySelector("#episode-list");
 const startLink = document.querySelector("#start-series-link");
+const SAVED_KEY = "improving-muslim:saved-items";
 
 function episodeUrl(episode) {
   return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
@@ -66,7 +67,106 @@ function formatDate(dateString) {
   }).format(new Date(`${dateString}T00:00:00`));
 }
 
+function readSavedItems() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSavedItems(items) {
+  try {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function seriesUrl() {
+  return series.seriesPageUrl || `./pages/series-${series.slug}.html`;
+}
+
+function isSeriesSaved() {
+  return readSavedItems().some((item) => item.key === `series:${seriesUrl()}`);
+}
+
+function updateSeriesSaveButton(button) {
+  const saved = isSeriesSaved();
+  button.textContent = saved ? "Saved" : "Save for later";
+  button.setAttribute("aria-pressed", String(saved));
+}
+
+function toggleSavedSeries(button, status) {
+  const item = {
+    key: `series:${seriesUrl()}`,
+    type: "series",
+    title: series.title,
+    subtitle: `${series.speaker} - ${series.episodes.length} episodes`,
+    url: seriesUrl(),
+    savedAt: Date.now(),
+  };
+  const items = readSavedItems();
+  const existing = items.findIndex((saved) => saved.key === item.key);
+  const nextItems =
+    existing >= 0
+      ? items.filter((saved) => saved.key !== item.key)
+      : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
+
+  if (writeSavedItems(nextItems)) {
+    updateSeriesSaveButton(button);
+    status.textContent = existing >= 0 ? "Removed from saved items." : "Saved for later on this device.";
+  } else {
+    status.textContent = "Could not save on this device.";
+  }
+}
+
+async function shareSeries(status) {
+  const url = new URL(seriesUrl(), document.baseURI).href;
+  const shareData = {
+    title: series.title,
+    text: `${series.title} by ${series.speaker}`,
+    url,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      status.textContent = "Share sheet opened.";
+      return;
+    }
+
+    await navigator.clipboard.writeText(url);
+    status.textContent = "Series link copied.";
+  } catch {
+    status.textContent = "Could not share from this browser.";
+  }
+}
+
+function renderSeriesActions() {
+  const hero = startLink?.parentElement;
+  if (!hero) return;
+
+  const actions = document.createElement("div");
+  actions.className = "series-utility-actions";
+  actions.innerHTML = `
+    <button class="quiet-link utility-button" id="save-series-button" type="button" aria-pressed="false">Save for later</button>
+    <button class="quiet-link utility-button" id="share-series-button" type="button">Share series</button>
+    <p class="action-status" id="series-action-status" role="status"></p>
+  `;
+  startLink.insertAdjacentElement("afterend", actions);
+
+  const saveButton = actions.querySelector("#save-series-button");
+  const shareButton = actions.querySelector("#share-series-button");
+  const status = actions.querySelector("#series-action-status");
+  updateSeriesSaveButton(saveButton);
+  saveButton.addEventListener("click", () => toggleSavedSeries(saveButton, status));
+  shareButton.addEventListener("click", () => shareSeries(status));
+}
+
 startLink.href = episodeUrl(series.episodes[0]);
+renderSeriesActions();
 
 episodeList.innerHTML = series.episodes
   .map(

@@ -48,6 +48,7 @@ const player = document.querySelector("#video-player");
 const source = document.querySelector("#video-source");
 const captionTrack = document.querySelector("#caption-track");
 const unavailable = document.querySelector("#video-unavailable");
+const loadingIndicator = document.querySelector("#video-loading");
 const title = document.querySelector("#watch-title");
 const kicker = document.querySelector("#watch-kicker");
 const meta = document.querySelector("#watch-meta");
@@ -62,8 +63,12 @@ const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
 
 const speedButton = document.querySelector("#speed-button");
+const saveEpisodeButton = document.querySelector("#save-episode-button");
+const shareEpisodeButton = document.querySelector("#share-episode-button");
+const actionStatus = document.querySelector("#watch-action-status");
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
 const SPEED_KEY = "improving-muslim:playback-speed";
+const SAVED_KEY = "improving-muslim:saved-items";
 
 let currentSpeedIndex = (() => {
   try {
@@ -112,9 +117,96 @@ function setPlayerPoster(episode) {
   player.poster = episodeThumbnailUrl(episode);
 }
 
+function setVideoLoading(isLoading) {
+  loadingIndicator?.classList.toggle("is-hidden", !isLoading);
+}
+
 function progressKey(episode) {
   return `lecture-progress:${series.playlistId}:${episode.id}`;
 }
+
+function readSavedItems() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSavedItems(items) {
+  try {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function savedItem() {
+  return {
+    key: `episode:${series.slug}:${currentEpisode.id}`,
+    type: "episode",
+    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
+    subtitle: `${series.title} - ${series.speaker}`,
+    url: `./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`,
+    savedAt: Date.now(),
+  };
+}
+
+function isEpisodeSaved() {
+  const key = savedItem().key;
+  return readSavedItems().some((item) => item.key === key);
+}
+
+function updateSaveButton() {
+  if (!saveEpisodeButton) return;
+  const saved = isEpisodeSaved();
+  saveEpisodeButton.textContent = saved ? "Saved" : "Save";
+  saveEpisodeButton.setAttribute("aria-pressed", String(saved));
+}
+
+function toggleSavedEpisode() {
+  const item = savedItem();
+  const items = readSavedItems();
+  const existing = items.findIndex((saved) => saved.key === item.key);
+  const nextItems =
+    existing >= 0
+      ? items.filter((saved) => saved.key !== item.key)
+      : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
+
+  if (writeSavedItems(nextItems)) {
+    updateSaveButton();
+    actionStatus.textContent = existing >= 0 ? "Removed from saved items." : "Saved for later on this device.";
+  } else {
+    actionStatus.textContent = "Could not save on this device.";
+  }
+}
+
+async function shareEpisode() {
+  const url = new URL(`./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`, document.baseURI).href;
+  const shareData = {
+    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
+    text: `${series.title} by ${series.speaker}`,
+    url,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      actionStatus.textContent = "Share sheet opened.";
+      return;
+    }
+
+    await navigator.clipboard.writeText(url);
+    actionStatus.textContent = "Episode link copied.";
+  } catch {
+    actionStatus.textContent = "Could not share from this browser.";
+  }
+}
+
+saveEpisodeButton?.addEventListener("click", toggleSavedEpisode);
+shareEpisodeButton?.addEventListener("click", shareEpisode);
+updateSaveButton();
 
 function readProgress(episode) {
   try {
@@ -256,9 +348,23 @@ if (currentEpisode.recap) {
 
 player.addEventListener("loadstart", () => {
   unavailable.classList.add("is-hidden");
+  setVideoLoading(Boolean(currentEpisode.videoSrc));
+});
+
+player.addEventListener("waiting", () => {
+  setVideoLoading(Boolean(currentEpisode.videoSrc));
+});
+
+player.addEventListener("canplay", () => {
+  setVideoLoading(false);
+});
+
+player.addEventListener("playing", () => {
+  setVideoLoading(false);
 });
 
 player.addEventListener("error", () => {
+  setVideoLoading(false);
   if (player.currentSrc) {
     unavailable.classList.remove("is-hidden");
   }
@@ -285,6 +391,7 @@ player.addEventListener("loadedmetadata", () => {
 });
 
 if (currentEpisode.videoSrc) {
+  setVideoLoading(true);
   source.src = currentEpisode.videoSrc;
   if (currentEpisode.captionsSrc && captionTrack) {
     captionTrack.src = currentEpisode.captionsSrc;
@@ -297,6 +404,7 @@ if (currentEpisode.videoSrc) {
   }
   player.load();
 } else {
+  setVideoLoading(false);
   unavailable.innerHTML = `
     <strong>Video not added yet</strong>
     <span>${currentEpisode.statusNote || "This episode will be uploaded in the future, insha'Allah."}</span>
@@ -375,20 +483,14 @@ player.addEventListener("ended", () => {
 autoplayToastCancel?.addEventListener("click", cancelAutoplay);
 autoplayToastLink?.addEventListener("click", () => clearInterval(autoplayTimer));
 
-if (previousEpisode) {
-  previousLink.href = episodeUrl(previousEpisode);
-  previousLink.textContent = "Previous episode";
-} else {
-  previousLink.href = seriesPageUrl;
-  previousLink.textContent = "Back to series";
+if (previousLink) {
+  previousLink.href = previousEpisode ? episodeUrl(previousEpisode) : seriesPageUrl;
+  previousLink.textContent = previousEpisode ? "Previous episode" : "Back to series";
 }
 
-if (nextEpisode) {
-  nextLink.href = episodeUrl(nextEpisode);
-  nextLink.textContent = "Next episode";
-} else {
-  nextLink.href = seriesPageUrl;
-  nextLink.textContent = "Series overview";
+if (nextLink) {
+  nextLink.href = nextEpisode ? episodeUrl(nextEpisode) : seriesPageUrl;
+  nextLink.textContent = nextEpisode ? "Next episode" : "Series overview";
 }
 
 episodeList.innerHTML = series.episodes

@@ -58,6 +58,10 @@
             <track id="caption-track" kind="captions" srclang="en" label="English" default />
             Your browser does not support the video tag.
           </video>
+          <div class="video-loading" id="video-loading" role="status" aria-live="polite">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span>Loading video...</span>
+          </div>
           <div class="video-unavailable is-hidden" id="video-unavailable">
             <strong>Video could not be loaded</strong>
             <span>Check that this episode has a valid MP4 source.</span>
@@ -77,10 +81,11 @@
             Space: pause &nbsp;·&nbsp; &#8592; &#8594; skip 10s &nbsp;·&nbsp; F: fullscreen
           </p>
           <div class="watch-actions">
-            <a class="quiet-link" id="previous-link" href="./pages/series-change-of-heart.html">Previous</a>
             <button class="speed-button" id="speed-button" type="button" aria-label="Playback speed">1&#xD7;</button>
-            <a class="primary-link" id="next-link" href="./pages/series-change-of-heart.html">Next episode</a>
+            <button class="quiet-link utility-button" id="save-episode-button" type="button" aria-pressed="false">Save</button>
+            <button class="quiet-link utility-button" id="share-episode-button" type="button">Share</button>
           </div>
+          <p class="action-status" id="watch-action-status" role="status"></p>
 
           <details class="takeaways-panel" id="takeaways-panel" hidden>
             <summary class="takeaways-toggle">Key Takeaways</summary>
