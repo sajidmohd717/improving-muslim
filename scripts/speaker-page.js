@@ -132,6 +132,9 @@ function speakerSeries(speakerName) {
   });
 }
 
+const detailIcon =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg><span class="sr-only">Show details</span>';
+
 function renderSeriesCard(series) {
   return `
     <article class="series-card">
@@ -148,7 +151,9 @@ function renderSeriesCard(series) {
           <span>${escapeHtml(series.episodes || "Lectures")}</span>
           ${series.viewcount ? `<span>${escapeHtml(series.viewcount)}</span>` : ""}
         </div>
-        <button class="details-toggle" type="button" aria-expanded="false">Details</button>
+        <div class="card-actions">
+          <button class="details-toggle icon-btn" type="button" aria-expanded="false" aria-label="Show details">${detailIcon}</button>
+        </div>
         <p class="series-description">${escapeHtml(series.description || "Open this series to explore the available lectures.")}</p>
       </div>
     </article>
@@ -187,7 +192,7 @@ els.grid.addEventListener("click", (event) => {
   if (!button) return;
   const card = button.closest(".series-card");
   const isExpanded = card.classList.toggle("is-expanded");
-  button.textContent = isExpanded ? "Hide details" : "Details";
+  button.setAttribute("aria-label", isExpanded ? "Hide details" : "Show details");
   button.setAttribute("aria-expanded", String(isExpanded));
 });
 

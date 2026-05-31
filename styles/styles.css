@@ -777,15 +777,15 @@ h2 {
 }
 
 .details-toggle {
-  align-self: flex-start;
-  margin-top: 14px;
+  align-self: center;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: #fbf8f0;
   color: var(--accent-strong);
-  font-size: 0.82rem;
-  font-weight: 800;
-  padding: 8px 10px;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .card-actions,
@@ -824,7 +824,9 @@ h2 {
 }
 
 .mini-action {
-  padding: 7px 10px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   font-size: 0.78rem;
 }
 
@@ -835,12 +837,34 @@ h2 {
   color: var(--accent);
 }
 
+#save-episode-button[aria-pressed="true"] svg,
+.save-series-button[aria-pressed="true"] svg {
+  fill: var(--ink);
+  stroke: var(--ink);
+}
+
 .mini-action:hover,
 .mini-action:focus-visible,
+.details-toggle:hover,
+.details-toggle:focus-visible,
 .utility-button:hover,
 .utility-button:focus-visible {
   border-color: var(--accent);
   outline: none;
+}
+
+.details-toggle[aria-expanded="true"] {
+  border-color: rgba(23, 107, 91, 0.35);
+  background: rgba(23, 107, 91, 0.1);
+  color: var(--accent);
+}
+
+.details-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.details-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
 }
 
 .action-status {
@@ -2413,9 +2437,8 @@ details[open] .takeaways-toggle::after {
 
   .series-card .details-toggle {
     display: inline-flex;
-    margin-top: 8px;
-    padding: 6px 8px;
-    font-size: 0.72rem;
+    width: 30px;
+    height: 30px;
   }
 
   .card-actions {
@@ -2424,8 +2447,9 @@ details[open] .takeaways-toggle::after {
   }
 
   .mini-action {
-    padding: 6px 8px;
-    font-size: 0.72rem;
+    width: 30px;
+    height: 30px;
+    padding: 0;
   }
 
   .series-progress-track {
@@ -2437,7 +2461,7 @@ details[open] .takeaways-toggle::after {
   }
 
   .series-card .series-description {
-    display: -webkit-box;
+    display: none;
     overflow: hidden;
     margin: 7px 0 0;
     border-top: 0;
@@ -2445,8 +2469,6 @@ details[open] .takeaways-toggle::after {
     font-size: 0.78rem;
     line-height: 1.35;
     padding-top: 0;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
   }
 
   .series-card.is-expanded .series-description {
@@ -2454,7 +2476,22 @@ details[open] .takeaways-toggle::after {
   }
 
   .series-meta {
-    margin-top: 6px;
+    gap: 5px;
+    margin-top: 3px;
+    font-size: 0.62rem;
+  }
+
+  .series-meta span {
+    gap: 5px;
+  }
+
+  .series-meta span:not(:last-child)::after {
+    width: 3px;
+    height: 3px;
+  }
+
+  .series-topic {
+    font-size: 0.6rem;
   }
 
   .episode-list {

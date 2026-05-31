@@ -407,6 +407,22 @@ function isSeriesSaved(url) {
   return readSavedItems().some((item) => item.key === `series:${url}`);
 }
 
+function seriesActionIcons() {
+  return {
+    save:
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span class="sr-only">Save series</span>',
+    share:
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg><span class="sr-only">Share series</span>',
+    details:
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg><span class="sr-only">Show details</span>',
+  };
+}
+
+function updateSeriesSaveButton(button, saved) {
+  button.setAttribute("aria-pressed", String(saved));
+  button.setAttribute("aria-label", saved ? "Remove saved series" : "Save series");
+}
+
 function toggleSavedSeries(series, url, button) {
   const item = savedSeriesItem(series, url);
   const items = readSavedItems();
@@ -417,13 +433,12 @@ function toggleSavedSeries(series, url, button) {
       : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
 
   if (!writeSavedItems(nextItems)) {
-    button.textContent = "Could not save";
+    button.setAttribute("aria-label", "Could not save series");
     return;
   }
 
   const saved = existing < 0;
-  button.textContent = saved ? "Saved" : "Save";
-  button.setAttribute("aria-pressed", String(saved));
+  updateSeriesSaveButton(button, saved);
 }
 
 async function shareSeries(series, url, button) {
@@ -441,12 +456,12 @@ async function shareSeries(series, url, button) {
     }
 
     await navigator.clipboard.writeText(absoluteUrl);
-    button.textContent = "Copied";
+    button.setAttribute("aria-label", "Series link copied");
     setTimeout(() => {
-      button.textContent = "Share";
+      button.setAttribute("aria-label", "Share series");
     }, 1800);
   } catch {
-    button.textContent = "Could not share";
+    button.setAttribute("aria-label", "Could not share series");
   }
 }
 
@@ -665,6 +680,8 @@ function renderSeries() {
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
       const progress = seriesProgressSummary(item.title);
+      const saved = isSeriesSaved(seriesUrl);
+      const icons = seriesActionIcons();
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
@@ -682,12 +699,12 @@ function renderSeries() {
             </div>
             ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
             <div class="card-actions">
-              <button class="mini-action save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${isSeriesSaved(seriesUrl)}">
-                ${isSeriesSaved(seriesUrl) ? "Saved" : "Save"}
+              <button class="mini-action icon-btn save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${saved}" aria-label="${saved ? "Remove saved series" : "Save series"}">
+                ${icons.save}
               </button>
-              <button class="mini-action share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}">Share</button>
+              <button class="mini-action icon-btn share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-label="Share series">${icons.share}</button>
+              <button class="details-toggle icon-btn" type="button" aria-expanded="false" aria-label="Show details">${icons.details}</button>
             </div>
-            <button class="details-toggle" type="button" aria-expanded="false">Details</button>
             <p class="series-description">${escapeHtml(description)}</p>
           </div>
         </article>
@@ -781,7 +798,7 @@ function bindEvents() {
     }
     const card = button.closest(".series-card");
     const isExpanded = card.classList.toggle("is-expanded");
-    button.textContent = isExpanded ? "Hide details" : "Details";
+    button.setAttribute("aria-label", isExpanded ? "Hide details" : "Show details");
     button.setAttribute("aria-expanded", String(isExpanded));
   });
 
