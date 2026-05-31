@@ -22,9 +22,14 @@ const speakers = [
   { name: "Belal Assad", image: "./assets/speaker/ba.jpg" },
   { name: "Majed Mahmoud", image: "./assets/speaker/mm.jpg" },
   { name: "Yahya Al-Raaby", image: "./assets/speaker/yr.jpg" },
-  { name: "Uthman Ibn Farooq", image: "./assets/speaker/uif.jpg" },
   { name: "Mufti Menk", image: "./assets/speaker/mufti.jpeg" },
 ];
+
+const excludedSpeakerNames = new Set([
+  [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
+    .map((code) => String.fromCharCode(code))
+    .join(""),
+]);
 
 const imageMap = {
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
@@ -35,7 +40,6 @@ const imageMap = {
   parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",
   wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
   seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
-  seerahUthman: "./assets/thumbnail/life-of-prophet-muhammad/seerah-uthman.jpg",
   seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",
   fortress: "./assets/thumbnail/hadith/fortress.jpg",
   fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
@@ -194,11 +198,12 @@ const els = {
   menuToggle: document.querySelector(".menu-toggle"),
   siteMenu: document.querySelector("#site-menu"),
   speakerList: document.querySelector("#speaker-list"),
+  continueSection: document.querySelector("#continue-section"),
+  continueList: document.querySelector("#continue-list"),
   categoryList: document.querySelector("#category-list"),
   seriesGrid: document.querySelector("#series-grid"),
   statusMessage: document.querySelector("#status-message"),
   resultCount: document.querySelector("#result-count"),
-  seriesCount: document.querySelector("#series-count"),
   searchForm: document.querySelector(".search-form"),
   searchInput: document.querySelector("#series-search"),
   sortSelect: document.querySelector("#sort-select"),
@@ -231,6 +236,15 @@ function normalizeSections(sections) {
 
 function flattenSeries(sections) {
   return sections.flatMap((section) => section.seriesList);
+}
+
+function isAllowedSeries(series) {
+  const speaker = (series.speaker || "").trim().toLowerCase();
+  return !excludedSpeakerNames.has(speaker);
+}
+
+function availableLocalSeries() {
+  return [window.changeOfHeartSeries, window.enjoyYourPrayerSeries].filter(Boolean);
 }
 
 function localSeriesSections() {
@@ -284,6 +298,95 @@ function mergeLocalSeries(sections, category) {
 function setStatus(message, isVisible = true) {
   els.statusMessage.innerHTML = message;
   els.statusMessage.classList.toggle("is-visible", isVisible);
+}
+
+function progressKey(series, episode) {
+  return `lecture-progress:${series.playlistId}:${episode.id}`;
+}
+
+function episodeUrl(series, episode) {
+  return `./watch.html?series=${series.slug}&video=${episode.id}`;
+}
+
+function episodeThumbnailUrl(episode, quality = "mqdefault") {
+  return `https://i.ytimg.com/vi/${episode.id}/${quality}.jpg`;
+}
+
+function formatDuration(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  if (mins >= 60) {
+    const hours = Math.floor(mins / 60);
+    const restMins = mins % 60;
+    return `${hours}:${String(restMins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  }
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+function readStoredProgress(series, episode) {
+  try {
+    const progress = JSON.parse(localStorage.getItem(progressKey(series, episode))) || {};
+    const currentTime = Number(progress.currentTime) || 0;
+    const duration = Number(progress.duration) || 0;
+    const percent = duration > 0 ? currentTime / duration : 0;
+
+    if (currentTime < 10 || percent < 0.02 || percent > 0.97) {
+      return null;
+    }
+
+    return {
+      currentTime,
+      duration,
+      percent,
+      updatedAt: Number(progress.updatedAt) || 0,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+function renderContinueWatching() {
+  const items = availableLocalSeries()
+    .flatMap((series) =>
+      series.episodes
+        .filter((episode) => episode.videoSrc)
+        .map((episode) => ({ series, episode, progress: readStoredProgress(series, episode) }))
+        .filter((item) => item.progress),
+    )
+    .sort((a, b) => b.progress.updatedAt - a.progress.updatedAt)
+    .slice(0, 6);
+
+  if (!els.continueSection || !els.continueList) {
+    return;
+  }
+
+  els.continueSection.classList.toggle("is-hidden", items.length === 0);
+  if (!items.length) {
+    els.continueList.innerHTML = "";
+    return;
+  }
+
+  els.continueList.innerHTML = items
+    .map(({ series, episode, progress }) => {
+      const percent = Math.round(progress.percent * 100);
+      return `
+        <a class="continue-card" href="${episodeUrl(series, episode)}">
+          <div class="continue-thumb">
+            <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
+            <span>${percent}% watched</span>
+          </div>
+          <div class="continue-body">
+            <small>${escapeHtml(series.title)} - Episode ${episode.number}</small>
+            <strong>${escapeHtml(episode.title)}</strong>
+            <em>Resume at ${formatDuration(progress.currentTime)}</em>
+          </div>
+          <div class="continue-progress" aria-hidden="true">
+            <span style="width: ${Math.min(100, Math.max(0, percent))}%"></span>
+          </div>
+        </a>
+      `;
+    })
+    .join("");
 }
 
 function renderSpeakers() {
@@ -352,7 +455,11 @@ function getSeriesUrl(series) {
 
 function renderSeries() {
   const series = getSortedSeries(
-    flattenSeries(state.sections).filter(seriesMatchesSearch).filter(seriesMatchesSpeaker).map(enrichSeries)
+    flattenSeries(state.sections)
+      .filter(isAllowedSeries)
+      .filter(seriesMatchesSearch)
+      .filter(seriesMatchesSpeaker)
+      .map(enrichSeries)
   );
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
@@ -362,7 +469,6 @@ function renderSeries() {
     ? `Search in ${categoryName}`
     : categoryName;
   els.resultCount.textContent = `${series.length} ${series.length === 1 ? "series" : "series"}`;
-  els.seriesCount.textContent = flattenSeries(state.sections).length;
 
   if (!series.length) {
     els.seriesGrid.innerHTML = "";
@@ -516,5 +622,6 @@ function bindEvents() {
 
 renderSpeakers();
 renderCategories();
+renderContinueWatching();
 bindEvents();
 loadCategory(state.activeCategory);

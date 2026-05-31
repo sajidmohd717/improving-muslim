@@ -76,6 +76,18 @@ function episodeThumbnailUrl(episode, quality = "hqdefault") {
   return `https://i.ytimg.com/vi/${episode.id}/${quality}.jpg`;
 }
 
+function setPlayerPoster(episode) {
+  player.poster = episodeThumbnailUrl(episode);
+
+  const highResPoster = new Image();
+  highResPoster.onload = () => {
+    if (highResPoster.naturalWidth >= 640) {
+      player.poster = highResPoster.src;
+    }
+  };
+  highResPoster.src = episodeThumbnailUrl(episode, "maxresdefault");
+}
+
 function progressKey(episode) {
   return `lecture-progress:${series.playlistId}:${episode.id}`;
 }
@@ -183,7 +195,7 @@ document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Im
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
 kicker.textContent = `${series.title} | ${series.speaker}`;
 meta.textContent = `${series.topic} - Published ${formatDate(currentEpisode.published)}`;
-player.poster = episodeThumbnailUrl(currentEpisode);
+setPlayerPoster(currentEpisode);
 
 if (playlistTitle) playlistTitle.textContent = series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
