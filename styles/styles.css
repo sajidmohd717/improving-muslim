@@ -459,9 +459,7 @@ h2 {
   flex: 0 0 auto;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--surface);
   color: var(--muted);
   font-size: 0.92rem;
   font-weight: 800;
@@ -1348,7 +1346,7 @@ details[open] .takeaways-toggle::after {
 @keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -1357,7 +1355,7 @@ details[open] .takeaways-toggle::after {
 }
 
 .reveal-anim {
-  animation: card-in 0.32s ease both;
+  animation: card-in 0.22s ease both;
   animation-delay: var(--reveal-delay, 0ms);
 }
 
@@ -1549,8 +1547,8 @@ details[open] .takeaways-toggle::after {
 .series-card:active,
 .continue-card:active,
 .episode-card:active:not(.is-unavailable) {
-  transform: translateY(-1px) !important;
-  transition-duration: 80ms !important;
+  transform: translateY(-1px);
+  transition-duration: 80ms;
 }
 
 @media (max-width: 900px) {

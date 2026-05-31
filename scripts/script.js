@@ -421,7 +421,7 @@ function renderContinueWatching() {
     .map(({ series, episode, progress }, i) => {
       const percent = Math.round(progress.percent * 100);
       return `
-        <a class="continue-card reveal-anim" style="--reveal-delay:${i * 50}ms" href="${episodeUrl(series, episode)}">
+        <a class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" href="${episodeUrl(series, episode)}">
           <div class="continue-thumb">
             <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
             <span>${percent}% watched</span>
@@ -444,7 +444,7 @@ function renderSpeakers() {
   els.speakerList.innerHTML = speakers
     .map(
       (speaker, i) => `
-        <a class="speaker-card reveal-anim" style="--reveal-delay:${i * 40}ms" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
+        <a class="speaker-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 40}ms" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
           <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
           <span>${escapeHtml(speaker.name)}</span>
         </a>
@@ -539,7 +539,7 @@ function renderSeries() {
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
       return `
-        <article class="series-card reveal-anim" style="--reveal-delay:${i * 50}ms">
+        <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
             <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" />
           </a>

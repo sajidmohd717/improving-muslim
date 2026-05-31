@@ -65,7 +65,7 @@ episodeList.innerHTML = series.episodes
       const tagName = available ? "a" : "article";
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
-      <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${i * 40}ms"${href}>
+      <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${Math.min(i, 8) * 40}ms"${href}>
         <img
           src="https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg"
           alt=""
