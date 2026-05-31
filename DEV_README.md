@@ -22,6 +22,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
+- `public/` contains brand-facing assets: logo/favicons, the web manifest, and the default social sharing preview image.
 - `CNAME` pins the GitHub Pages custom domain to `improvingmuslim.com`.
 
 Moved pages include a `<base href="../" />` tag. Keep project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links work from both `index.html` and moved pages.
