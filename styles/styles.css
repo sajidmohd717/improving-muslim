@@ -639,6 +639,20 @@ h2 {
   content: "";
 }
 
+.series-progress-track {
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: rgba(23, 107, 91, 0.12);
+  overflow: hidden;
+}
+
+.series-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
 .details-toggle {
   align-self: flex-start;
   margin-top: 14px;
@@ -1234,6 +1248,31 @@ details[open] .takeaways-toggle::after {
 
 .watch-info {
   padding: 22px 0 0;
+}
+
+.watch-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.watch-breadcrumb a {
+  color: var(--accent);
+}
+
+.watch-breadcrumb a:hover,
+.watch-breadcrumb a:focus-visible {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  outline: none;
+}
+
+.watch-breadcrumb span[aria-hidden] {
+  font-size: 0.72rem;
 }
 
 .watch-info h1 {
@@ -1989,6 +2028,10 @@ details[open] .takeaways-toggle::after {
   }
 
   .series-card .details-toggle {
+    display: none;
+  }
+
+  .series-progress-track {
     display: none;
   }
 

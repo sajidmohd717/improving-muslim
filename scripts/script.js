@@ -508,6 +508,24 @@ function seriesMatchesSpeaker(series) {
   return series.speaker === state.activeSpeaker;
 }
 
+function seriesProgressSummary(seriesTitle) {
+  const localSeries = availableLocalSeries().find((s) => s.title === seriesTitle);
+  if (!localSeries) return null;
+  const watchable = localSeries.episodes.filter((e) => e.videoSrc);
+  if (!watchable.length) return null;
+  let completed = 0;
+  let started = false;
+  for (const ep of watchable) {
+    try {
+      const p = JSON.parse(localStorage.getItem(progressKey(localSeries, ep))) || {};
+      if (p.completed) { completed++; started = true; }
+      else if (p.currentTime > 10) { started = true; }
+    } catch {}
+  }
+  if (!started) return null;
+  return { completed, total: watchable.length };
+}
+
 function getSeriesUrl(series) {
   if (series.title === "Change of Heart") {
     return "./pages/series-change-of-heart.html";
@@ -559,6 +577,7 @@ function renderSeries() {
         item.description ||
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
+      const progress = seriesProgressSummary(item.title);
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
@@ -574,6 +593,7 @@ function renderSeries() {
               <span>${escapeHtml(item.episodes || "Lectures")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
+            ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
             <button class="details-toggle" type="button" aria-expanded="false">Details</button>
             <p class="series-description">${escapeHtml(description)}</p>
           </div>

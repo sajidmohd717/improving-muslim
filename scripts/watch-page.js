@@ -223,8 +223,11 @@ function updateMediaSessionState(state) {
 
 document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Improving Muslim`;
 title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
-kicker.textContent = `${series.title} | ${series.speaker}`;
-meta.textContent = `${series.topic} - Published ${formatDate(currentEpisode.published)}`;
+kicker.textContent = series.title;
+kicker.href = seriesPageUrl;
+meta.textContent = `${series.speaker} · ${series.topic} · ${formatDate(currentEpisode.published)}`;
+const breadcrumbEp = document.querySelector("#watch-breadcrumb-ep");
+if (breadcrumbEp) breadcrumbEp.textContent = `Episode ${currentEpisode.number}`;
 setPlayerPoster(currentEpisode);
 
 if (playlistTitle) playlistTitle.textContent = series.title;
