@@ -24,6 +24,7 @@ function renderRecap(text) {
 
 const seriesRegistry = {
   "change-of-heart": window.changeOfHeartSeries,
+  "enjoy-your-prayer": window.enjoyYourPrayerSeries,
   "why-me": window.whyMeSeries,
 };
 

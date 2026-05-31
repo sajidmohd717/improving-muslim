@@ -282,6 +282,23 @@ h2 {
   border-radius: 8px;
   background: rgba(255, 253, 248, 0.78);
   padding: 14px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.speaker-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(23, 107, 91, 0.12);
+}
+
+.speaker-card.is-active {
+  border-color: var(--accent);
+  background: rgba(23, 107, 91, 0.06);
+  box-shadow: 0 2px 10px rgba(23, 107, 91, 0.15);
+}
+
+.speaker-card.is-active img {
+  border-color: var(--accent);
 }
 
 .speaker-card img {

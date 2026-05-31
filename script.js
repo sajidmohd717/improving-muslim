@@ -3,6 +3,7 @@ const API_ROOT = "https://sajidmohd717.github.io/series-api";
 const categories = [
   { name: "All", value: "foryou" },
   { name: "Purification", value: "purification" },
+  { name: "Prayer", value: "prayer" },
   { name: "Tafsir", value: "tafsir" },
   { name: "Hadith", value: "hadith" },
   { name: "Aqeedah", value: "aqeedah" },
@@ -15,12 +16,12 @@ const categories = [
 ];
 
 const speakers = [
+  { name: "Ali Hammuda", image: "./assets/speaker/ah.jpg" },
   { name: "Omar Suleiman", image: "./assets/speaker/os.jpg" },
   { name: "Yasir Qadhi", image: "./assets/speaker/yq.jpg" },
   { name: "Belal Assad", image: "./assets/speaker/ba.jpg" },
   { name: "Majed Mahmoud", image: "./assets/speaker/mm.jpg" },
   { name: "Yahya Al-Raaby", image: "./assets/speaker/yr.jpg" },
-  { name: "Ali Hammuda", image: "./assets/speaker/ah.jpg" },
   { name: "Uthman Ibn Farooq", image: "./assets/speaker/uif.jpg" },
   { name: "Mufti Menk", image: "./assets/speaker/mufti.jpeg" },
 ];
@@ -39,9 +40,23 @@ const imageMap = {
   fortress: "./assets/thumbnail/hadith/fortress.jpg",
   fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
   baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
+  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
 };
 
 const fallbackData = [
+  {
+    sectionTitle: "Salah & Worship",
+    seriesList: [
+      {
+        title: "Enjoy Your Prayer",
+        speaker: "Ali Hammuda",
+        episodes: "21 Lectures",
+        thumbnailImage: "enjoyYourPrayer",
+        link: "./series-enjoy-your-prayer.html",
+        viewcount: "1M views",
+      },
+    ],
+  },
   {
     sectionTitle: "Purification of the Heart",
     seriesList: [
@@ -112,10 +127,13 @@ const fallbackData = [
 ];
 
 const localCategoryFallbacks = {
-  purification: [fallbackData[0]],
+  prayer: [fallbackData[0]],
+  purification: [fallbackData[1]],
 };
 
 const descriptions = {
+  "Enjoy Your Prayer":
+    "A step-by-step journey through salah, helping prayer become more present, meaningful, and loved.",
   "Why Me | 2024 Ramadan Series":
     "A reflective Ramadan series on hardship, divine decree, purpose, and learning to see tests through a more faithful lens.",
   "Change of Heart":
@@ -131,6 +149,7 @@ const state = {
   sections: [],
   searchTerm: "",
   sortBy: "views",
+  activeSpeaker: null,
 };
 
 function formatViewCount(n) {
@@ -144,6 +163,10 @@ function formatViewCount(n) {
 function enrichSeries(item) {
   if (item.title === "Change of Heart" && window.changeOfHeartSeries) {
     const total = window.changeOfHeartSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+  }
+  if (item.title === "Enjoy Your Prayer" && window.enjoyYourPrayerSeries) {
+    const total = window.enjoyYourPrayerSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
   return item;
@@ -210,6 +233,54 @@ function flattenSeries(sections) {
   return sections.flatMap((section) => section.seriesList);
 }
 
+function localSeriesSections() {
+  const sections = [];
+
+  if (window.enjoyYourPrayerSeries) {
+    sections.push({
+      sectionTitle: "Salah & Worship",
+      seriesList: [
+        {
+          title: window.enjoyYourPrayerSeries.title,
+          speaker: window.enjoyYourPrayerSeries.speaker,
+          episodes: `${window.enjoyYourPrayerSeries.episodes.length} Lectures`,
+          thumbnailImage: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+          link: window.enjoyYourPrayerSeries.seriesPageUrl,
+          description: window.enjoyYourPrayerSeries.description,
+        },
+      ],
+    });
+  }
+
+  return sections;
+}
+
+function mergeLocalSeries(sections, category) {
+  if (!["foryou", "prayer"].includes(category)) {
+    return sections;
+  }
+
+  const existingTitles = new Set(flattenSeries(sections).map((series) => series.title));
+  const merged = [...sections];
+
+  localSeriesSections().forEach((localSection) => {
+    const newSeries = localSection.seriesList.filter((series) => !existingTitles.has(series.title));
+    if (!newSeries.length) {
+      return;
+    }
+
+    const matchingSection = merged.find((section) => section.sectionTitle === localSection.sectionTitle);
+    if (matchingSection) {
+      matchingSection.seriesList.push(...newSeries);
+    } else {
+      merged.push({ ...localSection, seriesList: newSeries });
+    }
+    newSeries.forEach((series) => existingTitles.add(series.title));
+  });
+
+  return merged;
+}
+
 function setStatus(message, isVisible = true) {
   els.statusMessage.innerHTML = message;
   els.statusMessage.classList.toggle("is-visible", isVisible);
@@ -219,7 +290,8 @@ function renderSpeakers() {
   els.speakerList.innerHTML = speakers
     .map(
       (speaker) => `
-        <article class="speaker-card">
+        <article class="speaker-card ${speaker.name === state.activeSpeaker ? "is-active" : ""}"
+          role="button" tabindex="0" data-speaker="${escapeHtml(speaker.name)}">
           <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
           <span>${escapeHtml(speaker.name)}</span>
         </article>
@@ -257,9 +329,18 @@ function seriesMatchesSearch(series) {
   return haystack.includes(state.searchTerm);
 }
 
+function seriesMatchesSpeaker(series) {
+  if (!state.activeSpeaker) return true;
+  return series.speaker === state.activeSpeaker;
+}
+
 function getSeriesUrl(series) {
   if (series.title === "Change of Heart") {
     return "./series-change-of-heart.html";
+  }
+
+  if (series.title === "Enjoy Your Prayer") {
+    return "./series-enjoy-your-prayer.html";
   }
 
   if (series.title === "Why Me | 2024 Ramadan Series") {
@@ -270,10 +351,16 @@ function getSeriesUrl(series) {
 }
 
 function renderSeries() {
-  const series = getSortedSeries(flattenSeries(state.sections).filter(seriesMatchesSearch).map(enrichSeries));
+  const series = getSortedSeries(
+    flattenSeries(state.sections).filter(seriesMatchesSearch).filter(seriesMatchesSpeaker).map(enrichSeries)
+  );
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
-  els.activeCategoryLabel.textContent = state.searchTerm ? `Search in ${categoryName}` : categoryName;
+  els.activeCategoryLabel.textContent = state.activeSpeaker
+    ? state.activeSpeaker
+    : state.searchTerm
+    ? `Search in ${categoryName}`
+    : categoryName;
   els.resultCount.textContent = `${series.length} ${series.length === 1 ? "series" : "series"}`;
   els.seriesCount.textContent = flattenSeries(state.sections).length;
 
@@ -330,15 +417,16 @@ async function loadCategory(category) {
     }
 
     const rawText = await response.text();
-    state.sections = normalizeSections(JSON.parse(cleanJson(rawText)));
+    state.sections = mergeLocalSeries(normalizeSections(JSON.parse(cleanJson(rawText))), category);
   } catch (error) {
     console.warn(error);
-    state.sections = normalizeSections(localCategoryFallbacks[category] || fallbackData);
+    state.sections = mergeLocalSeries(normalizeSections(localCategoryFallbacks[category] || fallbackData), category);
     setStatus(
       `Live data could not be loaded, so a saved starter collection is shown. <button class="retry-button" type="button">Retry</button>`,
     );
   }
 
+  renderSpeakers();
   renderSeries();
 }
 
@@ -364,7 +452,32 @@ function bindEvents() {
     if (!button) {
       return;
     }
+    state.activeSpeaker = null;
     loadCategory(button.dataset.category);
+  });
+
+  els.speakerList.addEventListener("click", async (event) => {
+    const card = event.target.closest("[data-speaker]");
+    if (!card) return;
+    const name = card.dataset.speaker;
+    state.activeSpeaker = state.activeSpeaker === name ? null : name;
+    renderSpeakers();
+    if (state.activeSpeaker && state.activeCategory !== "foryou") {
+      await loadCategory("foryou");
+    } else {
+      renderSeries();
+    }
+    document.querySelector("#series").scrollIntoView({ behavior: "smooth" });
+  });
+
+  els.speakerList.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      const card = event.target.closest("[data-speaker]");
+      if (card) {
+        event.preventDefault();
+        card.click();
+      }
+    }
   });
 
   els.seriesGrid.addEventListener("click", (event) => {
