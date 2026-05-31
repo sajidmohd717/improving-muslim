@@ -810,6 +810,19 @@ h2 {
   font-weight: 800;
 }
 
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  line-height: 0;
+}
+
+#save-episode-button[aria-pressed="true"] svg {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
 .mini-action {
   padding: 7px 10px;
   font-size: 0.78rem;
