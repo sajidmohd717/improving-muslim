@@ -12,6 +12,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `data/` contains series and speaker data files.
 - `styles/styles.css` contains all site styling.
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
+- `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page.
 - `scripts/watch-page.js` loads the selected episode, handles native playback, progress saving, completion state, and media-session controls.
@@ -168,6 +169,8 @@ Important implications:
 
 The Settings page at `pages/settings.html` explains local storage and lets users reset watch history on the current device.
 
+Settings also includes a theme selector. `scripts/theme.js` applies `system`, `light`, or `dark` mode using `localStorage` key `improving-muslim:theme`.
+
 ## Player Behavior
 
 The watch page uses a native HTML5 `<video>` element, not a YouTube iframe. This avoids YouTube embed errors and keeps the experience focused.
@@ -188,14 +191,9 @@ Browser and OS rules still decide whether background or lock-screen playback con
 
 Homepage series thumbnails and speaker photos mostly use local assets.
 
-Change of Heart episode thumbnails currently use YouTube thumbnail CDN URLs generated from episode IDs:
+Episode thumbnails and video posters should not depend on YouTube's thumbnail CDN at runtime. Series data should provide a local `thumbnailSrc` for the series artwork, plus `episodeThumbnailPath` for episode artwork saved as `episode-01.jpg`, `episode-02.jpg`, and so on. Individual episodes can still override this with their own local `thumbnailSrc` when a custom image is needed.
 
-```js
-https://i.ytimg.com/vi/${episode.id}/mqdefault.jpg
-https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg
-```
-
-If the platform should become fully independent from YouTube, move episode thumbnails to local assets or R2 and update the helper functions in `watch-page.js` and `series-page.js`.
+The UI also includes `prefers-reduced-motion` handling. When adding animations, hover transforms, shimmer effects, or scrolling behavior, make sure they are disabled or reduced inside the reduced-motion media query.
 
 ## Captions And Episode Notes
 

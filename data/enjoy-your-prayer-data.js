@@ -4,6 +4,8 @@ window.enjoyYourPrayerSeries = {
   seriesPageUrl: "./pages/series-enjoy-your-prayer.html",
   speaker: "Ali Hammuda",
   topic: "Salah & Worship",
+  thumbnailSrc: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+  episodeThumbnailPath: "./assets/thumbnail/enjoy-your-prayer/episodes",
   playlistId: "PL9OPVukugS7wrMiT9A9CwRNL_hA9jDH0f",
   description:
     "An essential series for those whose Salah feels dry, chore-like, and joyless. Ali Hammuda walks through the entire prayer step by step, restoring wonder, meaning, and presence.",

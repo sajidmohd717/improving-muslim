@@ -58,3 +58,23 @@ if (autoplayToggle) {
     catch { /* ignore */ }
   });
 }
+
+const themeSelect = document.querySelector("#theme-select");
+const THEME_KEY = "improving-muslim:theme";
+if (themeSelect) {
+  try {
+    themeSelect.value = localStorage.getItem(THEME_KEY) || "system";
+  } catch {
+    themeSelect.value = "system";
+  }
+
+  themeSelect.addEventListener("change", () => {
+    const selectedTheme = ["light", "dark"].includes(themeSelect.value) ? themeSelect.value : "system";
+    try {
+      localStorage.setItem(THEME_KEY, selectedTheme);
+    } catch {
+      /* ignore */
+    }
+    document.documentElement.dataset.theme = selectedTheme;
+  });
+}

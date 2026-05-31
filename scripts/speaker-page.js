@@ -11,7 +11,7 @@ const localSeries = [
 const imageMap = {
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart.png",
   enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
-  fortyHadithNawawi: "https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg",
+  fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
   angels1: "./assets/thumbnail/heart-softeners/angels1.jpg",
   heartmatters: "./assets/thumbnail/heart-softeners/heartmatters.jpg",
@@ -105,8 +105,7 @@ function localThumbnail(series) {
   if (series.slug === "enjoy-your-prayer") return imageMap.enjoyYourPrayer;
   if (series.slug === "forty-hadith-nawawi") return imageMap.fortyHadithNawawi;
   if (series.slug === "why-me") return imageMap.whyMe;
-  const firstEpisode = series.episodes?.[0];
-  return firstEpisode ? `https://i.ytimg.com/vi/${firstEpisode.id}/hqdefault.jpg` : "./public/icon.png";
+  return series.thumbnailSrc || "./public/icon.png";
 }
 
 function localSeriesCard(series) {

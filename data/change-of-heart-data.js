@@ -4,6 +4,8 @@ window.changeOfHeartSeries = {
   seriesPageUrl: "./pages/series-change-of-heart.html",
   speaker: "Ali Hammuda",
   topic: "Purification of the Heart",
+  thumbnailSrc: "./assets/thumbnail/heart-softeners/changeofheart.png",
+  episodeThumbnailPath: "./assets/thumbnail/change-of-heart/episodes",
   playlistId: "PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
   description:
     "A focused series on the actions, diseases, and renewal of the heart, taught by Ali Hammuda.",

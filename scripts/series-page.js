@@ -18,6 +18,18 @@ function isEpisodeAvailable(episode) {
   return Boolean(episode.videoSrc);
 }
 
+function episodeThumbnailUrl(episode) {
+  if (episode.thumbnailSrc) {
+    return episode.thumbnailSrc;
+  }
+
+  if (series.episodeThumbnailPath && episode.number) {
+    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
+  }
+
+  return series.thumbnailSrc || "./public/icon.png";
+}
+
 function progressKey(episode) {
   return `lecture-progress:${series.playlistId}:${episode.id}`;
 }
@@ -67,7 +79,7 @@ episodeList.innerHTML = series.episodes
       return `
       <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${Math.min(i, 8) * 40}ms"${href}>
         <img
-          src="https://i.ytimg.com/vi/${episode.id}/hqdefault.jpg"
+          src="${episodeThumbnailUrl(episode)}"
           alt=""
           loading="lazy"
         />

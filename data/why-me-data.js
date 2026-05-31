@@ -4,6 +4,8 @@ window.whyMeSeries = {
   seriesPageUrl: "./pages/series-why-me.html",
   speaker: "Omar Suleiman",
   topic: "Reflection and Contemplation",
+  thumbnailSrc: "./assets/thumbnail/heart-softeners/whyme.jpg",
+  episodeThumbnailPath: "./assets/thumbnail/why-me/episodes",
   playlistId: "PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
   description:
     "A reflective Ramadan series on hardship, divine decree, purpose, and learning to see tests through a more faithful lens.",

@@ -4,6 +4,8 @@ window.fortyHadithSeries = {
   "seriesPageUrl": "./pages/series-forty-hadith-nawawi.html",
   "speaker": "Navaid Aziz",
   "topic": "Hadith",
+  "thumbnailSrc": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
+  "episodeThumbnailPath": "./assets/thumbnail/forty-hadith-nawawi/episodes",
   "playlistId": "PLANmApGKw_OoBaN2C0Y983cwJGL47842I",
   "description": "A detailed journey through Imam an-Nawawi's famous collection of foundational hadith, taught by Navaid Aziz with practical lessons for belief, worship, character, and daily Muslim life.",
   "episodes": [

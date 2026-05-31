@@ -96,20 +96,20 @@ function isEpisodeAvailable(episode) {
   return Boolean(episode.videoSrc);
 }
 
-function episodeThumbnailUrl(episode, quality = "hqdefault") {
-  return `https://i.ytimg.com/vi/${episode.id}/${quality}.jpg`;
+function episodeThumbnailUrl(episode) {
+  if (episode.thumbnailSrc) {
+    return episode.thumbnailSrc;
+  }
+
+  if (series.episodeThumbnailPath && episode.number) {
+    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
+  }
+
+  return series.thumbnailSrc || "./public/icon.png";
 }
 
 function setPlayerPoster(episode) {
   player.poster = episodeThumbnailUrl(episode);
-
-  const highResPoster = new Image();
-  highResPoster.onload = () => {
-    if (highResPoster.naturalWidth >= 640) {
-      player.poster = highResPoster.src;
-    }
-  };
-  highResPoster.src = episodeThumbnailUrl(episode, "maxresdefault");
 }
 
 function progressKey(episode) {
@@ -401,7 +401,7 @@ episodeList.innerHTML = series.episodes
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       return `
         <${tagName} class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""} ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${href}>
-          <img src="${episodeThumbnailUrl(episode, "mqdefault")}" alt="" loading="lazy" />
+          <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
           <span>
             <small>Episode ${episode.number}</small>
             <strong>${episode.title}</strong>

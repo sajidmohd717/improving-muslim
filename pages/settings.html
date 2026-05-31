@@ -17,6 +17,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/styles.css" />
+    <script src="./scripts/theme.js"></script>
     <title>Settings | Improving Muslim</title>
   </head>
   <body>
@@ -69,6 +70,24 @@
           <label class="toggle-switch" for="autoplay-toggle">
             <input type="checkbox" id="autoplay-toggle" aria-label="Autoplay next episode" />
             <span class="toggle-track" aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-section" aria-labelledby="theme-title">
+        <div class="settings-panel">
+          <div>
+            <p class="eyebrow">Appearance</p>
+            <h2 id="theme-title">Theme</h2>
+            <p>Use your system setting, or choose a calmer light or dark theme for study.</p>
+          </div>
+          <label class="settings-field" for="theme-select">
+            Theme
+            <select id="theme-select" class="sort-select">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
           </label>
         </div>
       </section>

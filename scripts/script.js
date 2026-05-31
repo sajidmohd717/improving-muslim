@@ -37,7 +37,7 @@ const imageMap = {
   fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
   baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
   enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
-  fortyHadithNawawi: "https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg",
+  fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
 };
 
 const fallbackData = [
@@ -289,7 +289,9 @@ function localSeriesSections(category = "foryou") {
           title: window.fortyHadithSeries.title,
           speaker: window.fortyHadithSeries.speaker,
           episodes: `${window.fortyHadithSeries.episodes.length} Lectures`,
-          thumbnailImage: "https://i.ytimg.com/vi/3p4P6ZttAcI/hqdefault.jpg",
+          thumbnailImage:
+            window.fortyHadithSeries.thumbnailSrc ||
+            "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
           link: window.fortyHadithSeries.seriesPageUrl,
           description: window.fortyHadithSeries.description,
         },
@@ -359,8 +361,16 @@ function episodeUrl(series, episode) {
   return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
 }
 
-function episodeThumbnailUrl(episode, quality = "mqdefault") {
-  return `https://i.ytimg.com/vi/${episode.id}/${quality}.jpg`;
+function episodeThumbnailUrl(series, episode) {
+  if (episode.thumbnailSrc) {
+    return episode.thumbnailSrc;
+  }
+
+  if (series.episodeThumbnailPath && episode.number) {
+    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
+  }
+
+  return series.thumbnailSrc || "./public/icon.png";
 }
 
 function formatDuration(seconds) {
@@ -440,7 +450,7 @@ function renderContinueWatching() {
       return `
         <a class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" href="${episodeUrl(series, episode)}">
           <div class="continue-thumb">
-            <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
+            <img src="${episodeThumbnailUrl(series, episode)}" alt="" loading="lazy" />
             <div class="continue-ring" role="img" aria-label="${percent}% watched">
               <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
                 <circle class="ring-track" cx="18" cy="18" r="15.9"/>
