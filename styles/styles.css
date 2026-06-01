@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 @property --glow-x {
   syntax: "<percentage>";
   inherits: false;
@@ -641,6 +643,9 @@ h2 {
 
 .category-button {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
@@ -783,8 +788,8 @@ h2 {
   background: #fbf8f0;
   color: var(--accent-strong);
   cursor: pointer;
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
@@ -818,14 +823,19 @@ h2 {
   line-height: 0;
 }
 
+.icon-btn:not(.mini-action):not(.details-toggle) {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 #save-episode-button[aria-pressed="true"] svg {
   fill: var(--ink);
   stroke: var(--ink);
 }
 
 .mini-action {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   font-size: 0.78rem;
 }
@@ -979,7 +989,7 @@ h2 {
 }
 
 .recap-toggle::after {
-  content: "▾";
+  content: "\25BE";
   flex-shrink: 0;
   font-family: Inter, Arial, Helvetica, sans-serif;
   font-size: 1rem;
@@ -1051,14 +1061,14 @@ details[open] .recap-toggle::after {
 }
 
 .takeaways-toggle::before {
-  content: "✦";
+  content: "\2726";
   color: var(--gold);
   font-size: 0.8rem;
   flex-shrink: 0;
 }
 
 .takeaways-toggle::after {
-  content: "▾";
+  content: "\25BE";
   flex-shrink: 0;
   font-family: Inter, Arial, Helvetica, sans-serif;
   font-size: 1rem;
@@ -2230,6 +2240,12 @@ details[open] .takeaways-toggle::after {
   .section-reveal {
     transition: none;
   }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+  }
 }
 
 @media (hover: hover) {
@@ -2503,8 +2519,8 @@ details[open] .takeaways-toggle::after {
 
   .series-card .details-toggle {
     display: inline-flex;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
   }
 
   .card-actions {
@@ -2513,8 +2529,8 @@ details[open] .takeaways-toggle::after {
   }
 
   .mini-action {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     padding: 0;
   }
 
@@ -2668,6 +2684,10 @@ details[open] .takeaways-toggle::after {
     display: block;
   }
 
+  #speakers .row-heading {
+    display: flex;
+  }
+
   .principle-item {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -2704,4 +2724,40 @@ details[open] .takeaways-toggle::after {
   .bottom-nav {
     display: flex;
   }
+}
+
+/* ─── Cross-document page transitions (View Transitions API) ──────────────── */
+
+@view-transition {
+  navigation: auto;
+}
+
+.site-header { view-transition-name: site-header; }
+.site-footer { view-transition-name: site-footer; }
+.bottom-nav  { view-transition-name: bottom-nav; }
+main         { view-transition-name: page-main; }
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes page-out {
+  to { opacity: 0; transform: translateY(-4px); }
+}
+
+::view-transition-old(page-main) {
+  animation: page-out 0.14s ease both;
+}
+
+::view-transition-new(page-main) {
+  animation: page-in 0.22s ease both;
+}
+
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer),
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation-duration: 0.08s;
 }
