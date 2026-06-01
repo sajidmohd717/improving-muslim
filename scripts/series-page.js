@@ -182,6 +182,7 @@ episodeList.innerHTML = series.episodes
           src="${episodeThumbnailUrl(episode)}"
           alt=""
           loading="lazy"
+          onerror="this.onerror=null;this.src='${series.thumbnailSrc || './public/icon.png'}'"
         />
         <div class="episode-info">
           <span class="episode-number">

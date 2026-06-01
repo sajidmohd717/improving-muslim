@@ -141,6 +141,20 @@ const localCategoryFallbacks = {
   prayer: [fallbackData[1]],
   purification: [fallbackData[2]],
   hadith: [fallbackData[0]],
+  seerah: [
+    {
+      sectionTitle: "Seerah",
+      seriesList: [
+        {
+          title: "Seerah of Prophet Muhammed (S)",
+          speaker: "Yasir Qadhi",
+          episodes: "104 Lectures",
+          thumbnailImage: "seerahYasirQadhi",
+          link: "./pages/series-seerah-yasir-qadhi.html",
+        },
+      ],
+    },
+  ],
 };
 
 const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
@@ -189,6 +203,10 @@ function enrichSeries(item) {
   }
   if (item.title === "40 Hadith of Imam Nawawi" && window.fortyHadithSeries) {
     const total = window.fortyHadithSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+  }
+  if ((item.title.includes("Seerah of Prophet") || item.title.includes("Seerah of the Prophet")) && window.seerahYasirQadhiSeries) {
+    const total = window.seerahYasirQadhiSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
   if (item.title.startsWith("Why Me") && window.whyMeSeries) {
@@ -266,7 +284,7 @@ function isAllowedSeries(series) {
 }
 
 function availableLocalSeries() {
-  return [window.changeOfHeartSeries, window.enjoyYourPrayerSeries, window.fortyHadithSeries].filter(Boolean);
+  return [window.changeOfHeartSeries, window.enjoyYourPrayerSeries, window.fortyHadithSeries, window.seerahYasirQadhiSeries].filter(Boolean);
 }
 
 function localSeriesSections(category = "foryou") {
@@ -283,6 +301,22 @@ function localSeriesSections(category = "foryou") {
           thumbnailImage: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
           link: window.enjoyYourPrayerSeries.seriesPageUrl,
           description: window.enjoyYourPrayerSeries.description,
+        },
+      ],
+    });
+  }
+
+  if (window.seerahYasirQadhiSeries && ["foryou", "seerah"].includes(category)) {
+    sections.push({
+      sectionTitle: "Seerah",
+      seriesList: [
+        {
+          title: window.seerahYasirQadhiSeries.title,
+          speaker: window.seerahYasirQadhiSeries.speaker,
+          episodes: `${window.seerahYasirQadhiSeries.episodes.length} Lectures`,
+          thumbnailImage: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
+          link: window.seerahYasirQadhiSeries.seriesPageUrl,
+          description: window.seerahYasirQadhiSeries.description,
         },
       ],
     });
@@ -310,7 +344,7 @@ function localSeriesSections(category = "foryou") {
 }
 
 function mergeLocalSeries(sections, category) {
-  if (!["foryou", "prayer", "hadith"].includes(category)) {
+  if (!["foryou", "prayer", "hadith", "seerah"].includes(category)) {
     return sections;
   }
 
@@ -656,6 +690,10 @@ function getSeriesUrl(series) {
     return "./pages/series-why-me.html";
   }
 
+  if (series.title === "Seerah of Prophet Muhammed (S)") {
+    return "./pages/series-seerah-yasir-qadhi.html";
+  }
+
   return series.link;
 }
 
@@ -678,7 +716,11 @@ function renderSeries() {
 
   if (!series.length) {
     els.seriesGrid.innerHTML = "";
-    setStatus("No series matched that search. Try another title, speaker, or topic.");
+    setStatus(
+      state.searchTerm
+        ? "No series matched that search. Try another title, speaker, or topic."
+        : "No series in this category yet. Check back soon."
+    );
     return;
   }
 

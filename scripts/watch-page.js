@@ -27,6 +27,7 @@ const seriesRegistry = {
   "enjoy-your-prayer": window.enjoyYourPrayerSeries,
   "forty-hadith-nawawi": window.fortyHadithSeries,
   "why-me": window.whyMeSeries,
+  "seerah-yasir-qadhi": window.seerahYasirQadhiSeries,
 };
 
 const params = new URLSearchParams(window.location.search);
