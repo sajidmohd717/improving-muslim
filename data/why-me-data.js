@@ -15,6 +15,7 @@ window.whyMeSeries = {
       id: "uzE5j2qkFA0",
       title: "Where Was I Before I Was Born?",
       published: "2024-03-11",
+      views: 1700000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-1.mp4",
     },
     {
@@ -22,6 +23,7 @@ window.whyMeSeries = {
       id: "5hDUB6yFwBQ",
       title: "Why Did Allah Choose This Time for Me?",
       published: "2024-03-12",
+      views: 1100000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-2.mp4",
     },
     {
@@ -29,6 +31,7 @@ window.whyMeSeries = {
       id: "L6caeSh2bd8",
       title: "What Happened On My Birth Day?",
       published: "2024-03-13",
+      views: 964000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-3.mp4",
     },
     {
@@ -36,6 +39,7 @@ window.whyMeSeries = {
       id: "xbp_whdYYIw",
       title: "Why Is This My Family?",
       published: "2024-03-14",
+      views: 853000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-4.mp4",
     },
     {
@@ -43,6 +47,7 @@ window.whyMeSeries = {
       id: "I6VBsllL0bI",
       title: "What Shaped My Personality?",
       published: "2024-03-15",
+      views: 756000,
       videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-5.mp4",
     },
     {
@@ -50,18 +55,21 @@ window.whyMeSeries = {
       id: "UwK4rsBRXuI",
       title: "Why Do I Have These Abilities?",
       published: "2024-03-16",
+      views: 642000,
     },
     {
       number: 7,
       id: "N9larZxwXcc",
       title: "Why Do I Look Like This?",
       published: "2024-03-17",
+      views: 621000,
     },
     {
       number: 8,
       id: "JpwDs25yrRc",
       title: "Why Am I Rich or Poor?",
       published: "2024-03-18",
+      views: 589000,
     },
     {
       number: 9,

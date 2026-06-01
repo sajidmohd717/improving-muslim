@@ -5,26 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="../" />
     <meta name="referrer" content="origin" />
-    <meta
-      name="description"
-      content="Watch the Change of Heart series by Ali Hammuda in a focused Islamic lecture experience."
-    />
+    <meta name="description" content="Your watch history on Improving Muslim." />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
     <link rel="manifest" href="./public/site.webmanifest" />
     <meta name="theme-color" content="#176b5b" />
-    <meta property="og:site_name" content="Improving Muslim" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://improvingmuslim.com/pages/series-change-of-heart.html" />
-    <meta property="og:title" content="Change of Heart | Improving Muslim" />
-    <meta property="og:description" content="A focused series on the actions, diseases, and renewal of the heart, taught by Ali Hammuda." />
-    <meta property="og:image" content="https://improvingmuslim.com/assets/thumbnail/heart-softeners/changeofheart-card.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Change of Heart | Improving Muslim" />
-    <meta name="twitter:description" content="A focused series on the actions, diseases, and renewal of the heart, taught by Ali Hammuda." />
-    <meta name="twitter:image" content="https://improvingmuslim.com/assets/thumbnail/heart-softeners/changeofheart-card.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,7 +19,7 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
-    <title>Change of Heart | Improving Muslim</title>
+    <title>Watch History | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -44,38 +30,31 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
-          <a href="./pages/about.html">About</a>
+          <a href="./pages/series.html">Series</a>
           <a href="./pages/settings.html">Settings</a>
-          <a href="#episodes">Episodes</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="series-hero">
-        <div>
-          <p class="eyebrow">Purification of the Heart</p>
-          <h1>Change of Heart</h1>
-          <p class="hero-copy">
-            A focused watch space for Ali Hammuda's series on sincerity, certainty,
-            reliance, patience, contentment, and the renewal of the heart.
-          </p>
-          <a class="primary-link" id="start-series-link" href="./pages/watch.html">Start episode 1</a>
-        </div>
-        <img
-          src="./assets/thumbnail/heart-softeners/changeofheart-card.jpg"
-          alt="Change of Heart series thumbnail"
-        />
+      <section class="about-hero">
+        <p class="eyebrow">On this device</p>
+        <h1>Watch History</h1>
+        <p>Episodes you've started or finished. Stored locally — only visible on this device.</p>
       </section>
 
-      <section class="content-section" id="episodes" aria-labelledby="episodes-title">
-        <div class="section-heading row-heading">
-          <div>
-            <p class="eyebrow">16 episodes</p>
-            <h2 id="episodes-title">Episodes</h2>
-          </div>
+      <section class="about-section" aria-label="Watch history">
+        <div class="history-header">
+          <button class="danger-button" id="clear-history-btn" type="button" hidden>Clear all history</button>
         </div>
-        <div class="episode-list" id="episode-list"></div>
+
+        <div id="history-list" class="history-list"></div>
+
+        <div id="history-empty" class="history-empty" hidden>
+          <p class="history-empty-heading">No watch history yet</p>
+          <p class="history-empty-body">Episodes you start will appear here so you can pick up where you left off.</p>
+          <a class="primary-link" href="./pages/series.html">Browse series</a>
+        </div>
       </section>
     </main>
 
@@ -88,20 +67,23 @@
       <a href="./pages/feedback.html">Feedback</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
+
     <script src="./data/change-of-heart-data.js?v=20260601-thumbs"></script>
-    <script>window.currentSeries = window.changeOfHeartSeries;</script>
-    <script src="./scripts/series-page.js" defer></script>
+    <script src="./data/enjoy-your-prayer-data.js?v=20260601-thumbs"></script>
+    <script src="./data/forty-hadith-data.js"></script>
+    <script src="./data/why-me-data.js"></script>
+    <script src="./scripts/history-page.js" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./pages/series-change-of-heart.html">
+      <a class="bottom-nav-item" href="./pages/series.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
       </a>
-      <a class="bottom-nav-item" href="./pages/history.html">
+      <a class="bottom-nav-item is-active" href="./pages/history.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span>History</span>
       </a>

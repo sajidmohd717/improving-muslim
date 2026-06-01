@@ -190,6 +190,10 @@ function enrichSeries(item) {
     const total = window.fortyHadithSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
+  if (item.title.startsWith("Why Me") && window.whyMeSeries) {
+    const total = window.whyMeSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+  }
   return item;
 }
 
@@ -539,25 +543,31 @@ function renderContinueWatching() {
   els.continueList.innerHTML = items
     .map(({ series, episode, progress }, i) => {
       const percent = Math.round(progress.percent * 100);
+      const key = progressKey(series, episode);
       return `
-        <a class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" href="${episodeUrl(series, episode)}">
-          <div class="continue-thumb">
-            <img src="${episodeThumbnailUrl(series, episode)}" alt="" loading="lazy" />
-            <div class="continue-ring" role="img" aria-label="${percent}% watched">
-              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
-                <circle class="ring-track" cx="18" cy="18" r="15.9"/>
-                <circle class="ring-fill" cx="18" cy="18" r="15.9"
-                  stroke-dasharray="${percent} 100"
-                  stroke-dashoffset="25"/>
-              </svg>
+        <div class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" data-progress-key="${escapeHtml(key)}">
+          <a class="continue-card-link" href="${episodeUrl(series, episode)}">
+            <div class="continue-thumb">
+              <img src="${episodeThumbnailUrl(series, episode)}" alt="" loading="lazy" />
+              <div class="continue-ring" role="img" aria-label="${percent}% watched">
+                <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                  <circle class="ring-track" cx="18" cy="18" r="15.9"/>
+                  <circle class="ring-fill" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="${percent} 100"
+                    stroke-dashoffset="25"/>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="continue-body">
-            <small>${escapeHtml(series.title)} - Episode ${episode.number}</small>
-            <strong>${escapeHtml(episode.title)}</strong>
-            <em>Resume at ${formatDuration(progress.currentTime)}</em>
-          </div>
-        </a>
+            <div class="continue-body">
+              <small>${escapeHtml(series.title)} - Episode ${episode.number}</small>
+              <strong>${escapeHtml(episode.title)}</strong>
+              <em>Resume at ${formatDuration(progress.currentTime)}</em>
+            </div>
+          </a>
+          <button class="continue-remove" type="button" aria-label="Remove from watch history">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
       `;
     })
     .join("");
@@ -830,6 +840,15 @@ renderCategories();
 renderContinueWatching();
 bindEvents();
 loadCategory(state.activeCategory);
+
+els.continueList?.addEventListener("click", (e) => {
+  const btn = e.target.closest(".continue-remove");
+  if (!btn) return;
+  const card = btn.closest("[data-progress-key]");
+  if (!card) return;
+  try { localStorage.removeItem(card.dataset.progressKey); } catch {}
+  renderContinueWatching();
+});
 
 const sectionObserver = new IntersectionObserver(
   (entries) => {
