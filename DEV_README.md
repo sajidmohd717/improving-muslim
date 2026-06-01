@@ -16,6 +16,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page.
 - `scripts/watch-page.js` loads the selected episode, handles native playback, progress saving, completion state, and media-session controls.
+- `data/series-registry.js` is the central series registry — the single source of truth for all series slugs, categories, and global keys.
 - `data/*-data.js` files are the series data sources.
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
 - `assets/captions/` contains WebVTT captions, grouped by series slug.
@@ -29,42 +30,28 @@ Moved pages include a `<base href="../" />` tag. Keep project links in the form 
 
 ## Current Content State
 
-The active self-hosted series are:
+The platform currently has 12 series registered. All are self-hosted via Cloudflare R2 or referenced from the registry:
 
-```txt
-Change of Heart
-Speaker: Ali Hammuda
-Topic/category: Purification of the Heart
-Watchable: episodes 1-5
+| Series | Speaker | Category | Status |
+|---|---|---|---|
+| Change of Heart | Ali Hammuda | Purification | Partially unlocked |
+| Enjoy Your Prayer | Ali Hammuda | Prayer | Partially unlocked |
+| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | Partially unlocked |
+| Seerah of Prophet Muhammed (S) | Yasir Qadhi | Seerah | Partially unlocked |
+| Heart Matters Ramadan Series 2023 | Yasir Qadhi | Purification | Partially unlocked |
+| Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
+| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
+| The Message of the Quran in 30 Lessons | Yasir Qadhi | Quran | Partially unlocked |
+| The Parables of The Quran | Yasir Qadhi | Quran | Partially unlocked |
+| Why Me? | Omar Suleiman | Purification | Catalogue only |
 
-Enjoy Your Prayer
-Speaker: Ali Hammuda
-Topic/category: Salah & Worship
-Watchable: episodes 1-8
-
-40 Hadith of Imam Nawawi
-Speaker: Navaid Aziz
-Topic/category: Hadith
-Watchable: episodes 1-3
-```
-
-For Change of Heart, episodes 1-5 have R2-hosted MP4 files, native VTT captions, key takeaways, and episode recaps in `data/change-of-heart-data.js`.
-
-Episodes 6-16 remain visible as the future roadmap for the series, but they should not link to broken placeholder videos. These planned episodes use:
+Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
 
 ```js
 statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah."
 ```
 
-Do not add local placeholder `videoSrc` values such as `./assets/videos/...` for episodes that are not actually uploaded. The UI treats an episode with no `videoSrc` as unavailable and displays an `Uploading soon` label.
-
-Enjoy Your Prayer has 21 listed episodes. Episodes 1-8 are currently unlocked with R2-hosted MP4 files. Episodes 9-21 remain visible as `Uploading soon`.
-
-40 Hadith of Imam Nawawi has 46 listed episodes. Episodes 1-3 are currently unlocked with R2-hosted MP4 files. Later episodes remain visible as `Uploading soon` until their `videoSrc` is added.
-
-Why Me is currently a visible catalogue/roadmap series only. It has local episode thumbnails but no watchable MP4 files yet.
-
-The homepage topic order should stay intentional and learning-led. Current main topics include All, Purification, Prayer, Hadith, and Tafsir. Series should appear in the topic that best matches the learner's intent, not merely the speaker or source playlist.
+The homepage topic order should stay intentional and learning-led. Series should appear in the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
 ## Hosting
 
@@ -161,19 +148,99 @@ Never commit or paste production R2 secrets into the repository or docs.
 
 ## Adding A New Series
 
-Use this flow when bringing in a new series:
+All series registration flows through `data/series-registry.js`. Adding a new series no longer requires touching `scripts/script.js`, `scripts/watch-page.js`, `scripts/history-page.js`, or `scripts/speaker-page.js` — those all derive their series lists from the registry automatically.
 
-1. Pick a stable kebab-case `series.slug`, for example `forty-hadith-nawawi`.
-2. Add `data/{series-slug}-data.js` with `title`, `slug`, `seriesPageUrl`, `speaker`, `topic`, `thumbnailSrc`, `episodeThumbnailPath`, `playlistId`, `description`, and `episodes`.
-3. Add a dedicated series page in `pages/series-{series-slug}.html` that loads the data file and `scripts/series-page.js`.
-4. Add the series to the homepage data/rendering in `scripts/script.js`, including the correct category.
-5. Add or update speaker metadata in `data/speaker-data.js`.
-6. If the speaker needs a profile page, make sure `pages/speaker.html` can resolve the speaker slug and that the speaker is listed in `pages/speakers.html`.
-7. Add local series artwork and local episode thumbnails under `assets/thumbnail/{series-slug}/`.
-8. Add R2 `videoSrc` only for episodes that have actually been uploaded.
-9. Run `npm run check` and test the homepage, series page, watch page, speaker page, settings page, and mobile layout.
+### Step 1 — Create the data file
 
-Series pages are static HTML shells, but episode lists are data-driven. Prefer adding data and letting shared scripts render the repeated UI rather than hand-writing each episode card.
+Add `data/{series-slug}-data.js`. Required fields:
+
+```js
+window.myNewSeries = {
+  title: "Series Title",
+  slug: "series-slug",
+  seriesPageUrl: "./pages/series-series-slug.html",
+  speaker: "Speaker Name",
+  topic: "Category Display Name",   // shown in the hero eyebrow
+  thumbnailSrc: "./assets/thumbnail/series-slug/series-card.jpg",
+  episodeThumbnailPath: "./assets/thumbnail/series-slug/episodes",
+  playlistId: "YOUTUBE_PLAYLIST_ID",
+  description: "Short description used on series cards.",
+  episodes: [
+    {
+      number: 1,
+      id: "YOUTUBE_VIDEO_ID",
+      title: "Episode title",
+      published: "YYYY-MM-DD",
+      views: 0,
+      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/series-slug/series-slug-ep-1.mp4",
+      captionsSrc: "./assets/captions/series-slug/episode-01.vtt",
+    },
+  ],
+};
+```
+
+Only add `videoSrc` for episodes that have actually been uploaded to R2.
+
+### Step 2 — Register in the series registry
+
+Add one entry to `data/series-registry.js`:
+
+```js
+{ globalKey: "myNewSeries", slug: "series-slug", category: "purification", sectionTitle: "Purification of the Heart" },
+```
+
+`category` must match one of the values in the `categories` array in `scripts/script.js` (e.g. `purification`, `prayer`, `hadith`, `seerah`, `quran`, `angels`, `sahaba`). `sectionTitle` is the heading that groups series on the homepage — multiple series can share the same `sectionTitle`.
+
+### Step 3 — Create the series page
+
+Copy an existing `pages/series-*.html` as a starting point. Only three things change per series:
+
+1. The `<head>` meta tags (title, description, og:title, og:description, og:image, og:url, twitter:*)
+2. The `<p class="hero-copy">` — write crafted prose describing the series (this stays in HTML for editorial control; everything else in the hero is rendered from the data file)
+3. The three bottom script lines:
+
+```html
+<script src="./data/series-slug-data.js"></script>
+<script>window.currentSeries = window.myNewSeries;</script>
+<script src="./scripts/series-page.js" defer></script>
+```
+
+The hero eyebrow, h1, thumbnail, episode count, and start link are all populated automatically by `renderHero()` in `scripts/series-page.js`.
+
+### Step 4 — Add the data file script tag to shared pages
+
+Add one `<script>` tag to each of these four pages, alongside the existing data file tags:
+
+- `index.html`
+- `pages/watch.html`
+- `pages/history.html`
+- `pages/speaker.html`
+
+```html
+<script src="./data/series-slug-data.js"></script>
+```
+
+### Step 5 — Add assets and speaker
+
+- Series thumbnail: `assets/thumbnail/{series-slug}/series-card.jpg` (referenced by `thumbnailSrc`)
+- Episode thumbnails: `assets/thumbnail/{series-slug}/episodes/episode-01.jpg`, `episode-02.jpg`, ...
+- If the speaker is new: add their entry to `data/speaker-data.js` and a photo to `assets/speaker/`
+- Add the series page URL to `sitemap.xml`
+- Add a card to `pages/series.html` (the static browse page)
+
+### Step 6 — Update the JS syntax check
+
+Add the new data file to the `check:js` script in `package.json`:
+
+```
+&& node --check data/series-slug-data.js
+```
+
+### Step 7 — Verify
+
+Run `npm run check` and test: homepage (series appears in correct category), series page (hero and episodes render), watch page (episode plays), speaker page (series listed under correct speaker), history page (watch progress tracked).
+
+Series pages are static HTML shells. Episode lists, hero content, watch routing, history tracking, and speaker page listings are all data-driven from the data file and registry.
 
 ## Watch Progress
 
