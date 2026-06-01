@@ -894,6 +894,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 14px;
   border-top: 1px solid var(--line);
   background: #ebe2d4;
@@ -909,6 +910,19 @@ h2 {
 .site-footer a {
   color: var(--accent-strong);
   font-weight: 800;
+}
+
+.site-footer .donate-link {
+  border: 1px solid rgba(23, 107, 91, 0.22);
+  border-radius: 999px;
+  background: rgba(23, 107, 91, 0.08);
+  padding: 7px 12px;
+}
+
+@media (min-width: 720px) {
+  .site-footer .donate-link {
+    margin-left: auto;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1200,6 +1214,44 @@ details[open] .takeaways-toggle::after {
 .principle-list {
   display: grid;
   gap: 14px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.info-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: 0 10px 28px rgba(24, 32, 27, 0.07);
+  padding: 22px;
+}
+
+.info-card h3 {
+  margin: 0 0 9px;
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: clamp(1.22rem, 2vw, 1.55rem);
+}
+
+.info-card p {
+  margin: 0;
+  color: #4a554f;
+  line-height: 1.65;
+}
+
+.status-pill {
+  display: inline-flex;
+  margin-top: 16px;
+  border: 1px solid rgba(200, 155, 60, 0.35);
+  border-radius: 999px;
+  background: rgba(200, 155, 60, 0.12);
+  color: #755a1c;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 6px 10px;
 }
 
 .principle-item {
@@ -2377,6 +2429,20 @@ details[open] .takeaways-toggle::after {
   }
 
   .speaker-directory {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    justify-content: flex-start;
+    padding-bottom: 86px;
+    text-align: left;
+  }
+
+  .site-footer p {
+    flex-basis: 100%;
+  }
+
+  .info-grid {
     grid-template-columns: 1fr;
   }
 

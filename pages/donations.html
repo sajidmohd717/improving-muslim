@@ -7,8 +7,9 @@
     <meta name="referrer" content="origin" />
     <meta
       name="description"
-      content="Speaker profile and lecture series on Improving Muslim."
+      content="Support Improving Muslim, an ad-free Islamic lecture platform built to avoid distracting recommendations and pop-ups."
     />
+    <link rel="canonical" href="https://improvingmuslim.com/pages/donations.html" />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
@@ -16,15 +17,12 @@
     <meta name="theme-color" content="#176b5b" />
     <meta property="og:site_name" content="Improving Muslim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Improving Muslim" />
-    <meta property="og:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
+    <meta property="og:title" content="Donate | Improving Muslim" />
+    <meta property="og:description" content="Help keep Islamic lectures free from ads, pop-ups, and distracting recommendations." />
     <meta property="og:image" content="https://improvingmuslim.com/public/social-preview.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Improving Muslim" />
-    <meta name="twitter:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
+    <meta name="twitter:title" content="Donate | Improving Muslim" />
+    <meta name="twitter:description" content="Help keep Islamic lectures free from ads, pop-ups, and distracting recommendations." />
     <meta name="twitter:image" content="https://improvingmuslim.com/public/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,7 +32,7 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
-    <title>Speaker | Improving Muslim</title>
+    <title>Donate | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -45,32 +43,63 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
+          <a class="js-last-series-link" href="./pages/series.html">Series</a>
           <a href="./pages/about.html">About</a>
           <a href="./pages/settings.html">Settings</a>
-          <a href="#speaker-series">Series</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="speaker-hero" id="speaker-profile">
-        <img id="speaker-photo" src="./public/icon.png" alt="" />
-        <div>
-          <p class="eyebrow">Speaker profile</p>
-          <h1 id="speaker-name">Speaker</h1>
-          <p class="hero-copy" id="speaker-bio"></p>
+      <section class="about-hero">
+        <p class="eyebrow">Support the platform</p>
+        <h1>No ads. No pop-ups. No algorithm trying to keep you scrolling.</h1>
+        <p>
+          Improving Muslim is being built around a simple promise: Islamic lectures should be
+          watchable without distracting recommendations, unwanted ads, or unrelated content
+          stealing attention.
+        </p>
+      </section>
+
+      <section class="about-section" aria-labelledby="donation-title">
+        <div class="section-heading">
+          <p class="eyebrow">How this stays alive</p>
+          <h2 id="donation-title">A donation-supported model</h2>
+        </div>
+        <div class="principle-list">
+          <article class="principle-item">
+            <span>01</span>
+            <div>
+              <h3>We do not run attention-based ads</h3>
+              <p>The platform should not need to show questionable ads or maximize watch time to survive.</p>
+            </div>
+          </article>
+          <article class="principle-item">
+            <span>02</span>
+            <div>
+              <h3>Costs are real, even when the product is simple</h3>
+              <p>Video hosting, storage, domains, email, design, development, and testing all need support as the library grows.</p>
+            </div>
+          </article>
+          <article class="principle-item">
+            <span>03</span>
+            <div>
+              <h3>Support should be transparent</h3>
+              <p>Donation links will be added after the project has a clear and responsible way to receive and account for support.</p>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section class="content-section series-section" id="speaker-series" aria-labelledby="speaker-series-title">
-        <div class="section-heading row-heading">
-          <div>
-            <p class="eyebrow" id="speaker-series-count">Series</p>
-            <h2 id="speaker-series-title">Lecture Series</h2>
-          </div>
-        </div>
-        <div class="status-message" id="speaker-status" role="status"></div>
-        <div class="series-grid" id="speaker-series-grid"></div>
+      <section class="about-section about-closing" aria-labelledby="donate-soon-title">
+        <p class="eyebrow">Donation link coming soon</p>
+        <h2 id="donate-soon-title">For now, the best support is feedback and sharing.</h2>
+        <p>
+          Until donations are fully set up, you can support the project by using it, reporting rough
+          edges, sharing it with people who would benefit, and making dua that Allah places barakah
+          in the work.
+        </p>
+        <a class="primary-link" href="./pages/feedback.html">Share feedback</a>
       </section>
     </main>
 
@@ -82,22 +111,14 @@
       <a href="./pages/partnerships.html">Partnerships</a>
       <a href="./pages/feedback.html">Feedback</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
-    </footer>
-    <script src="./data/change-of-heart-data.js?v=20260601-thumbs"></script>
-    <script src="./data/enjoy-your-prayer-data.js?v=20260601-thumbs"></script>
-    <script src="./data/forty-hadith-data.js"></script>
-    <script src="./data/why-me-data.js?v=20260601-episodes"></script>
-    <script src="./data/speaker-data.js"></script>
-    <script src="./scripts/speaker-page.js?v=20260601-thumbs" defer></script>
-
-    <nav class="bottom-nav" aria-label="Main navigation">
+    </footer>    <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./index.html#speakers">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        <span>Speakers</span>
+      <a class="bottom-nav-item" href="./pages/series.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
+        <span>Series</span>
       </a>
       <a class="bottom-nav-item" href="./pages/settings.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>

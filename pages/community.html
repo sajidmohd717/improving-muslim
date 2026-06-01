@@ -7,8 +7,9 @@
     <meta name="referrer" content="origin" />
     <meta
       name="description"
-      content="Watch the Why Me? series by Omar Suleiman in a focused Islamic lecture experience."
+      content="Join the Improving Muslim community for calm updates about new Islamic lecture series, platform improvements, and ways to support focused learning."
     />
+    <link rel="canonical" href="https://improvingmuslim.com/pages/community.html" />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
@@ -16,15 +17,12 @@
     <meta name="theme-color" content="#176b5b" />
     <meta property="og:site_name" content="Improving Muslim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Improving Muslim" />
-    <meta property="og:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
+    <meta property="og:title" content="Join the Community | Improving Muslim" />
+    <meta property="og:description" content="Follow platform updates without ads, pop-ups, or distracting recommendations." />
     <meta property="og:image" content="https://improvingmuslim.com/public/social-preview.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Improving Muslim" />
-    <meta name="twitter:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
+    <meta name="twitter:title" content="Join the Community | Improving Muslim" />
+    <meta name="twitter:description" content="Follow platform updates without ads, pop-ups, or distracting recommendations." />
     <meta name="twitter:image" content="https://improvingmuslim.com/public/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,7 +32,7 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
-    <title>Why Me? | Improving Muslim</title>
+    <title>Join the Community | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -45,38 +43,64 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
+          <a class="js-last-series-link" href="./pages/series.html">Series</a>
           <a href="./pages/about.html">About</a>
           <a href="./pages/settings.html">Settings</a>
-          <a href="#episodes">Episodes</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="series-hero">
-        <div>
-          <p class="eyebrow">Reflection and Contemplation</p>
-          <h1>Why Me?</h1>
-          <p class="hero-copy">
-            A focused watch space for Omar Suleiman's Ramadan series on hardship, divine decree,
-            and learning to see every test through a more faithful lens.
-          </p>
-          <a class="primary-link" id="start-series-link" href="./pages/watch.html">Start episode 1</a>
-        </div>
-        <img
-          src="./assets/thumbnail/heart-softeners/whyme.jpg"
-          alt="Why Me? series thumbnail"
-        />
+      <section class="about-hero">
+        <p class="eyebrow">Join the community</p>
+        <h1>Stay close to the project without adding more noise to your life.</h1>
+        <p>
+          The community space for Improving Muslim should be calm: new uploads, useful updates,
+          requests for feedback, and reminders about focused Islamic learning.
+        </p>
       </section>
 
-      <section class="content-section" id="episodes" aria-labelledby="episodes-title">
-        <div class="section-heading row-heading">
-          <div>
-            <p class="eyebrow">30 episodes</p>
-            <h2 id="episodes-title">Episodes</h2>
-          </div>
+      <section class="about-section" aria-labelledby="community-title">
+        <div class="section-heading">
+          <p class="eyebrow">Where we are starting</p>
+          <h2 id="community-title">A low-noise update channel first</h2>
         </div>
-        <div class="episode-list" id="episode-list"></div>
+        <div class="info-grid">
+          <article class="info-card">
+            <h3>Telegram channel</h3>
+            <p>
+              Planned as the first community channel because it works well for simple announcements,
+              new series updates, and quick calls for feedback.
+            </p>
+            <span class="status-pill">Coming soon</span>
+          </article>
+          <article class="info-card">
+            <h3>Discord</h3>
+            <p>
+              Possible later for contributors, testers, designers, and developers. We will only add
+              it if it helps the work without turning the project into another noisy feed.
+            </p>
+            <span class="status-pill">Under consideration</span>
+          </article>
+          <article class="info-card">
+            <h3>Email updates</h3>
+            <p>
+              A quiet mailing list may come later for people who want occasional progress notes and
+              launch announcements without joining another app.
+            </p>
+            <span class="status-pill">Planned</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="about-section about-closing" aria-labelledby="community-help-title">
+        <p class="eyebrow">Help shape it</p>
+        <h2 id="community-help-title">Tell us what kind of community would actually be useful.</h2>
+        <p>
+          If you have thoughts on Telegram, Discord, update frequency, or what kind of community
+          would benefit learners without distracting them, send a note.
+        </p>
+        <a class="primary-link" href="./pages/feedback.html">Share feedback</a>
       </section>
     </main>
 
@@ -88,17 +112,12 @@
       <a href="./pages/partnerships.html">Partnerships</a>
       <a href="./pages/feedback.html">Feedback</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
-    </footer>
-    <script src="./data/why-me-data.js?v=20260601-episodes"></script>
-    <script>window.currentSeries = window.whyMeSeries;</script>
-    <script src="./scripts/series-page.js" defer></script>
-
-    <nav class="bottom-nav" aria-label="Main navigation">
+    </footer>    <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./pages/series-why-me.html">
+      <a class="bottom-nav-item" href="./pages/series.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><polygon points="10 8 16 11 10 14 10 8"/></svg>
         <span>Series</span>
       </a>
