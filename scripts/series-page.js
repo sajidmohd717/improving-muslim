@@ -8,7 +8,7 @@ function formatViews(n) {
 
 const series = window.currentSeries;
 const episodeList = document.querySelector("#episode-list");
-const startLink = document.querySelector("#start-series-link");
+const heroContent = document.querySelector(".series-hero > div");
 
 function renderHero() {
   const eyebrow = document.querySelector(".series-hero .eyebrow");
@@ -22,6 +22,7 @@ function renderHero() {
     thumbnail.alt = `${series.title} series thumbnail`;
   }
   if (episodesEyebrow) episodesEyebrow.textContent = `${series.episodes.length} episodes`;
+  document.querySelector("#start-series-link")?.remove();
 }
 renderHero();
 const SAVED_KEY = "improving-muslim:saved-items";
@@ -109,8 +110,8 @@ function isSeriesSaved() {
 
 function updateSeriesSaveButton(button) {
   const saved = isSeriesSaved();
-  button.textContent = saved ? "Saved" : "Save for later";
   button.setAttribute("aria-pressed", String(saved));
+  button.setAttribute("aria-label", saved ? "Remove from saved" : "Save series");
 }
 
 function toggleSavedSeries(button, status) {
@@ -159,18 +160,20 @@ async function shareSeries(status) {
   }
 }
 
+const saveIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
+const shareIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>`;
+
 function renderSeriesActions() {
-  const hero = startLink?.parentElement;
-  if (!hero) return;
+  if (!heroContent) return;
 
   const actions = document.createElement("div");
-  actions.className = "series-utility-actions";
+  actions.className = "card-actions";
   actions.innerHTML = `
-    <button class="quiet-link utility-button" id="save-series-button" type="button" aria-pressed="false">Save for later</button>
-    <button class="quiet-link utility-button" id="share-series-button" type="button">Share series</button>
+    <button class="mini-action icon-btn" id="save-series-button" type="button" aria-pressed="false" aria-label="Save series">${saveIcon}</button>
+    <button class="mini-action icon-btn" id="share-series-button" type="button" aria-label="Share series">${shareIcon}</button>
     <p class="action-status" id="series-action-status" role="status"></p>
   `;
-  startLink.insertAdjacentElement("afterend", actions);
+  heroContent.appendChild(actions);
 
   const saveButton = actions.querySelector("#save-series-button");
   const shareButton = actions.querySelector("#share-series-button");
@@ -180,14 +183,6 @@ function renderSeriesActions() {
   shareButton.addEventListener("click", () => shareSeries(status));
 }
 
-const firstAvailableEpisode = series.episodes.find(isEpisodeAvailable);
-if (firstAvailableEpisode) {
-  startLink.href = episodeUrl(firstAvailableEpisode);
-} else {
-  startLink.textContent = "Episodes uploading soon";
-  startLink.removeAttribute("href");
-  startLink.setAttribute("aria-disabled", "true");
-}
 renderSeriesActions();
 
 episodeList.innerHTML = series.episodes
