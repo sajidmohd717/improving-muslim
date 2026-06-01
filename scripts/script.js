@@ -289,6 +289,7 @@ function localSeriesSections(category = "foryou") {
     const card = {
       title: s.title,
       speaker: s.speaker,
+      topic: entry.sectionTitle,
       episodes: `${s.episodes.length} Lectures`,
       thumbnailImage: s.thumbnailSrc,
       link: s.seriesPageUrl,
