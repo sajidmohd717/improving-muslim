@@ -22,16 +22,10 @@ function renderRecap(text) {
     .join("");
 }
 
-const seriesRegistry = {
-  "change-of-heart": window.changeOfHeartSeries,
-  "enjoy-your-prayer": window.enjoyYourPrayerSeries,
-  "forty-hadith-nawawi": window.fortyHadithSeries,
-  "why-me": window.whyMeSeries,
-  "seerah-yasir-qadhi": window.seerahYasirQadhiSeries,
-  "ten-promised-jannah": window.tenPromisedJannahSeries,
-  "heart-matters": window.heartMattersSeries,
-  "angels-in-your-presence": window.angelsInYourPresenceSeries,
-};
+const seriesRegistry = {};
+for (const e of (window.seriesConfig || [])) {
+  if (window[e.globalKey]) seriesRegistry[e.slug] = window[e.globalKey];
+}
 
 const params = new URLSearchParams(window.location.search);
 const seriesSlug = params.get("series") || "change-of-heart";

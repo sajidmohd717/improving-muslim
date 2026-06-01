@@ -5,12 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="../" />
     <meta name="referrer" content="origin" />
-    <meta name="description" content="Your watch history on Improving Muslim." />
+    <meta
+      name="description"
+      content="Watch The Message of the Quran in 30 Lessons by Yasir Qadhi in a focused Islamic lecture experience."
+    />
+    <link rel="canonical" href="https://improvingmuslim.com/pages/series-message-of-the-quran.html" />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
     <link rel="manifest" href="./public/site.webmanifest" />
     <meta name="theme-color" content="#176b5b" />
+    <meta property="og:site_name" content="Improving Muslim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://improvingmuslim.com/pages/series-message-of-the-quran.html" />
+    <meta property="og:title" content="The Message of the Quran | Improving Muslim" />
+    <meta property="og:description" content="A structured overview of the Quran's message across 30 lessons, taught by Yasir Qadhi." />
+    <meta property="og:image" content="https://improvingmuslim.com/assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Message of the Quran | Improving Muslim" />
+    <meta name="twitter:description" content="A structured overview of the Quran's message across 30 lessons, taught by Yasir Qadhi." />
+    <meta name="twitter:image" content="https://improvingmuslim.com/assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +34,7 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
-    <title>Watch History | Improving Muslim</title>
+    <title>The Message of the Quran | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -30,32 +45,39 @@
         </a>
         <div class="site-menu page-menu">
           <a href="./index.html">Home</a>
-          <a href="./pages/series.html">Series</a>
+          <a href="./pages/about.html">About</a>
           <a href="./pages/history.html">History</a>
           <a href="./pages/settings.html">Settings</a>
+          <a href="#episodes">Episodes</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <section class="about-hero">
-        <p class="eyebrow">On this device</p>
-        <h1>Watch History</h1>
-        <p>Episodes you've started or finished. Stored locally — only visible on this device.</p>
+      <section class="series-hero">
+        <div>
+          <p class="eyebrow">Quran</p>
+          <h1>The Message of the Quran</h1>
+          <p class="hero-copy">
+            A structured overview of the Quran's message across 30 lessons, moving through
+            the surahs and major themes of guidance, faith, worship, law, stories, and the Hereafter.
+          </p>
+          <a class="primary-link" id="start-series-link" href="./pages/watch.html">Start episode 1</a>
+        </div>
+        <img
+          src="./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg"
+          alt="The Message of the Quran series thumbnail"
+        />
       </section>
 
-      <section class="about-section" aria-label="Watch history">
-        <div class="history-header">
-          <button class="danger-button" id="clear-history-btn" type="button" hidden>Clear all history</button>
+      <section class="content-section" id="episodes" aria-labelledby="episodes-title">
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow">30 episodes</p>
+            <h2 id="episodes-title">Episodes</h2>
+          </div>
         </div>
-
-        <div id="history-list" class="history-list"></div>
-
-        <div id="history-empty" class="history-empty" hidden>
-          <p class="history-empty-heading">No watch history yet</p>
-          <p class="history-empty-body">Episodes you start will appear here so you can pick up where you left off.</p>
-          <a class="primary-link" href="./pages/series.html">Browse series</a>
-        </div>
+        <div class="episode-list" id="episode-list"></div>
       </section>
     </main>
 
@@ -68,26 +90,16 @@
       <a href="./pages/feedback.html">Feedback</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
-
-    <script src="./data/series-registry.js"></script>
-    <script src="./data/seerah-yasir-qadhi-data.js"></script>
-    <script src="./data/change-of-heart-data.js?v=20260601-thumbs"></script>
-    <script src="./data/enjoy-your-prayer-data.js?v=20260601-thumbs"></script>
-    <script src="./data/forty-hadith-data.js"></script>
-    <script src="./data/why-me-data.js"></script>
-    <script src="./data/ten-promised-jannah-data.js?v=20260601-sahaba"></script>
-    <script src="./data/heart-matters-data.js?v=20260601-heart"></script>
-    <script src="./data/angels-in-your-presence-data.js?v=20260601-angels"></script>
     <script src="./data/message-of-the-quran-data.js?v=20260601-quran"></script>
-    <script src="./data/parables-of-the-quran-data.js?v=20260601-parables"></script>
-    <script src="./scripts/history-page.js?v=20260601-parables" defer></script>
+    <script>window.currentSeries = window.messageOfTheQuranSeries;</script>
+    <script src="./scripts/series-page.js?v=20260601-sahaba" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </a>
-      <a class="bottom-nav-item is-active" href="./pages/history.html">
+      <a class="bottom-nav-item" href="./pages/history.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span>History</span>
       </a>

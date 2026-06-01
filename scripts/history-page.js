@@ -1,12 +1,4 @@
-const allSeries = [
-  window.changeOfHeartSeries,
-  window.enjoyYourPrayerSeries,
-  window.fortyHadithSeries,
-  window.whyMeSeries,
-  window.tenPromisedJannahSeries,
-  window.heartMattersSeries,
-  window.angelsInYourPresenceSeries,
-].filter(Boolean);
+const allSeries = (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
 
 function episodeUrl(series, episode) {
   return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;

@@ -1,15 +1,7 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const localSeries = [
-  window.changeOfHeartSeries,
-  window.enjoyYourPrayerSeries,
-  window.fortyHadithSeries,
-  window.whyMeSeries,
-  window.tenPromisedJannahSeries,
-  window.heartMattersSeries,
-  window.angelsInYourPresenceSeries,
-].filter(Boolean);
+const localSeries = (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
 
 const imageMap = {
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
@@ -19,29 +11,19 @@ const imageMap = {
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
   angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
   heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-  messageQuran: "./assets/thumbnail/general-quran-tafsir/message-quran.jpg",
-  parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",
+  messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
+  parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
   wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
 };
 
 const curatedSeries = [
-  {
-    title: "The Message of the Quran in 30 Lessons",
-    speaker: "Yasir Qadhi",
-    topic: "General Quran Tafsir",
-    episodes: "30 Lectures",
-    thumbnailImage: imageMap.messageQuran,
-    link: "https://www.youtube.com/playlist?list=PLYZxc42QNctUnn09Of4rBuakQhu-Q2qpc",
-    description:
-      "A structured overview of core Quranic themes and lessons for reflection.",
-  },
   {
     title: "The Parables of The Quran",
     speaker: "Yasir Qadhi",
     topic: "General Quran Tafsir",
     episodes: "29 Lectures",
     thumbnailImage: imageMap.parablesQuran,
-    link: "https://www.youtube.com/playlist?list=PLYZxc42QNctUIsBRE5XCY6eICwl_W8jnj",
+    link: "./pages/series-parables-of-the-quran.html",
     description:
       "A tafsir series exploring the parables of the Quran and the guidance they contain.",
   },
@@ -85,13 +67,6 @@ function formatViewCount(n) {
 }
 
 function localThumbnail(series) {
-  if (series.slug === "change-of-heart") return imageMap.changeofheart;
-  if (series.slug === "enjoy-your-prayer") return imageMap.enjoyYourPrayer;
-  if (series.slug === "forty-hadith-nawawi") return imageMap.fortyHadithNawawi;
-  if (series.slug === "ten-promised-jannah") return imageMap.tenPromisedJannah;
-  if (series.slug === "heart-matters") return imageMap.heartmatters;
-  if (series.slug === "angels-in-your-presence") return imageMap.angels1;
-  if (series.slug === "why-me") return imageMap.whyMe;
   return series.thumbnailSrc || "./public/icon.png";
 }
 

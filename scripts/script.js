@@ -7,6 +7,7 @@ const categories = [
   { name: "Hadith", value: "hadith" },
   { name: "Seerah", value: "seerah" },
   { name: "Sahaba", value: "sahaba" },
+  { name: "Quran", value: "quran" },
   { name: "Tafsir", value: "tafsir" },
   { name: "Aqeedah", value: "aqeedah" },
   { name: "Prophets", value: "prophets" },
@@ -29,8 +30,8 @@ const imageMap = {
   angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
   heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-  messageQuran: "./assets/thumbnail/general-quran-tafsir/message-quran.jpg",
-  parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",
+  messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
+  parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
   wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
   seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
   seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",
@@ -111,14 +112,14 @@ const fallbackData = [
         speaker: "Yasir Qadhi",
         episodes: "30 Lectures",
         thumbnailImage: "messageQuran",
-        link: "https://www.youtube.com/playlist?list=PLYZxc42QNctUnn09Of4rBuakQhu-Q2qpc",
+        link: "./pages/series-message-of-the-quran.html",
       },
       {
         title: "The Parables of The Quran",
         speaker: "Yasir Qadhi",
         episodes: "29 Lectures",
         thumbnailImage: "parablesQuran",
-        link: "https://www.youtube.com/playlist?list=PLYZxc42QNctUIsBRE5XCY6eICwl_W8jnj",
+        link: "./pages/series-parables-of-the-quran.html",
       },
       {
         title: "Wisdoms of The Quran - Ramadan Series 2024",
@@ -131,55 +132,27 @@ const fallbackData = [
   },
 ];
 
-const localCategoryFallbacks = {
-  prayer: [fallbackData[1]],
-  purification: [fallbackData[2]],
-  hadith: [fallbackData[0]],
-  seerah: [
-    {
-      sectionTitle: "Seerah",
-      seriesList: [
-        {
-          title: "Seerah of Prophet Muhammed (S)",
-          speaker: "Yasir Qadhi",
-          episodes: "104 Lectures",
-          thumbnailImage: "seerahYasirQadhi",
-          link: "./pages/series-seerah-yasir-qadhi.html",
-        },
-      ],
-    },
-  ],
-  sahaba: [
-    {
-      sectionTitle: "Sahaba",
-      seriesList: [
-        {
-          title: "10 Promised Jannah",
-          speaker: "AbdulRahman Hassan",
-          episodes: "10 Lectures",
-          thumbnailImage: "tenPromisedJannah",
-          link: "./pages/series-ten-promised-jannah.html",
-          viewcount: "174K views",
-        },
-      ],
-    },
-  ],
-  angels: [
-    {
-      sectionTitle: "Angels",
-      seriesList: [
-        {
-          title: "Angels in Your Presence",
-          speaker: "Omar Suleiman",
-          episodes: "30 Lectures",
-          thumbnailImage: "angels1",
-          link: "./pages/series-angels-in-your-presence.html",
-          viewcount: "15.2M views",
-        },
-      ],
-    },
-  ],
-};
+const localCategoryFallbacks = (() => {
+  const map = {};
+  for (const entry of (window.seriesConfig || [])) {
+    const s = window[entry.globalKey];
+    if (!s) continue;
+    if (!map[entry.category]) map[entry.category] = [];
+    let section = map[entry.category].find(sec => sec.sectionTitle === entry.sectionTitle);
+    if (!section) {
+      section = { sectionTitle: entry.sectionTitle, seriesList: [] };
+      map[entry.category].push(section);
+    }
+    section.seriesList.push({
+      title: s.title,
+      speaker: s.speaker,
+      episodes: `${s.episodes.length} Lectures`,
+      thumbnailImage: s.thumbnailSrc,
+      link: s.seriesPageUrl,
+    });
+  }
+  return map;
+})();
 
 const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
 
@@ -198,6 +171,10 @@ const descriptions = {
     "A structured study of Imam an-Nawawi's foundational hadith collection with lessons for belief, worship, and character.",
   "10 Promised Jannah":
     "A focused series on the ten companions who were promised Jannah, exploring their lives, virtues, sacrifice, and lessons for believers today.",
+  "The Message of the Quran in 30 Lessons":
+    "A structured overview of the Quran's message across 30 lessons, moving through the surahs and major themes of guidance, faith, worship, law, stories, and the Hereafter.",
+  "The Parables of The Quran":
+    "A Ramadan tafsir series exploring Quranic parables, why Allah uses them, and how these examples shape faith, sincerity, charity, knowledge, gratitude, and attachment to the Hereafter.",
 };
 
 const state = {
@@ -219,36 +196,14 @@ function formatViewCount(n) {
 }
 
 function enrichSeries(item) {
-  if (item.title === "Change of Heart" && window.changeOfHeartSeries) {
-    const total = window.changeOfHeartSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
+  const local = availableLocalSeries().find(s => s.title === item.title);
+  if (local) {
+    const total = local.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
-  if (item.title === "Enjoy Your Prayer" && window.enjoyYourPrayerSeries) {
-    const total = window.enjoyYourPrayerSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
-  if (item.title === "40 Hadith of Imam Nawawi" && window.fortyHadithSeries) {
-    const total = window.fortyHadithSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
+  // Fuzzy match for Seerah: API may return a slightly different title spelling
   if ((item.title.includes("Seerah of Prophet") || item.title.includes("Seerah of the Prophet")) && window.seerahYasirQadhiSeries) {
     const total = window.seerahYasirQadhiSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
-  if (item.title === "Heart Matters Ramadan Series 2023" && window.heartMattersSeries) {
-    const total = window.heartMattersSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
-  if (item.title.startsWith("Why Me") && window.whyMeSeries) {
-    const total = window.whyMeSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
-  if (item.title === "Angels in Your Presence" && window.angelsInYourPresenceSeries) {
-    const total = window.angelsInYourPresenceSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-    if (total > 0) return { ...item, viewcount: formatViewCount(total) };
-  }
-  if (item.title === "10 Promised Jannah" && window.tenPromisedJannahSeries) {
-    const total = window.tenPromisedJannahSeries.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
     if (total > 0) return { ...item, viewcount: formatViewCount(total) };
   }
   return item;
@@ -322,130 +277,36 @@ function isAllowedSeries(series) {
 }
 
 function availableLocalSeries() {
-  return [
-    window.changeOfHeartSeries,
-    window.enjoyYourPrayerSeries,
-    window.fortyHadithSeries,
-    window.whyMeSeries,
-    window.seerahYasirQadhiSeries,
-    window.tenPromisedJannahSeries,
-    window.heartMattersSeries,
-    window.angelsInYourPresenceSeries,
-  ].filter(Boolean);
+  return (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
 }
 
 function localSeriesSections(category = "foryou") {
   const sections = [];
-
-  if (window.enjoyYourPrayerSeries && ["foryou", "prayer"].includes(category)) {
-    sections.push({
-      sectionTitle: "Salah & Worship",
-      seriesList: [
-        {
-          title: window.enjoyYourPrayerSeries.title,
-          speaker: window.enjoyYourPrayerSeries.speaker,
-          episodes: `${window.enjoyYourPrayerSeries.episodes.length} Lectures`,
-          thumbnailImage: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
-          link: window.enjoyYourPrayerSeries.seriesPageUrl,
-          description: window.enjoyYourPrayerSeries.description,
-        },
-      ],
-    });
+  for (const entry of (window.seriesConfig || [])) {
+    const s = window[entry.globalKey];
+    if (!s) continue;
+    if (category !== "foryou" && category !== entry.category) continue;
+    const card = {
+      title: s.title,
+      speaker: s.speaker,
+      episodes: `${s.episodes.length} Lectures`,
+      thumbnailImage: s.thumbnailSrc,
+      link: s.seriesPageUrl,
+      description: s.description,
+    };
+    const existing = sections.find(sec => sec.sectionTitle === entry.sectionTitle);
+    if (existing) {
+      existing.seriesList.push(card);
+    } else {
+      sections.push({ sectionTitle: entry.sectionTitle, seriesList: [card] });
+    }
   }
-
-  if (window.seerahYasirQadhiSeries && ["foryou", "seerah"].includes(category)) {
-    sections.push({
-      sectionTitle: "Seerah",
-      seriesList: [
-        {
-          title: window.seerahYasirQadhiSeries.title,
-          speaker: window.seerahYasirQadhiSeries.speaker,
-          episodes: `${window.seerahYasirQadhiSeries.episodes.length} Lectures`,
-          thumbnailImage: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
-          link: window.seerahYasirQadhiSeries.seriesPageUrl,
-          description: window.seerahYasirQadhiSeries.description,
-        },
-      ],
-    });
-  }
-
-  if (window.fortyHadithSeries && ["foryou", "hadith"].includes(category)) {
-    sections.push({
-      sectionTitle: "Hadith",
-      seriesList: [
-        {
-          title: window.fortyHadithSeries.title,
-          speaker: window.fortyHadithSeries.speaker,
-          episodes: `${window.fortyHadithSeries.episodes.length} Lectures`,
-          thumbnailImage:
-            window.fortyHadithSeries.thumbnailSrc ||
-            "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
-          link: window.fortyHadithSeries.seriesPageUrl,
-          description: window.fortyHadithSeries.description,
-        },
-      ],
-    });
-  }
-
-  if (window.heartMattersSeries && ["foryou", "purification"].includes(category)) {
-    sections.push({
-      sectionTitle: "Purification of the Heart",
-      seriesList: [
-        {
-          title: window.heartMattersSeries.title,
-          speaker: window.heartMattersSeries.speaker,
-          episodes: `${window.heartMattersSeries.episodes.length} Lectures`,
-          thumbnailImage:
-            window.heartMattersSeries.thumbnailSrc ||
-            "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-          link: window.heartMattersSeries.seriesPageUrl,
-          description: window.heartMattersSeries.description,
-        },
-      ],
-    });
-  }
-
-  if (window.angelsInYourPresenceSeries && ["foryou", "angels"].includes(category)) {
-    sections.push({
-      sectionTitle: "Angels",
-      seriesList: [
-        {
-          title: window.angelsInYourPresenceSeries.title,
-          speaker: window.angelsInYourPresenceSeries.speaker,
-          episodes: `${window.angelsInYourPresenceSeries.episodes.length} Lectures`,
-          thumbnailImage:
-            window.angelsInYourPresenceSeries.thumbnailSrc ||
-            "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
-          link: window.angelsInYourPresenceSeries.seriesPageUrl,
-          description: window.angelsInYourPresenceSeries.description,
-        },
-      ],
-    });
-  }
-
-  if (window.tenPromisedJannahSeries && ["foryou", "sahaba"].includes(category)) {
-    sections.push({
-      sectionTitle: "Sahaba",
-      seriesList: [
-        {
-          title: window.tenPromisedJannahSeries.title,
-          speaker: window.tenPromisedJannahSeries.speaker,
-          episodes: `${window.tenPromisedJannahSeries.episodes.length} Lectures`,
-          thumbnailImage:
-            window.tenPromisedJannahSeries.thumbnailSrc ||
-            "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
-          link: window.tenPromisedJannahSeries.seriesPageUrl,
-          description: window.tenPromisedJannahSeries.description,
-        },
-      ],
-    });
-  }
-
   return sections;
 }
 
 function mergeLocalSeries(sections, category) {
-  if (!["foryou", "prayer", "hadith", "seerah", "sahaba", "purification", "angels"].includes(category)) {
+  const localCategories = new Set(["foryou", ...(window.seriesConfig || []).map(e => e.category)]);
+  if (!localCategories.has(category)) {
     return sections;
   }
 
@@ -782,38 +643,8 @@ function seriesProgressSummary(seriesTitle) {
 }
 
 function getSeriesUrl(series) {
-  if (series.title === "Change of Heart") {
-    return "./pages/series-change-of-heart.html";
-  }
-
-  if (series.title === "Enjoy Your Prayer") {
-    return "./pages/series-enjoy-your-prayer.html";
-  }
-
-  if (series.title === "40 Hadith of Imam Nawawi") {
-    return "./pages/series-forty-hadith-nawawi.html";
-  }
-
-  if (series.title === "Why Me | 2024 Ramadan Series") {
-    return "./pages/series-why-me.html";
-  }
-
-  if (series.title === "Seerah of Prophet Muhammed (S)") {
-    return "./pages/series-seerah-yasir-qadhi.html";
-  }
-
-  if (series.title === "10 Promised Jannah") {
-    return "./pages/series-ten-promised-jannah.html";
-  }
-
-  if (series.title === "Heart Matters Ramadan Series 2023") {
-    return "./pages/series-heart-matters.html";
-  }
-
-  if (series.title === "Angels in Your Presence") {
-    return "./pages/series-angels-in-your-presence.html";
-  }
-
+  const local = availableLocalSeries().find(s => s.title === series.title);
+  if (local) return local.seriesPageUrl;
   return series.link;
 }
 

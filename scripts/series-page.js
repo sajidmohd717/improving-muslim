@@ -9,6 +9,21 @@ function formatViews(n) {
 const series = window.currentSeries;
 const episodeList = document.querySelector("#episode-list");
 const startLink = document.querySelector("#start-series-link");
+
+function renderHero() {
+  const eyebrow = document.querySelector(".series-hero .eyebrow");
+  const heading = document.querySelector(".series-hero h1");
+  const thumbnail = document.querySelector(".series-hero img");
+  const episodesEyebrow = document.querySelector("#episodes .eyebrow");
+  if (eyebrow) eyebrow.textContent = series.topic || "";
+  if (heading) heading.textContent = series.title;
+  if (thumbnail) {
+    thumbnail.src = series.thumbnailSrc;
+    thumbnail.alt = `${series.title} series thumbnail`;
+  }
+  if (episodesEyebrow) episodesEyebrow.textContent = `${series.episodes.length} episodes`;
+}
+renderHero();
 const SAVED_KEY = "improving-muslim:saved-items";
 
 function episodeUrl(episode) {
