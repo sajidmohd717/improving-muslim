@@ -26,7 +26,7 @@ const excludedSpeakerNames = new Set([
 const imageMap = {
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
   angels1: "./assets/thumbnail/heart-softeners/angels1.jpg",
-  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart.png",
+  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
   heartmatters: "./assets/thumbnail/heart-softeners/heartmatters.jpg",
   messageQuran: "./assets/thumbnail/general-quran-tafsir/message-quran.jpg",
   parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",
@@ -36,7 +36,7 @@ const imageMap = {
   fortress: "./assets/thumbnail/hadith/fortress.jpg",
   fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
   baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
-  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
   fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
 };
 
@@ -275,7 +275,7 @@ function localSeriesSections(category = "foryou") {
           title: window.enjoyYourPrayerSeries.title,
           speaker: window.enjoyYourPrayerSeries.speaker,
           episodes: `${window.enjoyYourPrayerSeries.episodes.length} Lectures`,
-          thumbnailImage: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+          thumbnailImage: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
           link: window.enjoyYourPrayerSeries.seriesPageUrl,
           description: window.enjoyYourPrayerSeries.description,
         },
@@ -685,7 +685,7 @@ function renderSeries() {
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
-            <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" />
+            <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
           </a>
           <div class="series-body">
             <span class="series-topic">${escapeHtml(item.topic || "Series")}</span>

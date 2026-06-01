@@ -9,8 +9,8 @@ const localSeries = [
 ].filter(Boolean);
 
 const imageMap = {
-  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart.png",
-  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
+  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
   fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
   angels1: "./assets/thumbnail/heart-softeners/angels1.jpg",
@@ -139,7 +139,7 @@ function renderSeriesCard(series) {
   return `
     <article class="series-card">
       <a class="series-link" href="${series.link}">
-        <img src="${series.thumbnailImage}" alt="${escapeHtml(series.title)}" loading="lazy" />
+        <img src="${series.thumbnailImage}" alt="${escapeHtml(series.title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
       </a>
       <div class="series-body">
         <span class="series-topic">${escapeHtml(series.topic || "Series")}</span>

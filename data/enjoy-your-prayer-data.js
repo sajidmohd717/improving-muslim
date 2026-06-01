@@ -4,7 +4,7 @@ window.enjoyYourPrayerSeries = {
   seriesPageUrl: "./pages/series-enjoy-your-prayer.html",
   speaker: "Ali Hammuda",
   topic: "Salah & Worship",
-  thumbnailSrc: "./assets/thumbnail/salah/enjoy-your-prayer.png",
+  thumbnailSrc: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
   episodeThumbnailPath: "./assets/thumbnail/enjoy-your-prayer/episodes",
   playlistId: "PL9OPVukugS7wrMiT9A9CwRNL_hA9jDH0f",
   description:
