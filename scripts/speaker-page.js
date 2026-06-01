@@ -6,41 +6,25 @@ const localSeries = [
   window.enjoyYourPrayerSeries,
   window.fortyHadithSeries,
   window.whyMeSeries,
+  window.tenPromisedJannahSeries,
+  window.heartMattersSeries,
+  window.angelsInYourPresenceSeries,
 ].filter(Boolean);
 
 const imageMap = {
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
   enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
   fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
+  tenPromisedJannah: "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
   whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
-  angels1: "./assets/thumbnail/heart-softeners/angels1.jpg",
-  heartmatters: "./assets/thumbnail/heart-softeners/heartmatters.jpg",
+  angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
+  heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
   messageQuran: "./assets/thumbnail/general-quran-tafsir/message-quran.jpg",
   parablesQuran: "./assets/thumbnail/general-quran-tafsir/parables-quran.jpg",
   wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
 };
 
 const curatedSeries = [
-  {
-    title: "Heart Matters Ramadan Series 2023",
-    speaker: "Yasir Qadhi",
-    topic: "Purification of the Heart",
-    episodes: "27 Lectures",
-    thumbnailImage: imageMap.heartmatters,
-    link: "https://www.youtube.com/playlist?list=PLYZxc42QNctWeXvciIWtItbjhod9PjcCN",
-    description:
-      "Short daily reminders exploring spiritual diseases, emotional repair, and practical ways to soften the heart.",
-  },
-  {
-    title: "Angels in Your Presence",
-    speaker: "Omar Suleiman",
-    topic: "Reflection and Contemplation",
-    episodes: "32 Lectures",
-    thumbnailImage: imageMap.angels1,
-    link: "https://www.youtube.com/playlist?list=PLQ02IYL5pmhF2LFN-3QxnuregEv1oKPIc",
-    description:
-      "A study of angels and how belief in the unseen can reshape worship, character, and daily awareness.",
-  },
   {
     title: "The Message of the Quran in 30 Lessons",
     speaker: "Yasir Qadhi",
@@ -104,6 +88,9 @@ function localThumbnail(series) {
   if (series.slug === "change-of-heart") return imageMap.changeofheart;
   if (series.slug === "enjoy-your-prayer") return imageMap.enjoyYourPrayer;
   if (series.slug === "forty-hadith-nawawi") return imageMap.fortyHadithNawawi;
+  if (series.slug === "ten-promised-jannah") return imageMap.tenPromisedJannah;
+  if (series.slug === "heart-matters") return imageMap.heartmatters;
+  if (series.slug === "angels-in-your-presence") return imageMap.angels1;
   if (series.slug === "why-me") return imageMap.whyMe;
   return series.thumbnailSrc || "./public/icon.png";
 }

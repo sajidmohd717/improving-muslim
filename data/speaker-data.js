@@ -28,6 +28,13 @@ window.speakers = [
       "Yasir Qadhi is known for long-form Islamic education, including seerah, tafsir, theology, and structured lecture series that explain foundational topics in depth.",
   },
   {
+    name: "AbdulRahman Hassan",
+    slug: "abdurrahman-hassan",
+    image: "./assets/speaker/abdurrahman-hassan.jpg",
+    bio:
+      "AbdulRahman Hassan is an Islamic teacher and speaker known for structured lessons on creed, worship, companions, and practical religious knowledge.",
+  },
+  {
     name: "Belal Assad",
     slug: "belal-assad",
     image: "./assets/speaker/ba.jpg",

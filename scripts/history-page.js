@@ -3,6 +3,9 @@ const allSeries = [
   window.enjoyYourPrayerSeries,
   window.fortyHadithSeries,
   window.whyMeSeries,
+  window.tenPromisedJannahSeries,
+  window.heartMattersSeries,
+  window.angelsInYourPresenceSeries,
 ].filter(Boolean);
 
 function episodeUrl(series, episode) {

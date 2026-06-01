@@ -35,7 +35,7 @@ window.seerahYasirQadhiSeries = {
       published: "2011-05-01",
       views: 859000,
       thumbnailSrc: "https://i.ytimg.com/vi/4F5qzMI2IKs/hqdefault.jpg",
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-3.mp4",
     },
     {
       number: 4,
@@ -44,7 +44,7 @@ window.seerahYasirQadhiSeries = {
       published: "2011-06-01",
       views: 848000,
       thumbnailSrc: "https://i.ytimg.com/vi/ey7UAi_Emgs/hqdefault.jpg",
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-4.mp4",
     },
     {
       number: 5,
@@ -53,7 +53,7 @@ window.seerahYasirQadhiSeries = {
       published: "2015-01-14",
       views: 663000,
       thumbnailSrc: "https://i.ytimg.com/vi/629isa8LujE/hqdefault.jpg",
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-5.mp4",
     },
     {
       number: 6,

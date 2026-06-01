@@ -165,7 +165,14 @@ function renderSeriesActions() {
   shareButton.addEventListener("click", () => shareSeries(status));
 }
 
-startLink.href = episodeUrl(series.episodes[0]);
+const firstAvailableEpisode = series.episodes.find(isEpisodeAvailable);
+if (firstAvailableEpisode) {
+  startLink.href = episodeUrl(firstAvailableEpisode);
+} else {
+  startLink.textContent = "Episodes uploading soon";
+  startLink.removeAttribute("href");
+  startLink.setAttribute("aria-disabled", "true");
+}
 renderSeriesActions();
 
 episodeList.innerHTML = series.episodes
