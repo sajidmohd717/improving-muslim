@@ -4,7 +4,7 @@ window.seriesConfig = [
   { globalKey: "fortyHadithSeries",          slug: "forty-hadith-nawawi",     category: "hadith",       sectionTitle: "Hadith" },
   { globalKey: "heartMattersSeries",         slug: "heart-matters",           category: "purification", sectionTitle: "Purification of the Heart" },
   { globalKey: "changeOfHeartSeries",        slug: "change-of-heart",         category: "purification", sectionTitle: "Purification of the Heart" },
-  { globalKey: "whyMeSeries",               slug: "why-me",                   category: "purification", sectionTitle: "Purification of the Heart" },
+  { globalKey: "whyMeSeries",               slug: "why-me",                   category: "purification", sectionTitle: "Purification of the Heart", apiTitle: "Why Me | 2024 Ramadan Series" },
   { globalKey: "angelsInYourPresenceSeries", slug: "angels-in-your-presence", category: "angels",       sectionTitle: "Angels" },
   { globalKey: "messageOfTheQuranSeries",    slug: "message-of-the-quran",    category: "quran",        sectionTitle: "Quran" },
   { globalKey: "parablesOfTheQuranSeries",   slug: "parables-of-the-quran",   category: "quran",        sectionTitle: "Quran" },

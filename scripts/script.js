@@ -312,6 +312,10 @@ function mergeLocalSeries(sections, category) {
 
   const localSections = localSeriesSections(category);
   const localTitles = new Set(flattenSeries(localSections).map((series) => series.title));
+  // Include API alias titles for series whose API/external title differs from the local data file title
+  for (const entry of (window.seriesConfig || [])) {
+    if (entry.apiTitle) localTitles.add(entry.apiTitle);
+  }
   const merged = sections
     .map((section) => ({
       ...section,
