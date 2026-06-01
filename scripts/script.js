@@ -5,6 +5,7 @@ const categories = [
   { name: "Purification", value: "purification" },
   { name: "Prayer", value: "prayer" },
   { name: "Hadith", value: "hadith" },
+  { name: "Seerah", value: "seerah" },
   { name: "Tafsir", value: "tafsir" },
   { name: "Aqeedah", value: "aqeedah" },
   { name: "Prophets", value: "prophets" },
