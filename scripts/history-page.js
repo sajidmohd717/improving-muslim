@@ -6,7 +6,7 @@ const allSeries = [
 ].filter(Boolean);
 
 function episodeUrl(series, episode) {
-  return `./pages/watch.html?s=${encodeURIComponent(series.slug)}&ep=${encodeURIComponent(episode.id)}`;
+  return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;
 }
 
 function episodeThumbnailUrl(series, episode) {
