@@ -1681,6 +1681,71 @@ details[open] .takeaways-toggle::after {
   line-height: 1.5;
 }
 
+.watch-help-tips {
+  display: grid;
+  gap: 8px;
+  max-width: 680px;
+  margin-top: 14px;
+}
+
+.background-play-tip {
+  max-width: 680px;
+  color: var(--muted);
+}
+
+.background-play-tip summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+  color: #6a716b;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.background-play-tip summary::-webkit-details-marker {
+  display: none;
+}
+
+.background-play-tip summary:hover,
+.background-play-tip summary:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+.info-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.background-play-tip-body {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(98, 105, 99, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.62);
+}
+
+.background-play-tip-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.background-play-tip-body p + p {
+  margin-top: 8px;
+}
+
 .episode-sidebar {
   position: sticky;
   top: 92px;
@@ -2938,6 +3003,143 @@ details[open] .takeaways-toggle::after {
 }
 
 /* ─── Cross-document page transitions (View Transitions API) ──────────────── */
+
+/* ─── Copyright / Permissions page ────────────────────────────────────────── */
+
+.copyright-speaker-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.copyright-speaker-card {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 22px;
+  align-items: start;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+
+.copyright-speaker-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.copyright-speaker-meta {
+  min-width: 0;
+}
+
+.copyright-speaker-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.copyright-speaker-header h3 {
+  margin: 0;
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.2;
+}
+
+.copyright-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 9px 4px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.copyright-status svg {
+  flex-shrink: 0;
+}
+
+.copyright-status.permitted {
+  background: rgba(22, 163, 74, 0.11);
+  color: #15803d;
+}
+
+.copyright-status.doubtful {
+  background: rgba(217, 119, 6, 0.11);
+  color: #92400e;
+}
+
+.copyright-status.high-risk {
+  background: rgba(220, 38, 38, 0.11);
+  color: #b91c1c;
+}
+
+.copyright-speaker-subtitle {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.copyright-speaker-desc {
+  margin: 0;
+  color: #4a554f;
+  line-height: 1.7;
+  font-size: 0.94rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .copyright-status.permitted {
+    background: rgba(22, 163, 74, 0.2);
+    color: #4ade80;
+  }
+  :root:not([data-theme="light"]) .copyright-status.doubtful {
+    background: rgba(217, 119, 6, 0.2);
+    color: #fbbf24;
+  }
+  :root:not([data-theme="light"]) .copyright-status.high-risk {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+  }
+  :root:not([data-theme="light"]) .copyright-speaker-desc {
+    color: var(--muted);
+  }
+}
+
+:root[data-theme="dark"] .copyright-status.permitted {
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+}
+:root[data-theme="dark"] .copyright-status.doubtful {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+:root[data-theme="dark"] .copyright-status.high-risk {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+}
+:root[data-theme="dark"] .copyright-speaker-desc {
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .copyright-speaker-card {
+    grid-template-columns: 52px 1fr;
+    gap: 14px;
+    padding: 22px 0;
+  }
+
+  .copyright-speaker-avatar {
+    width: 52px;
+    height: 52px;
+  }
+}
 
 @view-transition {
   navigation: auto;
