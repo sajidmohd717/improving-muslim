@@ -14,6 +14,13 @@ window.speakers = [
       "Navaid Aziz is an Islamic educator and speaker known for teaching hadith, fiqh, character, and practical religious guidance in a clear and approachable way.",
   },
   {
+    name: "Assim Al-Hakeem",
+    slug: "assim-al-hakeem",
+    image: "./assets/speaker/assim-al-hakeem.jpg",
+    bio:
+      "Assim Al-Hakeem is an Islamic speaker and teacher based in Saudi Arabia, known for English-language lessons, Q&A content, and practical guidance on worship, supplication, manners, and everyday Muslim life.",
+  },
+  {
     name: "Omar Suleiman",
     slug: "omar-suleiman",
     image: "./assets/speaker/os.jpg",

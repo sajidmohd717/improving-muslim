@@ -1,0 +1,27 @@
+window.fortressOfTheMuslimSeries = {
+  title: "Fortress of the Muslim",
+  slug: "fortress-of-the-muslim",
+  seriesPageUrl: "./pages/series-fortress-of-the-muslim.html",
+  speaker: "Assim Al-Hakeem",
+  topic: "Dhikr & Dua",
+  thumbnailSrc: "./assets/thumbnail/fortress-of-the-muslim/episodes/episode-01.jpg",
+  episodeThumbnailPath: "./assets/thumbnail/fortress-of-the-muslim/episodes",
+  playlistId: "fortress-of-the-muslim-assim-al-hakeem",
+  description:
+    "A practical series on Fortress of the Muslim, walking through daily adhkar and supplications for prayer, waking, clothing, entering and leaving places, and remembering Allah throughout ordinary life.",
+  episodes: [
+    { number: 1, id: "eLpWlhlQgcY", title: "The Excellence of Dhikr", published: "2022-01-01", duration: 660, views: 62864 },
+    { number: 2, id: "7gNIZDVHtfw", title: "Difference between The Living and The Dead (Dhikr)", published: "2022-01-02", duration: 487, views: 23808 },
+    { number: 3, id: "Xi4qsfFAsqY", title: "I am as My servant thinks of Me", published: "2022-01-03", duration: 524, views: 20940 },
+    { number: 4, id: "5aDUOmJrqLM", title: "Rights of Islam are too much for me!", published: "2022-01-04", duration: 568, views: 15763 },
+    { number: 5, id: "r6t15aCtwNk", title: "An eye opener to how life is cheap", published: "2022-01-05", duration: 613, views: 14818 },
+    { number: 6, id: "CR8mBVLVkIQ", title: "Dhikr to say when you wake up", published: "2022-01-06", duration: 650, views: 19157 },
+    { number: 7, id: "QuLY_3ime5E", title: "Dua when you wear clothes, new clothes, and taking off clothes", published: "2022-01-07", duration: 533, views: 14271 },
+    { number: 8, id: "3qot25B2f_E", title: "Dua before entering the bathroom and before and after wudu", published: "2022-01-08", duration: 544, views: 14761 },
+    { number: 9, id: "6ggeYOCWvv4", title: "Dua before leaving home, going to masjid, and exiting", published: "2022-01-09", duration: 624, views: 12496 },
+    { number: 10, id: "tP9gZnb9UDk", title: "What to say during and after Adhan / Athan", published: "2022-01-10", duration: 505, views: 32965 },
+    { number: 11, id: "1L8_PxkrFlE", title: "Dua at the start of the prayer, after takbeer", published: "2022-01-11", duration: 545, views: 12279 },
+    { number: 12, id: "sAbvOxinuxA", title: "Beautiful dua recited by the Prophet in the beginning of prayer", published: "2022-01-12", duration: 583, views: 9106 },
+    { number: 13, id: "CosjctkN3Pg", title: "Dua before the night prayers", published: "2022-01-13", duration: 624, views: 8733 },
+  ],
+};

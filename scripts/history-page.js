@@ -1,42 +1,26 @@
-const allSeries = (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
+const {
+  escapeHtml,
+  episodeThumbnailUrl,
+  episodeUrl,
+  formatDuration,
+  getAllSeries,
+  PROGRESS_PREFIX,
+  readJsonStorage,
+  removeStorageItem,
+  storageKeysWithPrefix,
+} = window.IMUtils;
 
-function episodeUrl(series, episode) {
-  return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;
-}
-
-function episodeThumbnailUrl(series, episode) {
-  if (episode.thumbnailSrc) return episode.thumbnailSrc;
-  const n = String(episode.number).padStart(2, "0");
-  return `${series.episodeThumbnailPath}/episode-${n}.jpg`;
-}
-
-function formatDuration(seconds) {
-  if (!seconds) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+const allSeries = getAllSeries();
 
 function readAllHistory() {
   const items = [];
   try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (!key?.startsWith("lecture-progress:")) continue;
-
+    for (const key of storageKeysWithPrefix(PROGRESS_PREFIX)) {
       const parts = key.split(":");
       const playlistId = parts[1];
       const episodeId = parts.slice(2).join(":");
 
-      const raw = JSON.parse(localStorage.getItem(key)) || {};
+      const raw = readJsonStorage(key, {});
       const currentTime = Number(raw.currentTime) || 0;
       const duration = Number(raw.duration) || 0;
       const percent = duration > 0 ? currentTime / duration : 0;
@@ -111,20 +95,13 @@ document.getElementById("history-list")?.addEventListener("click", (e) => {
   if (!btn) return;
   const item = btn.closest("[data-progress-key]");
   if (!item) return;
-  try { localStorage.removeItem(item.dataset.progressKey); } catch {}
+  removeStorageItem(item.dataset.progressKey);
   renderHistory();
 });
 
 document.getElementById("clear-history-btn")?.addEventListener("click", () => {
   if (!confirm("Remove all watch history on this device?")) return;
-  try {
-    const keys = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k?.startsWith("lecture-progress:")) keys.push(k);
-    }
-    keys.forEach((k) => localStorage.removeItem(k));
-  } catch {}
+  storageKeysWithPrefix(PROGRESS_PREFIX).forEach(removeStorageItem);
   renderHistory();
 });
 

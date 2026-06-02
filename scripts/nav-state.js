@@ -1,3 +1,4 @@
+(function () {
 const LAST_SERIES_KEY = "improving-muslim:last-series-url";
 const DEFAULT_SERIES_URL = "./pages/series.html";
 
@@ -55,3 +56,4 @@ document.addEventListener("click", (event) => {
     saveLastSeriesUrl(href);
   }
 });
+})();

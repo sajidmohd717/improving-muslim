@@ -1,5 +1,6 @@
 window.seriesConfig = [
   { globalKey: "enjoyYourPrayerSeries",      slug: "enjoy-your-prayer",       category: "prayer",       sectionTitle: "Salah & Worship" },
+  { globalKey: "fortressOfTheMuslimSeries",  slug: "fortress-of-the-muslim",  category: "dhikr",        sectionTitle: "Dhikr & Dua" },
   { globalKey: "seerahYasirQadhiSeries",     slug: "seerah-yasir-qadhi",      category: "seerah",       sectionTitle: "Seerah" },
   { globalKey: "fortyHadithSeries",          slug: "forty-hadith-nawawi",     category: "hadith",       sectionTitle: "Hadith" },
   { globalKey: "heartMattersSeries",         slug: "heart-matters",           category: "purification", sectionTitle: "Purification of the Heart" },

@@ -4,6 +4,7 @@ const categories = [
   { name: "All", value: "foryou" },
   { name: "Purification", value: "purification" },
   { name: "Prayer", value: "prayer" },
+  { name: "Dhikr", value: "dhikr" },
   { name: "Hadith", value: "hadith" },
   { name: "Seerah", value: "seerah" },
   { name: "Sahaba", value: "sahaba" },
@@ -18,6 +19,20 @@ const categories = [
 ];
 
 const speakers = window.speakers || [];
+const {
+  escapeHtml,
+  formatDuration,
+  formatViewCount,
+  getAllSeries,
+  progressKey,
+  readJsonStorage,
+  readSavedItems,
+  PROGRESS_PREFIX,
+  storageKeysWithPrefix,
+  writeSavedItems,
+} = window.IMUtils;
+const episodeUrl = (series, episode) => window.IMUtils.episodeUrl(series, episode);
+const episodeThumbnailUrl = (series, episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
 
 const excludedSpeakerNames = new Set([
   [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
@@ -185,16 +200,6 @@ const state = {
   activeSpeaker: null,
 };
 
-const SAVED_KEY = "improving-muslim:saved-items";
-
-function formatViewCount(n) {
-  if (!n) return "";
-  if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
-  if (n >= 10_000) return `${Math.round(n / 1_000)}K views`;
-  if (n >= 1_000) return `${+(n / 1_000).toFixed(1)}K views`;
-  return `${n} views`;
-}
-
 function enrichSeries(item) {
   const local = availableLocalSeries().find(s => s.title === item.title);
   if (local) {
@@ -247,15 +252,6 @@ function cleanJson(text) {
   return text.replace(/^\uFEFF/, "").replace(/[\u0000-\u001F\u007F-\u009F]/g, "").trim();
 }
 
-function escapeHtml(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
 function normalizeSections(sections) {
   return sections.map((section) => ({
     ...section,
@@ -277,7 +273,7 @@ function isAllowedSeries(series) {
 }
 
 function availableLocalSeries() {
-  return (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
+  return getAllSeries();
 }
 
 function localSeriesSections(category = "foryou") {
@@ -368,43 +364,6 @@ function showSkeletons(count = 6) {
   }).join("");
 }
 
-function progressKey(series, episode) {
-  return `lecture-progress:${series.playlistId}:${episode.id}`;
-}
-
-function episodeUrl(series, episode) {
-  return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
-}
-
-function episodeThumbnailUrl(series, episode) {
-  if (episode.thumbnailSrc) {
-    return episode.thumbnailSrc;
-  }
-
-  if (series.episodeThumbnailPath && episode.number) {
-    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
-  }
-
-  return series.thumbnailSrc || "./public/icon.png";
-}
-
-function readSavedItems() {
-  try {
-    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function writeSavedItems(items) {
-  try {
-    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 function savedSeriesItem(series, url) {
   return {
     key: `series:${url}`,
@@ -478,20 +437,9 @@ async function shareSeries(series, url, button) {
   }
 }
 
-function formatDuration(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  if (mins >= 60) {
-    const hours = Math.floor(mins / 60);
-    const restMins = mins % 60;
-    return `${hours}:${String(restMins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-  }
-  return `${mins}:${String(secs).padStart(2, "0")}`;
-}
-
 function readStoredProgress(series, episode) {
   try {
-    const progress = JSON.parse(localStorage.getItem(progressKey(series, episode))) || {};
+    const progress = readJsonStorage(progressKey(series, episode), {});
     const currentTime = Number(progress.currentTime) || 0;
     const duration = Number(progress.duration) || 0;
     const percent = duration > 0 ? currentTime / duration : 0;
@@ -528,12 +476,7 @@ function renderContinueWatching() {
 
   if (!items.length) {
     const hasHistory = (() => {
-      try {
-        for (let i = 0; i < localStorage.length; i++) {
-          if (localStorage.key(i).startsWith("lecture-progress:")) return true;
-        }
-      } catch { /* ignore */ }
-      return false;
+      return storageKeysWithPrefix(PROGRESS_PREFIX).length > 0;
     })();
     els.continueList.innerHTML = hasHistory
       ? `<div class="continue-empty">
@@ -637,11 +580,9 @@ function seriesProgressSummary(seriesTitle) {
   let completed = 0;
   let started = false;
   for (const ep of watchable) {
-    try {
-      const p = JSON.parse(localStorage.getItem(progressKey(localSeries, ep))) || {};
-      if (p.completed) { completed++; started = true; }
-      else if (p.currentTime > 10) { started = true; }
-    } catch {}
+    const p = readJsonStorage(progressKey(localSeries, ep), {});
+    if (p.completed) { completed++; started = true; }
+    else if (p.currentTime > 10) { started = true; }
   }
   if (!started) return null;
   return { completed, total: watchable.length };

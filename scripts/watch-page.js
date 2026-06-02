@@ -1,11 +1,12 @@
-function escapeHtml(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+const {
+  escapeHtml,
+  getSeriesRegistry,
+  isEpisodeAvailable,
+  readJsonStorage,
+  writeJsonStorage,
+  readSavedItems,
+  writeSavedItems,
+} = window.IMUtils;
 
 function renderRecap(text) {
   return text
@@ -22,15 +23,15 @@ function renderRecap(text) {
     .join("");
 }
 
-const seriesRegistry = {};
-for (const e of (window.seriesConfig || [])) {
-  if (window[e.globalKey]) seriesRegistry[e.slug] = window[e.globalKey];
-}
+const seriesRegistry = getSeriesRegistry();
 
 const params = new URLSearchParams(window.location.search);
 const seriesSlug = params.get("series") || "change-of-heart";
 const series = seriesRegistry[seriesSlug] || window.changeOfHeartSeries;
 const seriesPageUrl = series.seriesPageUrl || "./index.html";
+const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
+const episodeThumbnailUrl = (episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
+const progressKey = (episode) => window.IMUtils.progressKey(series, episode);
 
 const requestedVideoId = params.get("video");
 const currentEpisode =
@@ -63,31 +64,10 @@ const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
 const saveEpisodeButton = document.querySelector("#save-episode-button");
 const shareEpisodeButton = document.querySelector("#share-episode-button");
 const actionStatus = document.querySelector("#watch-action-status");
-const SAVED_KEY = "improving-muslim:saved-items";
 
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
-
-function episodeUrl(episode) {
-  return `./pages/watch.html?series=${seriesSlug}&video=${episode.id}`;
-}
-
-function isEpisodeAvailable(episode) {
-  return Boolean(episode.videoSrc);
-}
-
-function episodeThumbnailUrl(episode) {
-  if (episode.thumbnailSrc) {
-    return episode.thumbnailSrc;
-  }
-
-  if (series.episodeThumbnailPath && episode.number) {
-    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
-  }
-
-  return series.thumbnailSrc || "./public/icon.png";
-}
 
 function setPlayerPoster(episode) {
   player.poster = episodeThumbnailUrl(episode);
@@ -95,27 +75,6 @@ function setPlayerPoster(episode) {
 
 function setVideoLoading(isLoading) {
   loadingIndicator?.classList.toggle("is-hidden", !isLoading);
-}
-
-function progressKey(episode) {
-  return `lecture-progress:${series.playlistId}:${episode.id}`;
-}
-
-function readSavedItems() {
-  try {
-    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function writeSavedItems(items) {
-  try {
-    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function savedItem() {
@@ -183,11 +142,7 @@ shareEpisodeButton?.addEventListener("click", shareEpisode);
 updateSaveButton();
 
 function readProgress(episode) {
-  try {
-    return JSON.parse(localStorage.getItem(progressKey(episode))) || {};
-  } catch (error) {
-    return {};
-  }
+  return readJsonStorage(progressKey(episode), {});
 }
 
 function saveProgress() {
@@ -203,11 +158,7 @@ function saveProgress() {
     completed: Boolean(existing.completed),
   };
 
-  try {
-    localStorage.setItem(progressKey(currentEpisode), JSON.stringify(payload));
-  } catch (error) {
-    return;
-  }
+  writeJsonStorage(progressKey(currentEpisode), payload);
 }
 
 function formatProgress(episode) {
@@ -396,16 +347,14 @@ player.addEventListener("pause", () => {
 });
 
 player.addEventListener("ended", () => {
-  try {
-    localStorage.setItem(
-      progressKey(currentEpisode),
-      JSON.stringify({
-        currentTime: player.duration || currentEpisode.duration || 0,
-        duration: player.duration || currentEpisode.duration || 0,
-        updatedAt: Date.now(),
-        completed: true,
-      }),
-    );
+  if (
+    writeJsonStorage(progressKey(currentEpisode), {
+      currentTime: player.duration || currentEpisode.duration || 0,
+      duration: player.duration || currentEpisode.duration || 0,
+      updatedAt: Date.now(),
+      completed: true,
+    })
+  ) {
     const currentCompactEpisode = episodeList.querySelector(".compact-episode.is-current");
     if (currentCompactEpisode) {
       currentCompactEpisode.classList.add("is-watched");
@@ -417,8 +366,6 @@ player.addEventListener("ended", () => {
         details.insertAdjacentHTML("beforeend", "<em>Watched</em>");
       }
     }
-  } catch (error) {
-    return;
   }
   updateMediaSessionState("none");
 });

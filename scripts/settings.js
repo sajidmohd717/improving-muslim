@@ -1,4 +1,12 @@
-const STORAGE_PREFIX = "lecture-progress:";
+const {
+  PROGRESS_PREFIX,
+  SAVED_KEY,
+  escapeHtml,
+  readJsonStorage,
+  readSavedItems,
+  removeStorageItem,
+  storageKeysWithPrefix,
+} = window.IMUtils;
 
 const summary = document.querySelector("#watch-history-summary");
 const status = document.querySelector("#settings-status");
@@ -6,40 +14,13 @@ const resetButton = document.querySelector("#reset-watch-history");
 const savedSummary = document.querySelector("#saved-items-summary");
 const savedList = document.querySelector("#saved-items-list");
 const resetSavedButton = document.querySelector("#reset-saved-items");
-const SAVED_KEY = "improving-muslim:saved-items";
-
-function escapeHtml(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
 function progressKeys() {
-  const keys = [];
-  try {
-    for (let index = 0; index < localStorage.length; index += 1) {
-      const key = localStorage.key(index);
-      if (key && key.startsWith(STORAGE_PREFIX)) {
-        keys.push(key);
-      }
-    }
-  } catch {
-    return keys;
-  }
-  return keys;
+  return storageKeysWithPrefix(PROGRESS_PREFIX);
 }
 
 function readProgressItems() {
-  return progressKeys().map((key) => {
-    try {
-      return JSON.parse(localStorage.getItem(key)) || {};
-    } catch (error) {
-      return {};
-    }
-  });
+  return progressKeys().map((key) => readJsonStorage(key, {}));
 }
 
 function renderSummary() {
@@ -63,20 +44,12 @@ function renderSummary() {
 
 resetButton.addEventListener("click", () => {
   const keys = progressKeys();
-  keys.forEach((key) => localStorage.removeItem(key));
+  keys.forEach(removeStorageItem);
   if (status) status.textContent = "Watch history has been reset on this device.";
   renderSummary();
 });
 
 renderSummary();
-
-function readSavedItems() {
-  try {
-    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
 
 function renderSavedItems() {
   const items = readSavedItems();
@@ -108,11 +81,7 @@ function renderSavedItems() {
 }
 
 resetSavedButton?.addEventListener("click", () => {
-  try {
-    localStorage.removeItem(SAVED_KEY);
-  } catch {
-    // Ignore storage failures; renderSavedItems will show the current state.
-  }
+  removeStorageItem(SAVED_KEY);
   if (status) status.textContent = "Saved items have been cleared on this device.";
   renderSavedItems();
 });

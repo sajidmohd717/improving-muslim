@@ -1,7 +1,8 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const localSeries = (window.seriesConfig || []).map(e => window[e.globalKey]).filter(Boolean);
+const { escapeHtml, formatViewCount, getAllSeries } = window.IMUtils;
+const localSeries = getAllSeries();
 
 const imageMap = {
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
@@ -48,23 +49,6 @@ const els = {
   grid: document.querySelector("#speaker-series-grid"),
   status: document.querySelector("#speaker-status"),
 };
-
-function escapeHtml(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function formatViewCount(n) {
-  if (!n) return "";
-  if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
-  if (n >= 10_000) return `${Math.round(n / 1_000)}K views`;
-  if (n >= 1_000) return `${+(n / 1_000).toFixed(1)}K views`;
-  return `${n} views`;
-}
 
 function localThumbnail(series) {
   return series.thumbnailSrc || "./public/icon.png";

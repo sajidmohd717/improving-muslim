@@ -1,14 +1,12 @@
-function formatViews(n) {
-  if (!n) return "";
-  if (n >= 1_000_000) return `${+(n / 1_000_000).toFixed(1)}M views`;
-  if (n >= 10_000) return `${Math.round(n / 1_000)}K views`;
-  if (n >= 1_000) return `${+(n / 1_000).toFixed(1)}K views`;
-  return `${n} views`;
-}
+const { formatViews, readJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
 
 const series = window.currentSeries;
 const episodeList = document.querySelector("#episode-list");
 const heroContent = document.querySelector(".series-hero > div");
+const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
+const isEpisodeAvailable = window.IMUtils.isEpisodeAvailable;
+const episodeThumbnailUrl = (episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
+const progressKey = (episode) => window.IMUtils.progressKey(series, episode);
 
 function renderHero() {
   const eyebrow = document.querySelector(".series-hero .eyebrow");
@@ -25,38 +23,9 @@ function renderHero() {
   document.querySelector("#start-series-link")?.remove();
 }
 renderHero();
-const SAVED_KEY = "improving-muslim:saved-items";
-
-function episodeUrl(episode) {
-  return `./pages/watch.html?series=${series.slug}&video=${episode.id}`;
-}
-
-function isEpisodeAvailable(episode) {
-  return Boolean(episode.videoSrc);
-}
-
-function episodeThumbnailUrl(episode) {
-  if (episode.thumbnailSrc) {
-    return episode.thumbnailSrc;
-  }
-
-  if (series.episodeThumbnailPath && episode.number) {
-    return `${series.episodeThumbnailPath}/episode-${String(episode.number).padStart(2, "0")}.jpg`;
-  }
-
-  return series.thumbnailSrc || "./public/icon.png";
-}
-
-function progressKey(episode) {
-  return `lecture-progress:${series.playlistId}:${episode.id}`;
-}
 
 function readProgress(episode) {
-  try {
-    return JSON.parse(localStorage.getItem(progressKey(episode))) || {};
-  } catch (error) {
-    return {};
-  }
+  return readJsonStorage(progressKey(episode), {});
 }
 
 function progressLabel(episode) {
@@ -83,29 +52,12 @@ function formatDate(dateString) {
   }).format(new Date(`${dateString}T00:00:00`));
 }
 
-function readSavedItems() {
-  try {
-    return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function writeSavedItems(items) {
-  try {
-    localStorage.setItem(SAVED_KEY, JSON.stringify(items));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function seriesUrl() {
+function currentSeriesUrl() {
   return series.seriesPageUrl || `./pages/series-${series.slug}.html`;
 }
 
 function isSeriesSaved() {
-  return readSavedItems().some((item) => item.key === `series:${seriesUrl()}`);
+  return readSavedItems().some((item) => item.key === `series:${currentSeriesUrl()}`);
 }
 
 function updateSeriesSaveButton(button) {
@@ -116,11 +68,11 @@ function updateSeriesSaveButton(button) {
 
 function toggleSavedSeries(button, status) {
   const item = {
-    key: `series:${seriesUrl()}`,
+    key: `series:${currentSeriesUrl()}`,
     type: "series",
     title: series.title,
     subtitle: `${series.speaker} - ${series.episodes.length} episodes`,
-    url: seriesUrl(),
+    url: currentSeriesUrl(),
     savedAt: Date.now(),
   };
   const items = readSavedItems();
@@ -139,7 +91,7 @@ function toggleSavedSeries(button, status) {
 }
 
 async function shareSeries(status) {
-  const url = new URL(seriesUrl(), document.baseURI).href;
+  const url = new URL(currentSeriesUrl(), document.baseURI).href;
   const shareData = {
     title: series.title,
     text: `${series.title} by ${series.speaker}`,
