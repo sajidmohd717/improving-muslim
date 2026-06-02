@@ -10,11 +10,11 @@ window.angelsInYourPresenceSeries = {
   description:
     "A short Ramadan series on how angels surround the believer through worship, dua, knowledge, protection, remembrance, and mercy.",
   episodes: [
-    { number: 1, id: "9VtsVxVyn1g", title: "They've Got Your Back", published: "2020-04-24", views: 1000000 },
-    { number: 2, id: "swoO1nd2VKw", title: "Hold Your Pens", published: "2020-04-25", views: 718000 },
-    { number: 3, id: "W7gEyqqSPpU", title: "Fasting While Others Eat", published: "2020-04-26", views: 562000 },
-    { number: 4, id: "mOuiRGRIhak", title: "Sleep Well", published: "2020-04-27", views: 1000000 },
-    { number: 5, id: "NDfvYIG4Dr4", title: "Switching Shifts", published: "2020-04-28", views: 571000 },
+    { number: 1, id: "9VtsVxVyn1g", title: "They've Got Your Back", published: "2020-04-24", views: 1000000, videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/angels-in-your-presence/angels-in-your-presence-ep-1.mp4" },
+    { number: 2, id: "swoO1nd2VKw", title: "Hold Your Pens", published: "2020-04-25", views: 718000, videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/angels-in-your-presence/angels-in-your-presence-ep-2.mp4" },
+    { number: 3, id: "W7gEyqqSPpU", title: "Fasting While Others Eat", published: "2020-04-26", views: 562000, videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/angels-in-your-presence/angels-in-your-presence-ep-3.mp4" },
+    { number: 4, id: "mOuiRGRIhak", title: "Sleep Well", published: "2020-04-27", views: 1000000, videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/angels-in-your-presence/angels-in-your-presence-ep-4.mp4" },
+    { number: 5, id: "NDfvYIG4Dr4", title: "Switching Shifts", published: "2020-04-28", views: 571000, videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/angels-in-your-presence/angels-in-your-presence-ep-5.mp4" },
     { number: 6, id: "wHYlw82qDAE", title: "As You Step Out", published: "2020-04-29", views: 548000 },
     { number: 7, id: "gOtXMstUHCU", title: "The Banner Above You", published: "2020-04-30", views: 429000 },
     { number: 8, id: "wuhFCf6eifE", title: "Responding to Your Haters", published: "2020-05-01", views: 487000 },
