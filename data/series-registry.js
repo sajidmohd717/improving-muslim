@@ -10,4 +10,5 @@ window.seriesConfig = [
   { globalKey: "messageOfTheQuranSeries",    slug: "message-of-the-quran",    category: "quran",        sectionTitle: "Quran" },
   { globalKey: "parablesOfTheQuranSeries",   slug: "parables-of-the-quran",   category: "quran",        sectionTitle: "Quran" },
   { globalKey: "tenPromisedJannahSeries",    slug: "ten-promised-jannah",     category: "sahaba",       sectionTitle: "Sahaba" },
+  { globalKey: "madinaArabicSeries",         slug: "madina-arabic",           category: "arabic",       sectionTitle: "Arabic" },
 ];

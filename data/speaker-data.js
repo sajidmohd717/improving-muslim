@@ -42,6 +42,13 @@ window.speakers = [
       "AbdulRahman Hassan is an Islamic teacher and speaker known for structured lessons on creed, worship, companions, and practical religious knowledge.",
   },
   {
+    name: "Asif Meherali",
+    slug: "asif-meherali",
+    image: "./assets/speaker/asif-meherali.jpg",
+    bio:
+      "Asif Meherali is known for teaching the Madina Arabic Books in English, helping learners build Arabic grammar, reading, and Qur'an comprehension step by step.",
+  },
+  {
     name: "Belal Assad",
     slug: "belal-assad",
     image: "./assets/speaker/ba.jpg",
