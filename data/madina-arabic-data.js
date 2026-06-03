@@ -117,7 +117,64 @@ The teacher closes the session by reminding students that every minute spent lea
           "published": "2015-01-01",
           "duration": 7351,
           "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-2.mp4",
-          "captionsSrc": "./assets/captions/madina-arabic/episode-02.vtt"
+          "captionsSrc": "./assets/captions/madina-arabic/episode-02.vtt",
+          "grammarNotes": [
+              { "term": "Dhaka", "arabic": "ذَلِكَ", "definition": "Demonstrative pronoun meaning 'that' (far, masculine). Contrast: Haza = this (near), Dhaka = that (far)." },
+              { "term": "Shadda", "arabic": "شَدَّة", "definition": "Marker above a letter meaning it is doubled — must be pronounced with full emphasis. E.g., Suk-kar (sugar), not Sukar." },
+              { "term": "Wa", "arabic": "وَ", "definition": "Conjunction meaning 'and'. A Harf (particle). Joins two nouns or sentences together." },
+              { "term": "Jumlah Ismiyyah", "arabic": "جُمْلَة اِسْمِيَّة", "definition": "Nominal sentence — begins with a noun (Ism). The only sentence type covered in Book 1." },
+              { "term": "Jumlah Fi'liyyah", "arabic": "جُمْلَة فِعْلِيَّة", "definition": "Verbal sentence — begins with a verb (Fi'l). Introduced in Book 2. Not covered yet." },
+              { "term": "Mubtada", "arabic": "مُبْتَدَأ", "definition": "Subject of a nominal sentence. Always Marfu' (ends with Damma). Usually definite — with Al-, a proper noun, or a pronoun." },
+              { "term": "Khabar", "arabic": "خَبَر", "definition": "Predicate of a nominal sentence — the 'news' about the subject. Always Marfu' (ends with Damma). Usually indefinite (has Tanwin)." },
+              { "term": "Pronouns are definite", "arabic": "الضَّمِير مَعْرِفَة", "definition": "All pronouns — including Haza and Dhaka — are definite by nature. They refer to specific things, so they qualify as Mubtada." }
+          ],
+          "recap": `# Lesson 2 Recap — Dhaka, Shadda, and the Nominal Sentence
+
+The lesson opens by addressing a student's question about the word **Wa (وَ)**, which means "and" in English. The teacher classifies it as a **Harf** (particle) — a conjunction. It is one of the smaller but essential words in Arabic that does not fall under Ism or Fi'l.
+
+# Dhaka — "That" (The Far Demonstrative)
+
+The lesson introduces **Dhaka (ذَلِكَ)**, which means "that." This pairs with **Haza (هذا)** from Lesson 1 to complete the near/far distinction in Arabic demonstratives. Both are demonstrative pronouns — **Ism Ishara** — and both are types of Ism.
+
+The rule is straightforward: use **Haza** when pointing to something near you, and **Dhaka** when pointing to something at a distance. The question words stay the same: **Ma haza?** simply becomes **Ma dhaka?** — "What is that?" For human beings: **Man dhaka?** — "Who is that?"
+
+# Shadda — The Doubled Letter
+
+**Shadda (شَدَّة)** is a small symbol written above a letter that signals the letter is doubled. When reading, the doubled letter must be pronounced with full weight — it cannot be rushed or softened. The teacher uses the word **Sukkar** (sugar) as an example: it is "Suk-kar," not "Sukar." Students are instructed to always give the Shadda its proper pronunciation, especially in Quranic recitation where precision matters.
+
+The teacher also notes that the English word "sugar" is itself derived from the Arabic **Sukkar** — a small reminder of Arabic's deep influence on world languages.
+
+# Two Types of Arabic Sentences
+
+A major concept introduced in this lesson is that Arabic has exactly **two types of sentences**:
+
+**Jumlah Ismiyyah (جملة اسمية)** — the nominal sentence, which begins with a noun. This is the only type covered in Book 1.
+
+**Jumlah Fi'liyyah (جملة فعلية)** — the verbal sentence, which begins with a verb. This arrives in Book 2 alongside the full introduction of verbs.
+
+# The Nominal Sentence: Mubtada and Khabar
+
+Every Jumlah Ismiyyah has exactly two parts. The first is the **Mubtada (مبتدأ)** — the subject. The word literally means "the thing you begin with." The second is the **Khabar (خبر)** — the predicate. The word literally means "news," because it delivers news or information about the subject.
+
+In the sentence **Al-kitābu jadīdun** — "The book is new" — Al-kitābu is the Mubtada and Jadīdun is the Khabar. Remember: Arabic drops the linking verb "is" entirely. The two nouns side by side carry the full meaning.
+
+Two rules govern these two parts, and they apply to every nominal sentence without exception:
+
+**Rule 1 — Both are always Marfu'.** The Mubtada and the Khabar both end with a Damma (ُ) because being the subject or predicate places the noun in the nominative case. This is the most important takeaway from this lesson.
+
+**Rule 2 — Mubtada is usually definite, Khabar is usually indefinite.** In English you naturally say "The house is big" — the subject takes "the" (definite) and the description is open (indefinite). Arabic follows the same logic. The Mubtada tends to come with Al- or be a proper noun, and the Khabar tends to carry Tanwin. Muhammad is a doctor: **Muhammadun tabībun** — Muhammad (definite proper noun) + doctor (indefinite with Tanwin).
+
+# All Pronouns Are Definite
+
+The teacher establishes a rule that will be used constantly going forward: **all pronouns are definite by nature.** A pronoun always refers to something specific — "this pen," "that house," "he" — so it can never be vague or indefinite. Since Haza and Dhaka are pronouns, they are automatically definite, making them natural candidates for the Mubtada role in a sentence. **Haza baytun** — "Haza" is the definite Mubtada, "baytun" is the indefinite Khabar.
+
+# Vocabulary by Opposites
+
+The teacher highlights a deliberate feature of Dr. Abdur Rahim's Madina Book: vocabulary is introduced in **opposite pairs**, which doubles what students absorb in one sitting. New adjectives from this lesson appear as pairs: near/far, new/old, big/small, hot/cold, heavy/light, open/broken, clean/dirty. Memorizing one word also anchors its opposite — a highly efficient method for building vocabulary.
+
+# What to Analyze and What to Leave
+
+The teacher draws a firm line: **only analyze statement sentences** at this stage. Questions — sentences beginning with Ma, Man, or a Hamza — should not be parsed for Mubtada and Khabar yet. The rules for analyzing questions come much later in Book 3. Attempting it now creates confusion. For every statement sentence: identify the Mubtada (Marfu', usually definite) and the Khabar (Marfu', usually indefinite) — that is the full task for now.`
       },
       {
           "number": 3,
