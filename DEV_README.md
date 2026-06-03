@@ -10,7 +10,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `pages/` contains secondary HTML pages such as series pages, speaker profiles, settings, about, and watch.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
-- `styles/styles.css` contains all site styling.
+- `styles/styles.css` contains all site styling in a single file.
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
 - `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
 - `scripts/series-page.js` renders dedicated series episode lists.
@@ -22,28 +22,33 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `assets/captions/` contains WebVTT captions, grouped by series slug.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
+- `scripts/error-handler.js` is loaded before all other scripts. It catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit.
+- `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
 - `public/` contains brand-facing assets: logo/favicons, the web manifest, and the default social sharing preview image.
+- `.github/workflows/check.yml` is the CI workflow that runs syntax and accessibility checks automatically on every push and pull request to `main`.
 - `CNAME` pins the GitHub Pages custom domain to `improvingmuslim.com`.
 
-Moved pages include a `<base href="../" />` tag. Keep project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links work from both `index.html` and moved pages.
+All pages in `pages/` include a `<base href="../" />` tag. Keep all project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links resolve correctly from both `index.html` and inner pages.
 
 ## Current Content State
 
-The platform currently has 12 series registered. All are self-hosted via Cloudflare R2 or referenced from the registry:
+The platform currently has 12 series registered across 8 categories:
 
 | Series | Speaker | Category | Status |
 |---|---|---|---|
-| Change of Heart | Ali Hammuda | Purification | Partially unlocked |
 | Enjoy Your Prayer | Ali Hammuda | Prayer | Partially unlocked |
+| Fortress of the Muslim | Assim Al-Hakeem | Dhikr | Partially unlocked |
+| Seerah of the Prophet (S) | Yasir Qadhi | Seerah | Partially unlocked |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | Partially unlocked |
-| Seerah of Prophet Muhammed (S) | Yasir Qadhi | Seerah | Partially unlocked |
-| Heart Matters Ramadan Series 2023 | Yasir Qadhi | Purification | Partially unlocked |
-| Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
-| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
-| The Message of the Quran in 30 Lessons | Yasir Qadhi | Quran | Partially unlocked |
-| The Parables of The Quran | Yasir Qadhi | Quran | Partially unlocked |
+| Heart Matters Ramadan 2023 | Yasir Qadhi | Purification | Partially unlocked |
+| Change of Heart | Ali Hammuda | Purification | Partially unlocked |
 | Why Me? | Omar Suleiman | Purification | Catalogue only |
+| Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
+| Message of the Quran in 30 Lessons | Yasir Qadhi | Quran | Partially unlocked |
+| Parables of the Quran | Yasir Qadhi | Quran | Partially unlocked |
+| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
+| Madina Arabic Books | Asif Meherali | Arabic | Partially unlocked |
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
 
@@ -53,37 +58,61 @@ statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah
 
 The homepage topic order should stay intentional and learning-led. Series should appear in the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
+## CI / Automated Checks
+
+Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
+
+1. `npm run check:js` — Node.js syntax check on all 28+ JS and data files.
+2. `npm run check:a11y` — Custom accessibility audit of all HTML pages.
+
+If either step fails, GitHub marks the push red and sends a notification. Check the Actions tab at `github.com/sajidmohd717/islamic-lectures-react/actions` after each push to confirm green.
+
+The same checks can be run locally before pushing:
+
+```bash
+npm run check
+```
+
+Do not skip the checks before pushing. A red CI run means something is broken in production.
+
+## Error Handler and Monitoring
+
+`scripts/error-handler.js` must be the first script loaded on every page, before all other scripts including `utils.js`. It:
+
+- Registers `window.onerror` and `window.addEventListener('unhandledrejection', ...)` before anything else can crash.
+- Shows a friendly fallback UI inside `<main>` if a script error occurs, rather than leaving the user with a blank or broken page.
+- Silently POSTs error details (message, page URL, browser) to `contact@improvingmuslim.com` via FormSubmit — fire and forget, never surfaced to the user.
+- Filters out non-crash rejections: `AbortError` (fetch cancelled on navigation), network `TypeError`s (Safari "Load failed", Chrome "Failed to fetch"), and any rejection that fires while `document.hidden` is true (bfcache artifacts).
+- Resets its state on `pageshow` with `persisted: true` so Safari's back-forward cache restoration never incorrectly triggers the fallback UI.
+
+**FormSubmit note:** The first email from a new endpoint requires a one-time confirmation click from `contact@improvingmuslim.com`. If error reports stop arriving, check the inbox for a re-confirmation request.
+
+The error report email arrives with subject `Site error: /pages/watch.html` (or whichever page it occurred on), and includes the error message, full page URL, and browser user-agent.
+
 ## Hosting
 
 The static website is deployed with GitHub Pages from the `main` branch root.
 
-Current public URLs:
-
 - GitHub Pages URL: `https://sajidmohd717.github.io/islamic-lectures-react/`
-- Custom domain: `https://improvingmuslim.com` once GitHub HTTPS provisioning is complete.
+- Custom domain: `https://improvingmuslim.com`
 
 Videos are not stored in Git. Large MP4 files are hosted on Cloudflare R2 and referenced by URL in the episode data.
 
 ## Video Hosting Pattern
 
-R2 bucket:
-
-```txt
-islamic-lectures-videos
-```
+R2 bucket: `islamic-lectures-videos`
 
 Public R2 base URL:
 
-```txt
+```
 https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev
 ```
 
 Object naming pattern:
 
-```txt
+```
 change-of-heart/change-of-heart-ep-1.mp4
 change-of-heart/change-of-heart-ep-2.mp4
-...
 ```
 
 Episode data should point to R2 URLs:
@@ -92,14 +121,37 @@ Episode data should point to R2 URLs:
 videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4"
 ```
 
-New series should use the folder/object pattern:
+New series should follow the folder/object pattern:
 
-```txt
+```
 series-slug/series-slug-ep-1.mp4
 series-slug/series-slug-ep-2.mp4
 ```
 
-Do not commit real video files to the repository. The `assets/videos/change-of-heart/.gitkeep` file only preserves the intended local folder structure.
+Do not commit real video files to the repository. The `assets/videos/` folders only contain `.gitkeep` files to preserve the intended local structure.
+
+## Uploading Large Videos To R2
+
+Cloudflare's dashboard uploader has a 300 MB limit. Use the S3-compatible API for larger files.
+
+Configure AWS CLI with an R2 profile:
+
+```powershell
+aws configure --profile r2
+# Default region name: auto
+# Default output format: json
+```
+
+Upload or overwrite an object:
+
+```powershell
+aws s3 cp "C:\Users\sajid\Downloads\change-of-heart-ep-1.mp4" `
+  "s3://islamic-lectures-videos/change-of-heart/change-of-heart-ep-1.mp4" `
+  --profile r2 `
+  --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com"
+```
+
+Never commit or paste production R2 secrets into the repository or docs.
 
 ## Episode Publishing Workflow
 
@@ -110,45 +162,17 @@ When adding a new watchable episode:
 3. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`.
 4. If a transcript is available, generate a VTT file under `assets/captions/{series-slug}/`.
 5. Add `captionsSrc` to the episode object.
-6. Add `takeaways` and `recap` when the transcript has been reviewed enough to produce useful notes.
-7. Keep `episode.id` unchanged so watch progress does not reset.
-8. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
-9. Run syntax checks and test locally through the dev server.
+6. For Islamic lecture series: add `takeaways` and `recap` when the transcript has been reviewed.
+7. For language course series (e.g. Madina Arabic): add `grammarNotes` and `recap` — skip `takeaways`. See the Language Course Episodes section below.
+8. Keep `episode.id` unchanged — progress is keyed to the YouTube video ID, not the R2 URL.
+9. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
+10. Run `npm run check` and test locally.
 
-When an episode is not uploaded yet:
-
-- Do not set `videoSrc`.
-- Add or keep `statusNote`.
-- Let the series page and watch sidebar show it as `Uploading soon`.
-
-## Uploading Large Videos To R2
-
-Cloudflare's dashboard uploader has a 300 MB limit. Use the S3-compatible API for larger files.
-
-Configure AWS CLI with an R2 profile:
-
-```powershell
-aws configure --profile r2
-```
-
-Use:
-
-```txt
-Default region name: auto
-Default output format: json
-```
-
-Upload or overwrite an object:
-
-```powershell
-aws s3 cp "C:\Users\sajid\Downloads\change-of-heart-ep-1.mp4" "s3://islamic-lectures-videos/change-of-heart/change-of-heart-ep-1.mp4" --profile r2 --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com"
-```
-
-Never commit or paste production R2 secrets into the repository or docs.
+When an episode is not uploaded yet: omit `videoSrc`, keep `statusNote`. The series page and watch sidebar show it as `Uploading soon`.
 
 ## Adding A New Series
 
-All series registration flows through `data/series-registry.js`. Adding a new series no longer requires touching `scripts/script.js`, `scripts/watch-page.js`, `scripts/history-page.js`, or `scripts/speaker-page.js` — those all derive their series lists from the registry automatically.
+All series registration flows through `data/series-registry.js`. Adding a new series no longer requires editing `scripts/script.js`, `scripts/watch-page.js`, `scripts/history-page.js`, or `scripts/speaker-page.js` — those all derive their series lists from the registry automatically.
 
 ### Step 1 — Create the data file
 
@@ -160,7 +184,7 @@ window.myNewSeries = {
   slug: "series-slug",
   seriesPageUrl: "./pages/series-series-slug.html",
   speaker: "Speaker Name",
-  topic: "Category Display Name",   // shown in the hero eyebrow
+  topic: "Category Display Name",
   thumbnailSrc: "./assets/thumbnail/series-slug/series-card.jpg",
   episodeThumbnailPath: "./assets/thumbnail/series-slug/episodes",
   playlistId: "YOUTUBE_PLAYLIST_ID",
@@ -189,14 +213,14 @@ Add one entry to `data/series-registry.js`:
 { globalKey: "myNewSeries", slug: "series-slug", category: "purification", sectionTitle: "Purification of the Heart" },
 ```
 
-`category` must match one of the values in the `categories` array in `scripts/script.js` (e.g. `purification`, `prayer`, `hadith`, `seerah`, `quran`, `angels`, `sahaba`). `sectionTitle` is the heading that groups series on the homepage — multiple series can share the same `sectionTitle`.
+`category` must match one of the values in the `categories` array in `scripts/script.js`. `sectionTitle` is the heading that groups series on the homepage — multiple series can share the same `sectionTitle`.
 
 ### Step 3 — Create the series page
 
-Copy an existing `pages/series-*.html` as a starting point. Only three things change per series:
+Copy an existing `pages/series-*.html` as a starting point. Three things change per series:
 
 1. The `<head>` meta tags (title, description, og:title, og:description, og:image, og:url, twitter:*)
-2. The `<p class="hero-copy">` — write crafted prose describing the series (this stays in HTML for editorial control; everything else in the hero is rendered from the data file)
+2. The `<p class="hero-copy">` — write crafted prose describing the series
 3. The three bottom script lines:
 
 ```html
@@ -209,10 +233,15 @@ The hero eyebrow, h1, thumbnail, episode count, and start link are all populated
 
 ### Step 4 — Add the data file script tag to shared pages
 
-Add one `<script>` tag to each of these four pages, alongside the existing data file tags:
+`pages/watch.html` uses a dynamic loader — add the slug-to-file mapping in the inline `<script>` block near the bottom of `<head>`:
+
+```js
+'series-slug': './data/series-slug-data.js?v=YYYYMMDD-slug'
+```
+
+Also add a `<script>` tag to each of these three pages alongside the existing data file tags:
 
 - `index.html`
-- `pages/watch.html`
 - `pages/history.html`
 - `pages/speaker.html`
 
@@ -222,7 +251,7 @@ Add one `<script>` tag to each of these four pages, alongside the existing data 
 
 ### Step 5 — Add assets and speaker
 
-- Series thumbnail: `assets/thumbnail/{series-slug}/series-card.jpg` (referenced by `thumbnailSrc`)
+- Series thumbnail: `assets/thumbnail/{series-slug}/series-card.jpg`
 - Episode thumbnails: `assets/thumbnail/{series-slug}/episodes/episode-01.jpg`, `episode-02.jpg`, ...
 - If the speaker is new: add their entry to `data/speaker-data.js` and a photo to `assets/speaker/`
 - Add the series page URL to `sitemap.xml`
@@ -240,7 +269,61 @@ Add the new data file to the `check:js` script in `package.json`:
 
 Run `npm run check` and test: homepage (series appears in correct category), series page (hero and episodes render), watch page (episode plays), speaker page (series listed under correct speaker), history page (watch progress tracked).
 
-Series pages are static HTML shells. Episode lists, hero content, watch routing, history tracking, and speaker page listings are all data-driven from the data file and registry.
+## Language Course Episodes
+
+Language course series (currently: Madina Arabic Books) use a different episode note structure from Islamic lecture series.
+
+**Omit `takeaways`** — action-point takeaways do not apply to grammar lessons.
+
+**Use `grammarNotes`** — an array of compact reference cards, each with three fields:
+
+```js
+grammarNotes: [
+  {
+    term: "Mubtada",
+    arabic: "مُبْتَدَأ",
+    definition: "Subject of a nominal sentence. Always Marfu' (ends with Damma). Usually definite."
+  },
+  ...
+]
+```
+
+The watch page renders these as a collapsible Grammar Notes panel — a two-column card grid (term + Arabic script on the left, one-line definition on the right) that collapses to single-column on mobile. The panel only appears when `grammarNotes` exists on the episode.
+
+**Use `recap`** — same prose markdown format as other series. For language lessons, structure the recap around the grammar concepts taught, vocabulary introduced, and exercises covered rather than thematic ideas.
+
+The watch page panel order is: Grammar Notes → Episode Recap. Key Takeaways does not render if the field is absent.
+
+Grammar notes are meant for quick lookup — "what was tanwin again?" — without reading the full recap. Keep definitions to one concise sentence. The Arabic field should use fully vowelled text where possible.
+
+## Watch Page Dynamic Series Loading
+
+`pages/watch.html` does not load all series data files upfront. It uses a small inline script to load only the data file needed for the current `?series=` URL parameter:
+
+```js
+(function () {
+  var slug = new URLSearchParams(location.search).get('series') || 'change-of-heart';
+  var map = {
+    'change-of-heart': './data/change-of-heart-data.js?v=...',
+    'madina-arabic':   './data/madina-arabic-data.js?v=...',
+    // ...
+  };
+  var src = map[slug];
+  if (src) document.write('<script src="' + src + '"><\/script>');
+})();
+```
+
+When adding a new series, add its entry to this map. The version query string (`?v=YYYYMMDD-slug`) busts the browser cache when the data file changes. Update the version string whenever you publish new episodes or edit existing episode content (recap, grammar notes, etc.) for a series that is already live.
+
+## Script Cache Busting
+
+Script tags use query string versioning to force browsers to fetch updated files:
+
+```html
+<script src="./scripts/watch-page.js?v=20260604-grammar-notes" defer></script>
+```
+
+Update the version string on any script tag whenever its corresponding file changes and those changes need to reach users who have previously visited the page. The format is `YYYYMMDD-brief-description`. This applies to: `watch-page.js`, `series-page.js`, `utils.js`, and all data files referenced in `watch.html`'s dynamic loader map.
 
 ## Watch Progress
 
@@ -252,59 +335,34 @@ Storage key format:
 lecture-progress:${series.playlistId}:${episode.id}
 ```
 
-Progress is intentionally tied to stable episode IDs, not video file URLs. This means an R2 file can be replaced without resetting user progress.
+Progress is tied to the stable YouTube video ID, not the R2 file URL. An R2 file can be replaced without resetting progress.
 
 Important implications:
 
-- Keep `episode.id` stable once public.
-- Changing from `github.io` to `improvingmuslim.com` creates a new browser origin, so old progress from the GitHub Pages URL will not carry over.
-- Clearing browser data removes saved progress.
-- Future account-based progress would need a backend.
+- Keep `episode.id` stable once published.
+- Changing origin (e.g. from `github.io` to `improvingmuslim.com`) creates a new browser origin, so old progress does not carry over.
+- Clearing browser data removes all saved progress.
 
-The Settings page at `pages/settings.html` explains local storage and lets users reset watch history on the current device.
-
-Settings also includes a theme selector. `scripts/theme.js` applies `system`, `light`, or `dark` mode using `localStorage` key `improving-muslim:theme`.
+The Settings page at `pages/settings.html` explains local storage and lets users reset watch history and saved items on the current device. Theme preference (`improving-muslim:theme`) is also stored in localStorage.
 
 ## Player Behavior
 
-The watch page uses a native HTML5 `<video>` element, not a YouTube iframe. This avoids YouTube embed errors and keeps the experience focused.
+The watch page uses a native HTML5 `<video>` element, not a YouTube iframe. Captions use the browser's native `<track kind="captions">` support.
 
-Captions use the browser's native `<track kind="captions">` support. Do not reintroduce a custom caption overlay unless native captions become impossible to support. The native captions menu may not appear when opening `watch.html` directly as a `file://` page; test captions through `npm run dev`, GitHub Pages, or the custom domain.
+Mobile support includes:
 
-Mobile support currently includes:
-
-- `playsinline`
-- `webkit-playsinline`
+- `playsinline` and `webkit-playsinline`
 - `x-webkit-airplay="allow"`
 - Media Session API metadata and controls where supported
-- local resume behavior
+- Local resume from saved progress
 
-Browser and OS rules still decide whether background or lock-screen playback continues. The site can support those APIs, but it cannot force YouTube Premium-style background playback everywhere.
+Do not reintroduce a custom caption overlay unless native captions become impossible to support. Test captions through the dev server or live site — they do not work over `file://`.
 
-## Thumbnail Sources
+## Mobile Navigation
 
-Homepage series thumbnails and speaker photos mostly use local assets.
+All inner pages (`/pages/...`) automatically receive a mobile back button in the top-left of the header. This is injected by `scripts/nav-state.js` at runtime — no HTML changes needed. The button is hidden on desktop via CSS (`display: none` above 600px) since desktop users have the browser back button. It calls `window.history.back()` on tap.
 
-Episode thumbnails and video posters must not depend on YouTube's thumbnail CDN at runtime. Series data should provide:
-
-```js
-thumbnailSrc: "./assets/thumbnail/{topic-or-series}/series-image.jpg",
-episodeThumbnailPath: "./assets/thumbnail/{series-slug}/episodes",
-```
-
-Episode artwork should be saved as:
-
-```txt
-assets/thumbnail/{series-slug}/episodes/episode-01.jpg
-assets/thumbnail/{series-slug}/episodes/episode-02.jpg
-...
-```
-
-The shared helpers in `scripts/script.js`, `scripts/series-page.js`, and `scripts/watch-page.js` resolve episode images from `episodeThumbnailPath`. Individual episodes can still override this with their own local `thumbnailSrc` when a custom image is needed.
-
-It is acceptable to download source thumbnails from YouTube during development, but the committed site should load local files. After adding thumbnails, search for `i.ytimg.com` and remove runtime references.
-
-The UI also includes `prefers-reduced-motion` handling. When adding animations, hover transforms, shimmer effects, or scrolling behavior, make sure they are disabled or reduced inside the reduced-motion media query.
+`nav-state.js` also tracks the last visited series URL so the "Series" link in the header always returns to the most recently viewed series rather than a static default.
 
 ## Captions And Episode Notes
 
@@ -314,49 +372,38 @@ Transcript files are usually pasted from YouTube-style transcript output. Conver
 cmd /c "node scripts\transcript-to-vtt.js C:\path\to\pasted-text.txt > assets\captions\{series-slug}\episode-05.vtt"
 ```
 
-The converter:
+The converter skips chapter heading lines, supports timestamps such as `0:11`, `59:55`, and `1:05:41`, and outputs WebVTT suitable for native video captions.
 
-- Skips chapter heading lines.
-- Supports timestamps such as `0:11`, `59:55`, and `1:05:41`.
-- Outputs WebVTT suitable for native video captions.
+After generating captions, spot-check the file and verify it is reachable through the local server, not `file://`.
 
-After generating captions, spot-check:
+**Auto-generated transcripts** (e.g. from YouTube) are often noisy — misheard words, incorrect Arabic transliterations, garbled speaker names. When writing `recap` and `grammarNotes` from these transcripts, interpret the content based on context rather than transcribing literally.
 
-```powershell
-node --check scripts\transcript-to-vtt.js
-```
-
-Then verify the VTT file is reachable through the local server, not `file://`.
-
-Episode objects can include:
+Episode objects can include any combination of these note fields:
 
 ```js
-captionsSrc: "./assets/captions/change-of-heart/episode-05.vtt",
-takeaways: ["..."],
-recap: `# Powerful Recap: ...`
+captionsSrc: "./assets/captions/series-slug/episode-01.vtt",
+takeaways: ["..."],         // Islamic lecture series only
+grammarNotes: [...],        // Language course series only
+recap: `# Section heading\n\nProse...`
 ```
 
-The watch page automatically shows Key Takeaways and Recap panels when those fields exist.
-
-If the pasted transcript already has good timestamps, preserve those timings. Do not split or rewrite captions merely to force a word count. Native captions should track the provided transcript timing as closely as possible.
+The watch page shows panels only for fields that exist on the episode object. Nothing breaks if a field is absent.
 
 ## Speaker Pages And Ordering
 
 The homepage shows a compact speaker strip. `pages/speakers.html` is the full directory.
 
-Speaker ordering is controlled in `data/speaker-data.js`. Prioritize speakers with fully or partially hosted series on the platform. Currently Navaid Aziz should appear after Ali Hammuda because the platform has watchable Ali Hammuda series and the first uploaded Navaid Aziz series.
+Speaker ordering is controlled in `data/speaker-data.js`. Prioritize speakers with fully or partially hosted series on the platform.
 
 Speaker photos belong in `assets/speaker/`. Series thumbnails should remain separate from speaker portraits unless a real series image is not available yet.
 
-## Feedback
+## Feedback And Error Emails
 
-Every page footer links to `pages/feedback.html`. The current static implementation posts to a FormSubmit AJAX endpoint for:
+Every page footer links to `pages/feedback.html`. Feedback form submissions POST to FormSubmit at `contact@improvingmuslim.com`.
 
-```txt
-contact@improvingmuslim.com
-```
+`scripts/error-handler.js` uses the same FormSubmit endpoint to silently report production JS crashes. Both use the same confirmed endpoint. FormSubmit may require re-confirmation if the endpoint has been inactive — check the inbox if emails stop arriving.
 
-The exact receiving address must be active and monitored. FormSubmit may require the first submission to be confirmed from that inbox before delivery starts, so check the inbox and spam folder after changing the endpoint. Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
+Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
 
 ## UI And Accessibility Direction
 
@@ -370,37 +417,25 @@ Current UX principles:
 - Support light, dark, and system themes from Settings.
 - Respect `prefers-reduced-motion`.
 - Use local image assets for predictable rendering and privacy.
-- Use native browser video features where possible: captions, playback controls, picture-in-picture, and Media Session API.
+- Use native browser video features: captions, playback controls, picture-in-picture, and Media Session API.
 
 When changing UI, run the accessibility checks and inspect at least one mobile-width viewport.
 
 ## Local Development
 
-Install dependencies only for the convenience script:
-
 ```bash
 npm run dev
 ```
 
-This runs:
+This runs `python -m http.server 4173`. Open `http://localhost:4173/`.
+
+Run checks before pushing:
 
 ```bash
-python -m http.server 4173
-```
-
-Then open:
-
-```txt
-http://localhost:4173/
-```
-
-Run syntax checks before pushing:
-
-```powershell
 npm run check
 ```
 
-`npm run check` runs JavaScript syntax checks and `scripts/check-a11y.js`, which scans every static page for common accessibility issues such as missing page titles, duplicate IDs, unlabeled images/buttons/inputs, and unsafe external links.
+`npm run check` runs `check:js` (Node.js syntax check on all JS and data files) and `check:a11y` (accessibility audit of all HTML pages: missing titles, duplicate IDs, unlabeled images/buttons/inputs, unsafe external links, heading hierarchy).
 
 ## Deployment Workflow
 
@@ -408,10 +443,14 @@ Prefer local iteration. Push only clean milestones to avoid noisy history.
 
 Before pushing:
 
-1. Check `git status --short`.
-2. Run `npm run check`.
-3. Verify important browser flows locally when UI/player code changes.
-4. Commit a focused milestone.
-5. Push to `main`.
+1. Run `npm run check` — must pass cleanly.
+2. Verify important browser flows locally when UI or player code changes.
+3. Commit a focused milestone with a clear message.
+4. Push to `main`.
 
-GitHub Pages deploys from `main` root automatically.
+After pushing:
+
+5. Check the Actions tab on GitHub to confirm the CI run is green.
+6. If CI fails, fix the issue and push a new commit — do not force-push.
+
+GitHub Pages deploys from `main` root automatically on every push. CI runs in parallel — a red CI run means something is broken in production even if the deploy succeeded.
