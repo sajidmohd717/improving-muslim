@@ -29,4 +29,4 @@ Run syntax and accessibility checks before pushing:
 npm run check
 ```
 
-Feedback is collected through `pages/feedback.html` and is intended to route to `feedback@improvingmuslim.com`.
+Feedback is collected through `pages/feedback.html` and posts to the static form endpoint for `contact@improvingmuslim.com`.

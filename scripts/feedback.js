@@ -44,8 +44,15 @@ form.addEventListener("submit", async (event) => {
       headers: { Accept: "application/json" },
     });
 
-    if (!response.ok) {
-      throw new Error("Feedback could not be sent.");
+    let result = null;
+    try {
+      result = await response.json();
+    } catch (error) {
+      result = null;
+    }
+
+    if (!response.ok || result?.success === false) {
+      throw new Error(result?.message || "Feedback could not be sent.");
     }
 
     form.reset();

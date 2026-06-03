@@ -39,7 +39,7 @@ window.fortyHadithSeries = {
       "title": "Hadith No. 1 and 5",
       "published": "2013-04-28",
       "views": 16694,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-4.mp4"
     },
     {
       "number": 5,

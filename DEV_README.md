@@ -350,13 +350,13 @@ Speaker photos belong in `assets/speaker/`. Series thumbnails should remain sepa
 
 ## Feedback
 
-Every page footer links to `pages/feedback.html`. The current static implementation opens the user's email app and addresses feedback to:
+Every page footer links to `pages/feedback.html`. The current static implementation posts to a FormSubmit AJAX endpoint for:
 
 ```txt
-feedback@improvingmuslim.com
+contact@improvingmuslim.com
 ```
 
-Set up Cloudflare Email Routing, a mailbox, or a privacy-preserving form backend for that address before relying on it in production. Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
+The exact receiving address must be active and monitored. FormSubmit may require the first submission to be confirmed from that inbox before delivery starts, so check the inbox and spam folder after changing the endpoint. Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
 
 ## UI And Accessibility Direction
 
