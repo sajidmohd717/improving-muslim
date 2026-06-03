@@ -8,6 +8,18 @@ const {
   writeSavedItems,
 } = window.IMUtils;
 
+function renderGrammarNotes(notes) {
+  return notes.map(({ term, arabic, definition }) =>
+    `<div class="grammar-card">
+      <div class="grammar-card-term">
+        <span class="grammar-card-label">${escapeHtml(term)}</span>
+        ${arabic ? `<span class="grammar-card-arabic" dir="rtl">${escapeHtml(arabic)}</span>` : ''}
+      </div>
+      <p class="grammar-card-definition">${escapeHtml(definition)}</p>
+    </div>`
+  ).join('');
+}
+
 function renderRecap(text) {
   return text
     .trim()
@@ -56,6 +68,8 @@ const nextLink = document.querySelector("#next-link");
 const episodeList = document.querySelector("#watch-episode-list");
 const recapPanel = document.querySelector("#recap-panel");
 const recapBody = document.querySelector("#watch-recap");
+const grammarNotesPanel = document.querySelector("#grammar-notes-panel");
+const grammarNotesBody = document.querySelector("#watch-grammar-notes");
 const takeawaysPanel = document.querySelector("#takeaways-panel");
 const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
 const playlistTitle = document.querySelector("#playlist-title");
@@ -264,6 +278,11 @@ if (currentEpisode.takeaways && currentEpisode.takeaways.length) {
     .map((step) => `<li><span>${applyBold(step)}</span></li>`)
     .join("");
   takeawaysPanel.hidden = false;
+}
+
+if (currentEpisode.grammarNotes && currentEpisode.grammarNotes.length) {
+  grammarNotesBody.innerHTML = renderGrammarNotes(currentEpisode.grammarNotes);
+  grammarNotesPanel.hidden = false;
 }
 
 if (currentEpisode.recap) {

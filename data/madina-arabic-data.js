@@ -17,7 +17,98 @@ window.madinaArabicSeries = {
           "published": "2015-01-01",
           "duration": 8762,
           "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-1.mp4",
-          "captionsSrc": "./assets/captions/madina-arabic/episode-01.vtt"
+          "captionsSrc": "./assets/captions/madina-arabic/episode-01.vtt",
+          "grammarNotes": [
+              { "term": "Hamza", "arabic": "ء", "definition": "The actual consonant — the glottal stop sound. Aleph is just its seat and has no sound of its own." },
+              { "term": "Aleph", "arabic": "ا", "definition": "Used for elongation and as a seat for Hamza. Not a consonant — carries no independent speech sound." },
+              { "term": "Ism", "arabic": "اِسْم", "definition": "Noun — the broadest of the 3 parts of speech. Covers nouns, pronouns, adjectives, adverbs, and interjections. Book 1 is almost entirely Ism." },
+              { "term": "Fi'l", "arabic": "فِعْل", "definition": "Verb. Introduced fully in Book 2. Only 4 verbs appear in all of Book 1." },
+              { "term": "Harf", "arabic": "حَرْف", "definition": "Particle. Words like al-, bi-, li-, and question words such as Ma and Man." },
+              { "term": "Damma", "arabic": "بُ", "definition": "Short vowel above the letter — 'oo' sound. Also marks the nominative case (Marfu') on nouns." },
+              { "term": "Fatha", "arabic": "بَ", "definition": "Short vowel above the letter — 'a' sound. Also marks the accusative case (Mansub) on nouns." },
+              { "term": "Kasra", "arabic": "بِ", "definition": "Short vowel below the letter — 'ee' sound. Also marks the genitive case (Majrur) on nouns." },
+              { "term": "Sukoon", "arabic": "بْ", "definition": "Small circle above a letter — not a vowel. Signals that the letter has no vowel sound." },
+              { "term": "Tanwin", "arabic": "تَنْوِين", "definition": "Double vowel sign at end of noun = indefinite (like 'a' in English). Kitābun = 'a book', Qalamun = 'a pen'." },
+              { "term": "Al-", "arabic": "اَلْ", "definition": "Definite article meaning 'the'. When added, tanwin drops — the two cannot coexist. Kitābun → Al-kitābu." },
+              { "term": "Marfu'", "arabic": "مَرْفُوع", "definition": "Nominative case. Noun ends with Damma (ُ). Used when the noun is the subject of the sentence." },
+              { "term": "Mansub", "arabic": "مَنْصُوب", "definition": "Accusative case. Noun ends with Fatha (َ). Used for objects and after certain particles like Inna." },
+              { "term": "Majrur", "arabic": "مَجْرُور", "definition": "Genitive case. Noun ends with Kasra (ِ). Used after prepositions such as bi-, li-, fi-." },
+              { "term": "Haza", "arabic": "هَذَا", "definition": "Demonstrative pronoun meaning 'this' (masculine). Type of Ism — not a verb. Arabic has no linking verb 'is'." },
+              { "term": "Ma", "arabic": "مَا", "definition": "'What' — used to ask about non-intelligent things: objects, animals, places. Ma haza? = What is this?" },
+              { "term": "Man", "arabic": "مَنْ", "definition": "'Who' — used for intelligent beings: humans, angels, and jinn. Man haza? = Who is this?" }
+          ],
+          "recap": `# What This Course Is and Why It Works
+
+The lesson opens with the teacher introducing himself on behalf of Kali Ma Islam and the Institute of the Language of the Quran. He is transparent from the start: he holds no formal university degrees and does not claim to be a scholar. What he has is experience — years of travelling to different countries, sitting with teachers, and learning the kind of practical Arabic that opens up the Quran directly. His goal for this course is straightforward: to give students the tools to understand the Quran when it is recited, to know what they are saying in prayer, and to feel the words land in the heart rather than pass through as unfamiliar sound.
+
+He mentions a specific benchmark — understanding the Quran around 85% directly — and frames the entire course as a gift of knowledge learned for the love of Allah and the love of His Book.
+
+# The Arabic Alphabet: 29 Letters, Not 28
+
+One of the first corrections the teacher makes is about the alphabet. Most people are taught there are 28 Arabic letters, but the teacher explains there are **29**. The commonly miscounted letter is **Hamza (ء)**, which many students confuse with **Aleph (ا)**.
+
+Aleph has no speech sound of its own. Its job is elongation — it stretches a vowel out but does not produce a consonant. **Hamza** is the actual consonant: the glottal stop heard at the beginning of a word like "ah." To write Hamza, it needs a seat, which the teacher calls a "chair." Aleph (ا) is the most common chair, but **Waw (و)** and **Ya (ي)** can also serve as chairs depending on the vowels surrounding Hamza. Sometimes Hamza stands alone without any chair when the conditions call for it. The rules for which chair to use are introduced gradually over the course.
+
+# Three Parts of Speech, Not Eight
+
+In English there are eight parts of speech: noun, verb, adjective, adverb, pronoun, preposition, conjunction, and interjection. In Arabic there are only **three**: **Ism (اسم)** — the noun, **Fi'l (فعل)** — the verb, and **Harf (حرف)** — the particle.
+
+This is not because Arabic is simpler. It is because the Arabic **Ism** is a much broader category. Pronouns, adjectives, adverbs, and interjections all fall under it. The teacher highlights this because it shapes the entire structure of Book 1: the first book is devoted almost entirely to the **Ism**, and within that, only four verbs appear across all eighteen lessons. Verbs arrive properly in Book 2. This deliberate focus is one of the key reasons the Madina Book method works — it does not overwhelm students by mixing everything together from the start.
+
+# The Three Short Vowels and Sukoon
+
+Arabic has only **three short vowel signs**. **Damma (ُ)** produces an "oo" sound and sits above the letter. **Fatha (َ)** produces an "a" sound and also sits above. **Kasra (ِ)** produces an "ee" sound and sits below the letter.
+
+Elongation is created by following a vowel with its corresponding long letter: a Damma followed by Aleph or Waw gives a long "oo," and a Kasra followed by Ya gives a long "ee."
+
+The fourth symbol is **Sukoon (ْ)**, a small circle placed above a letter. The teacher is careful to clarify that Sukoon is not a vowel — it is the absence of a vowel. It signals that the letter it sits on has no vowel sound of its own. Understanding Sukoon is essential for reading and pronouncing Arabic words correctly.
+
+# Tanwin: How Arabic Marks Indefiniteness
+
+In English, indefiniteness is marked with "a" or "an" placed before a noun. Arabic does it differently — by doubling the vowel sign at the end of the noun. This doubling is called **Tanwin (تنوين)**.
+
+A noun ending with **Tanwin Damma (ٌ)** sounds like "-un." A noun ending with **Tanwin Fatha (ً)** sounds like "-an." A noun ending with **Tanwin Kasra (ٍ)** sounds like "-in." So **Kitābun (كتابٌ)** means "a book," **Qalamun (قلمٌ)** means "a pen," and **Baytun (بيتٌ)** means "a house."
+
+To make a noun definite — to say "the book" instead of "a book" — Arabic adds **Al- (ال)** at the beginning. The moment Al- is added, Tanwin disappears, because the two cannot coexist. **Kitābun** becomes **Al-kitābu**, and the double vowel sign becomes a single one.
+
+# Noun Declension: The Endings That Tell the Story
+
+This is one of the most important concepts in the lesson. Arabic nouns change their endings depending on the grammatical role they play in a sentence. This is called **I'rāb (إعراب)** — noun declension.
+
+There are three cases. When a noun is the subject of a sentence, it is in the **Marfu' (مرفوع)** case and ends with a Damma. When it is the object, or follows certain particles, it is in the **Mansub (منصوب)** case and ends with a Fatha. When it follows a preposition, it is in the **Majrur (مجرور)** case and ends with a Kasra. In English grammar, these map roughly to nominative, accusative, and genitive cases.
+
+The teacher demonstrates this using the name Muhammad, which students recite multiple times every day. In the Shahada, we say **Muhammadun** (Marfu'). In Salat, when calling blessings, we say **Muhammadin** (Majrur, after the preposition "ala"). The English stays the same — "Muhammad" — but Arabic marks exactly what role he plays in each phrase. This is what declension does: the final vowel is not decoration, it is information.
+
+To help students remember, the teacher creates a short rhythmic pattern: **"dun — dan — din"** — Marfu', Mansub, Majrur.
+
+# The Madina Book: A Brick-by-Brick Method
+
+The course follows the famous Madina Arabic Books by Dr. V. Abdur Rahim. The teacher explains what makes this method exceptional compared to other Arabic textbooks.
+
+Most Arabic books introduce nouns, verbs, and all grammatical categories together from the very first pages. For a beginner, this is overwhelming. Dr. Abdur Rahim's approach is entirely different: Book 1 teaches only nouns. Verbs barely appear. This allows students to develop a solid foundation before anything else is introduced. When verbs finally arrive in Book 2, they arrive in full — but by that point the student is prepared.
+
+The teacher adds that he supplements the book with some early verb exposure so that by the time Book 2 begins, students are not meeting verbs for the first time. Each lesson in the Madina Book is like laying one brick. You lay the first, then the second, then the third — and slowly a house is built.
+
+# Lesson 1: Haza — Pointing to the World Around You
+
+The first lesson of the blue book opens with the word **Haza (هذا)**, which means "this" in English. It is a demonstrative pronoun — in Arabic called an **Ism Ishara (اسم إشارة)** — and a pronoun is a type of noun, so it falls squarely within the Ism category.
+
+One of the first things to absorb about Arabic sentences is that there is no equivalent of the English linking verbs "is," "am," and "are." These do not exist in Arabic. They are understood but not spoken or written. So when you say **Haza baytun**, you are saying literally "this — a house," but the meaning is "this is a house." The linking is implied.
+
+The lesson introduces a set of vocabulary with simple "Haza + noun" sentences using pictures. Students are asked to read each sentence aloud with full vowel signs, pronouncing the case endings clearly. This is not how native Arabic speakers speak in casual conversation — they drop endings when stopping — but the teacher insists on pronouncing them in class because it trains the ear and eye to track the grammatical information carried by each ending.
+
+**Vocabulary from Lesson 1:**
+Baytun (بيتٌ) — house · Bābun (بابٌ) — door · Kitābun (كتابٌ) — book · Qalamun (قلمٌ) — pen · Masjidun (مسجدٌ) — mosque · Maktabun (مكتبٌ) — desk · Saririun (سريرٌ) — bed · Kursiyyun (كرسيٌّ) — chair · Jamalun (جملٌ) — camel · Himarun (حمارٌ) — donkey · Diikun (ديكٌ) — rooster · Kalbun (كلبٌ) — dog · Tabibun (طبيبٌ) — doctor · Waladun (ولدٌ) — boy · Talibun (طالبٌ) — student · Tajirun (تاجرٌ) — merchant · Mindiilun (منديلٌ) — handkerchief
+
+# Asking Questions: Ma, Man, and the Hamza of Questioning
+
+The lesson introduces two question words. **Ma (ما)** means "what" and is used to ask about non-intelligent things — objects, animals, places. **Man (من)** means "who" and is used to ask about rational beings: humans, angels, and jinn.
+
+So **Ma haza?** means "What is this?" — appropriate when pointing at a book or a chair. But **Man haza?** means "Who is this?" — appropriate when pointing at a person. Both Ma and Man are particles (Harf), not nouns.
+
+To turn any statement into a yes/no question, Arabic places **Hamza (أ)** at the very beginning of the sentence, with a rising tone. **Haza baytun** — "this is a house" — becomes **A haza baytun?** — "is this a house?" The answer is either **Na'am (نعم)** for yes or **La (لا)** for no. Both are also particles.
+
+The teacher closes the session by reminding students that every minute spent learning — in class, driving, doing homework at home — is an act of worship, because the intention is to learn the language of the Quran for the love of Allah.`
       },
       {
           "number": 2,
@@ -34,7 +125,8 @@ window.madinaArabicSeries = {
           "title": "Book 1 - Lesson 3",
           "published": "2015-01-01",
           "duration": 7615,
-          "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+          "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-3.mp4",
+          "captionsSrc": "./assets/captions/madina-arabic/episode-03.vtt"
       },
       {
           "number": 4,
