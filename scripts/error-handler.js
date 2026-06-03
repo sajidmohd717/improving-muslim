@@ -72,7 +72,34 @@
   };
 
   window.addEventListener('unhandledrejection', function (event) {
-    var msg = event.reason && event.reason.message ? event.reason.message : String(event.reason);
+    var reason = event.reason;
+
+    /* Ignore AbortErrors — these are fetch cancellations from navigation, not bugs */
+    if (reason && reason.name === 'AbortError') return;
+
+    /* Ignore network/fetch failures — transient, not script crashes.
+       Covers: Safari "Load failed", Chrome "Failed to fetch", Firefox "NetworkError" */
+    if (reason && reason.name === 'TypeError') {
+      var m = (reason.message || '').toLowerCase();
+      if (m.indexOf('fetch') !== -1 || m.indexOf('load') !== -1 ||
+          m.indexOf('cancel') !== -1 || m.indexOf('network') !== -1) return;
+    }
+
+    /* Ignore rejections that fire while the page is hidden —
+       these are bfcache artifacts from before the user navigated away */
+    if (document.hidden) return;
+
+    var msg = reason && reason.message ? reason.message : String(reason);
     handle(msg, location.href);
+  });
+
+  /* When Safari restores this page from the back-forward cache, reset error
+     state so stale in-flight rejections from before navigation don't
+     incorrectly trigger the fallback UI on the restored page */
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      _shown = false;
+      _reported = false;
+    }
   });
 })();
