@@ -47,6 +47,21 @@ document.querySelectorAll(".js-last-series-link").forEach((link) => {
   link.href = readLastSeriesUrl();
 });
 
+/* Inject a back button on inner pages for mobile users */
+if (window.location.pathname.includes('/pages/')) {
+  const navShell = document.querySelector('.nav-shell');
+  if (navShell) {
+    const btn = document.createElement('button');
+    btn.className = 'back-button';
+    btn.setAttribute('aria-label', 'Go back');
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>';
+    btn.addEventListener('click', function () {
+      window.history.back();
+    });
+    navShell.insertBefore(btn, navShell.firstChild);
+  }
+}
+
 document.addEventListener("click", (event) => {
   const link = event.target.closest("a[href]");
   if (!link) return;

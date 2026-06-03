@@ -170,6 +170,34 @@ button {
   border-radius: 8px;
 }
 
+.back-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  margin-right: 2px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.back-button:hover,
+.back-button:focus-visible {
+  color: var(--ink);
+  background: rgba(23, 107, 91, 0.08);
+}
+
+@media (max-width: 600px) {
+  .back-button {
+    display: flex;
+  }
+}
+
 .site-menu {
   display: flex;
   align-items: center;
