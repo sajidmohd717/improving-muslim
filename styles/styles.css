@@ -1382,6 +1382,44 @@ details[open] .takeaways-toggle::after {
   outline: none;
 }
 
+/* ─── Global error fallback ─────────────────────────────────────────────────── */
+
+.error-fallback {
+  width: min(560px, calc(100% - 32px));
+  margin: clamp(60px, 10vw, 120px) auto;
+  text-align: center;
+}
+
+.error-fallback-icon {
+  font-size: 2.5rem;
+  margin: 0 0 16px;
+  color: var(--gold);
+}
+
+.error-fallback-title {
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  margin: 0 0 14px;
+  line-height: 1.15;
+}
+
+.error-fallback-body {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+
+.error-fallback-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 .series-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
