@@ -4,21 +4,28 @@ window.speakers = [
     slug: "ali-hammuda",
     image: "./assets/speaker/ah.jpg",
     bio:
-      "Ali Hammuda is an Islamic lecturer and educator whose series often focus on spiritual growth, worship, repentance, family life, and strengthening the heart through practical reminders.",
+      "Shaykh Ali Hammuda is a UK-based Islamic scholar, educator, and author of Palestinian heritage. He studied Architecture and Planning at the University of the West of England before completing a BA in Shari'ah at al-Azhar University in Egypt, and later pursuing advanced study in Islamic leadership. Known for his reflective and practical teaching style, he delivers lectures and writings that connect classical Islamic knowledge with everyday spiritual growth. His works include The Daily Revivals, The Ten Lanterns, and The Friday Reminder.",
   },
   {
     name: "Navaid Aziz",
     slug: "navaid-aziz",
     image: "./assets/speaker/navaid-aziz.jpg",
     bio:
-      "Navaid Aziz is an Islamic educator and speaker known for teaching hadith, fiqh, character, and practical religious guidance in a clear and approachable way.",
+      "Shaykh Navaid Aziz is a Canadian Muslim scholar, speaker, and educator based in Calgary. Raised in Montreal, he studied Social Sciences at Champlain College before completing Arabic studies and a Bachelor's degree in Islamic Law at the Islamic University of Madinah. He is an instructor with AlMaghrib Institute and has served the Islamic Information Society of Calgary, focusing on youth education, community development, spirituality, and Muslim integration. Known for his relatable and practical teaching style, he addresses contemporary issues through an Islamic lens.",
   },
   {
     name: "Assim Al-Hakeem",
     slug: "assim-al-hakeem",
     image: "./assets/speaker/assim-al-hakeem.jpg",
     bio:
-      "Assim Al-Hakeem is an Islamic speaker and teacher based in Saudi Arabia, known for English-language lessons, Q&A content, and practical guidance on worship, supplication, manners, and everyday Muslim life.",
+      "Shaykh Assim Al-Hakeem is a Saudi Islamic scholar, imam, and speaker based in Jeddah. Born in Al-Khobar, Saudi Arabia, he earned a BA in Linguistics from King Abdulaziz University and later completed a High Diploma in Islamic Studies from Umm al-Qura University in Makkah. He has served for many years as an imam in Jeddah, delivering Friday sermons and lessons in Islamic sciences. Known for his direct question-and-answer style, he teaches widely through television, lectures, and online platforms.",
+  },
+  {
+    name: "Abu Bakr Zoud",
+    slug: "abu-bakr-zoud",
+    image: "./assets/speaker/abu-bakr-zoud.jpg",
+    bio:
+      "Shaykh Abu Bakr Zoud is an Australian Islamic speaker, educator, and da'ee known for his engaging reminders and practical approach to Islamic learning. A graduate of the Islamic University of Madinah, Faculty of Qur'an and Islamic Studies, he specializes in Qur'aat and teaches Tafseer at the Islamic College of Australia. Through lectures, classes, and online content, he focuses on connecting Muslims with the Qur'an, strengthening faith, and applying Islamic guidance to everyday life.",
   },
   {
     name: "Omar Suleiman",

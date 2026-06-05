@@ -1,6 +1,7 @@
 const {
   escapeHtml,
   getSeriesRegistry,
+  getStandaloneLectureRegistry,
   isEpisodeAvailable,
   readJsonStorage,
   writeJsonStorage,
@@ -36,14 +37,33 @@ function renderRecap(text) {
 }
 
 const seriesRegistry = getSeriesRegistry();
+const standaloneLectureRegistry = getStandaloneLectureRegistry();
 
 const params = new URLSearchParams(window.location.search);
+const standaloneLectureId = params.get("lecture");
+const standaloneLecture = standaloneLectureId ? standaloneLectureRegistry[standaloneLectureId] : null;
+const isStandalone = Boolean(standaloneLecture);
 const seriesSlug = params.get("series") || "change-of-heart";
-const series = seriesRegistry[seriesSlug] || window.changeOfHeartSeries;
+const series = isStandalone
+  ? {
+      title: "Standalone Lectures",
+      slug: "standalone",
+      seriesPageUrl: "./index.html#series",
+      speaker: standaloneLecture.speaker,
+      topic: standaloneLecture.topic || "Standalone Video",
+      playlistId: "standalone",
+      episodes: [{ ...standaloneLecture, number: null }],
+    }
+  : seriesRegistry[seriesSlug] || window.changeOfHeartSeries;
 const seriesPageUrl = series.seriesPageUrl || "./index.html";
-const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
-const episodeThumbnailUrl = (episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
-const progressKey = (episode) => window.IMUtils.progressKey(series, episode);
+const episodeUrl = (episode) =>
+  isStandalone ? window.IMUtils.standaloneLectureUrl(standaloneLecture) : window.IMUtils.episodeUrl(series, episode);
+const episodeThumbnailUrl = (episode) =>
+  isStandalone
+    ? window.IMUtils.standaloneLectureThumbnailUrl(standaloneLecture)
+    : window.IMUtils.episodeThumbnailUrl(series, episode);
+const progressKey = (episode) =>
+  isStandalone ? window.IMUtils.standaloneProgressKey(standaloneLecture) : window.IMUtils.progressKey(series, episode);
 
 const requestedVideoId = params.get("video");
 const currentEpisode =
@@ -74,6 +94,7 @@ const takeawaysPanel = document.querySelector("#takeaways-panel");
 const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
 const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
+const episodeSidebar = document.querySelector(".episode-sidebar");
 
 const saveEpisodeButton = document.querySelector("#save-episode-button");
 const shareEpisodeButton = document.querySelector("#share-episode-button");
@@ -82,6 +103,11 @@ const actionStatus = document.querySelector("#watch-action-status");
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
+
+const currentTitleLabel = isStandalone
+  ? currentEpisode.title
+  : `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
+const currentTypeLabel = isStandalone ? "Standalone Video" : `Episode ${currentEpisode.number}`;
 
 function setPlayerPoster(episode) {
   player.poster = episodeThumbnailUrl(episode);
@@ -93,11 +119,13 @@ function setVideoLoading(isLoading) {
 
 function savedItem() {
   return {
-    key: `episode:${series.slug}:${currentEpisode.id}`,
-    type: "episode",
-    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
-    subtitle: `${series.title} - ${series.speaker}`,
-    url: `./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`,
+    key: isStandalone ? `video:${currentEpisode.id}` : `episode:${series.slug}:${currentEpisode.id}`,
+    type: isStandalone ? "video" : "episode",
+    title: currentTitleLabel,
+    subtitle: isStandalone ? `${series.speaker} - Standalone video` : `${series.title} - ${series.speaker}`,
+    url: isStandalone
+      ? `./pages/watch.html?lecture=${currentEpisode.id}`
+      : `./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`,
     savedAt: Date.now(),
   };
 }
@@ -130,10 +158,10 @@ function toggleSavedEpisode() {
 }
 
 async function shareEpisode() {
-  const url = new URL(`./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`, document.baseURI).href;
+  const url = new URL(savedItem().url, document.baseURI).href;
   const shareData = {
-    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
-    text: `${series.title} by ${series.speaker}`,
+    title: currentTitleLabel,
+    text: isStandalone ? `A standalone lecture by ${series.speaker}` : `${series.title} by ${series.speaker}`,
     url,
   };
 
@@ -207,9 +235,9 @@ function setupMediaSession() {
   }
 
   navigator.mediaSession.metadata = new MediaMetadata({
-    title: `Episode ${currentEpisode.number}: ${currentEpisode.title}`,
+    title: currentTitleLabel,
     artist: series.speaker,
-    album: series.title,
+    album: isStandalone ? "Improving Muslim" : series.title,
     artwork: [
       {
         src: episodeThumbnailUrl(currentEpisode),
@@ -252,17 +280,18 @@ function updateMediaSessionState(state) {
   navigator.mediaSession.playbackState = state;
 }
 
-document.title = `Episode ${currentEpisode.number}: ${currentEpisode.title} | Improving Muslim`;
-title.textContent = `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
-kicker.textContent = series.title;
+document.title = `${currentTitleLabel} | Improving Muslim`;
+title.textContent = currentTitleLabel;
+kicker.textContent = isStandalone ? "Standalone Video" : series.title;
 kicker.href = seriesPageUrl;
 meta.textContent = `${series.speaker} · ${series.topic} · ${formatDate(currentEpisode.published)}`;
 const breadcrumbEp = document.querySelector("#watch-breadcrumb-ep");
-if (breadcrumbEp) breadcrumbEp.textContent = `Episode ${currentEpisode.number}`;
+if (breadcrumbEp) breadcrumbEp.textContent = currentTypeLabel;
 setPlayerPoster(currentEpisode);
 
-if (playlistTitle) playlistTitle.textContent = series.title;
+if (playlistTitle) playlistTitle.textContent = isStandalone ? "More lectures" : series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
+if (episodeSidebar && isStandalone) episodeSidebar.hidden = true;
 
 try {
   localStorage.setItem("improving-muslim:last-series-url", seriesPageUrl);
@@ -425,15 +454,15 @@ autoplayToastLink?.addEventListener("click", () => clearInterval(autoplayTimer))
 
 if (previousLink) {
   previousLink.href = previousEpisode ? episodeUrl(previousEpisode) : seriesPageUrl;
-  previousLink.textContent = previousEpisode ? "Previous episode" : "Back to series";
+  previousLink.textContent = previousEpisode ? "Previous episode" : isStandalone ? "Back to lectures" : "Back to series";
 }
 
 if (nextLink) {
   nextLink.href = nextEpisode ? episodeUrl(nextEpisode) : seriesPageUrl;
-  nextLink.textContent = nextEpisode ? "Next episode" : "Series overview";
+  nextLink.textContent = nextEpisode ? "Next episode" : isStandalone ? "Browse lectures" : "Series overview";
 }
 
-episodeList.innerHTML = series.episodes
+episodeList.innerHTML = isStandalone ? "" : series.episodes
   .map(
     (episode) => {
       const progressLabel = formatProgress(episode);
@@ -461,7 +490,7 @@ if (currentCompact) {
   if (window.matchMedia("(max-width: 900px)").matches) {
     const chip = document.createElement("div");
     chip.className = "now-playing-chip";
-    chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Now playing: Episode ${currentEpisode.number}`;
+    chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Now playing: ${currentTypeLabel}`;
     episodeList.insertBefore(chip, episodeList.firstChild);
   } else {
     currentCompact.scrollIntoView({ block: "nearest", behavior: "instant" });

@@ -226,9 +226,12 @@
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
     <script src="./data/series-registry.js"></script>
+    <script src="./data/standalone-lectures-data.js?v=20260606-standalone"></script>
     <script>
       /* Load only the series data file needed for this watch page */
       (function () {
+        var lecture = new URLSearchParams(location.search).get('lecture');
+        if (lecture) return;
         var slug = new URLSearchParams(location.search).get('series') || 'change-of-heart';
         var map = {
           'change-of-heart':         './data/change-of-heart-data.js?v=20260601-thumbs',

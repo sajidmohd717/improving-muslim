@@ -39,6 +39,10 @@
     return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;
   }
 
+  function standaloneLectureUrl(lecture) {
+    return `./pages/watch.html?lecture=${encodeURIComponent(lecture.id)}`;
+  }
+
   function episodeThumbnailUrl(series, episode) {
     if (episode?.thumbnailSrc) return episode.thumbnailSrc;
     if (series?.episodeThumbnailPath && episode?.number) {
@@ -47,8 +51,16 @@
     return series?.thumbnailSrc || "./public/icon.png";
   }
 
+  function standaloneLectureThumbnailUrl(lecture) {
+    return lecture?.thumbnailSrc || "./public/social-preview.png";
+  }
+
   function progressKey(series, episode) {
     return `${PROGRESS_PREFIX}${series.playlistId}:${episode.id}`;
+  }
+
+  function standaloneProgressKey(lecture) {
+    return `${PROGRESS_PREFIX}standalone:${lecture.id}`;
   }
 
   function readJsonStorage(key, fallback = {}) {
@@ -102,6 +114,18 @@
     return (window.seriesConfig || []).map((entry) => window[entry.globalKey]).filter(Boolean);
   }
 
+  function getStandaloneLectures() {
+    return window.standaloneLectures || [];
+  }
+
+  function getStandaloneLectureRegistry() {
+    const registry = {};
+    for (const lecture of getStandaloneLectures()) {
+      registry[lecture.id] = lecture;
+    }
+    return registry;
+  }
+
   function getSeriesRegistry() {
     const registry = {};
     for (const entry of window.seriesConfig || []) {
@@ -119,8 +143,11 @@
     formatDuration,
     isEpisodeAvailable,
     episodeUrl,
+    standaloneLectureUrl,
     episodeThumbnailUrl,
+    standaloneLectureThumbnailUrl,
     progressKey,
+    standaloneProgressKey,
     readJsonStorage,
     writeJsonStorage,
     removeStorageItem,
@@ -128,6 +155,8 @@
     readSavedItems,
     writeSavedItems,
     getAllSeries,
+    getStandaloneLectures,
+    getStandaloneLectureRegistry,
     getSeriesRegistry,
   };
 })();

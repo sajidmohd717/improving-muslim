@@ -24,6 +24,7 @@ const {
   formatDuration,
   formatViewCount,
   getAllSeries,
+  getStandaloneLectures,
   progressKey,
   readJsonStorage,
   readSavedItems,
@@ -33,6 +34,9 @@ const {
 } = window.IMUtils;
 const episodeUrl = (series, episode) => window.IMUtils.episodeUrl(series, episode);
 const episodeThumbnailUrl = (series, episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
+const standaloneLectureUrl = (lecture) => window.IMUtils.standaloneLectureUrl(lecture);
+const standaloneLectureThumbnailUrl = (lecture) => window.IMUtils.standaloneLectureThumbnailUrl(lecture);
+const standaloneProgressKey = (lecture) => window.IMUtils.standaloneProgressKey(lecture);
 
 const excludedSpeakerNames = new Set([
   [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
@@ -190,6 +194,8 @@ const descriptions = {
     "A structured overview of the Quran's message across 30 lessons, moving through the surahs and major themes of guidance, faith, worship, law, stories, and the Hereafter.",
   "The Parables of The Quran":
     "A Ramadan tafsir series exploring Quranic parables, why Allah uses them, and how these examples shape faith, sincerity, charity, knowledge, gratitude, and attachment to the Hereafter.",
+  "Allah's Words to Musa Were Meant for You Too":
+    "A calming standalone reminder from the story of Musa about listening to Allah's words, protecting salah, and preparing for the meeting with Him.",
 };
 
 const state = {
@@ -198,6 +204,7 @@ const state = {
   searchTerm: "",
   sortBy: "views",
   activeSpeaker: null,
+  contentType: "all",
 };
 
 function enrichSeries(item) {
@@ -245,6 +252,7 @@ const els = {
   searchForm: document.querySelector(".search-form"),
   searchInput: document.querySelector("#series-search"),
   sortSelect: document.querySelector("#sort-select"),
+  contentTypeFilter: document.querySelector("#content-type-filter"),
   activeCategoryLabel: document.querySelector("#active-category-label"),
 };
 
@@ -257,6 +265,7 @@ function normalizeSections(sections) {
     ...section,
     seriesList: section.seriesList.map((series) => ({
       ...series,
+      contentType: series.contentType || "series",
       topic: section.sectionTitle,
       thumbnailImage: imageMap[series.thumbnailImage] || series.thumbnailImage,
     })),
@@ -276,6 +285,37 @@ function availableLocalSeries() {
   return getAllSeries();
 }
 
+function availableStandaloneLectures() {
+  return getStandaloneLectures();
+}
+
+function localStandaloneSections(category = "foryou") {
+  const sections = [];
+  for (const lecture of availableStandaloneLectures()) {
+    if (category !== "foryou" && category !== lecture.category) continue;
+    const card = {
+      title: lecture.title,
+      speaker: lecture.speaker,
+      topic: lecture.topic || "Standalone Video",
+      episodes: lecture.typeLabel || "Standalone Video",
+      thumbnailImage: standaloneLectureThumbnailUrl(lecture),
+      link: standaloneLectureUrl(lecture),
+      description: lecture.description,
+      contentType: "video",
+      duration: lecture.duration,
+      sourceId: lecture.id,
+    };
+    const sectionTitle = lecture.topic || "Standalone Videos";
+    const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
+    if (existing) {
+      existing.seriesList.push(card);
+    } else {
+      sections.push({ sectionTitle, seriesList: [card] });
+    }
+  }
+  return sections;
+}
+
 function localSeriesSections(category = "foryou") {
   const sections = [];
   for (const entry of (window.seriesConfig || [])) {
@@ -290,6 +330,7 @@ function localSeriesSections(category = "foryou") {
       thumbnailImage: s.thumbnailSrc,
       link: s.seriesPageUrl,
       description: s.description,
+      contentType: "series",
     };
     const existing = sections.find(sec => sec.sectionTitle === entry.sectionTitle);
     if (existing) {
@@ -302,12 +343,16 @@ function localSeriesSections(category = "foryou") {
 }
 
 function mergeLocalSeries(sections, category) {
-  const localCategories = new Set(["foryou", ...(window.seriesConfig || []).map(e => e.category)]);
+  const localCategories = new Set([
+    "foryou",
+    ...(window.seriesConfig || []).map(e => e.category),
+    ...availableStandaloneLectures().map((lecture) => lecture.category),
+  ]);
   if (!localCategories.has(category)) {
     return sections;
   }
 
-  const localSections = localSeriesSections(category);
+  const localSections = [...localSeriesSections(category), ...localStandaloneSections(category)];
   const localTitles = new Set(flattenSeries(localSections).map((series) => series.title));
   // Include API alias titles for series whose API/external title differs from the local data file title
   for (const entry of (window.seriesConfig || [])) {
@@ -366,8 +411,8 @@ function showSkeletons(count = 6) {
 
 function savedSeriesItem(series, url) {
   return {
-    key: `series:${url}`,
-    type: "series",
+    key: `${series.contentType === "video" ? "video" : "series"}:${url}`,
+    type: series.contentType === "video" ? "video" : "series",
     title: series.title,
     subtitle: [series.speaker, series.episodes].filter(Boolean).join(" - "),
     url,
@@ -376,7 +421,7 @@ function savedSeriesItem(series, url) {
 }
 
 function isSeriesSaved(url) {
-  return readSavedItems().some((item) => item.key === `series:${url}`);
+  return readSavedItems().some((item) => item.key === `series:${url}` || item.key === `video:${url}`);
 }
 
 function seriesActionIcons() {
@@ -459,14 +504,41 @@ function readStoredProgress(series, episode) {
   }
 }
 
+function readStoredStandaloneProgress(lecture) {
+  try {
+    const progress = readJsonStorage(standaloneProgressKey(lecture), {});
+    const currentTime = Number(progress.currentTime) || 0;
+    const duration = Number(progress.duration) || 0;
+    const percent = duration > 0 ? currentTime / duration : 0;
+
+    if (currentTime < 10 || percent < 0.02 || percent > 0.97) {
+      return null;
+    }
+
+    return {
+      currentTime,
+      duration,
+      percent,
+      updatedAt: Number(progress.updatedAt) || 0,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
 function renderContinueWatching() {
-  const items = availableLocalSeries()
+  const episodeItems = availableLocalSeries()
     .flatMap((series) =>
       series.episodes
         .filter((episode) => episode.videoSrc)
         .map((episode) => ({ series, episode, progress: readStoredProgress(series, episode) }))
         .filter((item) => item.progress),
-    )
+    );
+  const standaloneItems = availableStandaloneLectures()
+    .filter((lecture) => lecture.videoSrc)
+    .map((lecture) => ({ lecture, progress: readStoredStandaloneProgress(lecture) }))
+    .filter((item) => item.progress);
+  const items = [...episodeItems, ...standaloneItems]
     .sort((a, b) => b.progress.updatedAt - a.progress.updatedAt)
     .slice(0, 6);
 
@@ -493,14 +565,24 @@ function renderContinueWatching() {
   }
 
   els.continueList.innerHTML = items
-    .map(({ series, episode, progress }, i) => {
+    .map((item, i) => {
+      const { progress } = item;
       const percent = Math.round(progress.percent * 100);
-      const key = progressKey(series, episode);
+      const isStandalone = Boolean(item.lecture);
+      const key = isStandalone ? standaloneProgressKey(item.lecture) : progressKey(item.series, item.episode);
+      const url = isStandalone ? standaloneLectureUrl(item.lecture) : episodeUrl(item.series, item.episode);
+      const thumb = isStandalone
+        ? standaloneLectureThumbnailUrl(item.lecture)
+        : episodeThumbnailUrl(item.series, item.episode);
+      const eyebrow = isStandalone
+        ? `${item.lecture.speaker} - Standalone video`
+        : `${item.series.title} - Episode ${item.episode.number}`;
+      const title = isStandalone ? item.lecture.title : item.episode.title;
       return `
         <div class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" data-progress-key="${escapeHtml(key)}">
-          <a class="continue-card-link" href="${episodeUrl(series, episode)}">
+          <a class="continue-card-link" href="${url}">
             <div class="continue-thumb">
-              <img src="${episodeThumbnailUrl(series, episode)}" alt="" loading="lazy" />
+              <img src="${thumb}" alt="" loading="lazy" />
               <div class="continue-ring" role="img" aria-label="${percent}% watched">
                 <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
                   <circle class="ring-track" cx="18" cy="18" r="15.9"/>
@@ -511,8 +593,8 @@ function renderContinueWatching() {
               </div>
             </div>
             <div class="continue-body">
-              <small>${escapeHtml(series.title)} - Episode ${episode.number}</small>
-              <strong>${escapeHtml(episode.title)}</strong>
+              <small>${escapeHtml(eyebrow)}</small>
+              <strong>${escapeHtml(title)}</strong>
               <em>Resume at ${formatDuration(progress.currentTime)}</em>
             </div>
           </a>
@@ -567,6 +649,12 @@ function seriesMatchesSearch(series) {
   return haystack.includes(state.searchTerm);
 }
 
+function seriesMatchesContentType(series) {
+  if (state.contentType === "all") return true;
+  if (state.contentType === "videos") return series.contentType === "video";
+  return series.contentType !== "video";
+}
+
 function seriesMatchesSpeaker(series) {
   if (!state.activeSpeaker) return true;
   return series.speaker === state.activeSpeaker;
@@ -589,6 +677,7 @@ function seriesProgressSummary(seriesTitle) {
 }
 
 function getSeriesUrl(series) {
+  if (series.contentType === "video") return series.link;
   const local = availableLocalSeries().find(s => s.title === series.title);
   if (local) return local.seriesPageUrl;
   return series.link;
@@ -600,6 +689,7 @@ function renderSeries() {
       .filter(isAllowedSeries)
       .filter(seriesMatchesSearch)
       .filter(seriesMatchesSpeaker)
+      .filter(seriesMatchesContentType)
       .map(enrichSeries)
   );
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
@@ -609,14 +699,15 @@ function renderSeries() {
     : state.searchTerm
     ? `Search in ${categoryName}`
     : categoryName;
-  els.resultCount.textContent = `${series.length} ${series.length === 1 ? "series" : "series"}`;
+  const resultLabel = state.contentType === "videos" ? "video" : state.contentType === "series" ? "series" : "item";
+  els.resultCount.textContent = `${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`}`;
 
   if (!series.length) {
     els.seriesGrid.innerHTML = "";
     setStatus(
       state.searchTerm
-        ? "No series matched that search. Try another title, speaker, or topic."
-        : "No series in this category yet. Check back soon."
+        ? "No lectures matched that search. Try another title, speaker, or topic."
+        : "No lectures in this category yet. Check back soon."
     );
     return;
   }
@@ -625,11 +716,12 @@ function renderSeries() {
   els.seriesGrid.innerHTML = series
     .map((item, i) => {
       const seriesUrl = getSeriesUrl(item);
+      const isVideo = item.contentType === "video";
       const description =
         item.description ||
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
-      const progress = seriesProgressSummary(item.title);
+      const progress = isVideo ? null : seriesProgressSummary(item.title);
       const saved = isSeriesSaved(seriesUrl);
       const icons = seriesActionIcons();
       return `
@@ -649,10 +741,10 @@ function renderSeries() {
             </div>
             ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
             <div class="card-actions">
-              <button class="mini-action icon-btn save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${saved}" aria-label="${saved ? "Remove saved series" : "Save series"}">
+              <button class="mini-action icon-btn save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${saved}" aria-label="${saved ? "Remove saved item" : `Save ${isVideo ? "video" : "series"}`}">
                 ${icons.save}
               </button>
-              <button class="mini-action icon-btn share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-label="Share series">${icons.share}</button>
+              <button class="mini-action icon-btn share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-label="Share ${isVideo ? "video" : "series"}">${icons.share}</button>
               <button class="details-toggle icon-btn" type="button" aria-expanded="false" aria-label="Show details">${icons.details}</button>
             </div>
             <p class="series-description">${escapeHtml(description)}</p>
@@ -719,6 +811,16 @@ function bindEvents() {
     }
     state.activeSpeaker = null;
     loadCategory(button.dataset.category);
+  });
+
+  els.contentTypeFilter?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-content-type]");
+    if (!button) return;
+    state.contentType = button.dataset.contentType;
+    els.contentTypeFilter.querySelectorAll("button").forEach((item) => {
+      item.classList.toggle("is-active", item === button);
+    });
+    renderSeries();
   });
 
   els.seriesGrid.addEventListener("click", (event) => {

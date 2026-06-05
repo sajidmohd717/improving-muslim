@@ -1318,6 +1318,37 @@ details[open] .takeaways-toggle::after {
   justify-content: flex-end;
 }
 
+.content-type-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 3px;
+}
+
+.content-type-filter button {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 8px;
+}
+
+.content-type-filter button.is-active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.content-type-filter button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .sort-select {
   border: 1px solid var(--line);
   border-radius: 6px;

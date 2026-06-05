@@ -1,8 +1,9 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const { escapeHtml, formatViewCount, getAllSeries } = window.IMUtils;
+const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl } = window.IMUtils;
 const localSeries = getAllSeries();
+const standaloneLectures = getStandaloneLectures();
 
 const imageMap = {
   changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
@@ -69,7 +70,16 @@ function localSeriesCard(series) {
 }
 
 function speakerSeries(speakerName) {
-  const allSeries = [...localSeries.map(localSeriesCard), ...curatedSeries];
+  const standaloneCards = standaloneLectures.map((lecture) => ({
+    title: lecture.title,
+    speaker: lecture.speaker,
+    topic: lecture.topic || "Standalone Video",
+    episodes: lecture.typeLabel || "Standalone Video",
+    thumbnailImage: standaloneLectureThumbnailUrl(lecture),
+    link: standaloneLectureUrl(lecture),
+    description: lecture.description,
+  }));
+  const allSeries = [...localSeries.map(localSeriesCard), ...standaloneCards, ...curatedSeries];
   const seen = new Set();
   return allSeries.filter((series) => {
     if (series.speaker !== speakerName || seen.has(series.title)) return false;
@@ -120,7 +130,7 @@ function renderSpeakerPage() {
   els.photo.alt = speaker.name;
   els.name.textContent = speaker.name;
   els.bio.textContent = speaker.bio;
-  els.count.textContent = `${series.length} ${series.length === 1 ? "series" : "series"}`;
+  els.count.textContent = `${series.length} ${series.length === 1 ? "item" : "items"}`;
 
   if (!series.length) {
     els.grid.innerHTML = "";
