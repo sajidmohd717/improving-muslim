@@ -615,7 +615,7 @@ h2 {
 .speaker-strip,
 .category-strip {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
   padding: 4px 0 12px;
   scrollbar-width: thin;
@@ -718,18 +718,22 @@ h2 {
   overflow: hidden;
 }
 
+.categories-eyebrow {
+  margin-bottom: 10px;
+}
+
 .category-button {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 40px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
   color: var(--muted);
-  font-size: 0.92rem;
-  font-weight: 800;
-  padding: 9px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 7px 13px;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
@@ -2730,7 +2734,7 @@ details[open] .takeaways-toggle::after {
   }
 
   .category-strip {
-    gap: 7px;
+    gap: 6px;
     padding-bottom: 8px;
   }
 
