@@ -608,6 +608,7 @@ function renderContinueWatching() {
 }
 
 function renderSpeakers() {
+  if (!els.speakerList) return;
   els.speakerList.innerHTML = speakers
     .map(
       (speaker, i) => `
