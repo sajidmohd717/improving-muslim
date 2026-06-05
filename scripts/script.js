@@ -202,7 +202,7 @@ const state = {
   activeCategory: "foryou",
   sections: [],
   searchTerm: "",
-  sortBy: "views",
+  sortBy: "random",
   activeSpeaker: null,
   contentType: "all",
 };
@@ -230,6 +230,9 @@ function parseViewCount(str) {
 }
 
 function getSortedSeries(list) {
+  if (state.sortBy === "random") {
+    return [...list].sort(() => Math.random() - 0.5);
+  }
   if (state.sortBy === "views") {
     return [...list].sort((a, b) => parseViewCount(b.viewcount) - parseViewCount(a.viewcount));
   }
@@ -251,7 +254,9 @@ const els = {
   resultCount: document.querySelector("#result-count"),
   searchForm: document.querySelector(".search-form"),
   searchInput: document.querySelector("#series-search"),
-  sortSelect: document.querySelector("#sort-select"),
+  sortTrigger: document.querySelector("#sort-trigger"),
+  sortDisplay: document.querySelector("#sort-display"),
+  sortOptions: document.querySelector("#sort-options"),
   contentTypeFilter: document.querySelector("#content-type-filter"),
   activeCategoryLabel: document.querySelector("#active-category-label"),
 };
@@ -764,12 +769,7 @@ function renderSeries() {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                 <span>Share</span>
               </button>
-              <button class="card-menu-item details-toggle" type="button" aria-expanded="false" aria-label="About this series">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span>About this series</span>
-              </button>
             </div>
-            <p class="series-description">${escapeHtml(description)}</p>
           </div>
         </article>
       `;
@@ -879,15 +879,6 @@ function bindEvents() {
       return;
     }
 
-    const button = event.target.closest(".details-toggle");
-    if (!button) {
-      return;
-    }
-    const card = button.closest(".series-card");
-    const isExpanded = card.classList.toggle("is-expanded");
-    button.setAttribute("aria-label", isExpanded ? "Hide details" : "About this series");
-    button.setAttribute("aria-expanded", String(isExpanded));
-    closeCardMenu(button.closest(".card-menu"));
   });
 
   document.addEventListener("click", (event) => {
@@ -913,9 +904,35 @@ function bindEvents() {
     }
   });
 
-  els.sortSelect.addEventListener("change", () => {
-    state.sortBy = els.sortSelect.value;
+  const sortLabels = { random: "Default", views: "Most viewed", az: "A–Z" };
+
+  els.sortTrigger?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = !els.sortOptions.hidden;
+    els.sortOptions.hidden = isOpen;
+    els.sortTrigger.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  els.sortOptions?.addEventListener("click", (e) => {
+    const option = e.target.closest(".sort-option");
+    if (!option) return;
+    const value = option.dataset.value;
+    state.sortBy = value;
+    els.sortDisplay.textContent = sortLabels[value] || value;
+    els.sortOptions.querySelectorAll(".sort-option").forEach((o) => {
+      o.classList.toggle("is-selected", o === option);
+      o.setAttribute("aria-selected", String(o === option));
+    });
+    els.sortOptions.hidden = true;
+    els.sortTrigger.setAttribute("aria-expanded", "false");
     renderSeries();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("#sort-dropdown")) {
+      if (els.sortOptions) els.sortOptions.hidden = true;
+      els.sortTrigger?.setAttribute("aria-expanded", "false");
+    }
   });
 }
 

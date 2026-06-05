@@ -1,32 +1,16 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
     <meta name="referrer" content="origin" />
-    <meta
-      name="description"
-      content="Watch focused Islamic lecture series without ads, pop-ups, comments, or distracting algorithm recommendations."
-    />
-    <link rel="canonical" href="https://improvingmuslim.com/" />
+    <meta name="description" content="Your saved series and episodes on Improving Muslim." />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
     <link rel="manifest" href="./public/site.webmanifest" />
     <meta name="theme-color" content="#176b5b" />
-    <meta property="og:site_name" content="Improving Muslim" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://improvingmuslim.com/" />
-    <meta property="og:title" content="Improving Muslim" />
-    <meta property="og:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
-    <meta property="og:image" content="https://improvingmuslim.com/public/social-preview.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Improving Muslim" />
-    <meta name="twitter:description" content="Focused Islamic lectures without ads, pop-ups, or distracting recommendations." />
-    <meta name="twitter:image" content="https://improvingmuslim.com/public/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -36,17 +20,7 @@
     <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
     <script src="./scripts/error-handler.js"></script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Improving Muslim",
-        "url": "https://improvingmuslim.com/",
-        "description": "Focused Islamic lecture series without ads, pop-ups, comments, or distracting algorithm recommendations.",
-        "inLanguage": "en"
-      }
-    </script>
-    <title>Improving Muslim</title>
+    <title>Saved | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -55,15 +29,12 @@
           <img src="./public/icon.png" alt="" />
           <span>Improving Muslim</span>
         </a>
-
-        <div class="site-menu" id="site-menu">
-          <a href="./pages/speakers.html">Speakers</a>
-          <a href="#categories">Categories</a>
-          <a href="#series">Series</a>
+        <div class="site-menu page-menu">
+          <a href="./index.html">Home</a>
+          <a href="./pages/series.html">Series</a>
           <a href="./pages/history.html">History</a>
           <a href="./pages/settings.html">Settings</a>
         </div>
-
         <div class="nav-more" id="nav-more">
           <button class="nav-more-trigger" id="nav-more-trigger" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
             More
@@ -108,56 +79,24 @@
     </header>
 
     <main>
-      <section class="hero">
-        <div class="hero-content">
-          <p class="eyebrow">Curated Islamic knowledge</p>
-          <h1>Find meaningful lecture series without the noise.</h1>
-          <p class="hero-copy">
-            Browse organized playlists from trusted speakers across tafsir, hadith, seerah,
-            purification of the heart, and more.
-          </p>
-          <form class="search-form" role="search">
-            <label class="sr-only" for="series-search">Search lectures</label>
-            <input id="series-search" type="search" placeholder="Search by title, speaker, or topic" autocomplete="off" />
-            <button type="submit">Search</button>
-          </form>
-        </div>
+      <section class="about-hero">
+        <p class="eyebrow">On this device</p>
+        <h1>Saved</h1>
+        <p>Series and episodes you've saved to watch later. Stored locally — only visible on this device.</p>
       </section>
 
-
-      <section class="content-section" id="categories" aria-label="Browse by topic" data-reveal>
-        <div class="category-strip" id="category-list" role="list"></div>
-      </section>
-
-      <section class="content-section series-section" id="series" aria-labelledby="series-title" data-reveal>
-        <div class="section-heading row-heading">
-          <div>
-            <p class="eyebrow" id="active-category-label">All</p>
-            <h2 id="series-title">Lecture Series</h2>
-          </div>
-          <div class="series-controls">
-            <p class="result-count" id="result-count"></p>
-            <div class="content-type-filter" id="content-type-filter" aria-label="Filter content type">
-              <button type="button" class="is-active" data-content-type="all">All</button>
-              <button type="button" data-content-type="series">Series</button>
-              <button type="button" data-content-type="videos">Videos</button>
-            </div>
-            <div class="sort-dropdown" id="sort-dropdown">
-              <span class="sort-label">Sort by</span>
-              <button class="sort-trigger" type="button" id="sort-trigger" aria-haspopup="listbox" aria-expanded="false">
-                <span id="sort-display">Default</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-              <ul class="sort-options" id="sort-options" role="listbox" aria-label="Sort series" hidden>
-                <li class="sort-option is-selected" role="option" data-value="random" aria-selected="true">Default <span class="sort-option-hint">(Random)</span></li>
-                <li class="sort-option" role="option" data-value="views" aria-selected="false">Most viewed</li>
-                <li class="sort-option" role="option" data-value="az" aria-selected="false">A–Z</li>
-              </ul>
-            </div>
-          </div>
+      <section class="about-section" aria-label="Saved items">
+        <div class="history-header">
+          <button class="danger-button" id="clear-saved-btn" type="button" hidden>Clear all saved</button>
         </div>
-        <div class="status-message" id="status-message" role="status">Loading series...</div>
-        <div class="series-grid" id="series-grid"></div>
+
+        <div id="saved-list" class="history-list"></div>
+
+        <div id="saved-empty" class="history-empty" hidden>
+          <p class="history-empty-heading">Nothing saved yet</p>
+          <p class="history-empty-body">Tap the bookmark icon on any series or episode to save it here for later.</p>
+          <a class="primary-link" href="./index.html">Browse series</a>
+        </div>
       </section>
     </main>
 
@@ -172,6 +111,21 @@
       <a href="./pages/copyright.html">Copyright</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <a class="bottom-nav-item" href="./index.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/history.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>History</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/settings.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
     <script src="./data/series-registry.js" defer></script>
     <script src="./data/change-of-heart-data.js?v=20260601-thumbs" defer></script>
     <script src="./data/enjoy-your-prayer-data.js?v=20260601-thumbs" defer></script>
@@ -188,23 +142,8 @@
     <script src="./data/standalone-lectures-data.js?v=20260606-standalone" defer></script>
     <script src="./data/speaker-data.js" defer></script>
     <script src="./scripts/utils.js?v=20260602-utils" defer></script>
-    <script src="./scripts/script.js?v=20260602-fortress" defer></script>
-
-    <nav class="bottom-nav" aria-label="Main navigation">
-      <a class="bottom-nav-item is-active" href="./index.html">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>Home</span>
-      </a>
-      <a class="bottom-nav-item" href="./pages/history.html">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>History</span>
-      </a>
-      <a class="bottom-nav-item" href="./pages/settings.html">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></svg>
-        <span>Settings</span>
-      </a>
-    </nav>
-    <script src="./scripts/nav-state.js" defer></script>
+    <script src="./scripts/saved-page.js" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
+    <script src="./scripts/nav-state.js" defer></script>
   </body>
 </html>
