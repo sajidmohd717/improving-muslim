@@ -747,7 +747,12 @@ h2 {
 }
 
 .series-section {
+  padding-top: 12px;
   padding-bottom: 56px;
+}
+
+#categories {
+  padding-bottom: 4px;
 }
 
 .status-message {
@@ -2672,6 +2677,14 @@ details[open] .takeaways-toggle::after {
 
   .content-section {
     padding: 16px 0;
+  }
+
+  #categories {
+    padding-bottom: 2px;
+  }
+
+  .series-section {
+    padding-top: 8px;
   }
 
   .continue-section {
