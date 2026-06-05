@@ -790,7 +790,7 @@ h2 {
 
 .series-link {
   display: block;
-  aspect-ratio: 16 / 11.88;
+  aspect-ratio: 16 / 9;
   background: #e5ded0;
   overflow: hidden;
   border-radius: 8px 8px 0 0;
@@ -1407,7 +1407,7 @@ details[open] .takeaways-toggle::after {
 }
 
 .content-type-filter {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 4px;
   border: 1px solid var(--line);
@@ -2758,6 +2758,12 @@ details[open] .takeaways-toggle::after {
     padding-bottom: 2px;
   }
 
+  #active-category-label,
+  #series-title,
+  #result-count {
+    display: none;
+  }
+
   .series-section {
     padding-top: 8px;
   }
@@ -2911,7 +2917,7 @@ details[open] .takeaways-toggle::after {
   }
 
   .series-link {
-    width: 120px;
+    width: 144px;
     flex-shrink: 0;
     aspect-ratio: 16 / 9;
     border-radius: 6px;
