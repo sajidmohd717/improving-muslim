@@ -67,6 +67,10 @@
   }
 
   window.onerror = function (msg, src) {
+    /* Only act on errors from actual .js script files.
+       Browser extension errors typically report the page URL as their
+       source (e.g. https://improvingmuslim.com/), not a .js path. */
+    if (src && src.length && src.indexOf('.js') === -1) return false;
     handle(msg, src);
     return false; /* keep the error visible in DevTools */
   };
@@ -74,23 +78,25 @@
   window.addEventListener('unhandledrejection', function (event) {
     var reason = event.reason;
 
-    /* Ignore AbortErrors — these are fetch cancellations from navigation, not bugs */
+    /* Ignore AbortErrors — fetch cancellations from navigation */
     if (reason && reason.name === 'AbortError') return;
 
-    /* Ignore network/fetch failures — transient, not script crashes.
-       Covers: Safari "Load failed", Chrome "Failed to fetch", Firefox "NetworkError" */
+    /* Ignore network/fetch TypeErrors — all browser variants */
     if (reason && reason.name === 'TypeError') {
       var m = (reason.message || '').toLowerCase();
       if (m.indexOf('fetch') !== -1 || m.indexOf('load') !== -1 ||
           m.indexOf('cancel') !== -1 || m.indexOf('network') !== -1) return;
     }
 
-    /* Ignore rejections that fire while the page is hidden —
-       these are bfcache artifacts from before the user navigated away */
+    /* Ignore while page is hidden (bfcache artifact) */
     if (document.hidden) return;
 
+    /* Silently report to email but do NOT show the in-page fallback UI.
+       Unhandled rejections are almost always browser extensions (e.g. MetaMask,
+       ad blockers, wallet extensions) injecting async code into the page —
+       not crashes in our own scripts. Real script crashes surface via onerror. */
     var msg = reason && reason.message ? reason.message : String(reason);
-    handle(msg, location.href);
+    report(msg, '(unhandled rejection)');
   });
 
   /* When Safari restores this page from the back-forward cache, reset error
