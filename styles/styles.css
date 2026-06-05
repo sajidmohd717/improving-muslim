@@ -712,6 +712,10 @@ h2 {
   font-size: 0.84rem;
   font-style: normal;
   line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .category-button {
