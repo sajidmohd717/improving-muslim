@@ -438,6 +438,18 @@ function seriesActionIcons() {
 function updateSeriesSaveButton(button, saved) {
   button.setAttribute("aria-pressed", String(saved));
   button.setAttribute("aria-label", saved ? "Remove saved series" : "Save series");
+  const span = button.querySelector("span");
+  if (span) span.textContent = saved ? "Saved" : "Save";
+}
+
+function closeCardMenu(menu) {
+  if (!menu) return;
+  menu.hidden = true;
+  const trigger = menu.previousElementSibling;
+  if (trigger?.classList.contains("card-menu-trigger")) {
+    trigger.setAttribute("aria-expanded", "false");
+  }
+  menu.closest(".series-card")?.style.removeProperty("z-index");
 }
 
 function toggleSavedSeries(series, url, button) {
@@ -724,7 +736,6 @@ function renderSeries() {
         "Open the playlist to explore the complete lecture series on YouTube.";
       const progress = isVideo ? null : seriesProgressSummary(item.title);
       const saved = isSeriesSaved(seriesUrl);
-      const icons = seriesActionIcons();
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
@@ -741,12 +752,22 @@ function renderSeries() {
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
             ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
-            <div class="card-actions">
-              <button class="mini-action icon-btn save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${saved}" aria-label="${saved ? "Remove saved item" : `Save ${isVideo ? "video" : "series"}`}">
-                ${icons.save}
+            <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>
+            </button>
+            <div class="card-menu" hidden>
+              <button class="card-menu-item save-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-pressed="${saved}" aria-label="${saved ? "Remove saved item" : `Save ${isVideo ? "video" : "series"}`}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <span>${saved ? "Saved" : "Save"}</span>
               </button>
-              <button class="mini-action icon-btn share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-label="Share ${isVideo ? "video" : "series"}">${icons.share}</button>
-              <button class="details-toggle icon-btn" type="button" aria-expanded="false" aria-label="Show details">${icons.details}</button>
+              <button class="card-menu-item share-series-button" type="button" data-series-url="${escapeHtml(seriesUrl)}" aria-label="Share ${isVideo ? "video" : "series"}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                <span>Share</span>
+              </button>
+              <button class="card-menu-item details-toggle" type="button" aria-expanded="false" aria-label="About this series">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>About this series</span>
+              </button>
             </div>
             <p class="series-description">${escapeHtml(description)}</p>
           </div>
@@ -825,12 +846,26 @@ function bindEvents() {
   });
 
   els.seriesGrid.addEventListener("click", (event) => {
+    const menuTrigger = event.target.closest(".card-menu-trigger");
+    if (menuTrigger) {
+      const menu = menuTrigger.nextElementSibling;
+      document.querySelectorAll(".card-menu:not([hidden])").forEach((m) => {
+        if (m !== menu) closeCardMenu(m);
+      });
+      const opening = menu.hidden;
+      menu.hidden = !opening;
+      menuTrigger.setAttribute("aria-expanded", String(opening));
+      menuTrigger.closest(".series-card").style.zIndex = opening ? "10" : "";
+      return;
+    }
+
     const saveButton = event.target.closest(".save-series-button");
     if (saveButton) {
       const card = saveButton.closest(".series-card");
       const title = card?.querySelector(".series-title")?.textContent.trim();
       const item = flattenSeries(state.sections).find((series) => series.title === title);
       if (item) toggleSavedSeries(item, saveButton.dataset.seriesUrl, saveButton);
+      closeCardMenu(saveButton.closest(".card-menu"));
       return;
     }
 
@@ -840,6 +875,7 @@ function bindEvents() {
       const title = card?.querySelector(".series-title")?.textContent.trim();
       const item = flattenSeries(state.sections).find((series) => series.title === title);
       if (item) shareSeries(item, shareButton.dataset.seriesUrl, shareButton);
+      closeCardMenu(shareButton.closest(".card-menu"));
       return;
     }
 
@@ -849,8 +885,15 @@ function bindEvents() {
     }
     const card = button.closest(".series-card");
     const isExpanded = card.classList.toggle("is-expanded");
-    button.setAttribute("aria-label", isExpanded ? "Hide details" : "Show details");
+    button.setAttribute("aria-label", isExpanded ? "Hide details" : "About this series");
     button.setAttribute("aria-expanded", String(isExpanded));
+    closeCardMenu(button.closest(".card-menu"));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".series-card")) {
+      document.querySelectorAll(".card-menu:not([hidden])").forEach(closeCardMenu);
+    }
   });
 
   els.searchForm.addEventListener("submit", (event) => {

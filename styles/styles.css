@@ -780,7 +780,7 @@ h2 {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-strong);
@@ -793,6 +793,7 @@ h2 {
   aspect-ratio: 16 / 9;
   background: #e5ded0;
   overflow: hidden;
+  border-radius: 8px 8px 0 0;
 }
 
 .series-link img {
@@ -813,6 +814,79 @@ h2 {
   flex: 1;
   flex-direction: column;
   padding: 14px;
+  position: relative;
+}
+
+.card-menu-trigger {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 50%;
+  line-height: 0;
+  transition: background 150ms, color 150ms;
+}
+
+.card-menu-trigger:hover,
+.card-menu-trigger:focus-visible {
+  background: rgba(23, 107, 91, 0.08);
+  color: var(--ink);
+  outline: none;
+}
+
+.card-menu {
+  position: absolute;
+  top: 36px;
+  right: 8px;
+  min-width: 172px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(24, 32, 27, 0.14);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.card-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms;
+}
+
+.card-menu-item:hover,
+.card-menu-item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.card-menu-item svg {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.card-menu-item[aria-pressed="true"] svg {
+  fill: var(--ink);
+  stroke: var(--ink);
+  color: var(--ink);
 }
 
 .series-topic {
