@@ -168,4 +168,17 @@ window.seriesConfig = [
     playlistId: "PLh3c1SPUmZqGMOtrHD7Kd2uXuvPRDP7ou",
     episodeCount: 123,
   },
+  {
+    globalKey: "wisdomsOfTheQuranSeries",
+    slug: "wisdoms-of-the-quran",
+    dataFile: "./data/wisdoms-of-the-quran-data.js",
+    category: "quran",
+    sectionTitle: "Quran",
+    title: "Wisdoms of The Quran - Ramadan Series 2024",
+    speaker: "Yasir Qadhi",
+    thumbnailSrc: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
+    description: "A Ramadan series by Yasir Qadhi exploring selected Quranic wisdoms — short reflections on timeless verses covering patience, gratitude, trust in Allah, self-purification, and the keys to a believer's strength.",
+    playlistId: "PLYZxc42QNctV2v3RRYwTHdgDHp_h80mJT",
+    episodeCount: 26,
+  },
 ];

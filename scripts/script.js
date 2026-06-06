@@ -129,7 +129,7 @@ const fallbackData = [
         speaker: "Yasir Qadhi",
         episodes: "26 Lectures",
         thumbnailImage: "wisdomsQuran",
-        link: "https://www.youtube.com/playlist?list=PLYZxc42QNctV2v3RRYwTHdgDHp_h80mJT",
+        link: "./pages/series-detail.html?id=wisdoms-of-the-quran",
       },
     ],
   },
@@ -212,9 +212,19 @@ function parseViewCount(str) {
   return num || -1;
 }
 
+// Stable random sort: each title gets one random key per page load, reused
+// across all category switches so the order never changes mid-session.
+const randomSortKeys = new Map();
+function stableRandomKey(title) {
+  if (!randomSortKeys.has(title)) {
+    randomSortKeys.set(title, Math.random());
+  }
+  return randomSortKeys.get(title);
+}
+
 function getSortedSeries(list) {
   if (state.sortBy === "random") {
-    return [...list].sort(() => Math.random() - 0.5);
+    return [...list].sort((a, b) => stableRandomKey(a.title) - stableRandomKey(b.title));
   }
   if (state.sortBy === "views") {
     return [...list].sort((a, b) => parseViewCount(b.viewcount) - parseViewCount(a.viewcount));
@@ -672,6 +682,17 @@ function seriesMatchesSpeaker(series) {
   return series.speaker === state.activeSpeaker;
 }
 
+function standaloneVideoProgress(sourceId) {
+  if (!sourceId) return null;
+  const stored = readJsonStorage(`${PROGRESS_PREFIX}standalone:${sourceId}`, {});
+  const currentTime = Number(stored.currentTime) || 0;
+  const duration = Number(stored.duration) || 0;
+  if (!duration || currentTime < 10) return null;
+  const pct = Math.min(1, currentTime / duration);
+  if (pct > 0.97) return null; // completed — don't clutter the card
+  return pct;
+}
+
 function seriesProgressSummary(seriesTitle) {
   const localSeries = availableLocalSeries().find((s) => s.title === seriesTitle);
   if (!localSeries) return null;
@@ -733,8 +754,14 @@ function renderSeries() {
         item.description ||
         descriptions[item.title] ||
         "Open the playlist to explore the complete lecture series on YouTube.";
-      const progress = isVideo ? null : seriesProgressSummary(item.title);
+      const seriesProgress = isVideo ? null : seriesProgressSummary(item.title);
+      const videoProgress = isVideo ? standaloneVideoProgress(item.sourceId) : null;
       const saved = isSeriesSaved(seriesUrl);
+      const progressBarHtml = seriesProgress
+        ? `<div class="series-progress-track" aria-label="${seriesProgress.completed} of ${seriesProgress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(seriesProgress.completed / seriesProgress.total * 100)}%"></div></div>`
+        : videoProgress !== null
+        ? `<div class="series-progress-track" aria-label="${Math.round(videoProgress * 100)}% watched"><div class="series-progress-fill" style="width:${Math.round(videoProgress * 100)}%"></div></div>`
+        : "";
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
@@ -750,7 +777,7 @@ function renderSeries() {
               <span>${escapeHtml(item.episodes || "Lectures")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
-            ${progress ? `<div class="series-progress-track" aria-label="${progress.completed} of ${progress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(progress.completed / progress.total * 100)}%"></div></div>` : ""}
+            ${progressBarHtml}
             <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>
             </button>

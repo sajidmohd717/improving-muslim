@@ -32,10 +32,13 @@
   }
 
   function isEpisodeAvailable(episode) {
-    return Boolean(episode?.videoSrc);
+    return Boolean(episode?.videoSrc || episode?.youtubeId);
   }
 
   function episodeUrl(series, episode) {
+    if (!episode?.videoSrc && episode?.youtubeId) {
+      return `https://www.youtube.com/watch?v=${episode.youtubeId}`;
+    }
     return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;
   }
 

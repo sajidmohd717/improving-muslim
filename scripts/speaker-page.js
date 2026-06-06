@@ -22,7 +22,7 @@ const curatedSeries = [
     topic: "General Quran Tafsir",
     episodes: "26 Lectures",
     thumbnailImage: imageMap.wisdomsQuran,
-    link: "https://www.youtube.com/playlist?list=PLYZxc42QNctV2v3RRYwTHdgDHp_h80mJT",
+    link: "./pages/series-detail.html?id=wisdoms-of-the-quran",
     description:
       "A Ramadan series focused on selected Quranic wisdoms and their practical meaning.",
   },

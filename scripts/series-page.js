@@ -167,12 +167,14 @@
       .map(
         (episode, i) => {
           const available = isEpisodeAvailable(episode);
+          const isYouTubeOnly = !episode.videoSrc && Boolean(episode.youtubeId);
           const watchStatus = progressLabel(episode);
           const isWatched = watchStatus === "Watched";
           const tagName = available ? "a" : "article";
           const href = available ? ` href="${episodeUrl(episode)}"` : "";
+          const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
           return `
-          <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${Math.min(i, 8) * 40}ms"${href}>
+          <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${Math.min(i, 8) * 40}ms"${href}${targetAttr}>
             <img
               src="${episodeThumbnailUrl(episode)}"
               alt=""
@@ -184,13 +186,13 @@
                 Episode ${episode.number}
                 ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
                 ${isWatched ? '<span class="recap-badge watched-badge">Watched</span>' : ""}
-                ${available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
+                ${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
               </span>
               <strong>${episode.title}</strong>
               <span class="episode-date">${formatDate(episode.published)}</span>
               ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
               ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
-              ${available ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
+              ${available || isYouTubeOnly ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
             </div>
           </${tagName}>
         `;
