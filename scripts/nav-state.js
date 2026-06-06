@@ -62,6 +62,18 @@ if (window.location.pathname.includes('/pages/')) {
   }
 }
 
+/* Mark the active link in the desktop site-menu */
+const siteMenu = document.querySelector('.site-menu');
+if (siteMenu) {
+  const currentPage = window.location.pathname.split('/').pop().split('?')[0];
+  siteMenu.querySelectorAll('a[href]').forEach((link) => {
+    const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
+    if (linkPage && linkPage === currentPage) {
+      link.classList.add('is-active');
+    }
+  });
+}
+
 /* Inject settings gear icon into header before the More button */
 const navMore = document.querySelector('.nav-more');
 if (navMore) {
