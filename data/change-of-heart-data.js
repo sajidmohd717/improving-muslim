@@ -1,7 +1,7 @@
 window.changeOfHeartSeries = {
   title: "Change of Heart",
   slug: "change-of-heart",
-  seriesPageUrl: "./pages/series-change-of-heart.html",
+  seriesPageUrl: "./pages/series-detail.html?id=change-of-heart",
   speaker: "Ali Hammuda",
   topic: "Purification of the Heart",
   thumbnailSrc: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",

@@ -187,6 +187,17 @@ function readProgress(episode) {
   return readJsonStorage(progressKey(episode), {});
 }
 
+function buildCardData() {
+  return {
+    eyebrow: isStandalone
+      ? `${standaloneLecture.speaker} - Standalone video`
+      : `${series.title} - Episode ${currentEpisode.number}`,
+    title: isStandalone ? standaloneLecture.title : currentEpisode.title,
+    thumbnail: episodeThumbnailUrl(currentEpisode),
+    url: episodeUrl(currentEpisode),
+  };
+}
+
 function saveProgress() {
   if (!Number.isFinite(player.duration) || player.duration <= 0) {
     return;
@@ -198,6 +209,7 @@ function saveProgress() {
     duration: player.duration,
     updatedAt: Date.now(),
     completed: Boolean(existing.completed),
+    _card: buildCardData(),
   };
 
   writeJsonStorage(progressKey(currentEpisode), payload);

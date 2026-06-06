@@ -1,7 +1,7 @@
 window.whyMeSeries = {
   title: "Why Me?",
   slug: "why-me",
-  seriesPageUrl: "./pages/series-why-me.html",
+  seriesPageUrl: "./pages/series-detail.html?id=why-me",
   speaker: "Omar Suleiman",
   topic: "Reflection and Contemplation",
   thumbnailSrc: "./assets/thumbnail/heart-softeners/whyme.jpg",

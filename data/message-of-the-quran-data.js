@@ -1,7 +1,7 @@
 window.messageOfTheQuranSeries = {
   title: "The Message of the Quran in 30 Lessons",
   slug: "message-of-the-quran",
-  seriesPageUrl: "./pages/series-message-of-the-quran.html",
+  seriesPageUrl: "./pages/series-detail.html?id=message-of-the-quran",
   speaker: "Yasir Qadhi",
   topic: "Quran",
   thumbnailSrc: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",

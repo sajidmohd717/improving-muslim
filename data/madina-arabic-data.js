@@ -1,7 +1,7 @@
 window.madinaArabicSeries = {
   title: "Madina Arabic Books",
   slug: "madina-arabic",
-  seriesPageUrl: "./pages/series-madina-arabic.html",
+  seriesPageUrl: "./pages/series-detail.html?id=madina-arabic",
   speaker: "Asif Meherali",
   topic: "Arabic",
   thumbnailSrc: "./assets/thumbnail/madina-arabic/episodes/episode-01.jpg",

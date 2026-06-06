@@ -1,7 +1,7 @@
 window.tenPromisedJannahSeries = {
   title: "10 Promised Jannah",
   slug: "ten-promised-jannah",
-  seriesPageUrl: "./pages/series-ten-promised-jannah.html",
+  seriesPageUrl: "./pages/series-detail.html?id=ten-promised-jannah",
   speaker: "AbdulRahman Hassan",
   topic: "Sahaba",
   thumbnailSrc: "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",

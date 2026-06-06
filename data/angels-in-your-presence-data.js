@@ -1,7 +1,7 @@
 window.angelsInYourPresenceSeries = {
   title: "Angels in Your Presence",
   slug: "angels-in-your-presence",
-  seriesPageUrl: "./pages/series-angels-in-your-presence.html",
+  seriesPageUrl: "./pages/series-detail.html?id=angels-in-your-presence",
   speaker: "Omar Suleiman",
   topic: "Angels",
   thumbnailSrc: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",

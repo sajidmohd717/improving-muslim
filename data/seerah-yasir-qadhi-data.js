@@ -1,7 +1,7 @@
 window.seerahYasirQadhiSeries = {
   title: "Seerah of Prophet Muhammed (S)",
   slug: "seerah-yasir-qadhi",
-  seriesPageUrl: "./pages/series-seerah-yasir-qadhi.html",
+  seriesPageUrl: "./pages/series-detail.html?id=seerah-yasir-qadhi",
   speaker: "Yasir Qadhi",
   topic: "Seerah",
   thumbnailSrc: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",

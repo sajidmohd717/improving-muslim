@@ -1,7 +1,7 @@
 window.enjoyYourPrayerSeries = {
   title: "Enjoy Your Prayer",
   slug: "enjoy-your-prayer",
-  seriesPageUrl: "./pages/series-enjoy-your-prayer.html",
+  seriesPageUrl: "./pages/series-detail.html?id=enjoy-your-prayer",
   speaker: "Ali Hammuda",
   topic: "Salah & Worship",
   thumbnailSrc: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",

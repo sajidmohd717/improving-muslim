@@ -1,22 +1,9 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl } = window.IMUtils;
+const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl, imageMap } = window.IMUtils;
 const localSeries = getAllSeries();
 const standaloneLectures = getStandaloneLectures();
-
-const imageMap = {
-  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
-  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
-  fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
-  tenPromisedJannah: "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
-  whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
-  angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
-  heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-  messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
-  parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
-  wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
-};
 
 const curatedSeries = [
   {
@@ -25,7 +12,7 @@ const curatedSeries = [
     topic: "General Quran Tafsir",
     episodes: "29 Lectures",
     thumbnailImage: imageMap.parablesQuran,
-    link: "./pages/series-parables-of-the-quran.html",
+    link: "./pages/series-detail.html?id=parables-of-the-quran",
     description:
       "A tafsir series exploring the parables of the Quran and the guidance they contain.",
   },

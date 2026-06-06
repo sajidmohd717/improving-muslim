@@ -1,7 +1,7 @@
 window.fortyHadithSeries = {
   "title": "40 Hadith of Imam Nawawi",
   "slug": "forty-hadith-nawawi",
-  "seriesPageUrl": "./pages/series-forty-hadith-nawawi.html",
+  "seriesPageUrl": "./pages/series-detail.html?id=forty-hadith-nawawi",
   "speaker": "Navaid Aziz",
   "topic": "Hadith",
   "thumbnailSrc": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",

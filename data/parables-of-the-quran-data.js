@@ -1,7 +1,7 @@
 window.parablesOfTheQuranSeries = {
   title: "The Parables of The Quran",
   slug: "parables-of-the-quran",
-  seriesPageUrl: "./pages/series-parables-of-the-quran.html",
+  seriesPageUrl: "./pages/series-detail.html?id=parables-of-the-quran",
   speaker: "Yasir Qadhi",
   topic: "Quran",
   thumbnailSrc: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",

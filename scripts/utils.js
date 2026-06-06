@@ -134,6 +134,24 @@
     return registry;
   }
 
+  const imageMap = {
+    whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
+    angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
+    changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
+    heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
+    messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
+    parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
+    wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
+    seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
+    seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",
+    fortress: "./assets/thumbnail/hadith/fortress.jpg",
+    fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
+    baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
+    enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
+    fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
+    tenPromisedJannah: "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
+  };
+
   window.IMUtils = {
     SAVED_KEY,
     PROGRESS_PREFIX,
@@ -158,5 +176,6 @@
     getStandaloneLectures,
     getStandaloneLectureRegistry,
     getSeriesRegistry,
+    imageMap,
   };
 })();

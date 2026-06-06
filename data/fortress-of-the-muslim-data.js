@@ -1,7 +1,7 @@
 window.fortressOfTheMuslimSeries = {
   title: "Fortress of the Muslim",
   slug: "fortress-of-the-muslim",
-  seriesPageUrl: "./pages/series-fortress-of-the-muslim.html",
+  seriesPageUrl: "./pages/series-detail.html?id=fortress-of-the-muslim",
   speaker: "Assim Al-Hakeem",
   topic: "Dhikr & Dua",
   thumbnailSrc: "./assets/thumbnail/fortress-of-the-muslim/episodes/episode-01.jpg",

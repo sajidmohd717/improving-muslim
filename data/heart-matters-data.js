@@ -1,7 +1,7 @@
 window.heartMattersSeries = {
   title: "Heart Matters Ramadan Series 2023",
   slug: "heart-matters",
-  seriesPageUrl: "./pages/series-heart-matters.html",
+  seriesPageUrl: "./pages/series-detail.html?id=heart-matters",
   speaker: "Yasir Qadhi",
   topic: "Purification of the Heart",
   thumbnailSrc: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",

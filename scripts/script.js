@@ -44,23 +44,7 @@ const excludedSpeakerNames = new Set([
     .join(""),
 ]);
 
-const imageMap = {
-  whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
-  angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
-  changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
-  heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-  messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
-  parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
-  wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
-  seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
-  seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",
-  fortress: "./assets/thumbnail/hadith/fortress.jpg",
-  fatihahTafsirYQ: "./assets/thumbnail/tafsir/fatihah-yq.jpg",
-  baqarahTafsirMustafa: "./assets/thumbnail/tafsir/baqarah-mustafa.jpg",
-  enjoyYourPrayer: "./assets/thumbnail/salah/enjoy-your-prayer-card.jpg",
-  fortyHadithNawawi: "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
-  tenPromisedJannah: "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
-};
+const imageMap = window.IMUtils.imageMap;
 
 const fallbackData = [
   {
@@ -71,7 +55,7 @@ const fallbackData = [
         speaker: "Navaid Aziz",
         episodes: "46 Lectures",
         thumbnailImage: "fortyHadithNawawi",
-        link: "./pages/series-forty-hadith-nawawi.html",
+        link: "./pages/series-detail.html?id=forty-hadith-nawawi",
         viewcount: "136K views",
       },
     ],
@@ -84,7 +68,7 @@ const fallbackData = [
         speaker: "Ali Hammuda",
         episodes: "21 Lectures",
         thumbnailImage: "enjoyYourPrayer",
-        link: "./pages/series-enjoy-your-prayer.html",
+        link: "./pages/series-detail.html?id=enjoy-your-prayer",
         viewcount: "1M views",
       },
     ],
@@ -105,7 +89,7 @@ const fallbackData = [
         speaker: "Yasir Qadhi",
         episodes: "26 Lectures",
         thumbnailImage: "heartmatters",
-        link: "./pages/series-heart-matters.html",
+        link: "./pages/series-detail.html?id=heart-matters",
         viewcount: "749K views",
       },
     ],
@@ -131,14 +115,14 @@ const fallbackData = [
         speaker: "Yasir Qadhi",
         episodes: "30 Lectures",
         thumbnailImage: "messageQuran",
-        link: "./pages/series-message-of-the-quran.html",
+        link: "./pages/series-detail.html?id=message-of-the-quran",
       },
       {
         title: "The Parables of The Quran",
         speaker: "Yasir Qadhi",
         episodes: "29 Lectures",
         thumbnailImage: "parablesQuran",
-        link: "./pages/series-parables-of-the-quran.html",
+        link: "./pages/series-detail.html?id=parables-of-the-quran",
       },
       {
         title: "Wisdoms of The Quran - Ramadan Series 2024",
@@ -154,8 +138,7 @@ const fallbackData = [
 const localCategoryFallbacks = (() => {
   const map = {};
   for (const entry of (window.seriesConfig || [])) {
-    const s = window[entry.globalKey];
-    if (!s) continue;
+    if (!entry.title) continue;
     if (!map[entry.category]) map[entry.category] = [];
     let section = map[entry.category].find(sec => sec.sectionTitle === entry.sectionTitle);
     if (!section) {
@@ -163,11 +146,11 @@ const localCategoryFallbacks = (() => {
       map[entry.category].push(section);
     }
     section.seriesList.push({
-      title: s.title,
-      speaker: s.speaker,
-      episodes: `${s.episodes.length} Lectures`,
-      thumbnailImage: s.thumbnailSrc,
-      link: s.seriesPageUrl,
+      title: entry.title,
+      speaker: entry.speaker,
+      episodes: `${entry.episodeCount} Lectures`,
+      thumbnailImage: entry.thumbnailSrc,
+      link: `./pages/series-detail.html?id=${entry.slug}`,
     });
   }
   return map;
@@ -324,17 +307,16 @@ function localStandaloneSections(category = "foryou") {
 function localSeriesSections(category = "foryou") {
   const sections = [];
   for (const entry of (window.seriesConfig || [])) {
-    const s = window[entry.globalKey];
-    if (!s) continue;
+    if (!entry.title) continue;
     if (category !== "foryou" && category !== entry.category) continue;
     const card = {
-      title: s.title,
-      speaker: s.speaker,
+      title: entry.title,
+      speaker: entry.speaker,
       topic: entry.sectionTitle,
-      episodes: `${s.episodes.length} Lectures`,
-      thumbnailImage: s.thumbnailSrc,
-      link: s.seriesPageUrl,
-      description: s.description,
+      episodes: `${entry.episodeCount} Lectures`,
+      thumbnailImage: entry.thumbnailSrc,
+      link: `./pages/series-detail.html?id=${entry.slug}`,
+      description: entry.description,
       contentType: "series",
     };
     const existing = sections.find(sec => sec.sectionTitle === entry.sectionTitle);
@@ -544,29 +526,51 @@ function readStoredStandaloneProgress(lecture) {
 }
 
 function renderContinueWatching() {
-  const episodeItems = availableLocalSeries()
-    .flatMap((series) =>
-      series.episodes
-        .filter((episode) => episode.videoSrc)
-        .map((episode) => ({ series, episode, progress: readStoredProgress(series, episode) }))
-        .filter((item) => item.progress),
-    );
-  const standaloneItems = availableStandaloneLectures()
-    .filter((lecture) => lecture.videoSrc)
-    .map((lecture) => ({ lecture, progress: readStoredStandaloneProgress(lecture) }))
-    .filter((item) => item.progress);
-  const items = [...episodeItems, ...standaloneItems]
-    .sort((a, b) => b.progress.updatedAt - a.progress.updatedAt)
-    .slice(0, 6);
+  const allProgressKeys = storageKeysWithPrefix(PROGRESS_PREFIX);
+
+  const items = allProgressKeys.map((key) => {
+    try {
+      const stored = readJsonStorage(key, {});
+      if (!stored.updatedAt || !stored.duration) return null;
+      const currentTime = Math.max(0, Number(stored.currentTime) || 0);
+      const duration = Math.max(1, Number(stored.duration));
+      const percent = Math.min(1, currentTime / duration);
+      const progress = { currentTime, duration, percent, updatedAt: Number(stored.updatedAt) || 0 };
+
+      if (stored._card) {
+        return { progress, key, ...stored._card };
+      }
+
+      // Fallback for legacy standalone saves that predate _card
+      if (key.includes(":standalone:")) {
+        const lectureId = key.split(":standalone:")[1];
+        const lecture = availableStandaloneLectures().find((l) => l.id === lectureId);
+        if (!lecture || !lecture.videoSrc) return null;
+        return {
+          progress,
+          key,
+          eyebrow: `${lecture.speaker} - Standalone video`,
+          title: lecture.title,
+          thumbnail: standaloneLectureThumbnailUrl(lecture),
+          url: standaloneLectureUrl(lecture),
+        };
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  })
+  .filter(Boolean)
+  .sort((a, b) => b.progress.updatedAt - a.progress.updatedAt)
+  .slice(0, 6);
 
   if (!els.continueSection || !els.continueList) {
     return;
   }
 
   if (!items.length) {
-    const hasHistory = (() => {
-      return storageKeysWithPrefix(PROGRESS_PREFIX).length > 0;
-    })();
+    const hasHistory = allProgressKeys.length > 0;
     els.continueList.innerHTML = hasHistory
       ? `<div class="continue-empty">
            <p class="continue-empty-heading">All caught up</p>
@@ -583,23 +587,13 @@ function renderContinueWatching() {
 
   els.continueList.innerHTML = items
     .map((item, i) => {
-      const { progress } = item;
+      const { progress, key } = item;
       const percent = Math.round(progress.percent * 100);
-      const isStandalone = Boolean(item.lecture);
-      const key = isStandalone ? standaloneProgressKey(item.lecture) : progressKey(item.series, item.episode);
-      const url = isStandalone ? standaloneLectureUrl(item.lecture) : episodeUrl(item.series, item.episode);
-      const thumb = isStandalone
-        ? standaloneLectureThumbnailUrl(item.lecture)
-        : episodeThumbnailUrl(item.series, item.episode);
-      const eyebrow = isStandalone
-        ? `${item.lecture.speaker} - Standalone video`
-        : `${item.series.title} - Episode ${item.episode.number}`;
-      const title = isStandalone ? item.lecture.title : item.episode.title;
       return `
         <div class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" data-progress-key="${escapeHtml(key)}">
-          <a class="continue-card-link" href="${url}">
+          <a class="continue-card-link" href="${item.url}">
             <div class="continue-thumb">
-              <img src="${thumb}" alt="" loading="lazy" />
+              <img src="${item.thumbnail}" alt="" loading="lazy" />
               <div class="continue-ring" role="img" aria-label="${percent}% watched">
                 <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
                   <circle class="ring-track" cx="18" cy="18" r="15.9"/>
@@ -610,8 +604,8 @@ function renderContinueWatching() {
               </div>
             </div>
             <div class="continue-body">
-              <small>${escapeHtml(eyebrow)}</small>
-              <strong>${escapeHtml(title)}</strong>
+              <small>${escapeHtml(item.eyebrow)}</small>
+              <strong>${escapeHtml(item.title)}</strong>
               <em>Resume at ${formatDuration(progress.currentTime)}</em>
             </div>
           </a>
