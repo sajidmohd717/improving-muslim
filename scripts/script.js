@@ -972,6 +972,11 @@ els.continueList?.addEventListener("click", (e) => {
   renderContinueWatching();
 });
 
+window.addEventListener("im-auth-state-changed", () => {
+  renderContinueWatching();
+  renderSeries();
+});
+
 const sectionObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {

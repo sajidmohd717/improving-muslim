@@ -88,6 +88,11 @@ resetSavedButton?.addEventListener("click", () => {
 
 renderSavedItems();
 
+window.addEventListener("im-auth-state-changed", () => {
+  renderSummary();
+  renderSavedItems();
+});
+
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
 const autoplayToggle = document.querySelector("#autoplay-toggle");
 if (autoplayToggle) {

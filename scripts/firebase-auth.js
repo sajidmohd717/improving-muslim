@@ -134,6 +134,15 @@
     _listeners.forEach(function (fn) {
       try { fn(_user); } catch (_) {}
     });
+    window.dispatchEvent(new CustomEvent('im-auth-state-changed', {
+      detail: { user: _user },
+    }));
+  }
+
+  function pageUrl(path) {
+    var base = document.querySelector('base');
+    var href = base ? base.href : '/';
+    return new URL(path, href).href;
   }
 
   /* ── Auth button injection ────────────────────────────────────────────── */
@@ -145,17 +154,9 @@
     setAuthButtonState(btn);
     btn.addEventListener('click', function () {
       if (_user) {
-        // Resolve settings URL relative to current page's base
-        var base = document.querySelector('base');
-        var href = base ? base.href : '/';
-        window.location.href = new URL('pages/settings.html', href).href;
+        window.location.href = pageUrl('pages/settings.html');
       } else {
-        window.IMAuth.signIn().catch(function (err) {
-          if (err.code !== 'auth/popup-closed-by-user' &&
-              err.code !== 'auth/cancelled-popup-request') {
-            console.warn('[IMAuth] Sign-in error:', err.message);
-          }
-        });
+        window.location.href = pageUrl('pages/sign-in.html');
       }
     });
     return btn;
@@ -177,7 +178,7 @@
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
         'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ' +
         'aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>' +
-        '<circle cx="12" cy="7" r="4"/></svg>';
+        '<circle cx="12" cy="7" r="4"/></svg><span>Sign in</span>';
       btn.setAttribute('aria-label', 'Sign in with Google');
       btn.classList.remove('is-signed-in');
     }

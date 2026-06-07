@@ -94,4 +94,6 @@ clearBtn?.addEventListener("click", () => {
   renderSaved();
 });
 
+window.addEventListener("im-auth-state-changed", renderSaved);
+
 renderSaved();

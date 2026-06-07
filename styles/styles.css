@@ -4,7 +4,7 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 @import "./base.css";          /* CSS custom properties, reset, sr-only, is-hidden  */
-@import "./nav.css";           /* Site header, top nav, bottom mobile nav            */
+@import "./nav.css?v=20260607-auth";           /* Site header, top nav, bottom mobile nav            */
 @import "./layout.css";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css";          /* Continue-watching strip & cards                    */
 @import "./cards.css";         /* Series cards, speaker cards, category filters      */
@@ -22,4 +22,4 @@
 @import "./roadmap.css";       /* Roadmap page                                       */
 @import "./copyright.css";     /* Copyright / permissions page                       */
 @import "./transitions.css";   /* View Transitions API rules                         */
-@import "./auth.css";          /* Google sign-in button, avatar, settings account panel */
+@import "./auth.css?v=20260607-auth";          /* Google sign-in button, avatar, settings account panel */

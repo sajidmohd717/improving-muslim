@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260601-public" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260608-auth-page" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
     <title>Settings | Improving Muslim</title>
   </head>
@@ -115,12 +115,13 @@
         <div id="auth-signed-out">
           <p class="auth-sign-in-prompt">
             Sign in with Google to sync your watch progress and saved items across all your devices.
-            You can continue without an account — everything stays saved locally on this device.
+            You can continue without an account - everything stays saved locally on this device.
+            Improving Muslim does not store your email, name, or profile photo in the learning-data database.
           </p>
-          <button class="primary-link" id="settings-sign-in-btn" type="button">
+          <a class="primary-link" href="./pages/sign-in.html">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;margin-right:8px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Sign in with Google
-          </button>
+            Sign in or create account
+          </a>
         </div>
 
         <div id="auth-signed-in" hidden>
@@ -133,7 +134,7 @@
           </div>
           <p class="auth-sync-note">
             Your progress and saved items are synced to this account across all your devices.
-            Signing out will keep your local data on this device.
+            We sync learning data to your Firebase account ID, not your email address. Signing out will keep your local data on this device.
           </p>
           <button class="quiet-link" id="settings-sign-out-btn" type="button">Sign out</button>
         </div>
@@ -223,7 +224,7 @@
     </footer>
     <script src="./scripts/utils.js?v=20260607-auth"></script>
     <script src="./scripts/settings.js?v=20260601" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260607-auth" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260608-auth-page" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

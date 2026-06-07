@@ -151,4 +151,6 @@ document.getElementById("clear-history-btn")?.addEventListener("click", () => {
   renderHistory();
 });
 
+window.addEventListener("im-auth-state-changed", renderHistory);
+
 renderHistory();
