@@ -77,6 +77,8 @@
   function writeJsonStorage(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
+      // Notify cloud sync if a user is signed in
+      if (window.IMAuth) window.IMAuth.onLocalWrite(key);
       return true;
     } catch {
       return false;

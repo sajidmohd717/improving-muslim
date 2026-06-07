@@ -22,3 +22,4 @@
 @import "./roadmap.css";       /* Roadmap page                                       */
 @import "./copyright.css";     /* Copyright / permissions page                       */
 @import "./transitions.css";   /* View Transitions API rules                         */
+@import "./auth.css";          /* Google sign-in button, avatar, settings account panel */

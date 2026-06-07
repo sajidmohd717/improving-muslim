@@ -1,0 +1,119 @@
+/* ── Auth button in site header nav ──────────────────────────────────────── */
+
+.auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-secondary, #4a5568);
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.auth-btn:hover {
+  background: var(--surface-hover, #f0ebe0);
+  color: var(--text-primary, #1a202c);
+}
+
+.auth-btn:focus-visible {
+  outline: 2px solid var(--brand, #176b5b);
+  outline-offset: 2px;
+}
+
+.auth-btn svg {
+  display: block;
+}
+
+/* Signed-in avatar */
+.auth-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+.auth-initials {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--brand, #176b5b);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: 'Inter', sans-serif;
+}
+
+.auth-btn.is-signed-in {
+  background: transparent;
+}
+
+.auth-btn.is-signed-in:hover {
+  background: var(--surface-hover, #f0ebe0);
+}
+
+/* ── Settings page — Account section ─────────────────────────────────────── */
+
+.auth-account-section {
+  margin-top: 2rem;
+}
+
+.auth-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1rem;
+}
+
+.auth-profile-photo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.auth-profile-name {
+  font-weight: 600;
+  color: var(--text-primary, #1a202c);
+  margin-bottom: 2px;
+}
+
+.auth-profile-email {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #4a5568);
+}
+
+.auth-sync-note {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #4a5568);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.auth-sign-in-prompt {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #4a5568);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* Dark mode */
+[data-theme="dark"] .auth-btn {
+  color: var(--text-secondary-dark, #a0aec0);
+}
+
+[data-theme="dark"] .auth-btn:hover {
+  background: var(--surface-hover-dark, rgba(255,255,255,0.07));
+  color: #fff;
+}
