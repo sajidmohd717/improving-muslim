@@ -13,7 +13,7 @@ window.standaloneLectures = [
     thumbnailSrc:
       "./assets/thumbnail/standalone/belal-assaad/qadr-sabr.jpg",
     videoSrc:
-      "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/islamic-lecture-videos/belal-assaad/stand-alone/qadr-sabr.mp4",
+      "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/belal-assaad/stand-alone/qadr-sabr.mp4",
     captionsSrc:
       "./assets/captions/standalone/belal-assaad/qadr-sabr.vtt",
     description:
