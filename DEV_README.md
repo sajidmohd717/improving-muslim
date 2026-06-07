@@ -10,7 +10,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `pages/` contains secondary HTML pages such as series pages, speaker profiles, settings, about, and watch.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
-- `styles/styles.css` contains all site styling in a single file.
+- `styles/styles.css` is the CSS entry point — it `@import`s 19 focused files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file.
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
 - `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
 - `scripts/series-page.js` renders dedicated series episode lists.
@@ -108,17 +108,30 @@ Public R2 base URL:
 https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev
 ```
 
-Object naming pattern:
+Object naming pattern — series episodes:
 
 ```
 change-of-heart/change-of-heart-ep-1.mp4
 change-of-heart/change-of-heart-ep-2.mp4
 ```
 
-Episode data should point to R2 URLs:
+Object naming pattern — standalone lectures:
+
+```
+{speaker-slug}/stand-alone/{lecture-slug}.mp4
+
+belal-assaad/stand-alone/qadr-sabr.mp4
+abu-bakr-zoud/stand-alone/allahs-words-to-musa-were-meant-for-you-too.mp4
+```
+
+Episode data should point to R2 URLs. The bucket name does **not** appear in the public URL — only the object key path:
 
 ```js
+// Series episode
 videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4"
+
+// Standalone lecture
+videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/belal-assaad/stand-alone/qadr-sabr.mp4"
 ```
 
 New series should follow the folder/object pattern:
@@ -142,14 +155,37 @@ aws configure --profile r2
 # Default output format: json
 ```
 
-Upload or overwrite an object:
+Upload or overwrite a series episode:
 
 ```powershell
 aws s3 cp "C:\Users\sajid\Downloads\change-of-heart-ep-1.mp4" `
   "s3://islamic-lectures-videos/change-of-heart/change-of-heart-ep-1.mp4" `
-  --profile r2 `
-  --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com"
+  --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com" `
+  --content-type "video/mp4" --profile r2
 ```
+
+Upload or overwrite a standalone lecture:
+
+```powershell
+aws s3 cp "C:\Users\sajid\Downloads\qadr-sabr.mp4" `
+  "s3://islamic-lectures-videos/belal-assaad/stand-alone/qadr-sabr.mp4" `
+  --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com" `
+  --content-type "video/mp4" --profile r2
+```
+
+### Troubleshooting upload errors
+
+**`AccessDenied` on `CreateMultipartUpload`** — this usually means the bucket name in the command is wrong (the API token is scoped to specific buckets and silently denies access to unknown ones). The correct bucket name is `islamic-lectures-videos` (with an **s**). Confirm by listing the bucket:
+
+```powershell
+aws s3 ls s3://islamic-lectures-videos/ `
+  --endpoint-url "https://995f2e2da1ff1e87964b10dfba768477.r2.cloudflarestorage.com" `
+  --profile r2
+```
+
+If that returns a folder listing the bucket name is correct and the token has read access. If it still returns `AccessDenied`, the API token may need to be updated in the Cloudflare dashboard (R2 → Manage API Tokens) to include Object Read & Write permission for `islamic-lectures-videos`.
+
+Note: `aws s3 ls` (list all buckets) will return `AccessDenied` — this is expected. The token is intentionally scoped to specific buckets, not global list access.
 
 Never commit or paste production R2 secrets into the repository or docs.
 
