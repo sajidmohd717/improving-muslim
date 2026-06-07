@@ -1,0 +1,148 @@
+/* ─── Card entrance animation ────────────────────────────────────────────── */
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-anim {
+  animation: card-in 0.22s ease both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* ─── Skeleton shimmer ───────────────────────────────────────────────────── */
+
+@keyframes skel-shimmer {
+  from { background-position: -600px 0; }
+  to   { background-position: 600px 0; }
+}
+
+.skel {
+  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    #e4dcd0 0%,
+    #ede5d9 40%,
+    #f4ece3 50%,
+    #ede5d9 60%,
+    #e4dcd0 100%
+  );
+  background-size: 1200px 100%;
+  animation: skel-shimmer 1.6s ease-in-out infinite;
+}
+
+.skel-thumb {
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+.skel-label {
+  height: 11px;
+  margin: 13px 14px 0;
+}
+
+.skel-title {
+  height: 16px;
+  margin: 9px 14px 0;
+}
+
+.skel-meta {
+  height: 11px;
+  margin: 11px 14px 22px;
+}
+
+/* ─── Scroll reveal ──────────────────────────────────────────────────────── */
+
+.section-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.section-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  body {
+    animation: none;
+  }
+
+  .reveal-anim,
+  .section-reveal,
+  .series-card:hover,
+  .continue-card:hover,
+  .episode-card:hover,
+  .speaker-card:hover,
+  .nav-more-trigger[aria-expanded="true"] svg,
+  .autoplay-toast {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+
+  .loading-spinner {
+    animation: none !important;
+  }
+
+  .section-reveal {
+    transition: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Hover lift effects (pointer devices only) ──────────────────────────── */
+
+@media (hover: hover) {
+  .series-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 50px rgba(24, 32, 27, 0.14), 0 0 0 1px rgba(23, 107, 91, 0.18);
+    border-color: rgba(23, 107, 91, 0.28);
+  }
+
+  .continue-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(24, 32, 27, 0.13);
+  }
+
+  .episode-card:hover:not(.is-unavailable) {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 38px rgba(24, 32, 27, 0.12), 0 0 0 1px rgba(23, 107, 91, 0.16);
+    border-color: rgba(23, 107, 91, 0.22);
+  }
+
+  .speaker-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(23, 107, 91, 0.16);
+  }
+}
+
+.series-card:active,
+.continue-card:active,
+.episode-card:active:not(.is-unavailable) {
+  transform: translateY(-1px);
+  transition-duration: 80ms;
+}

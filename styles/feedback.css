@@ -1,0 +1,143 @@
+.feedback-hero,
+.feedback-section {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.feedback-hero {
+  padding: clamp(42px, 8vw, 92px) 0 34px;
+}
+
+.feedback-hero h1 {
+  font-size: clamp(2.45rem, 6vw, 5.35rem);
+}
+
+.feedback-hero > p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 16px 0 0;
+  color: #3e4842;
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  line-height: 1.7;
+}
+
+.feedback-section {
+  padding: 0 0 72px;
+}
+
+.feedback-form {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+  padding: 32px 36px 36px;
+}
+
+.feedback-form-header {
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.feedback-form-header .eyebrow {
+  margin-bottom: 10px;
+}
+
+.feedback-form-header h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  margin-bottom: 7px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.form-field label span {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.form-field input[type="email"],
+.form-field textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #faf7f1;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  padding: 11px 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  resize: vertical;
+}
+
+.form-field input[type="email"]:focus,
+.form-field textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface-strong);
+  box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+  outline: none;
+}
+
+.form-field input[type="email"]::placeholder,
+.form-field textarea::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.feedback-form button.primary-link {
+  margin-top: 8px;
+  border: none;
+  font-size: 1rem;
+  padding: 14px 18px;
+}
+
+.feedback-form .settings-note {
+  margin-top: 12px;
+  color: var(--accent-strong);
+  font-size: 0.88rem;
+  font-weight: 600;
+  min-height: 1.4em;
+}
+
+.feedback-honey {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.feedback-fallback {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.feedback-fallback p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.feedback-fallback textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  padding: 10px 12px;
+  resize: vertical;
+}

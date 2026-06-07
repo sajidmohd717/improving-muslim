@@ -1,0 +1,33 @@
+@view-transition {
+  navigation: auto;
+}
+
+.site-header { view-transition-name: site-header; }
+.site-footer { view-transition-name: site-footer; }
+.bottom-nav  { view-transition-name: bottom-nav; }
+main         { view-transition-name: page-main; }
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes page-out {
+  to { opacity: 0; transform: translateY(-4px); }
+}
+
+::view-transition-old(page-main) {
+  animation: page-out 0.14s ease both;
+}
+
+::view-transition-new(page-main) {
+  animation: page-in 0.22s ease both;
+}
+
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-footer),
+::view-transition-new(site-footer),
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation-duration: 0.08s;
+}

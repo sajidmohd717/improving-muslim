@@ -1,0 +1,34 @@
+/* ─── Grouped dark-mode text colour overrides ────────────────────────────── */
+/*     These classes span multiple page files, so they live here together.   */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero-copy,
+  :root:not([data-theme="light"]) .about-hero p,
+  :root:not([data-theme="light"]) .about-closing p,
+  :root:not([data-theme="light"]) .principle-item p,
+  :root:not([data-theme="light"]) .settings-hero p,
+  :root:not([data-theme="light"]) .settings-panel p,
+  :root:not([data-theme="light"]) .settings-note,
+  :root:not([data-theme="light"]) .series-description,
+  :root:not([data-theme="light"]) .episode-date,
+  :root:not([data-theme="light"]) .episode-views,
+  :root:not([data-theme="light"]) .episode-status,
+  :root:not([data-theme="light"]) .watch-info p {
+    color: var(--muted);
+  }
+}
+
+:root[data-theme="dark"] .hero-copy,
+:root[data-theme="dark"] .about-hero p,
+:root[data-theme="dark"] .about-closing p,
+:root[data-theme="dark"] .principle-item p,
+:root[data-theme="dark"] .settings-hero p,
+:root[data-theme="dark"] .settings-panel p,
+:root[data-theme="dark"] .settings-note,
+:root[data-theme="dark"] .series-description,
+:root[data-theme="dark"] .episode-date,
+:root[data-theme="dark"] .episode-views,
+:root[data-theme="dark"] .episode-status,
+:root[data-theme="dark"] .watch-info p {
+  color: var(--muted);
+}

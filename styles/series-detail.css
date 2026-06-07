@@ -1,0 +1,140 @@
+.series-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
+  gap: 34px;
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(34px, 7vw, 76px) 0 24px;
+}
+
+.speaker-hero {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 68px) 0 22px;
+}
+
+.speaker-hero img {
+  width: 180px;
+  height: 180px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+.speaker-hero h1 {
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+}
+
+.series-hero h1,
+.watch-info h1 {
+  font-size: clamp(2.45rem, 6vw, 5.2rem);
+}
+
+.series-hero img {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+/* ─── Episode list & cards ───────────────────────────────────────────────── */
+
+.episode-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.episode-card {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: 0 10px 28px rgba(24, 32, 27, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.15s;
+}
+
+.episode-card.is-unavailable {
+  opacity: 0.72;
+}
+
+.episode-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.episode-info {
+  display: contents;
+}
+
+.episode-card span,
+.episode-card strong {
+  margin-inline: 14px;
+}
+
+.episode-number {
+  margin-top: 13px;
+  color: var(--rose);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.episode-card strong {
+  margin-top: 6px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.episode-date {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.episode-views {
+  margin-top: 4px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.episode-status {
+  margin-top: 8px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.muted-badge {
+  background: rgba(98, 105, 99, 0.12);
+  color: var(--muted);
+}
+
+.watched-badge {
+  border-color: var(--accent);
+  background: rgba(23, 107, 91, 0.1);
+  color: var(--accent);
+}
+
+.episode-card.is-watched img,
+.compact-episode.is-watched img {
+  filter: saturate(0.85);
+}
+
+.episode-card.is-watched strong,
+.compact-episode.is-watched strong {
+  color: #3f4a44;
+}
