@@ -331,9 +331,55 @@ if (currentEpisode.recap) {
   recapPanel.hidden = false;
 }
 
+// ── Stall detection ────────────────────────────────────────────────────────
+// Catches videos that load but never become playable (e.g. moov atom at end
+// of file, or a corrupted upload). If the browser has buffered zero data after
+// STALL_TIMEOUT_MS we show a friendly error and silently report it.
+const STALL_TIMEOUT_MS = 20_000;
+let stallTimer = null;
+
+function clearStallTimer() {
+  if (stallTimer !== null) {
+    clearTimeout(stallTimer);
+    stallTimer = null;
+  }
+}
+
+function reportVideoStall(videoSrc, readyState) {
+  const payload = new FormData();
+  payload.set('_subject', 'Video stall: ' + location.pathname);
+  payload.set('_template', 'box');
+  payload.set('page', location.href);
+  payload.set('error', `Video stalled after ${STALL_TIMEOUT_MS / 1000}s — readyState: ${readyState}, buffered: 0`);
+  payload.set('videoSrc', videoSrc || '(unknown)');
+  payload.set('browser', navigator.userAgent);
+  fetch('https://formsubmit.co/ajax/contact@improvingmuslim.com', {
+    method: 'POST',
+    body: payload,
+    headers: { Accept: 'application/json' },
+  }).catch(() => { /* silent */ });
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 player.addEventListener("loadstart", () => {
   unavailable.classList.add("is-hidden");
   setVideoLoading(Boolean(currentEpisode.videoSrc));
+
+  if (currentEpisode.videoSrc) {
+    clearStallTimer();
+    stallTimer = setTimeout(() => {
+      // Zero buffered data after timeout → structural file problem, not a slow connection
+      if (player.readyState < 2 && player.buffered.length === 0) {
+        setVideoLoading(false);
+        unavailable.innerHTML = `
+          <strong>This video couldn't load</strong>
+          <span>The file may need to be re-processed before it can stream. We've been notified and will look into it — please check back later.</span>
+        `;
+        unavailable.classList.remove("is-hidden");
+        reportVideoStall(currentEpisode.videoSrc, player.readyState);
+      }
+    }, STALL_TIMEOUT_MS);
+  }
 });
 
 player.addEventListener("waiting", () => {
@@ -341,14 +387,17 @@ player.addEventListener("waiting", () => {
 });
 
 player.addEventListener("canplay", () => {
+  clearStallTimer();
   setVideoLoading(false);
 });
 
 player.addEventListener("playing", () => {
+  clearStallTimer();
   setVideoLoading(false);
 });
 
 player.addEventListener("error", () => {
+  clearStallTimer();
   setVideoLoading(false);
   if (player.currentSrc) {
     unavailable.classList.remove("is-hidden");
