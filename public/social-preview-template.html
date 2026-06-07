@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inria+Serif:wght@700&family=Inter:wght@400;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      background: #f2ece0;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+    }
+
+    /* ── Background decorative blobs ── */
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: #f2ece0;
+    }
+
+    .blob-tl {
+      position: absolute;
+      top: -60px;
+      left: -60px;
+      width: 310px;
+      height: 310px;
+      background: #e0d4be;
+      border-radius: 50%;
+      opacity: 0.85;
+    }
+
+    .blob-br {
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 260px;
+      height: 260px;
+      background: #cdddd6;
+      border-radius: 50%;
+      opacity: 0.75;
+    }
+
+    .blob-tr {
+      position: absolute;
+      top: -40px;
+      right: 80px;
+      width: 130px;
+      height: 130px;
+      background: #d6c9b0;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    /* ── White card ── */
+    .card {
+      position: absolute;
+      top: 44px;
+      left: 64px;
+      right: 64px;
+      bottom: 44px;
+      background: #fffdf8;
+      border-radius: 28px;
+      box-shadow: 0 12px 60px rgba(24, 32, 27, 0.10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    /* ── Brand row (logo + wordmark) ── */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .brand svg {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .wordmark {
+      font-family: 'Inria Serif', Georgia, serif;
+      font-size: 66px;
+      font-weight: 700;
+      color: #0f4f43;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    /* ── Tagline ── */
+    .tagline {
+      font-size: 25px;
+      font-weight: 500;
+      color: #66706a;
+      letter-spacing: 0.01em;
+      margin-bottom: 26px;
+    }
+
+    /* ── Pills ── */
+    .pills {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .pill {
+      border: 1.5px solid #176b5b;
+      border-radius: 999px;
+      padding: 8px 22px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #176b5b;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── URL ── */
+    .url {
+      font-size: 20px;
+      font-weight: 600;
+      color: #c89b3c;
+      letter-spacing: 0.01em;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="blob-tl"></div>
+    <div class="blob-tr"></div>
+    <div class="blob-br"></div>
+  </div>
+
+  <div class="card">
+    <div class="brand">
+      <!-- Inline logo SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+        <rect width="512" height="512" rx="108" fill="#fffdf8"/>
+        <path d="M256 76c54 38 102 91 102 168v104H154V244c0-77 48-130 102-168Z" fill="#f7f3ec" stroke="#176b5b" stroke-width="24" stroke-linejoin="round"/>
+        <path d="M256 145c32 25 58 59 58 107v96H198v-96c0-48 26-82 58-107Z" fill="#176b5b"/>
+        <path d="M256 191c17 16 31 38 31 68v89h-62v-89c0-30 14-52 31-68Z" fill="#fffdf8"/>
+        <path d="M96 368c58-16 112-7 160 26 48-33 102-42 160-26v38c-58-14-112-5-160 28-48-33-102-42-160-28v-38Z" fill="#fffdf8" stroke="#176b5b" stroke-width="22" stroke-linejoin="round"/>
+        <path d="M256 394v40" stroke="#c89b3c" stroke-width="18" stroke-linecap="round"/>
+        <circle cx="256" cy="57" r="15" fill="#c89b3c"/>
+        <circle cx="128" cy="150" r="12" fill="#c89b3c"/>
+        <circle cx="384" cy="150" r="12" fill="#c89b3c"/>
+      </svg>
+      <span class="wordmark">Improving Muslim</span>
+    </div>
+
+    <div class="tagline">Islamic lectures. Without the noise.</div>
+
+    <div class="pills">
+      <span class="pill">No ads</span>
+      <span class="pill">No pop-ups</span>
+      <span class="pill">No distractions</span>
+    </div>
+
+    <div class="url">improvingmuslim.com</div>
+  </div>
+</body>
+</html>
