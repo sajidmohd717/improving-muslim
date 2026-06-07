@@ -1,4 +1,4 @@
-﻿# Developer Notes
+# Developer Notes
 
 This project is intentionally a plain HTML, CSS, and JavaScript site. Do not reintroduce React, Vite, or a build step unless the project direction explicitly changes.
 
@@ -14,18 +14,22 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
 - `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
 - `scripts/series-page.js` renders dedicated series episode lists.
-- `pages/watch.html` is the focused video player page.
-- `scripts/watch-page.js` loads the selected episode, handles native playback, progress saving, completion state, and media-session controls.
+- `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
+- `scripts/watch-page.js` loads the selected episode or standalone lecture, handles native playback, progress saving, completion state, stall detection, and media-session controls.
 - `data/series-registry.js` is the central series registry — the single source of truth for all series slugs, categories, and global keys.
 - `data/*-data.js` files are the series data sources.
+- `data/standalone-lectures-data.js` holds all standalone (non-series) lecture objects in a single `window.standaloneLectures` array.
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
-- `assets/captions/` contains WebVTT captions, grouped by series slug.
+- `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
+- `assets/captions/` contains WebVTT captions, grouped by series slug or `standalone/{speaker-slug}/`.
+- `assets/thumbnail/standalone/{speaker-slug}/` holds standalone lecture thumbnails.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
 - `scripts/error-handler.js` is loaded before all other scripts. It catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
-- `public/` contains brand-facing assets: logo/favicons, the web manifest, and the default social sharing preview image.
+- `public/` contains brand-facing assets: logo/favicons, the web manifest, and the social sharing preview image.
+- `public/social-preview-template.html` is the source template for regenerating `public/social-preview.png`. See the Social Preview Image section below.
 - `.github/workflows/check.yml` is the CI workflow that runs syntax and accessibility checks automatically on every push and pull request to `main`.
 - `CNAME` pins the GitHub Pages custom domain to `improvingmuslim.com`.
 
@@ -33,7 +37,9 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-The platform currently has 12 series registered across 8 categories:
+The platform currently has 12 series and 2 standalone lectures.
+
+### Series
 
 | Series | Speaker | Category | Status |
 |---|---|---|---|
@@ -49,6 +55,13 @@ The platform currently has 12 series registered across 8 categories:
 | Parables of the Quran | Yasir Qadhi | Quran | Partially unlocked |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
 | Madina Arabic Books | Asif Meherali | Arabic | Partially unlocked |
+
+### Standalone Lectures
+
+| Title | Speaker | Category | Video |
+|---|---|---|---|
+| Qadr & Sabr | Belal Assaad | Purification | Uploaded |
+| Allah's Words to Musa Were Meant for You Too | Abu Bakr Zoud | Quran | Uploaded |
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
 
@@ -85,9 +98,9 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 - Filters out non-crash rejections: `AbortError` (fetch cancelled on navigation), network `TypeError`s (Safari "Load failed", Chrome "Failed to fetch"), and any rejection that fires while `document.hidden` is true (bfcache artifacts).
 - Resets its state on `pageshow` with `persisted: true` so Safari's back-forward cache restoration never incorrectly triggers the fallback UI.
 
-**FormSubmit note:** The first email from a new endpoint requires a one-time confirmation click from `contact@improvingmuslim.com`. If error reports stop arriving, check the inbox for a re-confirmation request.
+**Video stall detection** is built into `scripts/watch-page.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message and silently fires the same FormSubmit report with the subject `Video stall: /pages/watch.html` and the exact `videoSrc` URL. This catches structural file issues (e.g. moov atom at end of file) without the user needing to report it manually.
 
-The error report email arrives with subject `Site error: /pages/watch.html` (or whichever page it occurred on), and includes the error message, full page URL, and browser user-agent.
+**FormSubmit note:** The first email from a new endpoint requires a one-time confirmation click from `contact@improvingmuslim.com`. If error reports stop arriving, check the inbox for a re-confirmation request.
 
 ## Hosting
 
@@ -102,7 +115,7 @@ Videos are not stored in Git. Large MP4 files are hosted on Cloudflare R2 and re
 
 R2 bucket: `islamic-lectures-videos`
 
-Public R2 base URL:
+Custom domain (CDN-backed, no rate limiting):
 
 ```
 https://videos.improvingmuslim.com
@@ -147,6 +160,8 @@ Do not commit real video files to the repository. The `assets/videos/` folders o
 
 Cloudflare's dashboard uploader has a 300 MB limit. Use the S3-compatible API for larger files.
 
+**Always run ffmpeg before uploading** — see the moov atom section below. Skipping this step causes videos to buffer indefinitely on the site.
+
 Configure AWS CLI with an R2 profile:
 
 ```powershell
@@ -173,6 +188,20 @@ aws s3 cp "C:\Users\sajid\Downloads\qadr-sabr.mp4" `
   --content-type "video/mp4" --profile r2
 ```
 
+### Fix video before uploading (moov atom)
+
+**Symptom:** Video uploads successfully and the URL is correct, but the player shows "Loading video..." and never starts playing. Every other video works fine. The stall detector will fire an email report after 20 seconds.
+
+**Cause:** The MP4 file has its metadata (`moov` atom) at the **end** of the file instead of the beginning. This happens with videos downloaded from certain sites or tools that don't optimise for web streaming. The browser needs the metadata first — without it, it must download the entire file before playing anything.
+
+**Fix:** Always run ffmpeg on the file before uploading. This remuxes it (no re-encoding, no quality loss) and moves the metadata to the front:
+
+```powershell
+ffmpeg -i "C:\Users\sajid\Downloads\video.mp4" -c copy -movflags faststart "C:\Users\sajid\Downloads\video-fixed.mp4"
+```
+
+Then upload the `-fixed.mp4` version to R2.
+
 ### Troubleshooting upload errors
 
 **`AccessDenied` on `CreateMultipartUpload`** — this usually means the bucket name in the command is wrong (the API token is scoped to specific buckets and silently denies access to unknown ones). The correct bucket name is `islamic-lectures-videos` (with an **s**). Confirm by listing the bucket:
@@ -189,34 +218,57 @@ Note: `aws s3 ls` (list all buckets) will return `AccessDenied` — this is expe
 
 Never commit or paste production R2 secrets into the repository or docs.
 
-### Video plays but buffers indefinitely (moov atom at end of file)
+## Standalone Lectures
 
-**Symptom:** The video uploads successfully and the URL is correct, but the player shows "Loading video..." and never starts playing. Every other video works fine.
+Standalone lectures are individual videos that don't belong to a series. They live in `data/standalone-lectures-data.js` as a single `window.standaloneLectures` array.
 
-**Cause:** The MP4 file has its metadata (`moov` atom) at the **end** of the file instead of the beginning. The browser needs the metadata first to start streaming — without it, it has to download the entire file before playing anything. This often happens when downloading videos from certain sites or tools that don't optimise for web playback.
+Each standalone lecture object:
 
-**Fix:** Run the file through ffmpeg before uploading. This remuxes it (no re-encoding, no quality loss) and moves the metadata to the front:
-
-```powershell
-ffmpeg -i "C:\Users\sajid\Downloads\video.mp4" -c copy -movflags faststart "C:\Users\sajid\Downloads\video-fixed.mp4"
+```js
+{
+  id: "unique-slug",               // used in ?lecture= URL param and progress key
+  title: "Lecture Title",
+  speaker: "Speaker Name",
+  speakerSlug: "speaker-slug",
+  category: "purification",        // matches homepage category filter
+  topic: "Topic Display Name",
+  typeLabel: "Standalone Video",
+  published: "YYYY-MM-DD",
+  duration: 2702,                  // seconds
+  sourceUrl: "https://youtube.com/watch?v=...",
+  thumbnailSrc: "./assets/thumbnail/standalone/{speaker-slug}/{id}.jpg",
+  videoSrc: "https://videos.improvingmuslim.com/{speaker-slug}/stand-alone/{id}.mp4",
+  captionsSrc: "./assets/captions/standalone/{speaker-slug}/{id}.vtt",
+  description: "Short description for cards.",
+  takeaways: ["..."],
+  recap: `Prose recap...`,
+}
 ```
 
-Then upload the `-fixed.mp4` version to R2. Always use the trusted download source — files from unfamiliar download sites are more likely to have this problem.
+The watch URL for a standalone lecture is `./pages/watch.html?lecture={id}`. The `pages/watch.html` dynamic loader skips series file loading when the `lecture` parameter is present — `standalone-lectures-data.js` is always pre-loaded on that page.
+
+Thumbnail download: use the YouTube maxresdefault URL and save it locally:
+
+```powershell
+Invoke-WebRequest -Uri "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg" `
+  -OutFile "assets\thumbnail\standalone\{speaker-slug}\{id}.jpg"
+```
 
 ## Episode Publishing Workflow
 
 When adding a new watchable episode:
 
-1. Upload the MP4 to Cloudflare R2 using the naming pattern above.
-2. Confirm the public R2 URL responds successfully.
-3. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`.
-4. If a transcript is available, generate a VTT file under `assets/captions/{series-slug}/`.
-5. Add `captionsSrc` to the episode object.
-6. For Islamic lecture series: add `takeaways` and `recap` when the transcript has been reviewed.
-7. For language course series (e.g. Madina Arabic): add `grammarNotes` and `recap` — skip `takeaways`. See the Language Course Episodes section below.
-8. Keep `episode.id` unchanged — progress is keyed to the YouTube video ID, not the R2 URL.
-9. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
-10. Run `npm run check` and test locally.
+1. Run ffmpeg faststart on the video file (see above).
+2. Upload the MP4 to Cloudflare R2 using the naming pattern above.
+3. Confirm the public URL (`https://videos.improvingmuslim.com/...`) plays in a browser tab.
+4. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`.
+5. If a transcript is available, generate a VTT file under `assets/captions/{series-slug}/`.
+6. Add `captionsSrc` to the episode object.
+7. For Islamic lecture series: add `takeaways` and `recap` when the transcript has been reviewed.
+8. For language course series (e.g. Madina Arabic): add `grammarNotes` and `recap` — skip `takeaways`. See the Language Course Episodes section below.
+9. Keep `episode.id` unchanged — progress is keyed to the YouTube video ID, not the R2 URL.
+10. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
+11. Run `npm run check` and test locally.
 
 When an episode is not uploaded yet: omit `videoSrc`, keep `statusNote`. The series page and watch sidebar show it as `Uploading soon`.
 
@@ -352,6 +404,8 @@ Grammar notes are meant for quick lookup — "what was tanwin again?" — withou
 
 ```js
 (function () {
+  var lecture = new URLSearchParams(location.search).get('lecture');
+  if (lecture) return; // standalone — no series file needed
   var slug = new URLSearchParams(location.search).get('series') || 'change-of-heart';
   var map = {
     'change-of-heart': './data/change-of-heart-data.js?v=...',
@@ -370,30 +424,113 @@ When adding a new series, add its entry to this map. The version query string (`
 Script tags use query string versioning to force browsers to fetch updated files:
 
 ```html
-<script src="./scripts/watch-page.js?v=20260604-grammar-notes" defer></script>
+<script src="./scripts/watch-page.js?v=20260607-stall-detection" defer></script>
 ```
 
-Update the version string on any script tag whenever its corresponding file changes and those changes need to reach users who have previously visited the page. The format is `YYYYMMDD-brief-description`. This applies to: `watch-page.js`, `series-page.js`, `utils.js`, and all data files referenced in `watch.html`'s dynamic loader map.
+Update the version string on any script tag whenever its corresponding file changes and those changes need to reach users who have previously visited the page. The format is `YYYYMMDD-brief-description`. This applies to: `watch-page.js`, `series-page.js`, `utils.js`, `firebase-auth.js`, and all data files referenced in `watch.html`'s dynamic loader map.
 
-## Watch Progress
+## Watch Progress and Cloud Sync
 
 Watch progress is saved in browser `localStorage` by `scripts/watch-page.js`.
 
 Storage key format:
 
 ```js
-lecture-progress:${series.playlistId}:${episode.id}
+lecture-progress:${series.playlistId}:${episode.id}  // series episode
+lecture-progress:standalone:${lecture.id}             // standalone lecture
 ```
 
 Progress is tied to the stable YouTube video ID, not the R2 file URL. An R2 file can be replaced without resetting progress.
 
-Important implications:
+**Cloud sync (Firebase):** When a user is signed in, `scripts/firebase-auth.js` automatically syncs `localStorage` to Firestore in real time. Progress and saved items are merged across devices — the entry with the newest `updatedAt` timestamp wins per key. Signing in on a new device pulls all previous progress immediately. See the Firebase Authentication section below.
+
+Important implications for localStorage-only (guest) users:
 
 - Keep `episode.id` stable once published.
 - Changing origin (e.g. from `github.io` to `improvingmuslim.com`) creates a new browser origin, so old progress does not carry over.
 - Clearing browser data removes all saved progress.
 
-The Settings page at `pages/settings.html` explains local storage and lets users reset watch history and saved items on the current device. Theme preference (`improving-muslim:theme`) is also stored in localStorage.
+The Settings page at `pages/settings.html` explains local storage and lets users reset watch history and saved items on the current device. Theme preference (`improving-muslim:theme`) is also stored in localStorage and is intentionally not synced to the cloud.
+
+## Firebase Authentication
+
+Firebase project: **Improving Muslim** (`improving-muslim`)
+Firebase console: `console.firebase.google.com/project/improving-muslim`
+
+### Services in use
+
+| Service | Purpose |
+|---|---|
+| Firebase Authentication | Google Sign-In only |
+| Cloud Firestore | Cloud storage for watch progress and saved items |
+
+### How sync works
+
+`scripts/firebase-auth.js` is loaded on every page. It:
+
+1. Initialises the Firebase app using the project config.
+2. Listens for Google auth state changes.
+3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress key; saved items are deduped by key), writes the merged result back to both localStorage and Firestore.
+4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
+5. On sign-out: stops syncing; localStorage continues to work as normal.
+
+### Firestore data structure
+
+```
+users/{uid}/sync  (single document)
+  progress: { "lecture-progress:playlistId:episodeId": { currentTime, duration, updatedAt, completed, _card }, ... }
+  savedItems: [ { key, type, title, subtitle, url, savedAt }, ... ]
+  lastSyncedAt: timestamp
+```
+
+### Firestore security rules
+
+Users can only read and write their own document:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+### Authorised domains
+
+The following domains are whitelisted in Firebase Authentication → Settings → Authorised domains:
+
+- `improvingmuslim.com`
+- `sajidmohd717.github.io`
+- `localhost`
+
+Add any new domains here if the site is ever served from a different origin.
+
+### What is and isn't synced
+
+| Data | Synced |
+|---|---|
+| Watch progress | Yes |
+| Saved items | Yes |
+| Theme preference | No — device-local by design |
+| Autoplay setting | No — device-local by design |
+
+## Social Preview Image
+
+The OG image shared on WhatsApp, Instagram, and other platforms is `public/social-preview.png` (1200×630px).
+
+The source template is `public/social-preview-template.html`. Regenerate the PNG after any design changes using Chrome headless:
+
+```powershell
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+  --headless=new --window-size=1200,630 `
+  --screenshot="C:\Users\sajid\Documents\GitHub\islamic-lectures-react\public\social-preview.png" `
+  "C:\Users\sajid\Documents\GitHub\islamic-lectures-react\public\social-preview-template.html"
+```
+
+After regenerating, commit both the updated template and the new PNG together. Social platforms cache OG images aggressively — use `https://www.opengraph.xyz` to force a fresh fetch and verify the result.
 
 ## Player Behavior
 
@@ -451,7 +588,7 @@ Speaker photos belong in `assets/speaker/`. Series thumbnails should remain sepa
 
 Every page footer links to `pages/feedback.html`. Feedback form submissions POST to FormSubmit at `contact@improvingmuslim.com`.
 
-`scripts/error-handler.js` uses the same FormSubmit endpoint to silently report production JS crashes. Both use the same confirmed endpoint. FormSubmit may require re-confirmation if the endpoint has been inactive — check the inbox if emails stop arriving.
+`scripts/error-handler.js` uses the same FormSubmit endpoint to silently report production JS crashes. `scripts/watch-page.js` uses the same endpoint to report video stall events. All three share the same confirmed endpoint. FormSubmit may require re-confirmation if the endpoint has been inactive — check the inbox if emails stop arriving.
 
 Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
 
