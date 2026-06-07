@@ -81,11 +81,22 @@
     /* Ignore AbortErrors — fetch cancellations from navigation */
     if (reason && reason.name === 'AbortError') return;
 
+    var msg = reason && reason.message ? reason.message : String(reason);
+    var lowerMsg = (msg || '').toLowerCase();
+
+    if (lowerMsg.indexOf('metamask') !== -1 ||
+        lowerMsg.indexOf('ethereum') !== -1 ||
+        lowerMsg.indexOf('wallet') !== -1 ||
+        lowerMsg.indexOf('chrome-extension') !== -1 ||
+        lowerMsg.indexOf('moz-extension') !== -1 ||
+        lowerMsg.indexOf('safari-web-extension') !== -1) {
+      return;
+    }
+
     /* Ignore network/fetch TypeErrors — all browser variants */
     if (reason && reason.name === 'TypeError') {
-      var m = (reason.message || '').toLowerCase();
-      if (m.indexOf('fetch') !== -1 || m.indexOf('load') !== -1 ||
-          m.indexOf('cancel') !== -1 || m.indexOf('network') !== -1) return;
+      if (lowerMsg.indexOf('fetch') !== -1 || lowerMsg.indexOf('load') !== -1 ||
+          lowerMsg.indexOf('cancel') !== -1 || lowerMsg.indexOf('network') !== -1) return;
     }
 
     /* Ignore while page is hidden (bfcache artifact) */
@@ -95,7 +106,6 @@
        Unhandled rejections are almost always browser extensions (e.g. MetaMask,
        ad blockers, wallet extensions) injecting async code into the page —
        not crashes in our own scripts. Real script crashes surface via onerror. */
-    var msg = reason && reason.message ? reason.message : String(reason);
     report(msg, '(unhandled rejection)');
   });
 

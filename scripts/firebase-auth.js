@@ -140,9 +140,7 @@
   }
 
   function pageUrl(path) {
-    var base = document.querySelector('base');
-    var href = base ? base.href : '/';
-    return new URL(path, href).href;
+    return new URL(path, document.baseURI || window.location.href).href;
   }
 
   /* ── Auth button injection ────────────────────────────────────────────── */
