@@ -1,4 +1,4 @@
-window.fortyHadithSeries = {
+﻿window.fortyHadithSeries = {
   "title": "40 Hadith of Imam Nawawi",
   "slug": "forty-hadith-nawawi",
   "seriesPageUrl": "./pages/series-detail.html?id=forty-hadith-nawawi",
@@ -15,7 +15,7 @@ window.fortyHadithSeries = {
       "title": "Biography of Imam Al-Nawawi",
       "published": "2013-03-24",
       "views": 61504,
-      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-1.mp4"
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-1.mp4"
     },
     {
       "number": 2,
@@ -23,7 +23,7 @@ window.fortyHadithSeries = {
       "title": "Introduction",
       "published": "2013-04-13",
       "views": 20179,
-      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-2.mp4"
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-2.mp4"
     },
     {
       "number": 3,
@@ -31,7 +31,7 @@ window.fortyHadithSeries = {
       "title": "Hadith No. 1",
       "published": "2013-04-22",
       "views": 46287,
-      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-3.mp4"
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-3.mp4"
     },
     {
       "number": 4,
@@ -39,7 +39,7 @@ window.fortyHadithSeries = {
       "title": "Hadith No. 1 and 5",
       "published": "2013-04-28",
       "views": 16694,
-      "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/forty-hadith-nawawi/forty-hadith-nawawi-ep-4.mp4"
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-4.mp4"
     },
     {
       "number": 5,

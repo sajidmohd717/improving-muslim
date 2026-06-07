@@ -1,4 +1,4 @@
-# Developer Notes
+﻿# Developer Notes
 
 This project is intentionally a plain HTML, CSS, and JavaScript site. Do not reintroduce React, Vite, or a build step unless the project direction explicitly changes.
 
@@ -105,7 +105,7 @@ R2 bucket: `islamic-lectures-videos`
 Public R2 base URL:
 
 ```
-https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev
+https://videos.improvingmuslim.com
 ```
 
 Object naming pattern — series episodes:
@@ -128,10 +128,10 @@ Episode data should point to R2 URLs. The bucket name does **not** appear in the
 
 ```js
 // Series episode
-videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4"
+videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-1.mp4"
 
 // Standalone lecture
-videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/belal-assaad/stand-alone/qadr-sabr.mp4"
+videoSrc: "https://videos.improvingmuslim.com/belal-assaad/stand-alone/qadr-sabr.mp4"
 ```
 
 New series should follow the folder/object pattern:
@@ -232,7 +232,7 @@ window.myNewSeries = {
       title: "Episode title",
       published: "YYYY-MM-DD",
       views: 0,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/series-slug/series-slug-ep-1.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/series-slug/series-slug-ep-1.mp4",
       captionsSrc: "./assets/captions/series-slug/episode-01.vtt",
     },
   ],

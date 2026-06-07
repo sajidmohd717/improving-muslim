@@ -1,4 +1,4 @@
-window.standaloneLectures = [
+﻿window.standaloneLectures = [
   {
     id: "qadr-and-sabr",
     title: "Qadr & Sabr",
@@ -13,7 +13,7 @@ window.standaloneLectures = [
     thumbnailSrc:
       "./assets/thumbnail/standalone/belal-assaad/qadr-sabr.jpg",
     videoSrc:
-      "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/belal-assaad/stand-alone/qadr-sabr.mp4",
+      "https://videos.improvingmuslim.com/belal-assaad/stand-alone/qadr-sabr.mp4",
     captionsSrc:
       "./assets/captions/standalone/belal-assaad/qadr-sabr.vtt",
     description:
@@ -51,7 +51,7 @@ The lecture closes with the three types of Sabr: patience in obeying Allah's com
     thumbnailSrc:
       "./assets/thumbnail/standalone/abu-bakr-zoud/allahs-words-to-musa-were-meant-for-you-too.jpg",
     videoSrc:
-      "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/abu-bakr-zoud/stand-alone/allah's-words-to-musa-were-meant-for-you-too.mp4",
+      "https://videos.improvingmuslim.com/abu-bakr-zoud/stand-alone/allah's-words-to-musa-were-meant-for-you-too.mp4",
     captionsSrc:
       "./assets/captions/standalone/abu-bakr-zoud/allahs-words-to-musa-were-meant-for-you-too.vtt",
     description:

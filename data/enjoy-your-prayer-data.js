@@ -1,4 +1,4 @@
-window.enjoyYourPrayerSeries = {
+﻿window.enjoyYourPrayerSeries = {
   title: "Enjoy Your Prayer",
   slug: "enjoy-your-prayer",
   seriesPageUrl: "./pages/series-detail.html?id=enjoy-your-prayer",
@@ -16,7 +16,7 @@ window.enjoyYourPrayerSeries = {
       title: "Setting The Scene",
       published: "2023-02-06",
       views: 219000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-1.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-1.mp4",
     },
     {
       number: 2,
@@ -24,7 +24,7 @@ window.enjoyYourPrayerSeries = {
       title: "A Peek Into Their Prayer",
       published: "2023-02-13",
       views: 92000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-2.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-2.mp4",
     },
     {
       number: 3,
@@ -32,7 +32,7 @@ window.enjoyYourPrayerSeries = {
       title: "Prayer + Hope",
       published: "2023-02-20",
       views: 78000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-3.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-3.mp4",
     },
     {
       number: 4,
@@ -40,7 +40,7 @@ window.enjoyYourPrayerSeries = {
       title: "Prayer + Fear",
       published: "2023-02-27",
       views: 67000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-4.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-4.mp4",
     },
     {
       number: 5,
@@ -48,7 +48,7 @@ window.enjoyYourPrayerSeries = {
       title: "Prayer + Love",
       published: "2023-03-06",
       views: 62000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-5.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-5.mp4",
     },
     {
       number: 6,
@@ -56,7 +56,7 @@ window.enjoyYourPrayerSeries = {
       title: "The Greatest Key to Deep Prayer",
       published: "2023-03-13",
       views: 41000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-6.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-6.mp4",
     },
     {
       number: 7,
@@ -64,7 +64,7 @@ window.enjoyYourPrayerSeries = {
       title: "Understanding The Whudu (Pre-Prayer Washing)",
       published: "2023-03-20",
       views: 42000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-7.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-7.mp4",
     },
     {
       number: 8,
@@ -72,7 +72,7 @@ window.enjoyYourPrayerSeries = {
       title: "Going to The Mosque",
       published: "2023-04-24",
       views: 26000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/enjoy-your-prayer/enjoy-your-prayer-ep-8.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-8.mp4",
     },
     {
       number: 9,

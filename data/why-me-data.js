@@ -1,4 +1,4 @@
-window.whyMeSeries = {
+﻿window.whyMeSeries = {
   title: "Why Me?",
   slug: "why-me",
   seriesPageUrl: "./pages/series-detail.html?id=why-me",
@@ -16,7 +16,7 @@ window.whyMeSeries = {
       title: "Where Was I Before I Was Born?",
       published: "2024-03-11",
       views: 1700000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-1.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-1.mp4",
     },
     {
       number: 2,
@@ -24,7 +24,7 @@ window.whyMeSeries = {
       title: "Why Did Allah Choose This Time for Me?",
       published: "2024-03-12",
       views: 1100000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-2.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-2.mp4",
     },
     {
       number: 3,
@@ -32,7 +32,7 @@ window.whyMeSeries = {
       title: "What Happened On My Birth Day?",
       published: "2024-03-13",
       views: 964000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-3.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-3.mp4",
     },
     {
       number: 4,
@@ -40,7 +40,7 @@ window.whyMeSeries = {
       title: "Why Is This My Family?",
       published: "2024-03-14",
       views: 853000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-4.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-4.mp4",
     },
     {
       number: 5,
@@ -48,7 +48,7 @@ window.whyMeSeries = {
       title: "What Shaped My Personality?",
       published: "2024-03-15",
       views: 756000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/why-me/why-me-ep-5.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-5.mp4",
     },
     {
       number: 6,

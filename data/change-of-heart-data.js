@@ -1,4 +1,4 @@
-window.changeOfHeartSeries = {
+﻿window.changeOfHeartSeries = {
   title: "Change of Heart",
   slug: "change-of-heart",
   seriesPageUrl: "./pages/series-detail.html?id=change-of-heart",
@@ -16,7 +16,7 @@ window.changeOfHeartSeries = {
       title: "An introduction",
       published: "2021-11-26",
       views: 231000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-1.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-1.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-01.vtt",
       takeaways: [
         "**Audit your heart in three moments**: When you hear Qur'an recited, when you are in a gathering of remembrance like a lecture, and when you are completely alone. If your heart feels absent or unmoved in all three, make du'a asking Allah sincerely to give you a living, responsive heart.",
@@ -66,7 +66,7 @@ The lecture is ultimately a call to stop neglecting the heart, to examine what w
       title: "An introduction (Part 2)",
       published: "2021-12-03",
       views: 104000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-2.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-2.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-02.vtt",
       takeaways: [
         "**Do a real heart check, not a vague one**: Ask how your heart reacts when Qur'an is recited, when advice corrects you, when death is mentioned, and when you remember Allah privately. These moments expose whether the heart is soft, resistant, distracted, or becoming hard.",
@@ -122,7 +122,7 @@ The lecture ends with hope. If the heart has not softened yet, the answer is not
       title: "Sincerity (Ikhlas)",
       published: "2021-12-10",
       views: 94000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-3.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-3.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-03.vtt",
       takeaways: [
         "**Begin heart work with sincerity**: The first action of the heart studied in the series is ikhlas because every deed depends on who it is really for. Without sincerity, even great outward acts can become empty or dangerous.",
@@ -188,7 +188,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Certainty (Yaqin)",
       published: "2022-02-04",
       views: 78000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-4.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-4.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-04.vtt",
       takeaways: [
         "**Seek the hidden strength behind great Muslims**: The lecture presents certainty as one of the secrets that made the early Muslims so steady, resilient, detached from dunya, quick to repent, and firm against doubts and temptations.",
@@ -254,7 +254,7 @@ The lecture closes with humility and aspiration: bring yourself as close as you 
       title: "Watchfulness (Muraqabah)",
       published: "2022-02-18",
       views: 70000,
-      videoSrc: "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/change-of-heart/change-of-heart-ep-5.mp4",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-5.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-05.vtt",
       takeaways: [
         "**Understand muraqabah as living awareness**: Muraqabah is not merely knowing that Allah watches you. It is carrying a constant certainty in the heart that Allah sees your outward actions and inward states wherever you are.",

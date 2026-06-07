@@ -1,4 +1,4 @@
-window.madinaArabicSeries = {
+﻿window.madinaArabicSeries = {
   title: "Madina Arabic Books",
   slug: "madina-arabic",
   seriesPageUrl: "./pages/series-detail.html?id=madina-arabic",
@@ -16,7 +16,7 @@ window.madinaArabicSeries = {
           "title": "Book 1 - Lesson 1",
           "published": "2015-01-01",
           "duration": 8762,
-          "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-1.mp4",
+          "videoSrc": "https://videos.improvingmuslim.com/madina-arabic/madina-arabic-ep-1.mp4",
           "captionsSrc": "./assets/captions/madina-arabic/episode-01.vtt",
           "grammarNotes": [
               { "term": "Hamza", "arabic": "ء", "definition": "The actual consonant — the glottal stop sound. Aleph is just its seat and has no sound of its own." },
@@ -116,7 +116,7 @@ The teacher closes the session by reminding students that every minute spent lea
           "title": "Book 1 - Lesson 2",
           "published": "2015-01-01",
           "duration": 7351,
-          "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-2.mp4",
+          "videoSrc": "https://videos.improvingmuslim.com/madina-arabic/madina-arabic-ep-2.mp4",
           "captionsSrc": "./assets/captions/madina-arabic/episode-02.vtt",
           "grammarNotes": [
               { "term": "Dhaka", "arabic": "ذَلِكَ", "definition": "Demonstrative pronoun meaning 'that' (far, masculine). Contrast: Haza = this (near), Dhaka = that (far)." },
@@ -182,7 +182,7 @@ The teacher draws a firm line: **only analyze statement sentences** at this stag
           "title": "Book 1 - Lesson 3",
           "published": "2015-01-01",
           "duration": 7615,
-          "videoSrc": "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/madina-arabic/madina-arabic-ep-3.mp4",
+          "videoSrc": "https://videos.improvingmuslim.com/madina-arabic/madina-arabic-ep-3.mp4",
           "captionsSrc": "./assets/captions/madina-arabic/episode-03.vtt"
       },
       {
