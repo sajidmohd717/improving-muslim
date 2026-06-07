@@ -350,21 +350,21 @@ function mergeLocalSeries(sections, category) {
   }
 
   const localSections = [...localSeriesSections(category), ...localStandaloneSections(category)];
-  const localTitles = new Set(flattenSeries(localSections).map((series) => series.title));
+  const localTitles = new Set(flattenSeries(localSections).map((series) => series.title.toLowerCase()));
   // Include API alias titles for series whose API/external title differs from the local data file title
   for (const entry of (window.seriesConfig || [])) {
-    if (entry.apiTitle) localTitles.add(entry.apiTitle);
+    if (entry.apiTitle) localTitles.add(entry.apiTitle.toLowerCase());
   }
   const merged = sections
     .map((section) => ({
       ...section,
-      seriesList: section.seriesList.filter((series) => !localTitles.has(series.title)),
+      seriesList: section.seriesList.filter((series) => !localTitles.has(series.title.toLowerCase())),
     }))
     .filter((section) => section.seriesList.length);
-  const existingTitles = new Set(flattenSeries(merged).map((series) => series.title));
+  const existingTitles = new Set(flattenSeries(merged).map((series) => series.title.toLowerCase()));
 
   localSections.forEach((localSection) => {
-    const newSeries = localSection.seriesList.filter((series) => !existingTitles.has(series.title));
+    const newSeries = localSection.seriesList.filter((series) => !existingTitles.has(series.title.toLowerCase()));
     if (!newSeries.length) {
       return;
     }
