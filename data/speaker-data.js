@@ -56,11 +56,11 @@ window.speakers = [
       "Asif Meherali is known for teaching the Madina Arabic Books in English, helping learners build Arabic grammar, reading, and Qur'an comprehension step by step.",
   },
   {
-    name: "Belal Assad",
-    slug: "belal-assad",
+    name: "Belal Assaad",
+    slug: "belal-assaad",
     image: "./assets/speaker/ba.jpg",
     bio:
-      "Belal Assad is known for accessible reminders and lectures on faith, character, family, and living Islam with clarity and conviction.",
+      "Belal Assaad is known for accessible reminders and lectures on faith, character, family, and living Islam with clarity and conviction.",
   },
   {
     name: "Majed Mahmoud",

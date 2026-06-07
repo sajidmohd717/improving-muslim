@@ -1,5 +1,43 @@
 window.standaloneLectures = [
   {
+    id: "qadr-and-sabr",
+    title: "Qadr & Sabr",
+    speaker: "Belal Assaad",
+    speakerSlug: "belal-assaad",
+    category: "purification",
+    topic: "Patience & Divine Decree",
+    typeLabel: "Standalone Video",
+    published: "2024-01-01",
+    duration: 2702,
+    sourceUrl: "https://www.youtube.com/watch?v=SXYWEWV2cpU",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/belal-assaad/qadr-sabr.jpg",
+    videoSrc:
+      "https://pub-276a3999c8d2451dad841d712cdb5ca0.r2.dev/islamic-lecture-videos/belal-assaad/stand-alone/qadr-sabr.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/belal-assaad/qadr-sabr.vtt",
+    description:
+      "A clear and grounded explanation of Qadr (divine decree) and Sabr (patience) — what it means to believe that everything is from Allah, how to understand hardship through the lens of faith, and the three types of patience every Muslim needs.",
+    takeaways: [
+      "**Qadr is the sixth pillar of Iman**: To believe in divine decree — its good and its bad — is foundational. Everything that happens is pre-measured and predetermined by Allah, based on his infinite knowledge, will, power, wisdom, justice, and mercy.",
+      "**Bad things from Allah always carry wisdom**: There is no pure evil from Allah. What looks bad to us always comes with wisdom or benefit — like a surgeon's blade that causes pain but brings healing. The hardship Allah decrees always contains an ease within it.",
+      "**Assume of Allah positively**: When you face a calamity and don't understand why, your duty is to hold a good opinion of your Lord. Negative assumption is where real suffering begins.",
+      "**Nothing goes in vain**: Even the prick of a needle is compensated by Allah — through forgiveness of sins or a rise in rank. Knowing this makes sabr sweet rather than bitter.",
+      "**Patience has three types**: Patience in fulfilling Allah's commands; patience in restraining yourself from sins; and patience when calamities strike. The highest is patience in worship — persevering in obedience until death.",
+    ],
+    recap: `This lecture by Belal Assaad covers two of the most practically important concepts in Islamic belief: Qadr (divine decree) and Sabr (patience).
+
+The talk opens by explaining the sixth pillar of faith — belief in Qadr. The speaker distinguishes between Qada (Allah's final decision, fixed and ordered) and Qadar (the measurement and execution of that decision). Together, they describe the Muslim belief that everything that happens is pre-measured, predetermined, and known by Allah — 50,000 years before creation.
+
+The speaker addresses the question of good and bad within Qadr. Evil that is pure and purposeless never comes from Allah. What Allah decrees that looks bad to us always carries a wisdom or benefit within it — like a surgeon performing painful but healing surgery, or a baby falling while learning to walk. The bad is temporary; the ease always follows the hardship.
+
+A key theme is the danger of negative assumption about Allah. When a person faces calamity and assumes the worst of their Lord, they create their own agony. The Quran describes people who worship Allah on the edge — minimally — and collapse when tested.
+
+The story of Musa and Al-Khodr is explored in depth. Al-Khodr damaged the ship to save the family from an evil king, killed the boy who would have grown up to destroy his righteous parents, and built the wall to protect the orphans' buried treasure. Musa, one of the five greatest prophets, could not be patient without understanding — and that is the point. We are not given the answers because it is in persevering without answers that our rank rises.
+
+The lecture closes with the three types of Sabr: patience in obeying Allah's commands, patience in restraining oneself from sins (with repentance every time one falls), and patience when calamities strike — holding yourself together, not giving up on Allah, seeking help, and trusting that nothing goes in vain.`,
+  },
+  {
     id: "allahs-words-to-musa-were-meant-for-you-too",
     title: "Allah's Words to Musa Were Meant for You Too",
     speaker: "Abu Bakr Zoud",
