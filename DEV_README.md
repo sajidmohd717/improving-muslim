@@ -189,6 +189,20 @@ Note: `aws s3 ls` (list all buckets) will return `AccessDenied` — this is expe
 
 Never commit or paste production R2 secrets into the repository or docs.
 
+### Video plays but buffers indefinitely (moov atom at end of file)
+
+**Symptom:** The video uploads successfully and the URL is correct, but the player shows "Loading video..." and never starts playing. Every other video works fine.
+
+**Cause:** The MP4 file has its metadata (`moov` atom) at the **end** of the file instead of the beginning. The browser needs the metadata first to start streaming — without it, it has to download the entire file before playing anything. This often happens when downloading videos from certain sites or tools that don't optimise for web playback.
+
+**Fix:** Run the file through ffmpeg before uploading. This remuxes it (no re-encoding, no quality loss) and moves the metadata to the front:
+
+```powershell
+ffmpeg -i "C:\Users\sajid\Downloads\video.mp4" -c copy -movflags faststart "C:\Users\sajid\Downloads\video-fixed.mp4"
+```
+
+Then upload the `-fixed.mp4` version to R2. Always use the trusted download source — files from unfamiliar download sites are more likely to have this problem.
+
 ## Episode Publishing Workflow
 
 When adding a new watchable episode:
