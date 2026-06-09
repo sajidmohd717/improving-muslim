@@ -15,7 +15,7 @@ window.pageByPageSeries = {
       "title": "Page 1 - Surah Al-Faatiha (The Opening)",
       "published": "2023-10-17",
       "views": 92000,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-1.mp4"
     },
     {
       "number": 2,
@@ -23,19 +23,19 @@ window.pageByPageSeries = {
       "title": "Page 2 - Alif Laam Meem",
       "published": "2023-10-20",
       "views": 36000,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-2.mp4"
     },
     {
       "number": 3,
-      "id": "ahh-pbp-ep-3",
+      "id": "zCniltPLzsg",
       "title": "Page 3 - Addressing Disbelievers & Hypocrites",
       "published": "2023-10-22",
       "views": 23000,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-3.mp4"
     },
     {
       "number": 4,
-      "id": "ahh-pbp-ep-4",
+      "id": "-2-5iBt7w2U",
       "title": "Page 4 - Consequences of Disbelievers",
       "published": "2023-10-25",
       "views": 19000,
