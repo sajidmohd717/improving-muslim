@@ -138,3 +138,95 @@
 .compact-episode.is-watched strong {
   color: #3f4a44;
 }
+
+/* ── Three-dot episode menu ─────────────────────────────────────────────── */
+
+/* position:relative lets us absolutely-place the dots button */
+.episode-card {
+  position: relative;
+}
+
+.ep-menu-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+  z-index: 2;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Show on card hover or when menu is open */
+.episode-card:hover .ep-menu-btn,
+.ep-menu-btn[aria-expanded="true"] {
+  opacity: 1;
+}
+
+.ep-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.ep-menu-btn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--brand, #176b5b);
+  outline-offset: 2px;
+}
+
+/* Popover (appended to body — position:fixed avoids overflow:hidden clipping) */
+.ep-menu-popover {
+  position: fixed;
+  background: var(--surface-strong, #fff);
+  border: 1px solid var(--line, #d8d0c2);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  min-width: 172px;
+  z-index: 9999;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+.ep-menu-action {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary, #1a202c);
+  transition: background 0.12s;
+}
+
+.ep-menu-action:hover,
+.ep-menu-action:focus-visible {
+  background: var(--surface-hover, #f0ebe0);
+  outline: none;
+}
+
+/* Dark mode */
+[data-theme="dark"] .ep-menu-popover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .ep-menu-action {
+  color: var(--text-primary-dark, #e2e8f0);
+}
+
+[data-theme="dark"] .ep-menu-action:hover,
+[data-theme="dark"] .ep-menu-action:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+}

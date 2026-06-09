@@ -83,4 +83,11 @@ window.speakers = [
     bio:
       "Mufti Menk is known for clear, accessible reminders on faith, manners, family, repentance, and living as a Muslim with hope and consistency.",
   },
+  {
+    name: "Ahsan Hanif",
+    slug: "ahsan-hanif",
+    image: "./assets/speaker/ahsan-hanif.jpg",
+    bio:
+      "Shaykh Dr. Ahsan Hanif is a British Islamic scholar, imam, and Qur'an teacher born and raised in Birmingham, UK. He memorised the Quran at age 13, earned a scholarship to the Islamic University of Madinah in 2000, and graduated from its Faculty of Shari'ah in 2006 with honours. He later completed a PhD in Islamic Law from the University of Birmingham. He serves as an imam and khateeb at Green Lane Masjid, and is widely known for his Page by Page Qur'an Tafseer series, teaching the themes and wisdoms of the Quran systematically, page by page.",
+  },
 ];

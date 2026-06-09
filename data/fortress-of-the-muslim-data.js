@@ -10,11 +10,11 @@ window.fortressOfTheMuslimSeries = {
   description:
     "A practical series on Fortress of the Muslim, walking through daily adhkar and supplications for prayer, waking, clothing, entering and leaving places, and remembering Allah throughout ordinary life.",
   episodes: [
-    { number: 1, id: "eLpWlhlQgcY", title: "The Excellence of Dhikr", published: "2022-01-01", duration: 660, views: 62864 },
-    { number: 2, id: "7gNIZDVHtfw", title: "Difference between The Living and The Dead (Dhikr)", published: "2022-01-02", duration: 487, views: 23808 },
-    { number: 3, id: "Xi4qsfFAsqY", title: "I am as My servant thinks of Me", published: "2022-01-03", duration: 524, views: 20940 },
-    { number: 4, id: "5aDUOmJrqLM", title: "Rights of Islam are too much for me!", published: "2022-01-04", duration: 568, views: 15763 },
-    { number: 5, id: "r6t15aCtwNk", title: "An eye opener to how life is cheap", published: "2022-01-05", duration: 613, views: 14818 },
+    { number: 1, id: "eLpWlhlQgcY", title: "The Excellence of Dhikr", published: "2022-01-01", duration: 660, views: 62864, videoSrc: "https://videos.improvingmuslim.com/fortress-of-the-muslim/fortress-of-the-muslim-ep-1.mp4" },
+    { number: 2, id: "7gNIZDVHtfw", title: "Difference between The Living and The Dead (Dhikr)", published: "2022-01-02", duration: 487, views: 23808, videoSrc: "https://videos.improvingmuslim.com/fortress-of-the-muslim/fortress-of-the-muslm-ep-2.mp4" },
+    { number: 3, id: "Xi4qsfFAsqY", title: "I am as My servant thinks of Me", published: "2022-01-03", duration: 524, views: 20940, videoSrc: "https://videos.improvingmuslim.com/fortress-of-the-muslim/fortress-of-the-muslim-ep-3.mp4" },
+    { number: 4, id: "5aDUOmJrqLM", title: "Rights of Islam are too much for me!", published: "2022-01-04", duration: 568, views: 15763, videoSrc: "https://videos.improvingmuslim.com/fortress-of-the-muslim/fortress-of-the-muslim-ep-4.mp4" },
+    { number: 5, id: "r6t15aCtwNk", title: "An eye opener to how life is cheap", published: "2022-01-05", duration: 613, views: 14818, videoSrc: "https://videos.improvingmuslim.com/fortress-of-the-muslim/fortress-of-the-muslim-ep-5.mp4" },
     { number: 6, id: "CR8mBVLVkIQ", title: "Dhikr to say when you wake up", published: "2022-01-06", duration: 650, views: 19157 },
     { number: 7, id: "QuLY_3ime5E", title: "Dua when you wear clothes, new clothes, and taking off clothes", published: "2022-01-07", duration: 533, views: 14271 },
     { number: 8, id: "3qot25B2f_E", title: "Dua before entering the bathroom and before and after wudu", published: "2022-01-08", duration: 544, views: 14761 },

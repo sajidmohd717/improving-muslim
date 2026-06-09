@@ -181,4 +181,18 @@ window.seriesConfig = [
     playlistId: "PLYZxc42QNctV2v3RRYwTHdgDHp_h80mJT",
     episodeCount: 26,
   },
+  {
+    globalKey: "pageByPageSeries",
+    slug: "page-by-page",
+    dataFile: "./data/page-by-page-data.js",
+    category: "quran",
+    sectionTitle: "Quran",
+    title: "Page by Page Tafseer",
+    speaker: "Ahsan Hanif",
+    thumbnailSrc: "./assets/thumbnail/page-by-page/series-card.jpg",
+    description: "A comprehensive page-by-page journey through the Noble Quran with Shaykh Dr. Ahsan Hanif, extracting the main themes, lessons, and wisdoms from each page.",
+    episodeThumbnailPath: "./assets/thumbnail/page-by-page/episodes",
+    playlistId: "PLYRXQljU5MiJ8Iz_VKgmatnx-H-leJ7st",
+    episodeCount: 604,
+  },
 ];

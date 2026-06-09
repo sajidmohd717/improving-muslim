@@ -24,7 +24,7 @@
   document.head.appendChild(script);
 
   function initPage(series) {
-    const { formatViews, readJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
+    const { formatViews, readJsonStorage, writeJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
     const episodeList = document.querySelector("#episode-list");
     const heroContent = document.querySelector(".series-hero > div");
     const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
@@ -163,41 +163,172 @@
 
     renderSeriesActions();
 
-    episodeList.innerHTML = series.episodes
-      .map(
-        (episode, i) => {
-          const available = isEpisodeAvailable(episode);
-          const isYouTubeOnly = !episode.videoSrc && Boolean(episode.youtubeId);
-          const watchStatus = progressLabel(episode);
-          const isWatched = watchStatus === "Watched";
-          const tagName = available ? "a" : "article";
-          const href = available ? ` href="${episodeUrl(episode)}"` : "";
-          const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
-          return `
-          <${tagName} class="episode-card reveal-anim ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}" style="--reveal-delay:${Math.min(i, 8) * 40}ms"${href}${targetAttr}>
-            <img
-              src="${episodeThumbnailUrl(episode)}"
-              alt=""
-              loading="lazy"
-              onerror="this.onerror=null;this.src='${series.thumbnailSrc || './public/icon.png'}'"
-            />
-            <div class="episode-info">
-              <span class="episode-number">
-                Episode ${episode.number}
-                ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
-                ${isWatched ? '<span class="recap-badge watched-badge">Watched</span>' : ""}
-                ${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
-              </span>
-              <strong>${episode.title}</strong>
-              <span class="episode-date">${formatDate(episode.published)}</span>
-              ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
-              ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
-              ${available || isYouTubeOnly ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
-            </div>
-          </${tagName}>
-        `;
-        },
-      )
-      .join("");
+    /* ── Episode list rendering ─────────────────────────────────────────── */
+
+    const dotsIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>`;
+
+    let isFirstRender = true;
+
+    function renderEpisodeCard(episode, i) {
+      const available = isEpisodeAvailable(episode);
+      const isYouTubeOnly = !episode.videoSrc && Boolean(episode.youtubeId);
+      const watchStatus = progressLabel(episode);
+      const isWatched = watchStatus === "Watched";
+      const tagName = available ? "a" : "article";
+      const href = available ? ` href="${episodeUrl(episode)}"` : "";
+      const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
+      const animClass = isFirstRender ? "reveal-anim" : "";
+      const revealDelay = isFirstRender ? ` style="--reveal-delay:${Math.min(i, 8) * 40}ms"` : "";
+
+      return `
+        <${tagName} class="episode-card ${animClass} ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${revealDelay} data-episode-index="${i}"${href}${targetAttr}>
+          <img
+            src="${episodeThumbnailUrl(episode)}"
+            alt=""
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${series.thumbnailSrc || "./public/icon.png"}'"
+          />
+          <div class="episode-info">
+            <span class="episode-number">
+              Episode ${episode.number}
+              ${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}
+              ${isWatched ? '<span class="recap-badge watched-badge">Watched</span>' : ""}
+              ${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
+            </span>
+            <strong>${episode.title}</strong>
+            <span class="episode-date">${formatDate(episode.published)}</span>
+            ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
+            ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
+            ${available || isYouTubeOnly ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
+          </div>
+          ${available ? `<button class="ep-menu-btn" type="button" aria-label="Episode options" aria-expanded="false" aria-haspopup="true">${dotsIcon}</button>` : ""}
+        </${tagName}>
+      `;
+    }
+
+    function renderEpisodeList() {
+      episodeList.innerHTML = series.episodes.map(renderEpisodeCard).join("");
+      isFirstRender = false;
+    }
+
+    renderEpisodeList();
+
+    /* ── Three-dot episode menu ──────────────────────────────────────────── */
+
+    // Singleton popover appended to body (avoids overflow:hidden clipping issues)
+    const popover = document.createElement("div");
+    popover.className = "ep-menu-popover";
+    popover.hidden = true;
+    popover.innerHTML = `
+      <button class="ep-menu-action" data-action="mark-unwatched">Mark as unwatched</button>
+      <button class="ep-menu-action" data-action="mark-watched">Mark as watched</button>
+    `;
+    document.body.appendChild(popover);
+
+    let activeMenuBtn = null;
+    let activeEpisodeIndex = -1;
+
+    function closeMenu() {
+      if (!popover.hidden) {
+        popover.hidden = true;
+      }
+      if (activeMenuBtn) {
+        activeMenuBtn.setAttribute("aria-expanded", "false");
+        activeMenuBtn = null;
+      }
+      activeEpisodeIndex = -1;
+    }
+
+    function openMenu(btn, episode, i) {
+      const isWatched = readProgress(episode).completed;
+      popover.querySelector('[data-action="mark-unwatched"]').hidden = !isWatched;
+      popover.querySelector('[data-action="mark-watched"]').hidden = isWatched;
+
+      // Position relative to button using fixed coordinates
+      const rect = btn.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const popoverHeight = 80; // rough estimate
+
+      if (spaceBelow >= popoverHeight) {
+        popover.style.top = (rect.bottom + 4) + "px";
+        popover.style.bottom = "auto";
+      } else {
+        popover.style.bottom = (window.innerHeight - rect.top + 4) + "px";
+        popover.style.top = "auto";
+      }
+
+      const rightEdge = window.innerWidth - rect.right;
+      popover.style.right = Math.max(8, rightEdge) + "px";
+      popover.style.left = "auto";
+
+      popover.hidden = false;
+      activeMenuBtn = btn;
+      activeEpisodeIndex = i;
+      btn.setAttribute("aria-expanded", "true");
+
+      // Focus first visible action for keyboard accessibility
+      const firstAction = popover.querySelector(".ep-menu-action:not([hidden])");
+      if (firstAction) firstAction.focus();
+    }
+
+    // Intercept three-dot button clicks via delegation on the list
+    episodeList.addEventListener("click", function (e) {
+      const menuBtn = e.target.closest(".ep-menu-btn");
+      if (!menuBtn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card = menuBtn.closest("[data-episode-index]");
+      if (!card) return;
+
+      const i = parseInt(card.dataset.episodeIndex, 10);
+      const episode = series.episodes[i];
+
+      if (!popover.hidden && activeMenuBtn === menuBtn) {
+        closeMenu();
+      } else {
+        closeMenu();
+        openMenu(menuBtn, episode, i);
+      }
+    });
+
+    // Handle popover action clicks
+    popover.addEventListener("click", function (e) {
+      const action = e.target.dataset.action;
+      if (!action || activeEpisodeIndex < 0) return;
+
+      const episode = series.episodes[activeEpisodeIndex];
+      const key = progressKey(episode);
+      const progress = readJsonStorage(key, {});
+
+      if (action === "mark-unwatched") {
+        delete progress.completed;
+        writeJsonStorage(key, progress);
+      } else if (action === "mark-watched") {
+        progress.completed = true;
+        progress.updatedAt = Date.now();
+        writeJsonStorage(key, progress);
+      }
+
+      closeMenu();
+      renderEpisodeList();
+    });
+
+    // Close on outside click
+    document.addEventListener("click", function (e) {
+      if (popover.hidden) return;
+      if (popover.contains(e.target)) return;
+      if (e.target.closest(".ep-menu-btn")) return;
+      closeMenu();
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !popover.hidden) {
+        closeMenu();
+        if (activeMenuBtn) activeMenuBtn.focus();
+      }
+    });
   }
 })();
