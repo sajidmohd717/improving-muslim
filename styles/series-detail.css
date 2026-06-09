@@ -154,26 +154,20 @@
   height: 28px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.38);
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.15s, background 0.15s;
+  transition: background 0.15s;
   z-index: 2;
   padding: 0;
   flex-shrink: 0;
 }
 
-/* Show on card hover or when menu is open */
-.episode-card:hover .ep-menu-btn,
+.ep-menu-btn:hover,
 .ep-menu-btn[aria-expanded="true"] {
-  opacity: 1;
-}
-
-.ep-menu-btn:hover {
   background: rgba(0, 0, 0, 0.65);
 }
 
