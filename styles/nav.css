@@ -158,11 +158,15 @@
   color: var(--accent-strong);
 }
 
+.nav-more-icon-menu {
+  display: none;
+}
+
 .nav-more-trigger svg {
   transition: transform 200ms ease;
 }
 
-.nav-more-trigger[aria-expanded="true"] svg {
+.nav-more-trigger[aria-expanded="true"] .nav-more-icon-chevron {
   transform: rotate(180deg);
 }
 
@@ -213,24 +217,20 @@
 
 @media (max-width: 460px) {
   .nav-more-trigger {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     justify-content: center;
     padding: 0;
-    border-radius: 50%;
-    font-size: 0;
+    border-radius: 8px;
   }
 
-  .nav-more-trigger::before {
-    content: "...";
-    font-size: 1rem;
-    letter-spacing: 1px;
-    line-height: 1;
-    transform: translateY(-3px);
-  }
-
-  .nav-more-trigger svg {
+  .nav-more-label,
+  .nav-more-icon-chevron {
     display: none;
+  }
+
+  .nav-more-icon-menu {
+    display: block;
   }
 }
 
