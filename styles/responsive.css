@@ -84,10 +84,6 @@
     display: none;
   }
 
-  .bottom-nav a[href*="settings.html"] {
-    display: none;
-  }
-
   #categories {
     padding-bottom: 2px;
   }

@@ -90,40 +90,16 @@ if (navMore) {
   navMore.insertAdjacentElement('afterbegin', settingsLink);
 }
 
-/* Inject Saved link into bottom nav after History */
+/* Mark the active link in the bottom nav */
 const bottomNav = document.querySelector('.bottom-nav');
 if (bottomNav) {
-  const historyItem = bottomNav.querySelector('a[href*="history.html"]');
-  if (historyItem) {
-    const isSavedPage = window.location.pathname.endsWith('saved.html');
-    const savedLink = document.createElement('a');
-    savedLink.className = 'bottom-nav-item' + (isSavedPage ? ' is-active' : '');
-    savedLink.href = './pages/saved.html';
-    savedLink.innerHTML =
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>' +
-      '<span>Saved</span>';
-    historyItem.insertAdjacentElement('afterend', savedLink);
-  }
-}
-
-/* Inject Speakers link into bottom nav between History and Settings */
-if (bottomNav) {
-  const historyItem = bottomNav.querySelector('a[href*="history.html"]');
-  if (historyItem) {
-    const isActive = window.location.pathname.endsWith('speakers.html');
-    const a = document.createElement('a');
-    a.className = 'bottom-nav-item' + (isActive ? ' is-active' : '');
-    a.href = './pages/speakers.html';
-    a.innerHTML =
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>' +
-      '<circle cx="9" cy="7" r="4"/>' +
-      '<path d="M23 21v-2a4 4 0 0 0-3-3.87"/>' +
-      '<path d="M16 3.13a4 4 0 0 1 0 7.75"/>' +
-      '</svg>' +
-      '<span>Speakers</span>';
-    historyItem.insertAdjacentElement('afterend', a);
-  }
+  const currentPage = window.location.pathname.split('/').pop().split('?')[0] || 'index.html';
+  bottomNav.querySelectorAll('a[href]').forEach((link) => {
+    const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
+    if (linkPage && linkPage === currentPage) {
+      link.classList.add('is-active');
+    }
+  });
 }
 
 document.addEventListener("click", (event) => {
