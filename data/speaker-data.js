@@ -84,6 +84,13 @@ window.speakers = [
       "Mufti Menk is known for clear, accessible reminders on faith, manners, family, repentance, and living as a Muslim with hope and consistency.",
   },
   {
+    name: "Hisham Abu Yusuf",
+    slug: "hisham-abu-yusuf",
+    image: "./assets/speaker/hisham-abu-yusuf.jpg",
+    bio:
+      "Ustadh Hisham Abu Yusuf is a British Islamic speaker and teacher of Islamic sciences of South Indian and Pakistani descent, born in the UAE. He holds a BA in Islamic Studies from Al-Azhar University in Cairo and serves as a Muslim chaplain at the University of Nottingham, based in Manchester, UK. Known for his energetic and youth-focused teaching style, he draws on a deep appreciation of Arabic language and pre-Islamic poetry to bring the Quran and Islamic principles to life for modern audiences.",
+  },
+  {
     name: "Ahsan Hanif",
     slug: "ahsan-hanif",
     image: "./assets/speaker/ahsan-hanif.jpg",

@@ -38,6 +38,64 @@ The story of Musa and Al-Khodr is explored in depth. Al-Khodr damaged the ship t
 The lecture closes with the three types of Sabr: patience in obeying Allah's commands, patience in restraining oneself from sins (with repentance every time one falls), and patience when calamities strike — holding yourself together, not giving up on Allah, seeking help, and trusting that nothing goes in vain.`,
   },
   {
+    id: "purpose-of-creation",
+    title: "Purpose of Creation",
+    speaker: "Mufti Menk",
+    speakerSlug: "mufti-menk",
+    category: "purification",
+    topic: "Purpose of Life",
+    typeLabel: "Standalone Video",
+    published: "2026-06-14",
+    duration: 3703,
+    sourceUrl: "https://www.youtube.com/watch?v=UQNNt60p0a0",
+    thumbnailSrc: "./assets/thumbnail/standalone/mufti-menk/purpose-of-creation.jpg",
+    videoSrc: "https://videos.improvingmuslim.com/mufti-menk/stand-alone/purpose-of-creation.mp4",
+  },
+  {
+    id: "why-am-i-here",
+    title: "Why Am I Here?",
+    speaker: "Hisham Abu Yusuf",
+    speakerSlug: "hisham-abu-yusuf",
+    category: "purification",
+    topic: "Purpose of Life",
+    typeLabel: "Standalone Video",
+    published: "2025-01-01",
+    duration: 3585,
+    sourceUrl: "https://www.youtube.com/watch?v=P2VTPT-oiuE",
+    thumbnailSrc: "./assets/thumbnail/standalone/hisham-abu-yusuf/why-am-i-here.jpg",
+    videoSrc: "https://videos.improvingmuslim.com/hisham-abu-yusuf/stand-alone/why-am-i-here.mp4",
+    description:
+      "A purpose-driven talk covering why Allah created human beings, what makes humans unique among all creation, and a practical five-step process for discovering your personal calling and using it to solve real problems in society.",
+    takeaways: [
+      "**The crisis of meaning is the root of modern suffering**: Nihilism — living with no sense of purpose — is identified by sociologists as the greatest cause of depression and anxiety in the 21st century. Islam provides the only complete answer to why we are here.",
+      "**Humans alone ask why**: Animals eat, reproduce, compete, and communicate — but they never wonder about purpose. Allah granted human beings alone the capacity for meaning, existential questioning, and higher-order consciousness. This is what separates us from all other creation.",
+      "**Design always reveals purpose**: Everything purposeful has a creator who intended it. The seas that don't merge, bees that produce honey, birds built for flight — all are evidence of deliberate design. Darwin's leap from adaptation to randomness went far beyond what his observations showed.",
+      "**Four reasons Allah created us**: To worship Him alone (Surah Adh-Dhariyat: 'I only created jinn and humankind to worship me'); to be tested — 'I created life and death to test you which of you is best'; to be khalifa on earth — stewards charged with building society with justice and truth; and to receive and manifest Allah's mercy.",
+      "**Find your purpose in five steps**: Know yourself through trying different things; find your flow state — what comes naturally and makes time disappear; master that skill and never accept anything less than excellence (the Prophet ﷺ said 'Allah prescribed mastery in everything'); identify gaps in society your skill can fill; and deploy it for the sake of Allah.",
+      "**Don't live like a sheep**: Many Muslims follow the crowd, do what parents told them, scroll social media, and binge shows — without ever asking why. The Pied Piper story, the story of those who found their fathers doing something and just followed, and the fate of those who wake up only on the Day of Judgment — all warn against living on autopilot.",
+      "**Daily Quran is the fuel that keeps you on purpose**: The first continuous obligation Allah gave the Prophet ﷺ after revelation was to recite the Quran every day. Without it you lose your sense of direction, get distracted, and drift. It is the nourishment that sustains a life of purpose and mission.",
+    ],
+    recap: `This talk by Ustadh Hisham Abu Yusuf addresses one of the most urgent questions of our time: why am I here, and what am I doing with my life?
+
+The lecture opens with the story of a famous author who, despite wealth and fame, wrote in his 50s: "Why am I here? Where am I going? What is the purpose of it all?" This crisis of meaning — what sociologists call nihilism — is the belief in nothing, and it drives people to depression, despair, and giving up. The speaker argues that Islam has the clearest and most complete answer to this question.
+
+The first key point is what makes human beings unique. While animals eat, reproduce, communicate, reason, and even feel emotions, they never ask why. They have no existential crisis. No animal places of worship, no animal libraries, no animal universities. Allah granted human beings alone the capacity and the yearning for purpose and meaning — a higher-order consciousness no other creation possesses.
+
+The speaker then demonstrates that purpose comes from design. Everything deliberately made tells you its purpose through how it was built — a door handle tells you whether to push, pull, or twist. The world around us is no different. The seas that meet but don't merge, bees whose honey comes from their stomach, birds aerodynamically designed to glide — all of this was built with intention, not randomness. Darwin's theory of natural selection observed real adaptation, but his conclusion — that it was all random with no purpose — was a philosophical leap, not a scientific finding. Just as no one believes a sophisticated iPhone assembled itself from desert sand, no serious mind believes the human eye formed by accident.
+
+Allah frequently invites us in the Quran to look at creation and ask not just how it works, but why it was made this way and not any other way. This is an act of worship — reflecting on creation to reach the conclusion that none of this is without purpose.
+
+The lecture then covers the four reasons Allah created human beings. First, to worship Him alone — Surah Adh-Dhariyat states clearly: "I only created jinn and humankind to worship me." Second, as a test — "I created life and death to test you which of you is best in deed." Third, as khalifa on earth — stewards and representatives charged with building society under the command of Allah, establishing truth, justice, and institutions that allow humanity to flourish. Not building like Pharaoh (for domination) or like Frankenstein's creator (building something that destroys you), but building in a way that elevates people. Fourth, to be recipients and symbols of Allah's mercy — his names and attributes manifested through the creation and care of human beings.
+
+From there the talk turns personal: knowing the general purpose is not enough. You need to know your specific mission. The speaker uses examples from the Sahaba. Bilal was the salah ambassador — not just a voice, but someone who embodied prayer in every action. Hassan ibn Thabit was already a master poet before Islam; the Prophet ﷺ channelled that skill as the press response to Quraysh's poetic attacks. Aisha had a photographic memory and became one of the greatest scholars of the ummah. Khalid was a military genius. Each person had a unique skill, and the Prophet ﷺ helped them identify it, master it, and use it for the building of the deen.
+
+The five-step process for finding your purpose: first, know yourself — try different things and observe your natural inclinations. Second, find your flow state — what you do where time disappears and you feel in your element. Third, master that skill; the Prophet ﷺ said Allah prescribed perfection in everything — never accept mediocrity. Fourth, look for the real gaps around you: broken families, knife crime, a lack of Muslim schools, communities without financial guidance — find the gap only you can fill. Fifth, go and fill it, and while you do it, know that you are in the worship of Allah. Every breath spent serving society with your God-given skill is ibadah.
+
+The speaker warns against the major distractions: following the crowd blindly (the Pied Piper story), shiny object syndrome, social media, gaming, and most of all — escapism. Binge-watching, anime, gaming — these are ways of avoiding the uncomfortable reality that there is work to be done and we are the ones who have to do it. Many people will wake up only on the Day of Judgment and realize they lived on autopilot their whole life.
+
+The solution is the daily Quran. The first continuous obligation Allah gave the Prophet ﷺ after revelation was to recite the Quran every single day. Without it, purpose evaporates. The Quran is the fuel of the heart, the source of clarity, and the guardrail that keeps you from drifting. It is what connects you to why you're here and keeps you going when everything around you tries to pull you away.`,
+  },
+  {
     id: "allahs-words-to-musa-were-meant-for-you-too",
     title: "Allah's Words to Musa Were Meant for You Too",
     speaker: "Abu Bakr Zoud",
