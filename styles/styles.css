@@ -6,13 +6,13 @@
 @import "./base.css";          /* CSS custom properties, reset, sr-only, is-hidden  */
 @import "./nav.css?v=20260615-hamburger";           /* Site header, top nav, bottom mobile nav            */
 @import "./layout.css";        /* Hero, content-section wrappers, section headings   */
-@import "./home.css";          /* Continue-watching strip & cards                    */
+@import "./home.css?v=20260615-touch";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260615-scroll-fade";         /* Series cards, speaker cards, category filters      */
-@import "./components.css";    /* Shared UI: buttons, panels, sort, footer, errors   */
+@import "./components.css?v=20260615-touch";    /* Shared UI: buttons, panels, sort, footer, errors   */
 @import "./about.css";         /* About page                                         */
 @import "./settings.css";      /* Settings page, toggle switch                       */
 @import "./feedback.css";      /* Feedback page & form                               */
-@import "./series-detail.css"; /* Series/speaker hero, episode list & cards          */
+@import "./series-detail.css?v=20260615-touch"; /* Series/speaker hero, episode list & cards          */
 @import "./watch.css";         /* Video player, watch layout, sidebar, autoplay      */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */

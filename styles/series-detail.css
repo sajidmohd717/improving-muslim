@@ -166,6 +166,12 @@
   flex-shrink: 0;
 }
 
+.ep-menu-btn::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
 .ep-menu-btn:hover,
 .ep-menu-btn[aria-expanded="true"] {
   background: rgba(0, 0, 0, 0.65);

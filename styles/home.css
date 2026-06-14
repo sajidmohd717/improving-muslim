@@ -51,6 +51,12 @@
   transition: opacity 0.15s, background 0.15s;
 }
 
+.continue-remove::before {
+  content: "";
+  position: absolute;
+  inset: -9px;
+}
+
 .continue-card:hover .continue-remove {
   opacity: 1;
 }
