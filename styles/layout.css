@@ -42,7 +42,9 @@ h2 {
 }
 
 .search-form {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: min(100%, 680px);
   padding: 6px;
   border: 1px solid var(--line);
