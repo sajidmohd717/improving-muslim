@@ -16,7 +16,7 @@
 @import "./watch.css";         /* Video player, watch layout, sidebar, autoplay      */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260615-search";    /* Breakpoint overrides (≤900px, ≤600px)             */
+@import "./responsive.css?v=20260615-progress";    /* Breakpoint overrides (≤900px, ≤600px)             */
 @import "./history.css";       /* Watch history page                                 */
 @import "./saved.css";         /* Saved items page                                   */
 @import "./roadmap.css";       /* Roadmap page                                       */

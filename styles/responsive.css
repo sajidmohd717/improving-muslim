@@ -298,7 +298,8 @@
   }
 
   .series-progress-track {
-    display: none;
+    display: block;
+    margin-top: 6px;
   }
 
   .series-browse-grid .series-body .primary-link {
