@@ -54,8 +54,10 @@
 
 .mini-action {
   position: relative;
-  width: 26px;
-  height: 26px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
   padding: 0;
   font-size: 0.78rem;
 }
@@ -63,7 +65,16 @@
 .mini-action::before {
   content: "";
   position: absolute;
-  inset: -9px;
+  inset: 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mini-action svg {
+  position: relative;
+  z-index: 1;
 }
 
 .mini-action[aria-pressed="true"],
@@ -71,6 +82,15 @@
   border-color: rgba(23, 107, 91, 0.35);
   background: rgba(23, 107, 91, 0.1);
   color: var(--accent);
+}
+
+.mini-action[aria-pressed="true"] {
+  background: transparent;
+}
+
+.mini-action[aria-pressed="true"]::before {
+  border-color: rgba(23, 107, 91, 0.35);
+  background: rgba(23, 107, 91, 0.1);
 }
 
 #save-episode-button[aria-pressed="true"] svg,
@@ -87,6 +107,17 @@
 .utility-button:focus-visible {
   border-color: var(--accent);
   outline: none;
+}
+
+.mini-action:hover::before,
+.mini-action:focus-visible::before {
+  border-color: var(--accent);
+}
+
+.mini-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+  border-radius: 8px;
 }
 
 .details-toggle[aria-expanded="true"] {

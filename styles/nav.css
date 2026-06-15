@@ -217,8 +217,8 @@
 
 @media (max-width: 460px) {
   .nav-more-trigger {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     justify-content: center;
     padding: 0;
     border-radius: 8px;
@@ -232,6 +232,39 @@
   .nav-more-icon-menu {
     display: block;
   }
+}
+
+@media (max-width: 400px) {
+  .back-button {
+    width: 44px;
+    height: 44px;
+    margin-right: 0;
+  }
+
+  .nav-settings-link {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-shell {
+    gap: 4px;
+  }
+
+  .brand {
+    min-width: 0;
+    margin-right: auto;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .brand img {
+    width: 32px;
+    height: 32px;
+  }
+
 }
 
 /* ─── Bottom navigation (mobile) ─────────────────────────────────────────── */

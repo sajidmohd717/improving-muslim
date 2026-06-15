@@ -71,8 +71,23 @@
   }
 
   .search-form button {
+    position: relative;
     padding: 9px 14px;
     font-size: 0.88rem;
+  }
+
+  .search-form button::before,
+  .sort-trigger::before {
+    position: absolute;
+    top: -4px;
+    right: 0;
+    bottom: -4px;
+    left: 0;
+    content: "";
+  }
+
+  .sort-trigger {
+    position: relative;
   }
 
   .series-hero .hero-copy {
@@ -287,13 +302,13 @@
   }
 
   .card-actions {
-    gap: 6px;
+    gap: 2px;
     margin-top: 8px;
   }
 
   .mini-action {
-    width: 26px;
-    height: 26px;
+    width: 40px;
+    height: 40px;
     padding: 0;
   }
 
@@ -357,6 +372,14 @@
     box-shadow: none;
     overflow: visible;
     padding: 14px 0;
+  }
+
+  .episode-card-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
   }
 
   .episode-card:last-child {

@@ -73,7 +73,7 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding-right: 36px;
+  padding-right: 44px;
   min-width: 0;
 }
 
@@ -121,8 +121,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%;
   background: transparent;
@@ -136,6 +136,11 @@
   background: rgba(166, 72, 79, 0.1);
   color: var(--rose);
   outline: none;
+}
+
+.history-remove:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: -4px;
 }
 
 .history-empty {

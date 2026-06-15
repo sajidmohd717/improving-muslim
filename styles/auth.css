@@ -123,9 +123,10 @@
 
 @media (max-width: 460px) {
   .auth-btn {
-    height: 34px;
+    min-width: 44px;
+    height: 44px;
     gap: 5px;
-    padding-inline: 7px;
+    padding-inline: 10px;
     font-size: 0.75rem;
   }
 
@@ -138,6 +139,17 @@
     display: flex;
     width: fit-content;
     margin: 14px 0 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .auth-btn {
+    width: 44px;
+    padding: 0;
+  }
+
+  .auth-btn span:not(.auth-avatar):not(.auth-initials) {
+    display: none;
   }
 }
 
