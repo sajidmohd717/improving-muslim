@@ -557,3 +557,28 @@ if (currentCompact) {
     currentCompact.scrollIntoView({ block: "nearest", behavior: "instant" });
   }
 }
+
+// Mobile: collapsible episode list for long series
+if (window.matchMedia("(max-width: 900px)").matches) {
+  const episodeCount = episodeList.querySelectorAll(".compact-episode").length;
+  if (episodeCount > 5) {
+    episodeList.classList.add("is-collapsed");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "episode-list-toggle";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "watch-episode-list");
+    btn.innerHTML = `<span>Show all episodes</span><span class="episode-list-toggle-count">${episodeCount}</span>`;
+    btn.addEventListener("click", () => {
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      episodeList.classList.toggle("is-collapsed", expanded);
+      btn.querySelector("span").textContent = expanded ? "Show all episodes" : "Hide episodes";
+      if (expanded) {
+        const current = episodeList.querySelector(".compact-episode.is-current");
+        if (current) current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    });
+    episodeSidebar.insertBefore(btn, episodeList);
+  }
+}

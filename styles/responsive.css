@@ -444,6 +444,42 @@
     padding: 18px 16px 0;
   }
 
+  .episode-list-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 6px;
+    padding: 11px 0;
+    border: none;
+    border-top: 1px solid var(--line);
+    background: none;
+    color: var(--accent-strong);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    gap: 8px;
+  }
+
+  .episode-list-toggle-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(23, 107, 91, 0.1);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .compact-episode-list.is-collapsed .compact-episode {
+    display: none;
+  }
+
   .row-heading {
     display: block;
   }

@@ -365,6 +365,10 @@
   font-weight: 800;
 }
 
+.episode-list-toggle {
+  display: none;
+}
+
 .now-playing-chip {
   display: flex;
   align-items: center;

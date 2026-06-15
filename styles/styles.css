@@ -13,10 +13,10 @@
 @import "./settings.css";      /* Settings page, toggle switch                       */
 @import "./feedback.css";      /* Feedback page & form                               */
 @import "./series-detail.css?v=20260615-touch"; /* Series/speaker hero, episode list & cards          */
-@import "./watch.css";         /* Video player, watch layout, sidebar, autoplay      */
+@import "./watch.css?v=20260615-collapse";         /* Video player, watch layout, sidebar, autoplay      */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260615-progress";    /* Breakpoint overrides (≤900px, ≤600px)             */
+@import "./responsive.css?v=20260615-collapse";    /* Breakpoint overrides (≤900px, ≤600px)             */
 @import "./history.css";       /* Watch history page                                 */
 @import "./saved.css";         /* Saved items page                                   */
 @import "./roadmap.css";       /* Roadmap page                                       */
