@@ -104,10 +104,10 @@ The solution is the daily Quran. The first continuous obligation Allah gave the 
     topic: "Trust in Allah",
     typeLabel: "Standalone Video",
     published: "2026-06-25",
-    duration: 0,
+    duration: 1505,
     sourceUrl: "https://www.youtube.com/watch?v=hEygwMaMDyU",
     thumbnailSrc: "./assets/thumbnail/standalone/omar-suleiman/only-allah-knows.jpg",
-    videoSrc: "https://videos.improvingmuslim.com/omar-suleiman/stand-alone/only-allah-knows-what-you-went-through.mp4",
+    videoSrc: "https://videos.improvingmuslim.com/omar-suleiman/stand-alone/Only-Allah-Knows-What-You-Went-Through.mp4",
   },
   {
     id: "allahs-words-to-musa-were-meant-for-you-too",

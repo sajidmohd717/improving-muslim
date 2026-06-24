@@ -10,7 +10,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `pages/` contains secondary HTML pages such as series pages, speaker profiles, settings, about, and watch.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
-- `styles/styles.css` is the CSS entry point — it `@import`s 19 focused files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file.
+- `styles/styles.css` is the CSS entry point — it `@import`s 20 focused files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file.
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
 - `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
 - `scripts/series-page.js` renders dedicated series episode lists.
@@ -27,6 +27,9 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
 - `scripts/error-handler.js` is loaded before all other scripts. It catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
+- `pages/explore.html` is the explore/browse page with topic-based filtering across series and standalone videos.
+- `scripts/explore-page.js` drives the explore page — filters, topic counts, and card rendering.
+- `styles/explore.css` contains explore-page-specific styles.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
 - `public/` contains brand-facing assets: logo/favicons, the web manifest, and the social sharing preview image.
 - `public/social-preview-template.html` is the source template for regenerating `public/social-preview.png`. See the Social Preview Image section below.
@@ -37,7 +40,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-The platform currently has 12 series and 2 standalone lectures.
+The platform currently has 13 series and 5 standalone lectures.
 
 ### Series
 
@@ -55,13 +58,17 @@ The platform currently has 12 series and 2 standalone lectures.
 | Parables of the Quran | Yasir Qadhi | Quran | Partially unlocked |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
 | Madina Arabic Books | Asif Meherali | Arabic | Partially unlocked |
+| Page by Page Tafseer | Ahsan Hanif | Quran | Partially unlocked |
 
 ### Standalone Lectures
 
 | Title | Speaker | Category | Video |
 |---|---|---|---|
 | Qadr & Sabr | Belal Assaad | Purification | Uploaded |
+| Purpose of Creation | Mufti Menk | Purification | Uploaded |
+| Why Am I Here? | Hisham Abu Yusuf | Purification | Uploaded |
 | Allah's Words to Musa Were Meant for You Too | Abu Bakr Zoud | Quran | Uploaded |
+| Only Allah Knows What You Went Through | Omar Suleiman | Purification | Uploaded |
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
 
