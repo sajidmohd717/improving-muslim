@@ -2,6 +2,7 @@ const API_ROOT = "https://sajidmohd717.github.io/series-api";
 
 const categories = [
   { name: "All", value: "foryou" },
+  { name: "Available now", value: "available" },
   { name: "Purification", value: "purification" },
   { name: "Prayer", value: "prayer" },
   { name: "Dhikr", value: "dhikr" },
@@ -340,17 +341,31 @@ function localStandaloneSections(category = "foryou") {
   return sections;
 }
 
+function availLabel(entry) {
+  const total = entry.episodeCount || 0;
+  const avail = entry.availableCount ?? total;
+  if (avail >= total) return { text: `${total} Lectures`, cls: "" };
+  if (avail === 0) return { text: "Coming soon", cls: "avail-none" };
+  return { text: `${avail} of ${total} available`, cls: "avail-partial" };
+}
+
 function localSeriesSections(category = "foryou") {
   const sections = [];
   for (const entry of (window.seriesConfig || [])) {
     if (!entry.title) continue;
+    const avail = entry.availableCount ?? entry.episodeCount ?? 0;
+    if (avail === 0) continue; // hide zero-available series from all catalogue views
     const cats = entryCategories(entry);
-    if (category !== "foryou" && !cats.includes(category)) continue;
+    if (category === "available") {
+      // already filtered by avail > 0 above — show regardless of subject category
+    } else if (category !== "foryou" && !cats.includes(category)) continue;
+    const { text: episodesText, cls: episodesCls } = availLabel(entry);
     const card = {
       title: entry.title,
       speaker: entry.speaker,
       topic: topicLabel(cats),
-      episodes: `${entry.episodeCount} Lectures`,
+      episodes: episodesText,
+      episodesCls,
       thumbnailImage: entry.thumbnailSrc,
       link: `./pages/series-detail.html?id=${entry.slug}`,
       description: entry.description,
@@ -370,6 +385,7 @@ function localSeriesSections(category = "foryou") {
 function mergeLocalSeries(sections, category) {
   const localCategories = new Set([
     "foryou",
+    "available",
     ...(window.seriesConfig || []).flatMap(e => entryCategories(e)),
     ...availableStandaloneLectures().flatMap(lecture => entryCategories(lecture)),
   ]);
@@ -802,7 +818,7 @@ function renderSeries() {
             </a>
             <div class="series-meta">
               <span>${escapeHtml(item.speaker || "Speaker TBA")}</span>
-              <span>${escapeHtml(item.episodes || "Lectures")}</span>
+              <span class="${item.episodesCls || ''}">${escapeHtml(item.episodes || "Lectures")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
             ${progressBarHtml}

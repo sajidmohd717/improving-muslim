@@ -347,6 +347,16 @@
   content: "";
 }
 
+.series-meta .avail-partial {
+  color: var(--accent);
+}
+
+.series-meta .avail-none {
+  color: var(--muted);
+  opacity: 0.7;
+  font-style: italic;
+}
+
 .series-progress-track {
   height: 3px;
   margin-top: 12px;

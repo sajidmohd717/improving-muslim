@@ -1,4 +1,4 @@
-﻿window.seriesConfig = [
+window.seriesConfig = [
   {
     globalKey: "enjoyYourPrayerSeries",
     slug: "enjoy-your-prayer",
@@ -12,6 +12,7 @@
     episodeThumbnailPath: "./assets/thumbnail/enjoy-your-prayer/episodes",
     playlistId: "PL9OPVukugS7wrMiT9A9CwRNL_hA9jDH0f",
     episodeCount: 21,
+    availableCount: 8,
   },
   {
     globalKey: "fortressOfTheMuslimSeries",
@@ -26,6 +27,7 @@
     episodeThumbnailPath: "./assets/thumbnail/fortress-of-the-muslim/episodes",
     playlistId: "fortress-of-the-muslim-assim-al-hakeem",
     episodeCount: 13,
+    availableCount: 5,
   },
   {
     globalKey: "seerahYasirQadhiSeries",
@@ -40,6 +42,7 @@
     episodeThumbnailPath: "./assets/thumbnail/seerah-yasir-qadhi/episodes",
     playlistId: "PLAEA99D24CA2F9A8F",
     episodeCount: 104,
+    availableCount: 5,
   },
   {
     globalKey: "fortyHadithSeries",
@@ -54,6 +57,7 @@
     episodeThumbnailPath: "./assets/thumbnail/forty-hadith-nawawi/episodes",
     playlistId: "PLANmApGKw_OoBaN2C0Y983cwJGL47842I",
     episodeCount: 46,
+    availableCount: 4,
   },
   {
     globalKey: "heartMattersSeries",
@@ -68,6 +72,7 @@
     episodeThumbnailPath: "./assets/thumbnail/heart-matters/episodes",
     playlistId: "PLYZxc42QNctWeXvciIWtItbjhod9PjcCN",
     episodeCount: 26,
+    availableCount: 0,
   },
   {
     globalKey: "changeOfHeartSeries",
@@ -82,6 +87,7 @@
     episodeThumbnailPath: "./assets/thumbnail/change-of-heart/episodes",
     playlistId: "PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
     episodeCount: 16,
+    availableCount: 5,
   },
   {
     globalKey: "whyMeSeries",
@@ -97,6 +103,7 @@
     episodeThumbnailPath: "./assets/thumbnail/why-me/episodes",
     playlistId: "PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
     episodeCount: 30,
+    availableCount: 5,
   },
   {
     globalKey: "angelsInYourPresenceSeries",
@@ -111,6 +118,7 @@
     episodeThumbnailPath: "./assets/thumbnail/angels-in-your-presence/episodes",
     playlistId: "PLQ02IYL5pmhF2LFN-3QxnuregEv1oKPIc",
     episodeCount: 30,
+    availableCount: 11,
   },
   {
     globalKey: "messageOfTheQuranSeries",
@@ -125,6 +133,7 @@
     episodeThumbnailPath: "./assets/thumbnail/message-of-the-quran/episodes",
     playlistId: "PLYZxc42QNctUnn09Of4rBuakQhu-Q2qpc",
     episodeCount: 30,
+    availableCount: 0,
   },
   {
     globalKey: "tenPromisedJannahSeries",
@@ -139,6 +148,7 @@
     episodeThumbnailPath: "./assets/thumbnail/ten-promised-jannah/episodes",
     playlistId: "PL2dRQaGGWZOBj6GqrVQzWaf8uYJpKNZFs",
     episodeCount: 10,
+    availableCount: 0,
   },
   {
     globalKey: "madinaArabicSeries",
@@ -153,6 +163,7 @@
     episodeThumbnailPath: "./assets/thumbnail/madina-arabic/episodes",
     playlistId: "PLh3c1SPUmZqGMOtrHD7Kd2uXuvPRDP7ou",
     episodeCount: 123,
+    availableCount: 3,
   },
   {
     globalKey: "pageByPageSeries",
@@ -167,5 +178,6 @@
     episodeThumbnailPath: "./assets/thumbnail/page-by-page/episodes",
     playlistId: "PLYRXQljU5MiJ8Iz_VKgmatnx-H-leJ7st",
     episodeCount: 604,
+    availableCount: 3,
   },
 ];
