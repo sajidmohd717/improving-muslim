@@ -4,7 +4,7 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 @import "./base.css";          /* CSS custom properties, reset, sr-only, is-hidden  */
-@import "./nav.css?v=20260615-mobile-header-v3";    /* Site header, top nav, bottom mobile nav            */
+@import "./nav.css?v=20260616-explore-nav";    /* Site header, top nav, bottom mobile nav            */
 @import "./layout.css?v=20260615-search";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260615-touch";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260615-compact-targets-v2";  /* Series cards, speaker cards, category filters      */
@@ -12,6 +12,7 @@
 @import "./about.css";         /* About page                                         */
 @import "./settings.css";      /* Settings page, toggle switch                       */
 @import "./feedback.css";      /* Feedback page & form                               */
+@import "./explore.css?v=20260616-explore"; /* Explore page category discovery                 */
 @import "./series-detail.css?v=20260615-compact-targets-v2"; /* Series/speaker hero, episode list & cards   */
 @import "./watch.css?v=20260615-collapse";         /* Video player, watch layout, sidebar, autoplay      */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */

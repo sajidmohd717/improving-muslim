@@ -1,0 +1,117 @@
+.explore-hero {
+  max-width: 980px;
+}
+
+.explore-section {
+  padding-top: 26px;
+}
+
+.explore-grid,
+.explore-path-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.explore-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.explore-path-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.explore-card,
+.explore-path-card {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.explore-card:hover,
+.explore-card:focus-visible,
+.explore-path-card:hover,
+.explore-path-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(23, 107, 91, 0.35);
+  box-shadow: 0 18px 34px rgba(33, 28, 22, 0.12);
+  outline: none;
+}
+
+.explore-card-kicker {
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(23, 107, 91, 0.1);
+  color: var(--accent);
+  padding: 5px 9px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.explore-card-title {
+  color: var(--text);
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.explore-card-copy {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.explore-card-action {
+  margin-top: auto;
+  color: var(--accent);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.explore-card.is-coming-soon {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.explore-path-card {
+  min-height: 150px;
+  background: linear-gradient(135deg, rgba(23, 107, 91, 0.1), rgba(196, 160, 92, 0.1));
+}
+
+@media (max-width: 900px) {
+  .explore-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .explore-section {
+    padding-top: 18px;
+  }
+
+  .explore-grid,
+  .explore-path-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .explore-card,
+  .explore-path-card {
+    min-height: auto;
+    border-radius: 18px;
+    padding: 15px;
+  }
+
+  .explore-card-title {
+    font-size: 1.25rem;
+  }
+}

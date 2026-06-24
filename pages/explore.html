@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,9 @@
     <meta name="referrer" content="origin" />
     <meta
       name="description"
-      content="Join the Improving Muslim community on Instagram for calm updates about new Islamic lecture series, platform improvements, and focused learning."
+      content="Explore Islamic lectures by topic, learning path, and spiritual need on Improving Muslim."
     />
-    <link rel="canonical" href="https://improvingmuslim.com/pages/community.html" />
+    <link rel="canonical" href="https://improvingmuslim.com/pages/explore.html" />
     <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
@@ -17,12 +17,16 @@
     <meta name="theme-color" content="#176b5b" />
     <meta property="og:site_name" content="Improving Muslim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Join the Community | Improving Muslim" />
-    <meta property="og:description" content="Follow platform updates without ads, pop-ups, or distracting recommendations." />
+    <meta property="og:url" content="https://improvingmuslim.com/pages/explore.html" />
+    <meta property="og:title" content="Explore | Improving Muslim" />
+    <meta property="og:description" content="Browse Islamic lectures by topic, learning path, and spiritual need." />
     <meta property="og:image" content="https://improvingmuslim.com/public/social-preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Join the Community | Improving Muslim" />
-    <meta name="twitter:description" content="Follow platform updates without ads, pop-ups, or distracting recommendations." />
+    <meta name="twitter:title" content="Explore | Improving Muslim" />
+    <meta name="twitter:description" content="Browse Islamic lectures by topic, learning path, and spiritual need." />
     <meta name="twitter:image" content="https://improvingmuslim.com/public/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,7 +36,7 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260616-explore-nav" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
-    <title>Join the Community | Improving Muslim</title>
+    <title>Explore | Improving Muslim</title>
   </head>
   <body>
     <header class="site-header">
@@ -49,7 +53,7 @@
           <a href="./pages/saved.html">Saved</a>
         </div>
         <div class="nav-more" id="nav-more">
-                    <button class="nav-more-trigger" id="nav-more-trigger" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
+          <button class="nav-more-trigger" id="nav-more-trigger" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
             <svg class="nav-more-icon-menu" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             <span class="nav-more-label">More</span>
             <svg class="nav-more-icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
@@ -97,56 +101,33 @@
     </header>
 
     <main>
-      <section class="about-hero">
-        <p class="eyebrow">Join the community</p>
-        <h1>Stay close to the project without adding more noise to your life.</h1>
+      <section class="about-hero explore-hero">
+        <p class="eyebrow">Explore</p>
+        <h1>Find the topic you need next.</h1>
         <p>
-          The community space for Improving Muslim should be calm: new uploads, useful updates,
-          requests for feedback, and reminders about focused Islamic learning.
+          Browse the library by Islamic topic, learning path, or spiritual focus.
+          Built especially for mobile users who need a clearer doorway than a horizontal row of chips.
         </p>
       </section>
 
-      <section class="about-section" aria-labelledby="community-title">
-        <div class="section-heading">
-          <p class="eyebrow">Where we are starting</p>
-          <h2 id="community-title">Follow the project on Instagram</h2>
+      <section class="content-section explore-section" aria-labelledby="explore-topics-title">
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow">Browse by topic</p>
+            <h2 id="explore-topics-title">Categories</h2>
+          </div>
         </div>
-        <div class="info-grid">
-          <article class="info-card">
-            <h3>Instagram</h3>
-            <p>
-              The first public community channel for new series announcements, platform updates,
-              reminders, and posts about learning without digital distractions.
-            </p>
-            <a class="primary-link" href="https://www.instagram.com/improving_muslim/" target="_blank" rel="noopener noreferrer">Follow @improving_muslim</a>
-          </article>
-          <article class="info-card">
-            <h3>Telegram channel</h3>
-            <p>
-              Possible later for quiet announcements, new upload alerts, and quick calls for feedback
-              without relying only on social media feeds.
-            </p>
-            <span class="status-pill">Under consideration</span>
-          </article>
-          <article class="info-card">
-            <h3>Discord</h3>
-            <p>
-              Possible later for contributors, testers, designers, and developers. We will only add
-              it if it helps the work without turning the project into another noisy feed.
-            </p>
-            <span class="status-pill">Under consideration</span>
-          </article>
-        </div>
+        <div class="explore-grid" id="explore-topic-grid" aria-live="polite"></div>
       </section>
 
-      <section class="about-section about-closing" aria-labelledby="community-help-title">
-        <p class="eyebrow">Help shape it</p>
-        <h2 id="community-help-title">Tell us what kind of community would actually be useful.</h2>
-        <p>
-          If you have thoughts on Instagram, Telegram, Discord, update frequency, or what kind of community
-          would benefit learners without distracting them, send a note.
-        </p>
-        <a class="primary-link" href="./pages/feedback.html">Share feedback</a>
+      <section class="content-section explore-section" aria-labelledby="explore-paths-title">
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow">Quick paths</p>
+            <h2 id="explore-paths-title">Start with a need</h2>
+          </div>
+        </div>
+        <div class="explore-path-grid" id="explore-path-grid"></div>
       </section>
     </main>
 
@@ -160,7 +141,16 @@
       <a href="./pages/roadmap.html">Roadmap</a>
       <a href="./pages/copyright.html">Copyright</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
-    </footer>    <nav class="bottom-nav" aria-label="Main navigation">
+    </footer>
+
+    <script src="./data/series-registry.js" defer></script>
+    <script src="./data/standalone-lectures-data.js?v=20260625-omar" defer></script>
+    <script src="./scripts/explore-page.js?v=20260616-explore" defer></script>
+    <script src="./scripts/nav-more.js" defer></script>
+    <script src="./scripts/nav-state.js" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260608-auth-hotfix" defer></script>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
@@ -182,8 +172,5 @@
         <span>Speakers</span>
       </a>
     </nav>
-    <script src="./scripts/nav-more.js" defer></script>
-    <script src="./scripts/nav-state.js" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260608-auth-hotfix" defer></script>
   </body>
 </html>

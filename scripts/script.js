@@ -18,6 +18,11 @@ const categories = [
   { name: "Hereafter", value: "hereafter" },
 ];
 
+function initialCategoryFromUrl() {
+  const requestedCategory = new URLSearchParams(window.location.search).get("category");
+  return categories.some((category) => category.value === requestedCategory) ? requestedCategory : "foryou";
+}
+
 const speakers = window.speakers || [];
 const {
   escapeHtml,
@@ -182,7 +187,7 @@ const descriptions = {
 };
 
 const state = {
-  activeCategory: "foryou",
+  activeCategory: initialCategoryFromUrl(),
   sections: [],
   searchTerm: "",
   sortBy: "random",
