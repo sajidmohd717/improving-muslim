@@ -94,8 +94,9 @@ function escapeHtml(value) {
 }
 
 function countsForTopic(value) {
-  const seriesCount = (window.seriesConfig || []).filter((series) => series.category === value).length;
-  const videoCount = (window.standaloneLectures || []).filter((lecture) => lecture.category === value).length;
+  const cats = (e) => Array.isArray(e.categories) ? e.categories : [e.category].filter(Boolean);
+  const seriesCount = (window.seriesConfig || []).filter((series) => cats(series).includes(value)).length;
+  const videoCount = (window.standaloneLectures || []).filter((lecture) => cats(lecture).includes(value)).length;
   return { seriesCount, videoCount, total: seriesCount + videoCount };
 }
 

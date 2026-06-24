@@ -18,6 +18,22 @@ const categories = [
   { name: "Hereafter", value: "hereafter" },
 ];
 
+const categoryNameMap = Object.fromEntries(
+  categories.filter(c => c.value !== "foryou").map(c => [c.value, c.name])
+);
+
+function entryCategories(entry) {
+  return Array.isArray(entry.categories) ? entry.categories : [entry.category].filter(Boolean);
+}
+
+function topicLabel(cats) {
+  if (!Array.isArray(cats) || !cats.length) return "Series";
+  const names = cats.map(c => categoryNameMap[c] || c);
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]}, ${names[1]}`;
+  return `${names[0]}, ${names[1]} and ${names.length - 2} more`;
+}
+
 function initialCategoryFromUrl() {
   const requestedCategory = new URLSearchParams(window.location.search).get("category");
   return categories.some((category) => category.value === requestedCategory) ? requestedCategory : "foryou";
@@ -144,19 +160,23 @@ const localCategoryFallbacks = (() => {
   const map = {};
   for (const entry of (window.seriesConfig || [])) {
     if (!entry.title) continue;
-    if (!map[entry.category]) map[entry.category] = [];
-    let section = map[entry.category].find(sec => sec.sectionTitle === entry.sectionTitle);
-    if (!section) {
-      section = { sectionTitle: entry.sectionTitle, seriesList: [] };
-      map[entry.category].push(section);
+    const cats = entryCategories(entry);
+    for (const cat of cats) {
+      if (!map[cat]) map[cat] = [];
+      const sectionName = categoryNameMap[cat] || cat;
+      let section = map[cat].find(sec => sec.sectionTitle === sectionName);
+      if (!section) {
+        section = { sectionTitle: sectionName, seriesList: [] };
+        map[cat].push(section);
+      }
+      section.seriesList.push({
+        title: entry.title,
+        speaker: entry.speaker,
+        episodes: `${entry.episodeCount} Lectures`,
+        thumbnailImage: entry.thumbnailSrc,
+        link: `./pages/series-detail.html?id=${entry.slug}`,
+      });
     }
-    section.seriesList.push({
-      title: entry.title,
-      speaker: entry.speaker,
-      episodes: `${entry.episodeCount} Lectures`,
-      thumbnailImage: entry.thumbnailSrc,
-      link: `./pages/series-detail.html?id=${entry.slug}`,
-    });
   }
   return map;
 })();
@@ -295,11 +315,12 @@ function availableStandaloneLectures() {
 function localStandaloneSections(category = "foryou") {
   const sections = [];
   for (const lecture of availableStandaloneLectures()) {
-    if (category !== "foryou" && category !== lecture.category) continue;
+    const cats = entryCategories(lecture);
+    if (category !== "foryou" && !cats.includes(category)) continue;
     const card = {
       title: lecture.title,
       speaker: lecture.speaker,
-      topic: lecture.topic || "Standalone Video",
+      topic: topicLabel(cats),
       episodes: lecture.typeLabel || "Standalone Video",
       thumbnailImage: standaloneLectureThumbnailUrl(lecture),
       link: standaloneLectureUrl(lecture),
@@ -308,7 +329,7 @@ function localStandaloneSections(category = "foryou") {
       duration: lecture.duration,
       sourceId: lecture.id,
     };
-    const sectionTitle = lecture.topic || "Standalone Videos";
+    const sectionTitle = categoryNameMap[cats[0]] || cats[0] || "Standalone Videos";
     const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
     if (existing) {
       existing.seriesList.push(card);
@@ -323,22 +344,24 @@ function localSeriesSections(category = "foryou") {
   const sections = [];
   for (const entry of (window.seriesConfig || [])) {
     if (!entry.title) continue;
-    if (category !== "foryou" && category !== entry.category) continue;
+    const cats = entryCategories(entry);
+    if (category !== "foryou" && !cats.includes(category)) continue;
     const card = {
       title: entry.title,
       speaker: entry.speaker,
-      topic: entry.sectionTitle,
+      topic: topicLabel(cats),
       episodes: `${entry.episodeCount} Lectures`,
       thumbnailImage: entry.thumbnailSrc,
       link: `./pages/series-detail.html?id=${entry.slug}`,
       description: entry.description,
       contentType: "series",
     };
-    const existing = sections.find(sec => sec.sectionTitle === entry.sectionTitle);
+    const sectionTitle = categoryNameMap[cats[0]] || cats[0];
+    const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
     if (existing) {
       existing.seriesList.push(card);
     } else {
-      sections.push({ sectionTitle: entry.sectionTitle, seriesList: [card] });
+      sections.push({ sectionTitle, seriesList: [card] });
     }
   }
   return sections;
@@ -347,8 +370,8 @@ function localSeriesSections(category = "foryou") {
 function mergeLocalSeries(sections, category) {
   const localCategories = new Set([
     "foryou",
-    ...(window.seriesConfig || []).map(e => e.category),
-    ...availableStandaloneLectures().map((lecture) => lecture.category),
+    ...(window.seriesConfig || []).flatMap(e => entryCategories(e)),
+    ...availableStandaloneLectures().flatMap(lecture => entryCategories(lecture)),
   ]);
   if (!localCategories.has(category)) {
     return sections;
