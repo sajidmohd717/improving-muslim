@@ -94,6 +94,21 @@ clearBtn?.addEventListener("click", () => {
   renderSaved();
 });
 
-window.addEventListener("im-auth-state-changed", renderSaved);
+function updateStorageNote() {
+  const note = document.getElementById("storage-note");
+  const eyebrow = document.getElementById("saved-eyebrow");
+  if (!note) return;
+  const user = window.IMAuth?.currentUser;
+  if (user) {
+    note.textContent = "Synced across your devices.";
+    if (eyebrow) eyebrow.textContent = "Cloud synced";
+  } else {
+    note.textContent = "Stored locally — only visible on this device.";
+    if (eyebrow) eyebrow.textContent = "On this device";
+  }
+}
+
+window.addEventListener("im-auth-state-changed", () => { renderSaved(); updateStorageNote(); });
 
 renderSaved();
+updateStorageNote();

@@ -24,7 +24,7 @@
   document.head.appendChild(script);
 
   function initPage(series) {
-    const { formatViews, readJsonStorage, writeJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
+    const { formatViews, formatDuration, readJsonStorage, writeJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
     const episodeList = document.querySelector("#episode-list");
     const heroContent = document.querySelector(".series-hero > div");
     const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
@@ -169,6 +169,12 @@
 
     let isFirstRender = true;
 
+    function episodeDuration(episode) {
+      if (episode.duration) return formatDuration(episode.duration);
+      const stored = Number(readProgress(episode).duration) || 0;
+      return stored > 0 ? formatDuration(stored) : "";
+    }
+
     function renderEpisodeCard(episode, i) {
       const available = isEpisodeAvailable(episode);
       const isYouTubeOnly = !episode.videoSrc && Boolean(episode.youtubeId);
@@ -178,6 +184,7 @@
       const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
       const animClass = isFirstRender ? "reveal-anim" : "";
       const revealDelay = isFirstRender ? ` style="--reveal-delay:${Math.min(i, 8) * 40}ms"` : "";
+      const durText = episodeDuration(episode);
       const content = `
         <img
           src="${episodeThumbnailUrl(episode)}"
@@ -193,7 +200,7 @@
             ${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
           </span>
           <strong>${episode.title}</strong>
-          <span class="episode-date">${formatDate(episode.published)}</span>
+          <span class="episode-date">${formatDate(episode.published)}${durText ? ` · ${durText}` : ""}</span>
           ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
           ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
           ${available || isYouTubeOnly ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}

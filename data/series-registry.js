@@ -180,4 +180,18 @@ window.seriesConfig = [
     episodeCount: 604,
     availableCount: 3,
   },
+  {
+    globalKey: "lifeOfMuhammadMuftiMenkSeries",
+    slug: "life-of-muhammad-mufti-menk",
+    dataFile: "./data/life-of-muhammad-mufti-menk-data.js",
+    categories: ["seerah", "prophets"],
+    sectionTitle: "Seerah",
+    title: "Life of Muhammad (PBUH)",
+    speaker: "Mufti Menk",
+    thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg",
+    description: "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) — from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
+    playlistId: "PL91FA0E3B7837B214",
+    episodeCount: 30,
+    availableCount: 3,
+  },
 ];

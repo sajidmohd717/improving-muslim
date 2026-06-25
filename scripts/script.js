@@ -329,6 +329,9 @@ function localStandaloneSections(category = "foryou") {
       contentType: "video",
       duration: lecture.duration,
       sourceId: lecture.id,
+      _cats: cats,
+      _hasCaptions: Boolean(lecture.captionsSrc),
+      _recap: typeof lecture.recap === "string" ? lecture.recap.slice(0, 600) : "",
     };
     const sectionTitle = categoryNameMap[cats[0]] || cats[0] || "Standalone Videos";
     const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
@@ -370,6 +373,8 @@ function localSeriesSections(category = "foryou") {
       link: `./pages/series-detail.html?id=${entry.slug}`,
       description: entry.description,
       contentType: "series",
+      _globalKey: entry.globalKey,
+      _cats: cats,
     };
     const sectionTitle = categoryNameMap[cats[0]] || cats[0];
     const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
@@ -703,15 +708,41 @@ function renderCategories() {
 }
 
 function seriesMatchesSearch(series) {
-  if (!state.searchTerm) {
-    return true;
+  if (!state.searchTerm) return true;
+
+  const parts = [
+    series.title,
+    series.speaker,
+    series.topic,
+    series.episodes,
+    series.description,
+    series._recap,
+  ];
+
+  // Category slugs and display names
+  if (Array.isArray(series._cats)) {
+    series._cats.forEach(c => {
+      parts.push(c);
+      parts.push(categoryNameMap[c] || "");
+    });
   }
 
-  const haystack = [series.title, series.speaker, series.topic, series.episodes]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
+  // Duration as text (for standalone videos)
+  if (series.duration) parts.push(formatDuration(series.duration));
 
+  // Captions keyword
+  if (series._hasCaptions) parts.push("captions subtitles cc");
+
+  // Episode titles and recaps if that series' data file is loaded
+  if (series._globalKey && window[series._globalKey]) {
+    const epData = window[series._globalKey];
+    (epData.episodes || []).forEach(ep => {
+      parts.push(ep.title);
+      if (ep.recap) parts.push(ep.recap.slice(0, 400));
+    });
+  }
+
+  const haystack = parts.filter(Boolean).join(" ").toLowerCase();
   return haystack.includes(state.searchTerm);
 }
 
