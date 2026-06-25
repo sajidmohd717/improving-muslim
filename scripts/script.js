@@ -352,6 +352,14 @@ function availLabel(entry) {
   return { text: `${avail} of ${total} available`, cls: "avail-partial" };
 }
 
+function availBadge(entry) {
+  const total = entry.episodeCount || 0;
+  const avail = typeof entry.availableCount === "number" ? entry.availableCount : total;
+  if (avail === 0) return null;
+  if (avail >= total) return { text: "Fully available", cls: "badge-full" };
+  return { text: `${avail} of ${total} available`, cls: "badge-partial" };
+}
+
 function localSeriesSections(category = "foryou") {
   const sections = [];
   for (const entry of (window.seriesConfig || [])) {
@@ -375,6 +383,7 @@ function localSeriesSections(category = "foryou") {
       contentType: "series",
       _globalKey: entry.globalKey,
       _cats: cats,
+      _badge: availBadge(entry),
     };
     const sectionTitle = categoryNameMap[cats[0]] || cats[0];
     const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
@@ -849,9 +858,12 @@ function renderSeries() {
             </a>
             <div class="series-meta">
               <span>${escapeHtml(item.speaker || "Speaker TBA")}</span>
-              <span class="${item.episodesCls || ''}">${escapeHtml(item.episodes || "Lectures")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
+            ${item._badge
+              ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
+              : item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
+            }
             ${progressBarHtml}
             <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>

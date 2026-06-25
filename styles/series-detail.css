@@ -8,6 +8,92 @@
   padding: clamp(34px, 7vw, 76px) 0 24px;
 }
 
+/* ─── Hero CTA, progress & availability note ─────────────────────────────── */
+
+.series-cta-row {
+  margin-top: 22px;
+}
+
+.series-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px rgba(23, 107, 91, 0.28);
+}
+
+.series-cta-btn:hover,
+.series-cta-btn:focus-visible {
+  background: #145f50;
+  box-shadow: 0 6px 20px rgba(23, 107, 91, 0.38);
+  outline: none;
+}
+
+.series-progress-summary {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.series-avail-note {
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+/* ─── Episode filter row ─────────────────────────────────────────────────── */
+
+.ep-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ep-filter-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.13s, border-color 0.13s, color 0.13s;
+}
+
+.ep-filter-btn:hover,
+.ep-filter-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.ep-filter-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.ep-empty-state {
+  padding: 32px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
 .speaker-hero {
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
@@ -80,7 +166,12 @@
 }
 
 .episode-card.is-unavailable {
-  opacity: 0.72;
+  opacity: 0.5;
+  cursor: default;
+}
+
+.episode-card.is-unavailable img {
+  filter: saturate(0.4) brightness(0.95);
 }
 
 .episode-card img {

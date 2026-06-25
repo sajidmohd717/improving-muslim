@@ -32,12 +32,19 @@
     const episodeThumbnailUrl = (episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
     const progressKey = (episode) => window.IMUtils.progressKey(series, episode);
 
+    const availableEpisodes = series.episodes.filter(isEpisodeAvailable);
+    const totalEpisodes = series.episodes.length;
+    const hasUnavailable = availableEpisodes.length < totalEpisodes;
+    const showFilters = totalEpisodes >= 10 || hasUnavailable;
+
+    let activeFilter = "all";
+
     function renderHero() {
       const eyebrow = document.querySelector(".series-hero .eyebrow");
       const heading = document.querySelector(".series-hero h1");
       const heroCopy = document.querySelector(".series-hero .hero-copy");
       const thumbnail = document.querySelector(".series-hero img");
-      const episodesEyebrow = document.querySelector("#episodes .eyebrow");
+      const episodesEyebrow = document.getElementById("episodes-eyebrow");
       if (eyebrow) eyebrow.textContent = series.topic || "";
       if (heading) heading.textContent = series.title;
       if (heroCopy) heroCopy.textContent = series.description || "";
@@ -45,13 +52,114 @@
         thumbnail.src = series.thumbnailSrc;
         thumbnail.alt = `${series.title} series thumbnail`;
       }
-      if (episodesEyebrow) episodesEyebrow.textContent = `${series.episodes.length} episodes`;
+      if (episodesEyebrow) {
+        episodesEyebrow.textContent = hasUnavailable
+          ? `${availableEpisodes.length} of ${totalEpisodes} available`
+          : `${totalEpisodes} episodes`;
+      }
       document.title = `${series.title} | Improving Muslim`;
     }
     renderHero();
 
     function readProgress(episode) {
       return readJsonStorage(progressKey(episode), {});
+    }
+
+    function watchedCount() {
+      return availableEpisodes.filter(ep => readProgress(ep).completed).length;
+    }
+
+    function findResumeEpisode() {
+      let best = null, latestAt = 0;
+      for (const ep of availableEpisodes) {
+        const p = readProgress(ep);
+        if (p.completed) continue;
+        const t = Number(p.currentTime) || 0;
+        const at = Number(p.updatedAt) || 0;
+        if (t >= 10 && at > latestAt) { latestAt = at; best = ep; }
+      }
+      return best;
+    }
+
+    function findFirstUnwatched() {
+      return availableEpisodes.find(ep => !readProgress(ep).completed) || null;
+    }
+
+    function renderHeroCta() {
+      if (!heroContent || !availableEpisodes.length) return;
+      const resumeEp = findResumeEpisode();
+      const targetEp = resumeEp || findFirstUnwatched();
+      if (!targetEp) return; // all watched — no CTA needed
+
+      const isResume = Boolean(resumeEp);
+      const label = isResume ? `Resume · Episode ${resumeEp.number}` : "Start watching";
+      const url = episodeUrl(targetEp);
+      const playIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+      const row = document.createElement("div");
+      row.className = "series-cta-row";
+      row.innerHTML = `<a class="series-cta-btn" href="${url}">${playIcon}${label}</a>`;
+      heroContent.appendChild(row);
+    }
+
+    function renderProgressSummary() {
+      if (!heroContent || !availableEpisodes.length) return;
+      const watched = watchedCount();
+      if (!watched) return; // nothing watched yet — no summary needed
+      const total = availableEpisodes.length;
+      const p = document.createElement("p");
+      p.className = "series-progress-summary";
+      p.textContent = watched >= total
+        ? `All ${total} available episodes watched`
+        : `${watched} of ${total} available episodes watched`;
+      heroContent.appendChild(p);
+    }
+
+    function renderAvailabilityNote() {
+      if (!heroContent) return;
+      const avail = config.availableCount ?? availableEpisodes.length;
+      const total = config.episodeCount ?? totalEpisodes;
+      if (avail >= total) return; // fully available — no note needed
+      const p = document.createElement("p");
+      p.className = "series-avail-note";
+      p.textContent = `${avail} of ${total} episodes available now. More are being uploaded.`;
+      heroContent.appendChild(p);
+    }
+
+    function filteredEpisodes() {
+      switch (activeFilter) {
+        case "available":  return series.episodes.filter(isEpisodeAvailable);
+        case "unwatched":  return series.episodes.filter(ep => isEpisodeAvailable(ep) && !readProgress(ep).completed);
+        case "watched":    return series.episodes.filter(ep => readProgress(ep).completed);
+        default:           return series.episodes;
+      }
+    }
+
+    function renderEpisodeFilters() {
+      const row = document.getElementById("episode-filters-row");
+      if (!row || !showFilters) return;
+
+      const filters = [
+        { value: "all",       label: `All (${totalEpisodes})` },
+        { value: "available", label: `Available (${availableEpisodes.length})` },
+        { value: "unwatched", label: "Unwatched" },
+        { value: "watched",   label: "Watched" },
+      ];
+
+      row.className = "ep-filter-row";
+      row.innerHTML = filters.map(f => `
+        <button class="ep-filter-btn${f.value === activeFilter ? " is-active" : ""}" type="button" data-filter="${f.value}">
+          ${f.label}
+        </button>
+      `).join("");
+
+      row.addEventListener("click", e => {
+        const btn = e.target.closest(".ep-filter-btn");
+        if (!btn) return;
+        activeFilter = btn.dataset.filter;
+        row.querySelectorAll(".ep-filter-btn").forEach(b => b.classList.toggle("is-active", b === btn));
+        renderEpisodeList();
+      });
     }
 
     function progressLabel(episode) {
@@ -161,7 +269,11 @@
       shareButton.addEventListener("click", () => shareSeries(status));
     }
 
+    renderHeroCta();
+    renderProgressSummary();
+    renderAvailabilityNote();
     renderSeriesActions();
+    renderEpisodeFilters();
 
     /* ── Episode list rendering ─────────────────────────────────────────── */
 
@@ -182,7 +294,7 @@
       const isWatched = watchStatus === "Watched";
       const href = available ? ` href="${episodeUrl(episode)}"` : "";
       const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
-      const animClass = isFirstRender ? "reveal-anim" : "";
+      const animClass = isFirstRender && available ? "reveal-anim" : "";
       const revealDelay = isFirstRender ? ` style="--reveal-delay:${Math.min(i, 8) * 40}ms"` : "";
       const durText = episodeDuration(episode);
       const content = `
@@ -216,7 +328,12 @@
     }
 
     function renderEpisodeList() {
-      episodeList.innerHTML = series.episodes.map(renderEpisodeCard).join("");
+      const episodes = filteredEpisodes();
+      if (!episodes.length) {
+        episodeList.innerHTML = `<p class="ep-empty-state">No episodes match this filter.</p>`;
+      } else {
+        episodeList.innerHTML = episodes.map(renderEpisodeCard).join("");
+      }
       isFirstRender = false;
     }
 
