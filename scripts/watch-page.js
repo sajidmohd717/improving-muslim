@@ -43,7 +43,11 @@ const params = new URLSearchParams(window.location.search);
 const standaloneLectureId = params.get("lecture");
 const standaloneLecture = standaloneLectureId ? standaloneLectureRegistry[standaloneLectureId] : null;
 const isStandalone = Boolean(standaloneLecture);
-const seriesSlug = params.get("series") || "change-of-heart";
+const seriesSlug = params.get("series");
+if (!isStandalone && seriesSlug && !seriesRegistry[seriesSlug]) {
+  window.location.replace("./index.html");
+  throw new Error("Unknown series: " + seriesSlug);
+}
 const series = isStandalone
   ? {
       title: "Standalone Lectures",
@@ -54,7 +58,7 @@ const series = isStandalone
       playlistId: "standalone",
       episodes: [{ ...standaloneLecture, number: null }],
     }
-  : seriesRegistry[seriesSlug] || window.changeOfHeartSeries;
+  : seriesRegistry[seriesSlug || "change-of-heart"] || window.changeOfHeartSeries;
 const seriesPageUrl = series.seriesPageUrl || "./index.html";
 const episodeUrl = (episode) =>
   isStandalone ? window.IMUtils.standaloneLectureUrl(standaloneLecture) : window.IMUtils.episodeUrl(series, episode);
@@ -66,6 +70,10 @@ const progressKey = (episode) =>
   isStandalone ? window.IMUtils.standaloneProgressKey(standaloneLecture) : window.IMUtils.progressKey(series, episode);
 
 const requestedVideoId = params.get("video");
+if (!isStandalone && requestedVideoId && !series.episodes.some((ep) => ep.id === requestedVideoId)) {
+  window.location.replace(`./pages/series-detail.html?id=${series.slug}`);
+  throw new Error("Unknown episode: " + requestedVideoId);
+}
 const currentEpisode =
   series.episodes.find((episode) => episode.id === requestedVideoId) || series.episodes[0];
 const currentIndex = series.episodes.findIndex((episode) => episode.id === currentEpisode.id);
