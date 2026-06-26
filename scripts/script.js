@@ -384,6 +384,7 @@ function localSeriesSections(category = "foryou") {
       _globalKey: entry.globalKey,
       _cats: cats,
       _badge: availBadge(entry),
+      _label: entry.label || null,
     };
     const sectionTitle = categoryNameMap[cats[0]] || cats[0];
     const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
@@ -860,6 +861,7 @@ function renderSeries() {
               <span>${escapeHtml(item.speaker || "Speaker TBA")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
+            ${item._label ? `<span class="label-badge label-${item._label.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(item._label)}</span>` : ""}
             ${item._badge
               ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
               : item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""

@@ -357,6 +357,55 @@
   font-style: italic;
 }
 
+/* ─── Start Here label badge ─────────────────────────────────────────────── */
+
+.label-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.label-best-first-series {
+  background: rgba(23, 107, 91, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(23, 107, 91, 0.25);
+}
+
+.label-popular {
+  background: rgba(180, 60, 60, 0.09);
+  color: #a63a3a;
+  border: 1px solid rgba(180, 60, 60, 0.2);
+}
+
+.label-short-reminder {
+  background: rgba(140, 100, 30, 0.1);
+  color: #7a5c1a;
+  border: 1px solid rgba(140, 100, 30, 0.2);
+}
+
+.label-beginner-friendly {
+  background: rgba(40, 120, 60, 0.09);
+  color: #2a6e3a;
+  border: 1px solid rgba(40, 120, 60, 0.2);
+}
+
+.label-deep-study {
+  background: rgba(60, 80, 140, 0.09);
+  color: #3a4e8a;
+  border: 1px solid rgba(60, 80, 140, 0.2);
+}
+
+.label-complete-series {
+  background: rgba(80, 50, 120, 0.09);
+  color: #533278;
+  border: 1px solid rgba(80, 50, 120, 0.2);
+}
+
 /* ─── Availability badge (below meta on series cards) ────────────────────── */
 
 .avail-badge,
