@@ -214,6 +214,7 @@ const state = {
   sortBy: "random",
   activeSpeaker: null,
   contentType: "all",
+  hideWatched: localStorage.getItem("im-hide-watched") === "true",
 };
 
 function enrichSeries(item) {
@@ -278,6 +279,7 @@ const els = {
   sortOptions: document.querySelector("#sort-options"),
   contentTypeFilter: document.querySelector("#content-type-filter"),
   activeCategoryLabel: document.querySelector("#active-category-label"),
+  hideWatchedBtn: document.querySelector("#hide-watched-btn"),
 };
 
 function cleanJson(text) {
@@ -767,6 +769,16 @@ function seriesMatchesSpeaker(series) {
   return series.speaker === state.activeSpeaker;
 }
 
+function isItemWatched(item) {
+  if (item.contentType === "video") {
+    if (!item.sourceId) return false;
+    const stored = readJsonStorage(`${PROGRESS_PREFIX}standalone:${item.sourceId}`, {});
+    return Boolean(stored.completed);
+  }
+  const summary = seriesProgressSummary(item.title);
+  return Boolean(summary && summary.completed >= summary.total);
+}
+
 function standaloneVideoProgress(sourceId) {
   if (!sourceId) return null;
   const stored = readJsonStorage(`${PROGRESS_PREFIX}standalone:${sourceId}`, {});
@@ -808,6 +820,7 @@ function renderSeries() {
       .filter(seriesMatchesSearch)
       .filter(seriesMatchesSpeaker)
       .filter(seriesMatchesContentType)
+      .filter((item) => !state.hideWatched || !isItemWatched(item))
       .map(enrichSeries)
   );
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
@@ -954,6 +967,22 @@ function bindEvents() {
     });
     renderSeries();
   });
+
+  function syncHideWatchedBtn() {
+    if (!els.hideWatchedBtn) return;
+    els.hideWatchedBtn.setAttribute("aria-pressed", String(state.hideWatched));
+    els.hideWatchedBtn.classList.toggle("is-active", state.hideWatched);
+    els.hideWatchedBtn.querySelector("span").textContent = state.hideWatched ? "Show watched" : "Hide watched";
+  }
+
+  els.hideWatchedBtn?.addEventListener("click", () => {
+    state.hideWatched = !state.hideWatched;
+    localStorage.setItem("im-hide-watched", state.hideWatched);
+    syncHideWatchedBtn();
+    renderSeries();
+  });
+
+  syncHideWatchedBtn();
 
   els.seriesGrid.addEventListener("click", (event) => {
     const menuTrigger = event.target.closest(".card-menu-trigger");

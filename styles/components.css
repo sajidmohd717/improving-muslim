@@ -212,6 +212,35 @@
   gap: 6px;
 }
 
+.hide-watched-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 150ms, background 150ms, color 150ms;
+}
+
+.hide-watched-btn:hover,
+.hide-watched-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.hide-watched-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
 .sort-trigger {
   display: inline-flex;
   align-items: center;
