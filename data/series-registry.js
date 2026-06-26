@@ -198,6 +198,7 @@ window.seriesConfig = [
     label: "Complete series",
     sectionTitle: "Seerah",
     title: "Life of Muhammad (PBUH)",
+    apiTitle: "Ramadan 2012 - Life of Muhammad - PBUH",
     speaker: "Mufti Menk",
     thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg",
     description: "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) — from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
