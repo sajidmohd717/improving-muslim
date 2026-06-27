@@ -339,10 +339,9 @@ if (currentEpisode.recap) {
   recapPanel.hidden = false;
 }
 
-// ── Stall detection ────────────────────────────────────────────────────────
-// Catches videos that load but never become playable (e.g. moov atom at end
-// of file, or a corrupted upload). If the browser has buffered zero data after
-// STALL_TIMEOUT_MS we show a friendly error and silently report it.
+// ── Stall / error detection ─────────────────────────────────────────────────
+// Diagnoses why a video failed and returns a user-facing message + cause tag.
+// Cause precedence: real MediaError > slow connection > unknown stall.
 const STALL_TIMEOUT_MS = 20_000;
 let stallTimer = null;
 
@@ -353,12 +352,37 @@ function clearStallTimer() {
   }
 }
 
-function reportVideoStall(videoSrc, readyState) {
+function diagnoseVideoFailure(videoEl) {
+  const err = videoEl.error;
+  if (err) {
+    if (err.code === MediaError.MEDIA_ERR_DECODE) {
+      return { cause: 'decode', heading: 'Playback error', body: 'This video has a decode error — it may be corrupted. We\'ve been notified and will look into it.' };
+    }
+    if (err.code === MediaError.MEDIA_ERR_NETWORK) {
+      return { cause: 'network', heading: 'Network error', body: 'Couldn\'t reach this video — check your internet connection and try refreshing.' };
+    }
+    if (err.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+      return { cause: 'unsupported', heading: 'Format not supported', body: 'Your browser can\'t play this video format. Try a different browser.' };
+    }
+    return { cause: 'error', heading: 'Playback error', body: 'An error occurred playing this video. Please try refreshing the page.' };
+  }
+  const conn = navigator.connection;
+  const slowConn = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g');
+  const hasData = videoEl.buffered.length > 0;
+  if (slowConn || hasData) {
+    return { cause: 'slow', heading: 'Slow connection', body: 'Your connection is too slow to stream this video right now. Try pausing for a minute to let it buffer, then press play.' };
+  }
+  return { cause: 'stall', heading: 'Video couldn\'t load', body: 'The file may need to be re-processed before it can stream. We\'ve been notified and will look into it — please check back later.' };
+}
+
+function reportVideoIssue(videoSrc, cause, readyState) {
+  const conn = navigator.connection;
   const payload = new FormData();
-  payload.set('_subject', 'Video stall: ' + location.pathname);
+  payload.set('_subject', `Video ${cause}: ` + location.pathname);
   payload.set('_template', 'box');
   payload.set('page', location.href);
-  payload.set('error', `Video stalled after ${STALL_TIMEOUT_MS / 1000}s — readyState: ${readyState}, buffered: 0`);
+  payload.set('cause', cause);
+  payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}`);
   payload.set('videoSrc', videoSrc || '(unknown)');
   payload.set('browser', navigator.userAgent);
   fetch('https://formsubmit.co/ajax/contact@improvingmuslim.com', {
@@ -367,7 +391,17 @@ function reportVideoStall(videoSrc, readyState) {
     headers: { Accept: 'application/json' },
   }).catch(() => { /* silent */ });
 }
-// ───────────────────────────────────────────────────────────────────────────
+
+function showVideoError(videoEl, videoSrc) {
+  const { cause, heading, body } = diagnoseVideoFailure(videoEl);
+  unavailable.innerHTML = `<strong>${heading}</strong><span>${body}</span>`;
+  unavailable.classList.remove("is-hidden");
+  // Only report issues we need to investigate; slow connections are expected
+  if (cause !== 'slow') {
+    reportVideoIssue(videoSrc, cause, videoEl.readyState);
+  }
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 player.addEventListener("loadstart", () => {
   unavailable.classList.add("is-hidden");
@@ -376,15 +410,9 @@ player.addEventListener("loadstart", () => {
   if (currentEpisode.videoSrc) {
     clearStallTimer();
     stallTimer = setTimeout(() => {
-      // Zero buffered data after timeout → structural file problem, not a slow connection
-      if (player.readyState < 2 && player.buffered.length === 0) {
+      if (player.readyState < 2) {
         setVideoLoading(false);
-        unavailable.innerHTML = `
-          <strong>This video couldn't load</strong>
-          <span>The file may need to be re-processed before it can stream. We've been notified and will look into it — please check back later.</span>
-        `;
-        unavailable.classList.remove("is-hidden");
-        reportVideoStall(currentEpisode.videoSrc, player.readyState);
+        showVideoError(player, currentEpisode.videoSrc);
       }
     }, STALL_TIMEOUT_MS);
   }
@@ -408,7 +436,7 @@ player.addEventListener("error", () => {
   clearStallTimer();
   setVideoLoading(false);
   if (player.currentSrc) {
-    unavailable.classList.remove("is-hidden");
+    showVideoError(player, player.currentSrc);
   }
 });
 
@@ -590,3 +618,20 @@ if (window.matchMedia("(max-width: 900px)").matches) {
     episodeSidebar.insertBefore(btn, episodeList);
   }
 }
+
+// ── Keyboard shortcuts ───────────────────────────────────────────────────────
+// Override the browser's native arrow-key seek (varies: 5s Chrome, 15s Firefox)
+// to a consistent 10 seconds. Only active when no text input is focused.
+document.addEventListener("keydown", (e) => {
+  if (e.target.matches("input, textarea, select, [contenteditable]")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!currentEpisode.videoSrc || player.readyState === 0) return;
+
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    player.currentTime = Math.max(0, player.currentTime - 10);
+  } else if (e.key === "ArrowRight") {
+    e.preventDefault();
+    player.currentTime = Math.min(player.duration || Infinity, player.currentTime + 10);
+  }
+});
