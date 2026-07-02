@@ -170,7 +170,7 @@ Do not commit real video files to the repository. The `assets/videos/` folders o
 
 Cloudflare's dashboard uploader has a 300 MB limit. Use the S3-compatible API for larger files.
 
-**Always run ffmpeg before uploading** — see the moov atom section below. Skipping this step causes videos to buffer indefinitely on the site.
+Most uploaded videos are already web-streamable. If a video plays locally and the public URL starts promptly in the browser, you can upload it as-is. If the player stalls on "Loading video..." after upload, or you are unsure about the file's streaming layout, use the ffmpeg remux step below before re-uploading.
 
 Configure AWS CLI with an R2 profile:
 
@@ -198,13 +198,13 @@ aws s3 cp "C:\Users\sajid\Downloads\qadr-sabr.mp4" `
   --content-type "video/mp4" --profile r2
 ```
 
-### Fix video before uploading (moov atom)
+### Fix a video that stalls before playing (moov atom)
 
-**Symptom:** Video uploads successfully and the URL is correct, but the player shows "Loading video..." and never starts playing. Every other video works fine. The stall detector will fire an email report after 20 seconds.
+**Symptom:** Video uploads successfully and the URL is correct, but the player shows "Loading video..." and never starts playing. Other videos may work fine. The stall detector can fire an email report after 20 seconds.
 
 **Cause:** The MP4 file has its metadata (`moov` atom) at the **end** of the file instead of the beginning. This happens with videos downloaded from certain sites or tools that don't optimise for web streaming. The browser needs the metadata first — without it, it must download the entire file before playing anything.
 
-**Fix:** Always run ffmpeg on the file before uploading. This remuxes it (no re-encoding, no quality loss) and moves the metadata to the front:
+**Fix:** Run ffmpeg on the affected file, then re-upload the fixed version. This remuxes it (no re-encoding, no quality loss) and moves the metadata to the front:
 
 ```powershell
 ffmpeg -i "C:\Users\sajid\Downloads\video.mp4" -c copy -movflags faststart "C:\Users\sajid\Downloads\video-fixed.mp4"
