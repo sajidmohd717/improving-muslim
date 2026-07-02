@@ -144,8 +144,6 @@
     angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
     changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
     heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-    messageQuran: "./assets/thumbnail/message-of-the-quran/episodes/episode-01.jpg",
-    parablesQuran: "./assets/thumbnail/parables-of-the-quran/episodes/episode-01.jpg",
     wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
     seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
     seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",

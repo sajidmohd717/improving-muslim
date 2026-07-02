@@ -129,18 +129,6 @@ const fallbackData = [
       },
     ],
   },
-  {
-    sectionTitle: "General Quran Tafsir",
-    seriesList: [
-      {
-        title: "The Message of the Quran in 30 Lessons",
-        speaker: "Yasir Qadhi",
-        episodes: "30 Lectures",
-        thumbnailImage: "messageQuran",
-        link: "./pages/series-detail.html?id=message-of-the-quran",
-      },
-    ],
-  },
 ];
 
 const localCategoryFallbacks = (() => {
@@ -185,8 +173,6 @@ const descriptions = {
     "A structured study of Imam an-Nawawi's foundational hadith collection with lessons for belief, worship, and character.",
   "10 Promised Jannah":
     "A focused series on the ten companions who were promised Jannah, exploring their lives, virtues, sacrifice, and lessons for believers today.",
-  "The Message of the Quran in 30 Lessons":
-    "A structured overview of the Quran's message across 30 lessons, moving through the surahs and major themes of guidance, faith, worship, law, stories, and the Hereafter.",
   "Allah's Words to Musa Were Meant for You Too":
     "A calming standalone reminder from the story of Musa about listening to Allah's words, protecting salah, and preparing for the meeting with Him.",
 };

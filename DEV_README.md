@@ -40,7 +40,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-The platform currently has 13 series and 6 standalone lectures.
+The platform currently has 12 series and 7 standalone lectures.
 
 ### Series
 
@@ -54,7 +54,6 @@ The platform currently has 13 series and 6 standalone lectures.
 | Change of Heart | Ali Hammuda | Purification | Partially unlocked |
 | Why Me? | Omar Suleiman | Purification | Catalogue only |
 | Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
-| Message of the Quran in 30 Lessons | Yasir Qadhi | Quran | Partially unlocked |
 | Life of Muhammad (PBUH) | Mufti Menk | Seerah | Partially unlocked |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
 | Madina Arabic Books | Asif Meherali | Arabic | Partially unlocked |
@@ -71,7 +70,6 @@ The platform currently has 13 series and 6 standalone lectures.
 | Only Allah Knows What You Went Through | Omar Suleiman | Purification | Uploaded |
 | DUA: How to Get Your Dreams! | Yahya Al-Raaby | Dua | Uploaded |
 
-Note: the Parables of the Quran series was removed from the registry (commit `0ed4aac`). Its data file `data/parables-of-the-quran-data.js` and assets are kept in the repo for a possible future re-add, but nothing loads it.
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
 
