@@ -92,7 +92,7 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/change-of-heart/episodes",
     playlistId: "PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
     episodeCount: 16,
-    availableCount: 5,
+    availableCount: 10,
   },
   {
     globalKey: "whyMeSeries",

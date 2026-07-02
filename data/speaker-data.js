@@ -28,6 +28,13 @@ window.speakers = [
       "Shaykh Abu Bakr Zoud is an Australian Islamic speaker, educator, and da'ee known for his engaging reminders and practical approach to Islamic learning. A graduate of the Islamic University of Madinah, Faculty of Qur'an and Islamic Studies, he specializes in Qur'aat and teaches Tafseer at the Islamic College of Australia. Through lectures, classes, and online content, he focuses on connecting Muslims with the Qur'an, strengthening faith, and applying Islamic guidance to everyday life.",
   },
   {
+    name: "Abu Taymiyyah",
+    slug: "abu-taymiyyah",
+    image: "./assets/speaker/abu-taymiyyah.jpg",
+    bio:
+      "Abu Taymiyyah is an Islamic teacher and speaker known for direct, evidence-based reminders and lessons on worship, creed, character, and everyday Muslim practice. He is associated with Taymiyyah Institute and has studied Islamic law and religious sciences through traditional learning settings, including the Islamic University of Madinah. His talks often focus on helping Muslims build clarity, discipline, and consistency in their relationship with Allah.",
+  },
+  {
     name: "Omar Suleiman",
     slug: "omar-suleiman",
     image: "./assets/speaker/os.jpg",

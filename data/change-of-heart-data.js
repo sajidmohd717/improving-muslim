@@ -312,7 +312,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Reliance (Tawakkul)",
       published: "2022-03-04",
       views: 61000,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-6.mp4",
     },
     {
       number: 7,
@@ -320,7 +320,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Humble Submissiveness (Khushu)",
       published: "2022-03-18",
       views: 48000,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-7.mp4",
     },
     {
       number: 8,
@@ -328,7 +328,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Love of Allah (Mahabbah)",
       published: "2022-04-04",
       views: 40000,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-8.mp4",
     },
     {
       number: 9,
@@ -336,7 +336,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Healthy Shame (Haya)",
       published: "2022-07-18",
       views: 59000,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-9.mp4",
     },
     {
       number: 10,
@@ -344,7 +344,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Gratitude (Shukr)",
       published: "2022-07-25",
       views: 38000,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
+      videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-10.mp4",
     },
     {
       number: 11,

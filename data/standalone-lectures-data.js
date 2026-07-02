@@ -124,6 +124,24 @@ The solution is the daily Quran. The first continuous obligation Allah gave the 
     videoSrc: "https://videos.improvingmuslim.com/omar-suleiman/stand-alone/Only-Allah-Knows-What-You-Went-Through.mp4",
   },
   {
+    id: "poem-to-soften-the-hardened-heart",
+    title: "A Poem To Soften The Hardened Heart",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["purification"],
+    topic: "Softening the Heart",
+    typeLabel: "Standalone Video",
+    published: "2025-09-19",
+    duration: 9670,
+    sourceUrl: "https://www.youtube.com/watch?v=JdI34bRFF2I",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/poem-to-soften-the-hardened-heart.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/poem-to-soften-the-hardened-heart.mp4",
+    description:
+      "A reflective lesson on Ibn Rajab al-Hanbali's poem condemning hardness of the heart, exploring how heedlessness, sins, and attachment to the world affect the believer, and how remembrance, repentance, and sincere tears can revive the heart.",
+  },
+  {
     id: "allahs-words-to-musa-were-meant-for-you-too",
     title: "Allah's Words to Musa Were Meant for You Too",
     speaker: "Abu Bakr Zoud",
