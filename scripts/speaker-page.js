@@ -5,28 +5,10 @@ const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standa
 const localSeries = getAllSeries();
 const standaloneLectures = getStandaloneLectures();
 
-const curatedSeries = [
-  {
-    title: "The Parables of The Quran",
-    speaker: "Yasir Qadhi",
-    topic: "General Quran Tafsir",
-    episodes: "29 Lectures",
-    thumbnailImage: imageMap.parablesQuran,
-    link: "./pages/series-detail.html?id=parables-of-the-quran",
-    description:
-      "A tafsir series exploring the parables of the Quran and the guidance they contain.",
-  },
-  {
-    title: "Wisdoms of The Quran - Ramadan Series 2024",
-    speaker: "Yasir Qadhi",
-    topic: "General Quran Tafsir",
-    episodes: "26 Lectures",
-    thumbnailImage: imageMap.wisdomsQuran,
-    link: "./pages/series-detail.html?id=wisdoms-of-the-quran",
-    description:
-      "A Ramadan series focused on selected Quranic wisdoms and their practical meaning.",
-  },
-];
+// Extra hand-curated cards for series that are not in the registry.
+// Series removed from the registry must be removed here too, or their
+// cards will link to a redirect loop.
+const curatedSeries = [];
 
 const els = {
   title: document.querySelector("title"),

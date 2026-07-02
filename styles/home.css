@@ -158,6 +158,72 @@
   padding: 10px 16px;
 }
 
+.continue-hero {
+  grid-column: 1 / -1;
+}
+
+.continue-hero .continue-card-link {
+  grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.continue-hero .continue-thumb {
+  height: 100%;
+  aspect-ratio: auto;
+  min-height: 180px;
+}
+
+.continue-hero .continue-body {
+  gap: 8px;
+  align-content: center;
+  padding: 20px 24px;
+}
+
+.continue-hero .continue-body strong {
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.continue-hero .continue-body em {
+  font-size: 0.85rem;
+}
+
+.continue-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(13, 15, 14, 0.35);
+}
+
+.continue-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.continue-resume-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  margin-top: 6px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.continue-hero:hover .continue-resume-btn,
+.continue-hero:focus-within .continue-resume-btn {
+  background: var(--accent-strong);
+}
+
 .continue-ring {
   position: absolute;
   right: 8px;

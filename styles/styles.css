@@ -3,10 +3,10 @@
    Order matters: later files can override earlier ones.
 ───────────────────────────────────────────────────────────────────────────── */
 
-@import "./base.css";          /* CSS custom properties, reset, sr-only, is-hidden  */
+@import "./base.css?v=20260702-glow-settle";          /* CSS custom properties, reset, sr-only, is-hidden  */
 @import "./nav.css?v=20260616-explore-nav";    /* Site header, top nav, bottom mobile nav            */
 @import "./layout.css?v=20260615-search";        /* Hero, content-section wrappers, section headings   */
-@import "./home.css?v=20260615-touch";          /* Continue-watching strip & cards                    */
+@import "./home.css?v=20260702-continue-hero";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260626-label-badge";   /* Series cards, speaker cards, category filters      */
 @import "./components.css?v=20260626-hide-watched"; /* Shared UI: buttons, panels, sort, footer, errors  */
 @import "./about.css";         /* About page                                         */
@@ -14,10 +14,10 @@
 @import "./feedback.css";      /* Feedback page & form                               */
 @import "./explore.css?v=20260616-explore"; /* Explore page category discovery                 */
 @import "./series-detail.css?v=20260625-series-detail";        /* Series/speaker hero, episode list & cards   */
-@import "./watch.css?v=20260615-collapse";         /* Video player, watch layout, sidebar, autoplay      */
+@import "./watch.css?v=20260702-up-next";         /* Video player, watch layout, sidebar, autoplay      */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260615-compact-targets-v2"; /* Breakpoint overrides (≤900px, ≤600px)       */
+@import "./responsive.css?v=20260702-continue-hero"; /* Breakpoint overrides (≤900px, ≤600px)       */
 @import "./history.css?v=20260627-relative-time";    /* Watch history page                            */
 @import "./saved.css?v=20260627-grouped-saved";      /* Saved items page                              */
 @import "./roadmap.css";       /* Roadmap page                                       */

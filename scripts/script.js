@@ -139,20 +139,6 @@ const fallbackData = [
         thumbnailImage: "messageQuran",
         link: "./pages/series-detail.html?id=message-of-the-quran",
       },
-      {
-        title: "The Parables of The Quran",
-        speaker: "Yasir Qadhi",
-        episodes: "29 Lectures",
-        thumbnailImage: "parablesQuran",
-        link: "./pages/series-detail.html?id=parables-of-the-quran",
-      },
-      {
-        title: "Wisdoms of The Quran - Ramadan Series 2024",
-        speaker: "Yasir Qadhi",
-        episodes: "26 Lectures",
-        thumbnailImage: "wisdomsQuran",
-        link: "./pages/series-detail.html?id=wisdoms-of-the-quran",
-      },
     ],
   },
 ];
@@ -201,8 +187,6 @@ const descriptions = {
     "A focused series on the ten companions who were promised Jannah, exploring their lives, virtues, sacrifice, and lessons for believers today.",
   "The Message of the Quran in 30 Lessons":
     "A structured overview of the Quran's message across 30 lessons, moving through the surahs and major themes of guidance, faith, worship, law, stories, and the Hereafter.",
-  "The Parables of The Quran":
-    "A Ramadan tafsir series exploring Quranic parables, why Allah uses them, and how these examples shape faith, sincerity, charity, knowledge, gratitude, and attachment to the Hereafter.",
   "Allah's Words to Musa Were Meant for You Too":
     "A calming standalone reminder from the story of Musa about listening to Allah's words, protecting salah, and preparing for the meeting with Him.",
 };
@@ -211,7 +195,7 @@ const state = {
   activeCategory: initialCategoryFromUrl(),
   sections: [],
   searchTerm: "",
-  sortBy: "random",
+  sortBy: "featured",
   activeSpeaker: null,
   contentType: "all",
   hideWatched: localStorage.getItem("im-hide-watched") === "true",
@@ -250,6 +234,11 @@ function stableRandomKey(title) {
 }
 
 function getSortedSeries(list) {
+  // "featured" keeps the curated registry/section order so returning users
+  // find series where they left them. Shuffle is opt-in per session.
+  if (state.sortBy === "featured") {
+    return list;
+  }
   if (state.sortBy === "random") {
     return [...list].sort((a, b) => stableRandomKey(a.title) - stableRandomKey(b.title));
   }
@@ -302,9 +291,17 @@ function flattenSeries(sections) {
   return sections.flatMap((section) => section.seriesList);
 }
 
+// Slugs of series registered in data/series-registry.js. Cards from the
+// remote series-api that point at an unregistered series-detail id would
+// dead-end in a redirect back to the browse page, so they are dropped.
+const registeredSlugs = new Set((window.seriesConfig || []).map((entry) => entry.slug));
+
 function isAllowedSeries(series) {
   const speaker = (series.speaker || "").trim().toLowerCase();
-  return !excludedSpeakerNames.has(speaker);
+  if (excludedSpeakerNames.has(speaker)) return false;
+  const detailMatch = /series-detail\.html\?id=([a-z0-9-]+)/.exec(series.link || "");
+  if (detailMatch && !registeredSlugs.has(detailMatch[1])) return false;
+  return true;
 }
 
 function availableLocalSeries() {
@@ -634,34 +631,58 @@ function renderContinueWatching() {
   })
   .filter(Boolean)
   .sort((a, b) => b.progress.updatedAt - a.progress.updatedAt)
-  .slice(0, 6);
+  .slice(0, 4);
 
   if (!els.continueSection || !els.continueList) {
     return;
   }
 
+  // New visitors see the catalogue first; the section only appears once
+  // there is something to resume.
   if (!items.length) {
-    const hasHistory = allProgressKeys.length > 0;
-    els.continueList.innerHTML = hasHistory
-      ? `<div class="continue-empty">
-           <p class="continue-empty-heading">All caught up</p>
-           <p class="continue-empty-body">You've finished everything in progress. Start the next series when you're ready.</p>
-           <a class="primary-link" href="./pages/series.html">Browse series</a>
-         </div>`
-      : `<div class="continue-empty">
-           <p class="continue-empty-heading">No lectures started yet</p>
-           <p class="continue-empty-body">Pick a series to begin — your progress saves automatically so you can pick up where you left off.</p>
-           <a class="primary-link" href="./pages/series.html">Browse series</a>
-         </div>`;
+    els.continueSection.hidden = true;
+    els.continueList.innerHTML = "";
     return;
   }
+  els.continueSection.hidden = false;
 
-  els.continueList.innerHTML = items
+  const removeButton = `
+    <button class="continue-remove" type="button" aria-label="Remove from watch history">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+
+  const [heroItem, ...restItems] = items;
+  const heroPercent = Math.round(heroItem.progress.percent * 100);
+  const heroMinutesLeft = Math.max(1, Math.round((heroItem.progress.duration - heroItem.progress.currentTime) / 60));
+  const heroCard = `
+    <div class="continue-card continue-hero reveal-anim" data-progress-key="${escapeHtml(heroItem.key)}">
+      <a class="continue-card-link" href="${heroItem.url}">
+        <div class="continue-thumb">
+          <img src="${heroItem.thumbnail}" alt="" />
+          <div class="continue-bar" role="img" aria-label="${heroPercent}% watched">
+            <span style="width:${heroPercent}%"></span>
+          </div>
+        </div>
+        <div class="continue-body">
+          <small>${escapeHtml(heroItem.eyebrow)}</small>
+          <strong>${escapeHtml(heroItem.title)}</strong>
+          <em>Resume at ${formatDuration(heroItem.progress.currentTime)} · ${heroMinutesLeft} min left</em>
+          <span class="continue-resume-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Resume
+          </span>
+        </div>
+      </a>
+      ${removeButton}
+    </div>
+  `;
+
+  const compactCards = restItems
     .map((item, i) => {
       const { progress, key } = item;
       const percent = Math.round(progress.percent * 100);
       return `
-        <div class="continue-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms" data-progress-key="${escapeHtml(key)}">
+        <div class="continue-card reveal-anim" style="--reveal-delay:${(i + 1) * 50}ms" data-progress-key="${escapeHtml(key)}">
           <a class="continue-card-link" href="${item.url}">
             <div class="continue-thumb">
               <img src="${item.thumbnail}" alt="" loading="lazy" />
@@ -680,13 +701,13 @@ function renderContinueWatching() {
               <em>Resume at ${formatDuration(progress.currentTime)}</em>
             </div>
           </a>
-          <button class="continue-remove" type="button" aria-label="Remove from watch history">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+          ${removeButton}
         </div>
       `;
     })
     .join("");
+
+  els.continueList.innerHTML = heroCard + compactCards;
 }
 
 function renderSpeakers() {
@@ -1043,7 +1064,7 @@ function bindEvents() {
     }
   });
 
-  const sortLabels = { random: "Default", views: "Most viewed", az: "A–Z" };
+  const sortLabels = { featured: "Default", random: "Shuffle", views: "Most viewed", az: "A–Z" };
 
   els.sortTrigger?.addEventListener("click", (e) => {
     e.stopPropagation();

@@ -157,6 +157,39 @@
     scroll-snap-align: start;
   }
 
+  .continue-hero {
+    flex: 0 0 86%;
+  }
+
+  .continue-hero .continue-card-link {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .continue-hero .continue-thumb {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+    height: auto;
+  }
+
+  .continue-hero .continue-body {
+    gap: 4px;
+    padding: 12px 14px 14px;
+  }
+
+  .continue-hero .continue-body strong {
+    font-size: 1.05rem;
+  }
+
+  .continue-hero .continue-body em {
+    font-size: 0.72rem;
+  }
+
+  .continue-resume-btn {
+    margin-top: 4px;
+    padding: 8px 16px;
+    font-size: 0.76rem;
+  }
+
   .continue-thumb span {
     right: 5px;
     bottom: 5px;

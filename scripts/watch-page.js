@@ -559,6 +559,29 @@ if (nextLink) {
   nextLink.textContent = nextEpisode ? "Next episode" : isStandalone ? "Browse lectures" : "Series overview";
 }
 
+// Real next-episode card at the top of the sidebar — thumbnail, title, and
+// duration make continuing one obvious tap instead of a text label.
+if (!isStandalone && nextEpisode && episodeSidebar) {
+  const nextMins = nextEpisode.duration ? `${Math.round(nextEpisode.duration / 60)} min` : "";
+  const nextRecap = nextEpisode.recap ? "Recap available" : "";
+  const nextMeta = [nextMins, nextRecap].filter(Boolean).join(" · ");
+  const upNextCard = document.createElement("a");
+  upNextCard.className = "up-next-card";
+  upNextCard.href = episodeUrl(nextEpisode);
+  upNextCard.innerHTML = `
+    <img src="${episodeThumbnailUrl(nextEpisode)}" alt="" loading="lazy" />
+    <span class="up-next-body">
+      <small>Up next</small>
+      <strong>Ep ${nextEpisode.number} — ${nextEpisode.title}</strong>
+      ${nextMeta ? `<em>${nextMeta}</em>` : ""}
+    </span>
+    <span class="up-next-play" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+    </span>
+  `;
+  episodeSidebar.insertBefore(upNextCard, episodeList);
+}
+
 episodeList.innerHTML = isStandalone ? "" : series.episodes
   .map(
     (episode) => {

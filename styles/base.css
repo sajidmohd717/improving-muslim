@@ -77,7 +77,8 @@ body {
     linear-gradient(180deg, #fbf8f0 0%, var(--bg) 38%, #f4efe5 100%);
   color: var(--ink);
   font-family: Inter, Arial, Helvetica, sans-serif;
-  animation: hero-glow 16s ease-in-out infinite alternate;
+  /* 2 alternate iterations: drifts out and back once, then stops repainting. */
+  animation: hero-glow 16s ease-in-out 2 alternate;
 }
 
 @media (prefers-color-scheme: dark) {
