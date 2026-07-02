@@ -190,7 +190,7 @@
 
 .content-type-filter button.is-active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .content-type-filter button:focus-visible {
@@ -238,7 +238,7 @@
 .hide-watched-btn.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .sort-trigger {
@@ -648,7 +648,7 @@ details[open] .takeaways-toggle::after {
   height: 26px;
   border-radius: 50%;
   background: var(--gold);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.75rem;
   font-weight: 700;
   flex-shrink: 0;

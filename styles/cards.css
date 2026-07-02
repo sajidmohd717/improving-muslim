@@ -128,7 +128,7 @@
 .category-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
   outline: none;
 }
 
@@ -406,6 +406,24 @@
   border: 1px solid rgba(80, 50, 120, 0.2);
 }
 
+/* Dark-mode label badges: the light-mode inks above are too dark to read
+   on dark surfaces, so each label gets a lighter ink and stronger tint. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .label-best-first-series { background: rgba(108, 196, 173, 0.14); color: var(--accent-strong); border-color: rgba(108, 196, 173, 0.32); }
+  :root:not([data-theme="light"]) .label-popular { background: rgba(224, 140, 148, 0.14); color: #f0aab1; border-color: rgba(224, 140, 148, 0.32); }
+  :root:not([data-theme="light"]) .label-short-reminder { background: rgba(215, 180, 92, 0.14); color: #e6c67e; border-color: rgba(215, 180, 92, 0.32); }
+  :root:not([data-theme="light"]) .label-beginner-friendly { background: rgba(120, 200, 145, 0.14); color: #9bd8ac; border-color: rgba(120, 200, 145, 0.32); }
+  :root:not([data-theme="light"]) .label-deep-study { background: rgba(140, 160, 225, 0.14); color: #b3c1ee; border-color: rgba(140, 160, 225, 0.32); }
+  :root:not([data-theme="light"]) .label-complete-series { background: rgba(170, 130, 220, 0.14); color: #ccb0ec; border-color: rgba(170, 130, 220, 0.32); }
+}
+
+:root[data-theme="dark"] .label-best-first-series { background: rgba(108, 196, 173, 0.14); color: var(--accent-strong); border-color: rgba(108, 196, 173, 0.32); }
+:root[data-theme="dark"] .label-popular { background: rgba(224, 140, 148, 0.14); color: #f0aab1; border-color: rgba(224, 140, 148, 0.32); }
+:root[data-theme="dark"] .label-short-reminder { background: rgba(215, 180, 92, 0.14); color: #e6c67e; border-color: rgba(215, 180, 92, 0.32); }
+:root[data-theme="dark"] .label-beginner-friendly { background: rgba(120, 200, 145, 0.14); color: #9bd8ac; border-color: rgba(120, 200, 145, 0.32); }
+:root[data-theme="dark"] .label-deep-study { background: rgba(140, 160, 225, 0.14); color: #b3c1ee; border-color: rgba(140, 160, 225, 0.32); }
+:root[data-theme="dark"] .label-complete-series { background: rgba(170, 130, 220, 0.14); color: #ccb0ec; border-color: rgba(170, 130, 220, 0.32); }
+
 /* ─── Availability badge (below meta on series cards) ────────────────────── */
 
 .avail-badge,
@@ -439,6 +457,22 @@
   padding: 0;
   border-radius: 0;
   background: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .avail-badge.badge-partial,
+  :root:not([data-theme="light"]) .avail-badge.badge-full {
+    background: rgba(108, 196, 173, 0.12);
+    color: var(--accent-strong);
+    border-color: rgba(108, 196, 173, 0.28);
+  }
+}
+
+:root[data-theme="dark"] .avail-badge.badge-partial,
+:root[data-theme="dark"] .avail-badge.badge-full {
+  background: rgba(108, 196, 173, 0.12);
+  color: var(--accent-strong);
+  border-color: rgba(108, 196, 173, 0.28);
 }
 
 .series-progress-track {

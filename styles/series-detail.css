@@ -21,7 +21,7 @@
   padding: 11px 22px;
   border-radius: 999px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.92rem;
   font-weight: 800;
   text-decoration: none;
@@ -82,7 +82,7 @@
 .ep-filter-btn.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .ep-empty-state {

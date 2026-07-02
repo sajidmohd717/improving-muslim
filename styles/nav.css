@@ -282,6 +282,18 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bottom-nav {
+    border-top-color: rgba(51, 67, 60, 0.82);
+    background: rgba(16, 23, 20, 0.94);
+  }
+}
+
+:root[data-theme="dark"] .bottom-nav {
+  border-top-color: rgba(51, 67, 60, 0.82);
+  background: rgba(16, 23, 20, 0.94);
+}
+
 .bottom-nav-item {
   flex: 1;
   display: flex;
