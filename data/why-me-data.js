@@ -56,6 +56,7 @@
       title: "Why Do I Have These Abilities?",
       published: "2024-03-16",
       views: 642000,
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-6.mp4",
     },
     {
       number: 7,
@@ -63,6 +64,7 @@
       title: "Why Do I Look Like This?",
       published: "2024-03-17",
       views: 621000,
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-7.mp4",
     },
     {
       number: 8,
@@ -70,12 +72,14 @@
       title: "Why Am I Rich or Poor?",
       published: "2024-03-18",
       views: 589000,
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-8.mp4",
     },
     {
       number: 9,
       id: "pXx8Bk1C-VU",
       title: "Why Am I Responsible for Someone Else's Mistake?",
       published: "2024-03-19",
+      videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-9.mp4",
     },
     {
       number: 10,
