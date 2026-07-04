@@ -10,9 +10,9 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `pages/` contains secondary HTML pages such as series pages, speaker profiles, settings, about, and watch.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
-- `styles/styles.css` is the CSS entry point — it `@import`s 20 focused files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file.
+- `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
 - `scripts/script.js` renders homepage speakers, categories, and series cards.
-- `pages/speakers.html` is the full speaker directory linked from the homepage speaker strip.
+- `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
 - `scripts/watch-page.js` loads the selected episode or standalone lecture, handles native playback, progress saving, completion state, stall detection, and media-session controls.
@@ -25,7 +25,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `assets/thumbnail/standalone/{speaker-slug}/` holds standalone lecture thumbnails.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
-- `scripts/error-handler.js` is loaded before all other scripts. It catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit.
+- `scripts/error-handler.js` catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit. It is currently loaded on the heavy interactive pages (index, history, saved, watch) — load it first, before all other scripts, on any page that includes it.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
 - `pages/explore.html` is the explore/browse page with topic-based filtering across series and standalone videos.
 - `scripts/explore-page.js` drives the explore page — filters, topic counts, and card rendering.
@@ -51,7 +51,7 @@ The platform currently has 11 series and 7 standalone lectures.
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | Partially unlocked |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | Partially unlocked |
 | Change of Heart | Ali Hammuda | Purification | Partially unlocked |
-| Why Me? | Omar Suleiman | Purification | Catalogue only |
+| Why Me? | Omar Suleiman | Purification | Partially unlocked |
 | Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
 | Life of Muhammad (PBUH) | Mufti Menk | Seerah | Partially unlocked |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
@@ -77,7 +77,7 @@ Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automat
 statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah."
 ```
 
-The homepage topic order should stay intentional and learning-led. Series should appear in the topic that best matches the learner's intent, not merely the speaker or source playlist.
+The homepage feed default is a fresh shuffle per visit — an intentional product decision for fair discovery, so no series is permanently buried below the fold. Do not "fix" this by making the default order stable. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
 ## CI / Automated Checks
 
@@ -99,7 +99,7 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 
 ## Error Handler and Monitoring
 
-`scripts/error-handler.js` must be the first script loaded on every page, before all other scripts including `utils.js`. It:
+`scripts/error-handler.js` is loaded on the heavy interactive pages (index, history, saved, watch). On any page that includes it, it must be the first script, before all other scripts including `utils.js`. It:
 
 - Registers `window.onerror` and `window.addEventListener('unhandledrejection', ...)` before anything else can crash.
 - Shows a friendly fallback UI inside `<main>` if a script error occurs, rather than leaving the user with a blank or broken page.
@@ -494,7 +494,7 @@ The watch page shows panels only for fields that exist on the episode object. No
 
 ## Speaker Pages And Ordering
 
-The homepage shows a compact speaker strip. `pages/speakers.html` is the full directory.
+`pages/speakers.html` is the speaker directory; individual profiles live at `pages/speaker.html?speaker={slug}`. There is currently no speaker strip on the homepage.
 
 Speaker ordering is controlled in `data/speaker-data.js`. Prioritize speakers with fully or partially hosted series on the platform.
 
