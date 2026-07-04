@@ -66,6 +66,15 @@ const excludedSpeakerNames = new Set([
     .join(""),
 ]);
 
+// Series removed from the platform whose cards still arrive from the remote
+// series-api feed with external YouTube links, so the registry-slug guard
+// cannot catch them. Compared lowercased against the card title.
+const excludedSeriesTitles = new Set([
+  "the message of the quran in 30 lessons",
+  "the parables of the quran",
+  "wisdoms of the quran - ramadan series 2024",
+]);
+
 const imageMap = window.IMUtils.imageMap;
 
 const fallbackData = [
@@ -285,6 +294,7 @@ const registeredSlugs = new Set((window.seriesConfig || []).map((entry) => entry
 function isAllowedSeries(series) {
   const speaker = (series.speaker || "").trim().toLowerCase();
   if (excludedSpeakerNames.has(speaker)) return false;
+  if (excludedSeriesTitles.has((series.title || "").trim().toLowerCase())) return false;
   const detailMatch = /series-detail\.html\?id=([a-z0-9-]+)/.exec(series.link || "");
   if (detailMatch && !registeredSlugs.has(detailMatch[1])) return false;
   return true;
