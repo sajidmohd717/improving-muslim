@@ -190,7 +190,7 @@ const state = {
   activeCategory: initialCategoryFromUrl(),
   sections: [],
   searchTerm: "",
-  sortBy: "featured",
+  sortBy: "random",
   activeSpeaker: null,
   contentType: "all",
   hideWatched: localStorage.getItem("im-hide-watched") === "true",
@@ -229,8 +229,8 @@ function stableRandomKey(title) {
 }
 
 function getSortedSeries(list) {
-  // "featured" keeps the curated registry/section order so returning users
-  // find series where they left them. Shuffle is opt-in per session.
+  // Default is a fresh shuffle per visit so no series is permanently
+  // buried below the fold. "featured" is the curated registry order.
   if (state.sortBy === "featured") {
     return list;
   }
@@ -1060,7 +1060,7 @@ function bindEvents() {
     }
   });
 
-  const sortLabels = { featured: "Default", random: "Shuffle", views: "Most viewed", az: "A–Z" };
+  const sortLabels = { random: "Default", featured: "Featured order", views: "Most viewed", az: "A–Z" };
 
   els.sortTrigger?.addEventListener("click", (e) => {
     e.stopPropagation();
