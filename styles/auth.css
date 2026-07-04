@@ -11,7 +11,7 @@
   border: 1px solid var(--line, #d8d0c2);
   background: rgba(255, 255, 255, 0.52);
   cursor: pointer;
-  color: var(--text-secondary, #4a5568);
+  color: var(--muted);
   padding: 0 12px;
   flex-shrink: 0;
   font: inherit;
@@ -99,19 +99,19 @@
 
 .auth-profile-email {
   font-size: 0.875rem;
-  color: var(--text-secondary, #4a5568);
+  color: var(--muted);
 }
 
 .auth-sync-note {
   font-size: 0.9rem;
-  color: var(--text-secondary, #4a5568);
+  color: var(--muted);
   margin-bottom: 1rem;
   line-height: 1.5;
 }
 
 .auth-sign-in-prompt {
   font-size: 0.95rem;
-  color: var(--text-secondary, #4a5568);
+  color: var(--muted);
   margin-bottom: 1.25rem;
   line-height: 1.6;
 }
@@ -157,7 +157,7 @@
 [data-theme="dark"] .auth-btn {
   border-color: var(--line, rgba(255,255,255,0.12));
   background: rgba(255, 255, 255, 0.04);
-  color: var(--text-secondary-dark, #a0aec0);
+  color: var(--muted);
 }
 
 [data-theme="dark"] .auth-btn:hover {
