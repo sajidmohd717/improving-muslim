@@ -83,8 +83,9 @@ The homepage topic order should stay intentional and learning-led. Series should
 
 Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
 
-1. `npm run check:js` — Node.js syntax check on all 28+ JS and data files.
+1. `npm run check:js` — syntax check of every file in `scripts/` and `data/` (auto-discovered, no list to maintain).
 2. `npm run check:a11y` — Custom accessibility audit of all HTML pages.
+3. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
 
 If either step fails, GitHub marks the push red and sends a notification. Check the Actions tab at `github.com/sajidmohd717/islamic-lectures-react/actions` after each push to confirm green.
 
@@ -282,102 +283,24 @@ When an episode is not uploaded yet: omit `videoSrc`, keep `statusNote`. The ser
 
 ## Adding A New Series
 
-All series registration flows through `data/series-registry.js`. Adding a new series no longer requires editing `scripts/script.js`, `scripts/watch-page.js`, `scripts/history-page.js`, or `scripts/speaker-page.js` — those all derive their series lists from the registry automatically.
+Everything derives from `data/series-registry.js`. The homepage, browse page, explore page, roadmap, watch-page loader, speaker pages, history/saved pages, sitemap, and syntax checks all read the registry — none of them are edited by hand.
 
-### Step 1 — Create the data file
+To add a series:
 
-Add `data/{series-slug}-data.js`. Required fields:
+1. Create `data/{series-slug}-data.js` with the episode list (copy an existing data file as a template). Only add `videoSrc` for episodes actually uploaded to R2.
+2. Add one entry to `data/series-registry.js` (slug, dataFile, categories, sectionTitle, title, speaker, thumbnailSrc, description, episodeThumbnailPath, playlistId, episodeCount, availableCount). Optional roadmap fields: `roadmapStatus: "scheduled"` plus `roadmapTarget: "Fully uploaded by ..."` — otherwise the roadmap derives Uploading/Planned from `availableCount`.
+3. Add assets: `assets/thumbnail/{series-slug}/...` and, if the speaker is new, `data/speaker-data.js` plus a photo in `assets/speaker/`.
+4. Run `npm run sitemap` to regenerate sitemap.xml from the registry.
+5. Run `npm run check` and verify: homepage card, browse page, series page, watch page, roadmap.
 
-```js
-window.myNewSeries = {
-  title: "Series Title",
-  slug: "series-slug",
-  seriesPageUrl: "./pages/series-series-slug.html",
-  speaker: "Speaker Name",
-  topic: "Category Display Name",
-  thumbnailSrc: "./assets/thumbnail/series-slug/series-card.jpg",
-  episodeThumbnailPath: "./assets/thumbnail/series-slug/episodes",
-  playlistId: "YOUTUBE_PLAYLIST_ID",
-  description: "Short description used on series cards.",
-  episodes: [
-    {
-      number: 1,
-      id: "YOUTUBE_VIDEO_ID",
-      title: "Episode title",
-      published: "YYYY-MM-DD",
-      views: 0,
-      videoSrc: "https://videos.improvingmuslim.com/series-slug/series-slug-ep-1.mp4",
-      captionsSrc: "./assets/captions/series-slug/episode-01.vtt",
-    },
-  ],
-};
-```
+## Removing A Series
 
-Only add `videoSrc` for episodes that have actually been uploaded to R2.
-
-### Step 2 — Register in the series registry
-
-Add one entry to `data/series-registry.js`:
-
-```js
-{ globalKey: "myNewSeries", slug: "series-slug", category: "purification", sectionTitle: "Purification of the Heart" },
-```
-
-`category` must match one of the values in the `categories` array in `scripts/script.js`. `sectionTitle` is the heading that groups series on the homepage — multiple series can share the same `sectionTitle`.
-
-### Step 3 — Create the series page
-
-Copy an existing `pages/series-*.html` as a starting point. Three things change per series:
-
-1. The `<head>` meta tags (title, description, og:title, og:description, og:image, og:url, twitter:*)
-2. The `<p class="hero-copy">` — write crafted prose describing the series
-3. The three bottom script lines:
-
-```html
-<script src="./data/series-slug-data.js"></script>
-<script>window.currentSeries = window.myNewSeries;</script>
-<script src="./scripts/series-page.js" defer></script>
-```
-
-The hero eyebrow, h1, thumbnail, episode count, and start link are all populated automatically by `renderHero()` in `scripts/series-page.js`.
-
-### Step 4 — Add the data file script tag to shared pages
-
-`pages/watch.html` uses a dynamic loader — add the slug-to-file mapping in the inline `<script>` block near the bottom of `<head>`:
-
-```js
-'series-slug': './data/series-slug-data.js?v=YYYYMMDD-slug'
-```
-
-Also add a `<script>` tag to each of these three pages alongside the existing data file tags:
-
-- `index.html`
-- `pages/history.html`
-- `pages/speaker.html`
-
-```html
-<script src="./data/series-slug-data.js"></script>
-```
-
-### Step 5 — Add assets and speaker
-
-- Series thumbnail: `assets/thumbnail/{series-slug}/series-card.jpg`
-- Episode thumbnails: `assets/thumbnail/{series-slug}/episodes/episode-01.jpg`, `episode-02.jpg`, ...
-- If the speaker is new: add their entry to `data/speaker-data.js` and a photo to `assets/speaker/`
-- Add the series page URL to `sitemap.xml`
-- Add a card to `pages/series.html` (the static browse page)
-
-### Step 6 — Update the JS syntax check
-
-Add the new data file to the `check:js` script in `package.json`:
-
-```
-&& node --check data/series-slug-data.js
-```
-
-### Step 7 — Verify
-
-Run `npm run check` and test: homepage (series appears in correct category), series page (hero and episodes render), watch page (episode plays), speaker page (series listed under correct speaker), history page (watch progress tracked).
+1. Delete the registry entry in `data/series-registry.js` and delete `data/{series-slug}-data.js`.
+2. Delete `assets/thumbnail/{series-slug}/` and any captions under `assets/captions/{series-slug}/`.
+3. Run `npm run sitemap`, then `npm run check`.
+4. If the series still appears in the remote series-api feed with an external link, add its exact title (lowercased) to `excludedSeriesTitles` in `scripts/script.js`. Cards pointing at unregistered `series-detail` ids are dropped automatically.
+5. Direct URLs are guarded automatically: `series-detail.html?id=...` redirects to the browse page and `watch.html?series=...` redirects home for unregistered slugs.
+6. If episodes were uploaded to R2, delete the objects from the `islamic-lectures-videos` bucket so direct video URLs stop working.
 
 ## Language Course Episodes
 
@@ -408,24 +331,9 @@ Grammar notes are meant for quick lookup — "what was tanwin again?" — withou
 
 ## Watch Page Dynamic Series Loading
 
-`pages/watch.html` does not load all series data files upfront. It uses a small inline script to load only the data file needed for the current `?series=` URL parameter:
+`pages/watch.html` loads only the data file needed for the current `?series=` parameter. The inline loader looks the slug up in `window.seriesConfig` and injects that entry's `dataFile`. The history, saved, and speaker pages use a similar loader that injects every registered `dataFile`. No page lists data files by hand.
 
-```js
-(function () {
-  var lecture = new URLSearchParams(location.search).get('lecture');
-  if (lecture) return; // standalone — no series file needed
-  var slug = new URLSearchParams(location.search).get('series') || 'change-of-heart';
-  var map = {
-    'change-of-heart': './data/change-of-heart-data.js?v=...',
-    'madina-arabic':   './data/madina-arabic-data.js?v=...',
-    // ...
-  };
-  var src = map[slug];
-  if (src) document.write('<script src="' + src + '"><\/script>');
-})();
-```
-
-When adding a new series, add its entry to this map. The version query string (`?v=YYYYMMDD-slug`) busts the browser cache when the data file changes. Update the version string whenever you publish new episodes or edit existing episode content (recap, grammar notes, etc.) for a series that is already live.
+To cache-bust a data file after publishing episodes, append or update a version query in the registry's `dataFile` field (e.g. `"./data/change-of-heart-data.js?v=YYYYMMDD-note"`) — every page picks it up from there.
 
 ## Script Cache Busting
 

@@ -78,60 +78,27 @@ const excludedSeriesTitles = new Set([
 
 const imageMap = window.IMUtils.imageMap;
 
-const fallbackData = [
-  {
-    sectionTitle: "Hadith",
-    seriesList: [
-      {
-        title: "40 Hadith of Imam Nawawi",
-        speaker: "Navaid Aziz",
-        episodes: "46 Lectures",
-        thumbnailImage: "fortyHadithNawawi",
-        link: "./pages/series-detail.html?id=forty-hadith-nawawi",
-        viewcount: "136K views",
-      },
-    ],
-  },
-  {
-    sectionTitle: "Salah & Worship",
-    seriesList: [
-      {
-        title: "Enjoy Your Prayer",
-        speaker: "Ali Hammuda",
-        episodes: "21 Lectures",
-        thumbnailImage: "enjoyYourPrayer",
-        link: "./pages/series-detail.html?id=enjoy-your-prayer",
-        viewcount: "1M views",
-      },
-    ],
-  },
-  {
-    sectionTitle: "Purification of the Heart",
-    seriesList: [
-      {
-        title: "Change of Heart",
-        speaker: "Ali Hammuda",
-        episodes: "12 Lectures",
-        thumbnailImage: "changeofheart",
-        link: "https://www.youtube.com/playlist?list=PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
-        viewcount: "628K views",
-      },
-    ],
-  },
-  {
-    sectionTitle: "Reflection and Contemplation",
-    seriesList: [
-      {
-        title: "Why Me | 2024 Ramadan Series",
-        speaker: "Omar Suleiman",
-        episodes: "30 Lectures",
-        thumbnailImage: "whyMe",
-        link: "https://www.youtube.com/playlist?list=PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
-        viewcount: "14.3M views",
-      },
-    ],
-  },
-];
+// Last-resort homepage sections when the remote feed is unreachable.
+// Derived from the registry so removed series can never resurface here.
+const fallbackData = (() => {
+  const sections = [];
+  for (const entry of (window.seriesConfig || [])) {
+    const name = entry.sectionTitle || "Series";
+    let section = sections.find((s) => s.sectionTitle === name);
+    if (!section) {
+      section = { sectionTitle: name, seriesList: [] };
+      sections.push(section);
+    }
+    section.seriesList.push({
+      title: entry.title,
+      speaker: entry.speaker,
+      episodes: `${entry.episodeCount} Lectures`,
+      thumbnailImage: entry.thumbnailSrc,
+      link: `./pages/series-detail.html?id=${entry.slug}`,
+    });
+  }
+  return sections;
+})();
 
 const localCategoryFallbacks = (() => {
   const map = {};

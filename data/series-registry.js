@@ -66,6 +66,8 @@ window.seriesConfig = [
   {
     globalKey: "changeOfHeartSeries",
     slug: "change-of-heart",
+    roadmapStatus: "scheduled",
+    roadmapTarget: "Fully uploaded by 16 July 2026",
     dataFile: "./data/change-of-heart-data.js",
     categories: ["purification"],
     label: "Popular",
@@ -82,6 +84,8 @@ window.seriesConfig = [
   {
     globalKey: "whyMeSeries",
     slug: "why-me",
+    roadmapStatus: "scheduled",
+    roadmapTarget: "Fully uploaded by 13 July 2026",
     dataFile: "./data/why-me-data.js",
     categories: ["purification"],
     label: "Short reminder",
@@ -99,6 +103,8 @@ window.seriesConfig = [
   {
     globalKey: "angelsInYourPresenceSeries",
     slug: "angels-in-your-presence",
+    roadmapStatus: "scheduled",
+    roadmapTarget: "Fully uploaded by 10 July 2026",
     dataFile: "./data/angels-in-your-presence-data.js",
     categories: ["angels"],
     label: "Short reminder",
