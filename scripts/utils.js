@@ -143,8 +143,6 @@
     whyMe: "./assets/thumbnail/heart-softeners/whyme.jpg",
     angels1: "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
     changeofheart: "./assets/thumbnail/heart-softeners/changeofheart-card.jpg",
-    heartmatters: "./assets/thumbnail/heart-matters/episodes/episode-01.jpg",
-    wisdomsQuran: "./assets/thumbnail/general-quran-tafsir/wisdoms-quran.jpg",
     seerahYasirQadhi: "./assets/thumbnail/life-of-prophet-muhammad/seerah-yasir.jpg",
     seerahMufti: "./assets/thumbnail/life-of-prophet-muhammad/seerah-mufti.jpg",
     fortress: "./assets/thumbnail/hadith/fortress.jpg",

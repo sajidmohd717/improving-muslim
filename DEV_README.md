@@ -40,7 +40,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-The platform currently has 12 series and 7 standalone lectures.
+The platform currently has 11 series and 7 standalone lectures.
 
 ### Series
 
@@ -50,7 +50,6 @@ The platform currently has 12 series and 7 standalone lectures.
 | Fortress of the Muslim | Assim Al-Hakeem | Dhikr | Partially unlocked |
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | Partially unlocked |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | Partially unlocked |
-| Heart Matters Ramadan 2023 | Yasir Qadhi | Purification | Partially unlocked |
 | Change of Heart | Ali Hammuda | Purification | Partially unlocked |
 | Why Me? | Omar Suleiman | Purification | Catalogue only |
 | Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
@@ -69,6 +68,7 @@ The platform currently has 12 series and 7 standalone lectures.
 | Allah's Words to Musa Were Meant for You Too | Abu Bakr Zoud | Quran | Uploaded |
 | Only Allah Knows What You Went Through | Omar Suleiman | Purification | Uploaded |
 | DUA: How to Get Your Dreams! | Yahya Al-Raaby | Dua | Uploaded |
+| A Poem To Soften The Hardened Heart | Abu Taymiyyah | Purification | Uploaded |
 
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.

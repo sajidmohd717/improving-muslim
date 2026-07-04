@@ -73,6 +73,7 @@ const excludedSeriesTitles = new Set([
   "the message of the quran in 30 lessons",
   "the parables of the quran",
   "wisdoms of the quran - ramadan series 2024",
+  "heart matters ramadan series 2023",
 ]);
 
 const imageMap = window.IMUtils.imageMap;
@@ -114,14 +115,6 @@ const fallbackData = [
         thumbnailImage: "changeofheart",
         link: "https://www.youtube.com/playlist?list=PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
         viewcount: "628K views",
-      },
-      {
-        title: "Heart Matters Ramadan Series 2023",
-        speaker: "Yasir Qadhi",
-        episodes: "26 Lectures",
-        thumbnailImage: "heartmatters",
-        link: "./pages/series-detail.html?id=heart-matters",
-        viewcount: "749K views",
       },
     ],
   },
@@ -174,8 +167,6 @@ const descriptions = {
     "A reflective Ramadan series on hardship, divine decree, purpose, and learning to see tests through a more faithful lens.",
   "Change of Heart":
     "A series focused on the inner life: sincerity, repentance, discipline, and the work of returning the heart to Allah.",
-  "Heart Matters Ramadan Series 2023":
-    "Short daily reminders exploring spiritual diseases, emotional repair, and practical ways to soften the heart.",
   "Angels in Your Presence":
     "A study of angels and how belief in the unseen can reshape worship, character, and daily awareness.",
   "40 Hadith of Imam Nawawi":
