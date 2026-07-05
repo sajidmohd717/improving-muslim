@@ -290,6 +290,26 @@
       '</svg>';
   }
 
+  function buildEditIconSvg() {
+    return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M12 20h9"/>' +
+      '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>' +
+      '</svg>';
+  }
+
+  function buildCheckIconSvg() {
+    return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<polyline points="20 6 9 17 4 12"/>' +
+      '</svg>';
+  }
+
+  function buildSmallCloseIconSvg() {
+    return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">' +
+      '<line x1="18" y1="6" x2="6" y2="18"/>' +
+      '<line x1="6" y1="6" x2="18" y2="18"/>' +
+      '</svg>';
+  }
+
   function buildStreakButton() {
     var btn = document.createElement('button');
     btn.className = 'nav-streak-btn';
@@ -379,6 +399,22 @@
       if (opt) {
         updatePublicOptIn(opt.dataset.streakOptIn === 'on');
       }
+      var editBtn = event.target.closest('[data-edit-name]');
+      if (editBtn) {
+        startEditLeaderboardName(editBtn.closest('.leaderboard-row'));
+      }
+      var cancelBtn = event.target.closest('[data-cancel-name]');
+      if (cancelBtn) {
+        renderStreakPanel('leaderboard');
+      }
+    });
+
+    panel.addEventListener('submit', function (event) {
+      var form = event.target.closest('[data-edit-name-form]');
+      if (!form) return;
+      event.preventDefault();
+      var input = form.querySelector('.leaderboard-name-input');
+      saveLeaderboardName(input.value);
     });
 
     document.addEventListener('keydown', function (event) {
@@ -571,9 +607,15 @@
         }
         list.innerHTML = rows.map(function (row, index) {
           var own = _user && row.id === _user.uid;
+          var nameHtml = own
+            ? '<span class="leaderboard-name-wrap">' +
+                '<span class="leaderboard-name">' + escapeHtml(row.displayName || 'Learner') + ' <em>You</em></span>' +
+                '<button type="button" class="leaderboard-edit-btn" data-edit-name aria-label="Edit your display name">' + buildEditIconSvg() + '</button>' +
+              '</span>'
+            : '<span class="leaderboard-name">' + escapeHtml(row.displayName || 'Learner') + '</span>';
           return '<div class="leaderboard-row ' + (own ? 'is-you' : '') + '">' +
             '<span class="leaderboard-rank">' + (index + 1) + '</span>' +
-            '<span class="leaderboard-name">' + escapeHtml(row.displayName || 'Learner') + (own ? ' <em>You</em>' : '') + '</span>' +
+            nameHtml +
             '<strong>' + (Number(row.current) || 0) + ' days</strong>' +
           '</div>';
         }).join('');
@@ -584,6 +626,37 @@
           list.innerHTML = '<p class="leaderboard-empty">The public leaderboard needs Firestore rules for the leaderboard collection before it can load.</p>';
         }
       });
+  }
+
+  function startEditLeaderboardName(row) {
+    if (!row) return;
+    var rankHtml = row.querySelector('.leaderboard-rank').outerHTML;
+    var currentName = publicNameForUser(readStreak());
+    row.innerHTML =
+      rankHtml +
+      '<form class="leaderboard-name-edit" data-edit-name-form>' +
+        '<input type="text" class="leaderboard-name-input" value="' + escapeHtml(currentName) + '" maxlength="60" aria-label="Your display name" autocomplete="off" />' +
+        '<button type="submit" class="leaderboard-name-save" aria-label="Save name">' + buildCheckIconSvg() + '</button>' +
+        '<button type="button" class="leaderboard-name-cancel" data-cancel-name aria-label="Cancel edit">' + buildSmallCloseIconSvg() + '</button>' +
+      '</form>';
+    var input = row.querySelector('.leaderboard-name-input');
+    input.focus();
+    input.select();
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        renderStreakPanel('leaderboard');
+      }
+    });
+  }
+
+  function saveLeaderboardName(value) {
+    var streak = readStreak();
+    streak.publicName = sanitizePublicName(value);
+    writeStreak(streak);
+    pushLeaderboardEntry(streak).then(function () {
+      renderStreakPanel('leaderboard');
+    });
   }
 
   /* ── Auth button injection ────────────────────────────────────────────── */

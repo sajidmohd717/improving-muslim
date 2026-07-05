@@ -467,6 +467,7 @@
 
 .leaderboard-row {
   gap: 10px;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -499,6 +500,96 @@
   color: var(--gold);
   font-style: normal;
   margin-left: 6px;
+}
+
+.leaderboard-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.leaderboard-name-wrap .leaderboard-name {
+  flex: initial;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-edit-btn {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-strong);
+  color: var(--muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.leaderboard-edit-btn:hover,
+.leaderboard-edit-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.leaderboard-name-edit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.leaderboard-name-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+
+.leaderboard-name-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.15);
+}
+
+.leaderboard-name-save,
+.leaderboard-name-cancel {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.leaderboard-name-save {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.leaderboard-name-cancel {
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+
+.leaderboard-name-cancel:hover,
+.leaderboard-name-cancel:focus-visible {
+  border-color: var(--rose);
+  color: var(--rose);
+  outline: none;
 }
 
 .nav-more-trigger {

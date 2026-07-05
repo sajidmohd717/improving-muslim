@@ -4,7 +4,7 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 @import "./base.css?v=20260702-dark-1";          /* CSS custom properties, reset, sr-only, is-hidden  */
-@import "./nav.css?v=20260705-streaks";    /* Site header, top nav, bottom mobile nav            */
+@import "./nav.css?v=20260706-leaderboard-name-edit"; /* Site header, top nav, bottom mobile nav        */
 @import "./layout.css?v=20260702-dark-1";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260705-streaks";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260702-dark-1";   /* Series cards, speaker cards, category filters      */
