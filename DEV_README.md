@@ -24,6 +24,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `assets/captions/` contains WebVTT captions, grouped by series slug or `standalone/{speaker-slug}/`.
 - `assets/thumbnail/standalone/{speaker-slug}/` holds standalone lecture thumbnails.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
+- `scripts/publish.ps1` is the YouTube-to-R2 episode publisher (download, faststart fix, upload, data file patch). See the Uploading Large Videos To R2 section below.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
 - `scripts/error-handler.js` catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit. It is currently loaded on the heavy interactive pages (index, history, saved, watch) — load it first, before all other scripts, on any page that includes it.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
@@ -179,6 +180,38 @@ aws configure --profile r2
 # Default output format: json
 ```
 
+### Publishing a YouTube episode: use `scripts/publish.ps1`
+
+For any episode whose source is a YouTube video, prefer `scripts/publish.ps1` over doing the download/fix/upload steps by hand. It runs the full pipeline in one command: `yt-dlp` download → ffmpeg faststart remux → R2 upload → `videoSrc` patched into the series data file.
+
+Requires `yt-dlp`, `ffmpeg`, and the AWS CLI with the `r2` profile (see above) on PATH — install with `winget install yt-dlp.yt-dlp` if missing.
+
+```powershell
+# Interactive: prompts for YouTube URL, bucket, and filename
+.\scripts\publish.ps1
+
+# Single episode: registry-driven, auto-derives the R2 path and patches the data file
+.\scripts\publish.ps1 -Series "why-me" -Episode 10 -Url "https://youtu.be/SGdznSHyJUQ"
+
+# Batch: a text file of "slug|episode|url" lines, one per episode
+.\scripts\publish.ps1 -BatchFile "episodes.txt"
+
+# Preview only, no downloads/uploads/file changes
+.\scripts\publish.ps1 -Series "why-me" -Episode 10 -Url "https://..." -DryRun
+```
+
+**Video quality:** the script downloads the best available **H.264 (avc1)** stream, capped at 1080p — this is a deliberate ceiling, not a limitation of the tool. YouTube serves 1440p/4K only as AV1 (even inside an `.mp4` container), and AV1 playback is unreliable on older iOS/Safari and some Android WebViews. Since this site plays video natively with no transcoding step, 1080p H.264 is the highest resolution that's guaranteed to play across every target device. Before publishing a series you want in higher quality, check what's actually available with `yt-dlp -F "<url>"` — older/re-encoded YouTube uploads may only offer 144p-480p regardless of the codec cap.
+
+**Local disk:** downloaded files live under `tmp/yt-dlp/` (gitignored) and are deleted automatically once the R2 upload is confirmed, so the cache doesn't grow unbounded. Pass `-KeepLocal` to keep the file for spot-checking.
+
+**After running the script**, still do the two things it doesn't automate:
+1. Bump `availableCount` in `data/series-registry.js` for that series.
+2. Bump the `?v=` cache-bust on that series' `dataFile` entry in the registry.
+
+Then run `npm run check`.
+
+### Manual upload (non-YouTube sources, or when the script doesn't apply)
+
 Upload or overwrite a series episode:
 
 ```powershell
@@ -265,19 +298,20 @@ Invoke-WebRequest -Uri "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg" 
 
 ## Episode Publishing Workflow
 
-When adding a new watchable episode:
+When adding a new watchable episode from a YouTube source, steps 1-4 below are handled by `scripts/publish.ps1` (see the Uploading Large Videos To R2 section) — run that first, then pick up from step 5.
 
-1. Run ffmpeg faststart on the video file (see above).
-2. Upload the MP4 to Cloudflare R2 using the naming pattern above.
+1. Run ffmpeg faststart on the video file (see above). *(automated by `publish.ps1`)*
+2. Upload the MP4 to Cloudflare R2 using the naming pattern above. *(automated by `publish.ps1`)*
 3. Confirm the public URL (`https://videos.improvingmuslim.com/...`) plays in a browser tab.
-4. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`.
+4. Update the matching episode object in the relevant `data/*-data.js` file with `videoSrc`. *(automated by `publish.ps1`)*
 5. If a transcript is available, generate a VTT file under `assets/captions/{series-slug}/`.
 6. Add `captionsSrc` to the episode object.
 7. For Islamic lecture series: add `takeaways` and `recap` when the transcript has been reviewed.
 8. For language course series (e.g. Madina Arabic): add `grammarNotes` and `recap` — skip `takeaways`. See the Language Course Episodes section below.
 9. Keep `episode.id` unchanged — progress is keyed to the YouTube video ID, not the R2 URL.
 10. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
-11. Run `npm run check` and test locally.
+11. Bump `availableCount` and the `dataFile` cache-bust for that series in `data/series-registry.js`.
+12. Run `npm run check` and test locally.
 
 When an episode is not uploaded yet: omit `videoSrc`, keep `statusNote`. The series page and watch sidebar show it as `Uploading soon`.
 
