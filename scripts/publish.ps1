@@ -75,11 +75,14 @@ $CDN_BASE       = "https://videos.improvingmuslim.com"
 $TEMP_DIR       = Join-Path $PSScriptRoot "..\tmp\yt-dlp"
 $SERIES_REGISTRY = Join-Path $PSScriptRoot "..\data\series-registry.js"
 
-# yt-dlp format: best H.264/MP4 video + best AAC/M4A audio, merged to mp4.
-# This caps at 1080p (YouTube's 1440p+ are VP9/AV1 webm, excluded on purpose
-# so the output plays natively in the site's <video> element). You still only
-# get whatever resolution YouTube actually stored for the source.
-$YTDLP_FORMAT   = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
+# yt-dlp format: best H.264 (avc1) video + best AAC/M4A audio, merged to mp4.
+# Filtering on ext=mp4 alone is NOT enough: YouTube serves 1440p/4K as AV1
+# inside an mp4 container too, and ext=mp4 would happily grab that. AV1
+# playback is unreliable on older iOS/Safari and some Android WebViews, and
+# this site plays video natively with no transcoding step, so we explicitly
+# require the avc1 (H.264) codec, which caps out at 1080p on YouTube. You
+# still only get whatever resolution YouTube actually stored for the source.
+$YTDLP_FORMAT   = "bestvideo[vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/best[vcodec^=avc1][ext=mp4]/best[ext=mp4]/best"
 
 # ---- helpers ----
 

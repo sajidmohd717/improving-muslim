@@ -91,7 +91,7 @@ window.seriesConfig = [
     slug: "why-me",
     roadmapStatus: "scheduled",
     roadmapTarget: "Fully uploaded by 13 July 2026",
-    dataFile: "./data/why-me-data.js?v=20260705-ep9",
+    dataFile: "./data/why-me-data.js?v=20260705-ep10-13-1080p",
     categories: ["purification"],
     label: "Short reminder",
     sectionTitle: "Purification of the Heart",
@@ -103,7 +103,7 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/why-me/episodes",
     playlistId: "PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
     episodeCount: 30,
-    availableCount: 9,
+    availableCount: 13,
     searchKeywords: "qadar qadr decree hardship tests trials suffering loneliness grief death forgiveness sins ramadan",
   },
   {
