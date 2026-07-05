@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Video publishing scratch (scripts/publish.ps1): downloaded MP4s + batch inputs.
+# Never commit these — videos live on Cloudflare R2, not in git.
+tmp/
+episodes.txt
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,4 +1,4 @@
-window.lifeOfMuhammadMuftiMenkSeries = {
+﻿window.lifeOfMuhammadMuftiMenkSeries = {
   title: "Life of Muhammad (PBUH)",
   slug: "life-of-muhammad-mufti-menk",
   seriesPageUrl: "./pages/series-detail.html?id=life-of-muhammad-mufti-menk",
@@ -7,16 +7,16 @@ window.lifeOfMuhammadMuftiMenkSeries = {
   thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg",
   playlistId: "PL91FA0E3B7837B214",
   description:
-    "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) — from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
+    "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) â€” from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
   episodes: [
     { number: 1,  id: "VO22l6-Qkys", title: "Day 1",  published: "2012-07-22", views: 1300000, thumbnailSrc: "https://i.ytimg.com/vi/VO22l6-Qkys/hqdefault.jpg",  videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-1.mp4"  },
     { number: 2,  id: "5iwZPhswyKI", title: "Day 2",  published: "2012-07-23", views: 822000,  thumbnailSrc: "https://i.ytimg.com/vi/5iwZPhswyKI/hqdefault.jpg",  videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-2.mp4"  },
     { number: 3,  id: "W2usJgjOSrQ", title: "Day 3",  published: "2012-07-24", views: 661000,  thumbnailSrc: "https://i.ytimg.com/vi/W2usJgjOSrQ/hqdefault.jpg",  videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-3.mp4"  },
-    { number: 4,  id: "B_S-eVQoWUc", title: "Day 4",  published: "2012-07-25", views: 555000,  thumbnailSrc: "https://i.ytimg.com/vi/B_S-eVQoWUc/hqdefault.jpg"  },
-    { number: 5,  id: "WbL6fwsxwLs", title: "Day 5",  published: "2012-07-26", views: 494000,  thumbnailSrc: "https://i.ytimg.com/vi/WbL6fwsxwLs/hqdefault.jpg"  },
-    { number: 6,  id: "CO0ETi5nFiQ", title: "Day 6",  published: "2012-07-27", views: 434000,  thumbnailSrc: "https://i.ytimg.com/vi/CO0ETi5nFiQ/hqdefault.jpg"  },
-    { number: 7,  id: "1YkPik5y1Gw", title: "Day 7",  published: "2012-07-28", views: 438000,  thumbnailSrc: "https://i.ytimg.com/vi/1YkPik5y1Gw/hqdefault.jpg"  },
-    { number: 8,  id: "OF7gkEpHayA", title: "Day 8",  published: "2012-07-29", views: 399000,  thumbnailSrc: "https://i.ytimg.com/vi/OF7gkEpHayA/hqdefault.jpg"  },
+    { number: 4,  id: "B_S-eVQoWUc", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-4.mp4", title: "Day 4",  published: "2012-07-25", views: 555000,  thumbnailSrc: "https://i.ytimg.com/vi/B_S-eVQoWUc/hqdefault.jpg"  },
+    { number: 5,  id: "WbL6fwsxwLs", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-5.mp4", title: "Day 5",  published: "2012-07-26", views: 494000,  thumbnailSrc: "https://i.ytimg.com/vi/WbL6fwsxwLs/hqdefault.jpg"  },
+    { number: 6,  id: "CO0ETi5nFiQ", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-6.mp4", title: "Day 6",  published: "2012-07-27", views: 434000,  thumbnailSrc: "https://i.ytimg.com/vi/CO0ETi5nFiQ/hqdefault.jpg"  },
+    { number: 7,  id: "1YkPik5y1Gw", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-7.mp4", title: "Day 7",  published: "2012-07-28", views: 438000,  thumbnailSrc: "https://i.ytimg.com/vi/1YkPik5y1Gw/hqdefault.jpg"  },
+    { number: 8,  id: "OF7gkEpHayA", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-8.mp4", title: "Day 8",  published: "2012-07-29", views: 399000,  thumbnailSrc: "https://i.ytimg.com/vi/OF7gkEpHayA/hqdefault.jpg"  },
     { number: 9,  id: "JziOUZOSqn8", title: "Day 9",  published: "2012-07-30", views: 361000,  thumbnailSrc: "https://i.ytimg.com/vi/JziOUZOSqn8/hqdefault.jpg"  },
     { number: 10, id: "DgxeLiDDchs", title: "Day 10", published: "2012-07-31", views: 346000,  thumbnailSrc: "https://i.ytimg.com/vi/DgxeLiDDchs/hqdefault.jpg"  },
     { number: 11, id: "Li3FwpFDePg", title: "Day 11", published: "2012-08-01", views: 337000,  thumbnailSrc: "https://i.ytimg.com/vi/Li3FwpFDePg/hqdefault.jpg"  },
@@ -41,3 +41,8 @@ window.lifeOfMuhammadMuftiMenkSeries = {
     { number: 30, id: "lom-day-30",  title: "Day 30", published: "2012-08-20", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg" },
   ],
 };
+
+
+
+
+
