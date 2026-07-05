@@ -14,6 +14,7 @@ window.seriesConfig = [
     playlistId: "PL9OPVukugS7wrMiT9A9CwRNL_hA9jDH0f",
     episodeCount: 21,
     availableCount: 8,
+    searchKeywords: "salah khushu wudu whudu adhan al-fatiha fatiha mosque masjid bowing prostration ruku sujood waswas focus concentration",
   },
   {
     globalKey: "fortressOfTheMuslimSeries",
@@ -30,6 +31,7 @@ window.seriesConfig = [
     playlistId: "fortress-of-the-muslim-assim-al-hakeem",
     episodeCount: 13,
     availableCount: 5,
+    searchKeywords: "dua supplication adhkar hisnul muslim morning evening waking sleep clothes bathroom takbeer night prayer remembrance",
   },
   {
     globalKey: "seerahYasirQadhiSeries",
@@ -46,6 +48,7 @@ window.seriesConfig = [
     playlistId: "PLAEA99D24CA2F9A8F",
     episodeCount: 104,
     availableCount: 5,
+    searchKeywords: "makkah madinah mecca medina hijra revelation khadija badr uhud trench khandaq hudaybiyyah khaybar conquest isra miraj abyssinia quraysh farewell hajj biography",
   },
   {
     globalKey: "fortyHadithSeries",
@@ -62,6 +65,7 @@ window.seriesConfig = [
     playlistId: "PLANmApGKw_OoBaN2C0Y983cwJGL47842I",
     episodeCount: 46,
     availableCount: 4,
+    searchKeywords: "arbaeen arbain intentions niyyah jibreel islam iman ihsan pillars awliya forgiveness sunnah nawawi",
   },
   {
     globalKey: "changeOfHeartSeries",
@@ -80,6 +84,7 @@ window.seriesConfig = [
     playlistId: "PL9OPVukugS7xZ-PY008PN6_kGInouP0rz",
     episodeCount: 16,
     availableCount: 10,
+    searchKeywords: "tazkiyah ikhlas sincerity yaqin certainty muraqabah watchfulness tawakkul reliance khushu mahabbah love haya shame shukr gratitude sabr patience inabah rida contentment iftiqar",
   },
   {
     globalKey: "whyMeSeries",
@@ -99,6 +104,7 @@ window.seriesConfig = [
     playlistId: "PLQ02IYL5pmhFYDrmxNHAlwgcHOR4h1bPa",
     episodeCount: 30,
     availableCount: 9,
+    searchKeywords: "qadar qadr decree hardship tests trials suffering loneliness grief death forgiveness sins ramadan",
   },
   {
     globalKey: "angelsInYourPresenceSeries",
@@ -117,6 +123,7 @@ window.seriesConfig = [
     playlistId: "PLQ02IYL5pmhF2LFN-3QxnuregEv1oKPIc",
     episodeCount: 30,
     availableCount: 11,
+    searchKeywords: "malaika jibreel laylatul qadr protection ameen supplication ramadan remembrance",
   },
   {
     globalKey: "tenPromisedJannahSeries",
@@ -132,6 +139,7 @@ window.seriesConfig = [
     playlistId: "PL2dRQaGGWZOBj6GqrVQzWaf8uYJpKNZFs",
     episodeCount: 10,
     availableCount: 0,
+    searchKeywords: "ashara mubashara companions abu bakr umar uthman ali talha zubayr abdulrahman awf sad waqqas said zaid",
   },
   {
     globalKey: "madinaArabicSeries",
@@ -148,6 +156,7 @@ window.seriesConfig = [
     playlistId: "PLh3c1SPUmZqGMOtrHD7Kd2uXuvPRDP7ou",
     episodeCount: 123,
     availableCount: 3,
+    searchKeywords: "arabic grammar nahw sarf vocabulary language course lughah lessons learn",
   },
   {
     globalKey: "pageByPageSeries",
@@ -164,6 +173,7 @@ window.seriesConfig = [
     playlistId: "PLYRXQljU5MiJ8Iz_VKgmatnx-H-leJ7st",
     episodeCount: 604,
     availableCount: 3,
+    searchKeywords: "tafsir tafseer commentary baqarah fatiha juz surah lessons wisdoms",
   },
   {
     globalKey: "lifeOfMuhammadMuftiMenkSeries",
@@ -180,5 +190,6 @@ window.seriesConfig = [
     playlistId: "PL91FA0E3B7837B214",
     episodeCount: 30,
     availableCount: 3,
+    searchKeywords: "seerah biography prophet muhammad ramadan makkah madinah revelation hijrah",
   },
 ];

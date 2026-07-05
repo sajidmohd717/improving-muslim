@@ -147,18 +147,24 @@ const SETTINGS_THEME_KEY = "improving-muslim:theme";
 if (themeSelect) {
   try {
     const savedTheme = localStorage.getItem(SETTINGS_THEME_KEY);
-    themeSelect.value = savedTheme === "dark" ? "dark" : "light";
+    themeSelect.value = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "system";
   } catch {
-    themeSelect.value = "light";
+    themeSelect.value = "system";
   }
 
   themeSelect.addEventListener("change", () => {
-    const selectedTheme = themeSelect.value === "dark" ? "dark" : "light";
+    const selectedTheme = ["dark", "light", "system"].includes(themeSelect.value)
+      ? themeSelect.value
+      : "system";
+    if (window.improvingMuslimTheme) {
+      window.improvingMuslimTheme.set(selectedTheme);
+      return;
+    }
     try {
       localStorage.setItem(SETTINGS_THEME_KEY, selectedTheme);
     } catch {
       /* ignore */
     }
-    document.documentElement.dataset.theme = selectedTheme;
+    document.documentElement.dataset.theme = selectedTheme === "dark" ? "dark" : "light";
   });
 }

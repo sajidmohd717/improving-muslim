@@ -34,7 +34,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260705-streaks" />
-    <script src="./scripts/theme.js?v=20260601-light-default"></script>
+    <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <title>Settings | Improving Muslim</title>
   </head>
   <body>
@@ -216,11 +216,12 @@
           <div>
             <p class="eyebrow">Appearance</p>
             <h2 id="theme-title">Theme</h2>
-            <p>Light mode is the default while dark mode is still being refined.</p>
+            <p>System follows your device's light or dark preference automatically.</p>
           </div>
           <label class="settings-field" for="theme-select">
             Theme
             <select id="theme-select" class="sort-select">
+              <option value="system">System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
             </select>
@@ -252,8 +253,8 @@
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
     <script src="./scripts/utils.js?v=20260705-streaks"></script>
-    <script src="./scripts/settings.js?v=20260705-streaks" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260705-streaks" defer></script>
+    <script src="./scripts/settings.js?v=20260705-system-theme" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260705-sdk-order" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

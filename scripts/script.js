@@ -338,6 +338,7 @@ function localSeriesSections(category = "foryou") {
       description: entry.description,
       contentType: "series",
       _globalKey: entry.globalKey,
+      _keywords: entry.searchKeywords || "",
       _cats: cats,
       _badge: availBadge(entry),
       _label: entry.label || null,
@@ -755,6 +756,7 @@ function seriesMatchesSearch(series) {
     series.episodes,
     series.description,
     series._recap,
+    series._keywords,
   ];
 
   // Category slugs and display names
@@ -863,8 +865,8 @@ function renderSeries() {
     els.seriesGrid.innerHTML = "";
     setStatus(
       state.searchTerm
-        ? "No lectures matched that search. Try another title, speaker, or topic."
-        : "No lectures in this category yet. Check back soon."
+        ? `No results for "${escapeHtml(state.searchTerm)}". Try another title, speaker, or topic — or <a href="./pages/explore.html">browse by topic on Explore</a>.`
+        : 'No lectures in this category yet. <a href="./pages/explore.html">Browse by topic on Explore</a> or check back soon.'
     );
     return;
   }

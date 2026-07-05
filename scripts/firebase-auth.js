@@ -772,6 +772,9 @@
     sdks.forEach(function (src) {
       var s = document.createElement('script');
       s.src = src;
+      // Dynamic scripts execute in download order by default; force insertion
+      // order so app-compat always runs before auth-compat and firestore-compat.
+      s.async = false;
       s.onload = function () {
         loaded++;
         if (loaded === sdks.length) callback();
