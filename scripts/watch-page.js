@@ -360,11 +360,20 @@ function updateMediaSessionState(state) {
 
 document.title = `${currentTitleLabel} | Improving Muslim`;
 title.textContent = currentTitleLabel;
-kicker.textContent = isStandalone ? "Standalone Video" : series.title;
-kicker.href = seriesPageUrl;
 meta.textContent = `${series.speaker} · ${series.topic} · ${formatDate(currentEpisode.published)}`;
 const breadcrumbEp = document.querySelector("#watch-breadcrumb-ep");
-if (breadcrumbEp) breadcrumbEp.textContent = currentTypeLabel;
+// Standalone lectures have no series page to link through, so a 3-segment
+// "Home > Standalone Video > Standalone Video" breadcrumb is just noise and
+// repeats itself. Collapse it to "Home > {lecture title}" instead.
+if (isStandalone) {
+  kicker.hidden = true;
+  if (kicker.nextElementSibling) kicker.nextElementSibling.hidden = true;
+  if (breadcrumbEp) breadcrumbEp.textContent = currentTitleLabel;
+} else {
+  kicker.textContent = series.title;
+  kicker.href = seriesPageUrl;
+  if (breadcrumbEp) breadcrumbEp.textContent = currentTypeLabel;
+}
 setPlayerPoster(currentEpisode);
 
 if (playlistTitle) playlistTitle.textContent = isStandalone ? "More lectures" : series.title;
