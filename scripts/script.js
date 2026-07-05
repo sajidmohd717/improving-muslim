@@ -48,6 +48,7 @@ const {
   getAllSeries,
   getStandaloneLectures,
   progressKey,
+  readStudyStreak,
   readJsonStorage,
   readSavedItems,
   PROGRESS_PREFIX,
@@ -210,6 +211,8 @@ const els = {
   speakerList: document.querySelector("#speaker-list"),
   continueSection: document.querySelector("#continue-section"),
   continueList: document.querySelector("#continue-list"),
+  streakSection: document.querySelector("#streak-section"),
+  streakCard: document.querySelector("#streak-card"),
   categoryList: document.querySelector("#category-list"),
   seriesGrid: document.querySelector("#series-grid"),
   statusMessage: document.querySelector("#status-message"),
@@ -664,6 +667,54 @@ function renderContinueWatching() {
   els.continueList.innerHTML = heroCard + compactCards;
 }
 
+function renderStudyStreak() {
+  if (!els.streakSection || !els.streakCard || !readStudyStreak) {
+    return;
+  }
+
+  const streak = readStudyStreak();
+  const targetSeconds = streak.targetMinutes * 60;
+  const todaySeconds = Math.min(streak.todaySeconds, targetSeconds);
+  const percent = targetSeconds > 0 ? Math.min(100, Math.round((todaySeconds / targetSeconds) * 100)) : 0;
+  const watchedMinutes = Math.floor(todaySeconds / 60);
+  const minutesLeft = Math.max(0, Math.ceil((targetSeconds - todaySeconds) / 60));
+  const hasStarted = streak.current > 0 || streak.best > 0 || streak.todaySeconds > 0;
+
+  if (!hasStarted) {
+    els.streakSection.hidden = true;
+    els.streakCard.innerHTML = "";
+    return;
+  }
+
+  const isComplete = todaySeconds >= targetSeconds;
+  const streakLabel = `${streak.current} day${streak.current === 1 ? "" : "s"}`;
+  const progressText = isComplete ? "Daily goal complete" : `${minutesLeft} min left today`;
+  const continueHref = document.querySelector(".continue-card-link")?.getAttribute("href") || "./index.html#series";
+
+  els.streakSection.hidden = false;
+  els.streakCard.innerHTML = `
+    <div class="streak-orb" style="--streak-progress:${percent}%">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2s4 4.4 4 8a4 4 0 0 1-8 0c0-1.9 1.1-3.4 2.2-4.7"/>
+        <path d="M6.6 10.8A7 7 0 1 0 18 8c.4 1.8-.1 3.4-1.1 4.5"/>
+      </svg>
+      <strong>${streak.current}</strong>
+    </div>
+    <div class="streak-copy">
+      <small>Daily learning streak</small>
+      <h2 id="streak-title">${isComplete ? `${streakLabel} strong` : `${streakLabel} in progress`}</h2>
+      <p>${watchedMinutes} of ${streak.targetMinutes} minutes watched today. ${escapeHtml(progressText)}.</p>
+      <div class="streak-track" aria-label="${percent}% of today's learning goal complete">
+        <span style="width:${percent}%"></span>
+      </div>
+    </div>
+    <div class="streak-stats">
+      <span><strong>${streak.best}</strong><small>Best</small></span>
+      <a class="streak-action" href="${continueHref}">${isComplete ? "Keep learning" : "Continue"}</a>
+    </div>
+  `;
+}
+
 function renderSpeakers() {
   if (!els.speakerList) return;
   els.speakerList.innerHTML = speakers
@@ -1053,6 +1104,7 @@ function bindEvents() {
 renderSpeakers();
 renderCategories();
 renderContinueWatching();
+renderStudyStreak();
 bindEvents();
 loadCategory(state.activeCategory);
 
@@ -1063,10 +1115,12 @@ els.continueList?.addEventListener("click", (e) => {
   if (!card) return;
   try { localStorage.removeItem(card.dataset.progressKey); } catch {}
   renderContinueWatching();
+  renderStudyStreak();
 });
 
 window.addEventListener("im-auth-state-changed", () => {
   renderContinueWatching();
+  renderStudyStreak();
   renderSeries();
 });
 

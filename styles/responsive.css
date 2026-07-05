@@ -27,6 +27,17 @@
   .continue-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .streak-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .streak-stats {
+    grid-column: 1 / -1;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    justify-items: start;
+  }
 }
 
 /* ─── Mobile breakpoint (≤ 600px) ───────────────────────────────────────── */
@@ -88,6 +99,57 @@
 
   .sort-trigger {
     position: relative;
+  }
+
+  .nav-streak-btn {
+    min-width: 44px;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .nav-streak-btn span {
+    font-size: 0.78rem;
+  }
+
+  .streak-panel {
+    align-items: end;
+    padding: 0;
+  }
+
+  .streak-panel-sheet {
+    width: 100%;
+    max-height: calc(100vh - 22px);
+    border-radius: 14px 14px 0 0;
+    padding: 16px;
+  }
+
+  .streak-panel-summary,
+  .leaderboard-opt {
+    align-items: flex-start;
+  }
+
+  .streak-panel-summary {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .streak-panel-orb {
+    width: 72px;
+    height: 72px;
+  }
+
+  .streak-panel-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .streak-panel-stats span {
+    padding: 10px;
+  }
+
+  .streak-heatmap {
+    gap: 5px;
   }
 
   .series-hero .hero-copy {
@@ -169,6 +231,44 @@
     aspect-ratio: 16 / 9;
     min-height: 0;
     height: auto;
+  }
+
+  .streak-section {
+    padding: 6px 0 10px;
+  }
+
+  .streak-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .streak-orb {
+    width: 78px;
+    height: 78px;
+  }
+
+  .streak-orb strong {
+    font-size: 1.55rem;
+  }
+
+  .streak-stats {
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-items: start;
+  }
+
+  .streak-stats span {
+    justify-items: start;
+  }
+
+  .streak-settings-panel {
+    align-items: stretch;
+  }
+
+  .streak-target-field {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .continue-hero .continue-body {

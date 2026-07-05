@@ -3,6 +3,7 @@ const {
   getSeriesRegistry,
   getStandaloneLectureRegistry,
   isEpisodeAvailable,
+  recordStudySeconds,
   readJsonStorage,
   writeJsonStorage,
   readSavedItems,
@@ -221,6 +222,40 @@ function saveProgress() {
   };
 
   writeJsonStorage(progressKey(currentEpisode), payload);
+}
+
+const MAX_TRACKABLE_PLAYBACK_RATE = 2.75;
+let lastTrackedAt = 0;
+let lastTrackedPosition = 0;
+
+function resetStudyTimer() {
+  lastTrackedAt = Date.now();
+  lastTrackedPosition = Number(player.currentTime) || 0;
+}
+
+function trackStudyTime(force = false) {
+  if (!recordStudySeconds || player.seeking || (!force && player.paused)) {
+    resetStudyTimer();
+    return;
+  }
+
+  const now = Date.now();
+  const currentPosition = Number(player.currentTime) || 0;
+  if (!lastTrackedAt) {
+    resetStudyTimer();
+    return;
+  }
+
+  const wallDelta = Math.max(0, (now - lastTrackedAt) / 1000);
+  const positionDelta = currentPosition - lastTrackedPosition;
+  const allowedDelta = Math.max(8, wallDelta * MAX_TRACKABLE_PLAYBACK_RATE);
+
+  if (positionDelta > 0 && positionDelta <= allowedDelta) {
+    recordStudySeconds(positionDelta);
+  }
+
+  lastTrackedAt = now;
+  lastTrackedPosition = currentPosition;
 }
 
 function formatProgress(episode) {
@@ -483,15 +518,18 @@ if (currentEpisode.videoSrc) {
 }
 
 player.addEventListener("timeupdate", () => {
+  trackStudyTime();
   saveProgress();
 });
 
 player.addEventListener("pause", () => {
+  trackStudyTime(true);
   saveProgress();
   updateMediaSessionState("paused");
 });
 
 player.addEventListener("ended", () => {
+  trackStudyTime(true);
   if (
     writeJsonStorage(progressKey(currentEpisode), {
       currentTime: player.duration || currentEpisode.duration || 0,
@@ -516,8 +554,11 @@ player.addEventListener("ended", () => {
 });
 
 player.addEventListener("play", () => {
+  resetStudyTimer();
   updateMediaSessionState("playing");
 });
+
+player.addEventListener("seeking", resetStudyTimer);
 
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
 const autoplayToast       = document.querySelector("#autoplay-toast");

@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260705-dark-muted" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260705-streaks" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
     <title>Settings | Improving Muslim</title>
   </head>
@@ -156,6 +156,32 @@
         <p class="settings-note" id="settings-status" role="status"></p>
       </section>
 
+      <section class="settings-section" aria-labelledby="streak-settings-title">
+        <div class="settings-panel streak-settings-panel">
+          <div>
+            <p class="eyebrow">Learning rhythm</p>
+            <h2 id="streak-settings-title">Daily streak goal</h2>
+            <p id="streak-settings-summary">Checking today's learning streak...</p>
+          </div>
+          <fieldset class="streak-target-field" aria-label="Daily streak goal">
+            <legend class="sr-only">Daily streak goal</legend>
+            <label>
+              <input type="radio" name="streak-target" value="20" aria-label="20 minute daily streak goal" />
+              <span>20 min</span>
+            </label>
+            <label>
+              <input type="radio" name="streak-target" value="30" aria-label="30 minute daily streak goal" />
+              <span>30 min</span>
+            </label>
+            <label>
+              <input type="radio" name="streak-target" value="40" aria-label="40 minute daily streak goal" />
+              <span>40 min</span>
+            </label>
+          </fieldset>
+        </div>
+        <p class="settings-note">Streaks count actual lecture playback time and reset gently when a day is missed.</p>
+      </section>
+
       <section class="settings-section" aria-labelledby="saved-items-title">
         <div class="settings-panel">
           <div>
@@ -225,9 +251,9 @@
       <a href="./pages/privacy.html">Privacy</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
-    <script src="./scripts/utils.js?v=20260705-remove-heart-matters"></script>
-    <script src="./scripts/settings.js?v=20260601" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260608-auth-hotfix" defer></script>
+    <script src="./scripts/utils.js?v=20260705-streaks"></script>
+    <script src="./scripts/settings.js?v=20260705-streaks" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260705-streaks" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

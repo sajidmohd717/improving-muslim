@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260705-dark-muted" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260705-streaks" />
     <script src="./scripts/theme.js?v=20260601-light-default"></script>
     <script src="./scripts/error-handler.js?v=20260608-auth-hotfix"></script>
     <script type="application/ld+json">
@@ -137,6 +137,10 @@
         <div class="continue-strip" id="continue-list"></div>
       </section>
 
+      <section class="content-section streak-section" id="streak-section" aria-labelledby="streak-title" hidden>
+        <div class="streak-card" id="streak-card"></div>
+      </section>
+
       <section class="content-section" id="categories" aria-label="Browse by topic" data-reveal>
         <div class="category-strip" id="category-list" role="list"></div>
       </section>
@@ -193,8 +197,8 @@
     <script src="./data/series-registry.js?v=20260705-registry-refactor" defer></script>
     <script src="./data/standalone-lectures-data.js?v=20260625-yahya-dua" defer></script>
     <script src="./data/speaker-data.js" defer></script>
-    <script src="./scripts/utils.js?v=20260705-remove-heart-matters" defer></script>
-    <script src="./scripts/script.js?v=20260705-remove-heart-matters" defer></script>
+    <script src="./scripts/utils.js?v=20260705-streaks" defer></script>
+    <script src="./scripts/script.js?v=20260705-streaks" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
@@ -219,7 +223,7 @@
       </a>
     </nav>
     <script src="./scripts/nav-state.js" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260608-auth-hotfix" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260705-streaks" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
   </body>
 </html>

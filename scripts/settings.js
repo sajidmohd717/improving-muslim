@@ -4,7 +4,10 @@ const {
   escapeHtml,
   readJsonStorage,
   readSavedItems,
+  readStudyStreak,
   removeStorageItem,
+  setStudyStreakTarget,
+  STREAK_TARGET_OPTIONS,
   storageKeysWithPrefix,
 } = window.IMUtils;
 
@@ -14,6 +17,8 @@ const resetButton = document.querySelector("#reset-watch-history");
 const savedSummary = document.querySelector("#saved-items-summary");
 const savedList = document.querySelector("#saved-items-list");
 const resetSavedButton = document.querySelector("#reset-saved-items");
+const streakSummary = document.querySelector("#streak-settings-summary");
+const streakTargetInputs = Array.from(document.querySelectorAll('input[name="streak-target"]'));
 
 function progressKeys() {
   return storageKeysWithPrefix(PROGRESS_PREFIX);
@@ -50,6 +55,39 @@ resetButton.addEventListener("click", () => {
 });
 
 renderSummary();
+
+function renderStreakSettings() {
+  if (!streakSummary || !readStudyStreak) {
+    return;
+  }
+
+  const streak = readStudyStreak();
+  const targetSeconds = streak.targetMinutes * 60;
+  const todaySeconds = Math.min(streak.todaySeconds, targetSeconds);
+  const watchedMinutes = Math.floor(todaySeconds / 60);
+  const remainingMinutes = Math.max(0, Math.ceil((targetSeconds - todaySeconds) / 60));
+  const complete = todaySeconds >= targetSeconds;
+
+  streakSummary.textContent = complete
+    ? `Today's ${streak.targetMinutes} minute goal is complete. Current streak: ${streak.current} ${streak.current === 1 ? "day" : "days"}.`
+    : `${watchedMinutes} of ${streak.targetMinutes} minutes watched today. ${remainingMinutes} ${remainingMinutes === 1 ? "minute" : "minutes"} left to keep the streak.`;
+
+  streakTargetInputs.forEach((input) => {
+    input.checked = Number(input.value) === streak.targetMinutes;
+  });
+}
+
+streakTargetInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    if (!input.checked || !STREAK_TARGET_OPTIONS.includes(Number(input.value))) return;
+    if (setStudyStreakTarget(Number(input.value))) {
+      if (status) status.textContent = `Daily streak goal set to ${input.value} minutes.`;
+      renderStreakSettings();
+    }
+  });
+});
+
+renderStreakSettings();
 
 function renderSavedItems() {
   const items = readSavedItems();
@@ -91,6 +129,7 @@ renderSavedItems();
 window.addEventListener("im-auth-state-changed", () => {
   renderSummary();
   renderSavedItems();
+  renderStreakSettings();
 });
 
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
