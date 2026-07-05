@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260705-streaks" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260706-theme-select" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <title>Settings | Improving Muslim</title>
   </head>
@@ -219,12 +219,14 @@
             <p>System follows your device's light or dark preference automatically.</p>
           </div>
           <label class="settings-field" for="theme-select">
-            Theme
-            <select id="theme-select" class="sort-select">
-              <option value="system">System</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
+            <span>Theme</span>
+            <span class="select-wrap">
+              <select id="theme-select" class="themed-select">
+                <option value="system">System</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </span>
           </label>
         </div>
       </section>

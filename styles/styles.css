@@ -10,7 +10,7 @@
 @import "./cards.css?v=20260702-dark-1";   /* Series cards, speaker cards, category filters      */
 @import "./components.css?v=20260702-dark-1"; /* Shared UI: buttons, panels, sort, footer, errors  */
 @import "./about.css";         /* About page                                         */
-@import "./settings.css?v=20260705-streaks";      /* Settings page, toggle switch                       */
+@import "./settings.css?v=20260706-theme-select";  /* Settings page, toggle switch, themed select        */
 @import "./feedback.css";      /* Feedback page & form                               */
 @import "./explore.css?v=20260616-explore"; /* Explore page category discovery                 */
 @import "./series-detail.css?v=20260702-dark-1";        /* Series/speaker hero, episode list & cards   */
