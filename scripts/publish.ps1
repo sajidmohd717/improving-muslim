@@ -38,6 +38,11 @@
 .PARAMETER SkipFix
   Skip the ffmpeg faststart step (use if the source is already web-optimized).
 
+.PARAMETER KeepLocal
+  Keep the downloaded/fixed MP4 in tmp/yt-dlp after a successful upload.
+  By default the local copy is deleted once R2 confirms the upload, so
+  the download cache doesn't quietly grow on disk.
+
 .PARAMETER DryRun
   Show every command that would run without executing anything.
 
@@ -46,6 +51,7 @@
   .\scripts\publish.ps1 -Series "change-of-heart" -Episode 11 -Url "https://..."
   .\scripts\publish.ps1 -BatchFile "episodes.txt"
   .\scripts\publish.ps1 -Series "life-of-muhammad-mufti-menk" -Episode 4 -Url "https://..." -DryRun
+  .\scripts\publish.ps1 -Series "change-of-heart" -Episode 11 -Url "https://..." -KeepLocal
 #>
 
 param(
@@ -55,6 +61,7 @@ param(
   [string]$BatchFile,
   [switch]$Interactive,
   [switch]$SkipFix,
+  [switch]$KeepLocal,
   [switch]$DryRun
 )
 
@@ -389,7 +396,25 @@ function Send-ToR2 {
     '--content-type', 'video/mp4',
     '--profile', $R2_PROFILE
   )
+  # Run-Command throws on a non-zero exit code, so reaching the line after
+  # this call already means aws reported success.
   Run-Command -CommandArgs $ulArgs -Desc "aws s3 cp -> s3://$Bucket/$ObjectKey"
+}
+
+# Remove the local file once its upload is confirmed, unless the caller asked
+# to keep it (-KeepLocal) or this is a dry run (nothing was ever written).
+function Remove-LocalAfterUpload {
+  param([string]$LocalFile)
+
+  if ($DryRun) { return }
+
+  if ($KeepLocal) {
+    Write-Ok "Kept local copy (-KeepLocal): $LocalFile"
+    return
+  }
+
+  Remove-Item $LocalFile -Force -ErrorAction SilentlyContinue
+  Write-Ok "Deleted local copy after confirmed upload: $LocalFile"
 }
 
 # ---- main pipeline (registry-driven) ----
@@ -419,13 +444,13 @@ function Publish-Episode {
 
   # 6. Upload to R2
   Send-ToR2 -LocalFile $fixedFile -Bucket $R2_BUCKET -ObjectKey $r2Path
+  Remove-LocalAfterUpload -LocalFile $fixedFile
 
   # 7. Update data file
   Write-Step "Updating data file with videoSrc"
   Add-VideoSrc -DataFile $entry.dataFile -EpNum $EpNum -R2Path $r2Path
 
   Write-Host "`n    Episode $EpNum published: $publicUrl" -ForegroundColor Green
-  Write-Host "    Local copy kept at: $fixedFile" -ForegroundColor DarkGray
   Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, then run: npm run check"
 }
 
@@ -516,9 +541,9 @@ function Invoke-Interactive {
   $fixedFile = Join-Path $downloadDir "$baseName.mp4"
 
   Send-ToR2 -LocalFile $fixedFile -Bucket $bucket -ObjectKey $objectKey
+  Remove-LocalAfterUpload -LocalFile $fixedFile
 
   Write-Host "`n    Uploaded: $publicUrl" -ForegroundColor Green
-  Write-Host "    Local copy kept at: $fixedFile" -ForegroundColor DarkGray
 
   # Optional: also write the videoSrc into a data file.
   $patch = (Read-Host "Also write this videoSrc into a series data file? (y/N)").Trim()
@@ -571,6 +596,9 @@ Usage:
 
   Skip ffmpeg fix:
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -SkipFix
+
+  Keep the local MP4 after uploading (deleted by default):
+    .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -KeepLocal
 "@
   }
 
