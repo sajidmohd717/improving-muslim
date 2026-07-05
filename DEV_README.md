@@ -15,7 +15,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
-- `scripts/watch-page.js` loads the selected episode or standalone lecture, handles native playback, progress saving, completion state, stall detection, and media-session controls.
+- `scripts/watch-page.js` loads the selected episode or standalone lecture, handles native playback, progress saving, completion state, stall detection, media-session controls, and the per-episode "My Notes" panel. See the My Notes section below.
 - `data/series-registry.js` is the central series registry — the single source of truth for all series slugs, categories, and global keys.
 - `data/*-data.js` files are the series data sources.
 - `data/standalone-lectures-data.js` holds all standalone (non-series) lecture objects in a single `window.standaloneLectures` array.
@@ -402,6 +402,35 @@ Important implications for localStorage-only (guest) users:
 
 The Settings page at `pages/settings.html` explains local storage and lets users reset watch history and saved items on the current device. Theme preference (`improving-muslim:theme`) is also stored in localStorage and is intentionally not synced to the cloud.
 
+## My Notes
+
+Every watch page has a "My Notes" panel (below the video, above Key Takeaways) where learners can write free-form per-episode notes as they watch. Implemented entirely in `scripts/watch-page.js`; the storage/sync plumbing lives in `scripts/utils.js` and `scripts/firebase-auth.js`.
+
+Storage key format mirrors watch progress exactly:
+
+```js
+lecture-notes:${series.playlistId}:${episode.id}  // series episode
+lecture-notes:standalone:${lecture.id}             // standalone lecture
+```
+
+Built via `window.IMUtils.notesKey(series, episode)` / `standaloneNotesKey(lecture)`. Stored value: `{ text, updatedAt }`. Synced to Firestore the same way as progress (newest `updatedAt` wins per key) — see the Firestore data structure below.
+
+**Editor model:** a plain `<textarea>` with a small formatting toolbar (H1/H2/H3/Bold/Italic buttons that insert lightweight markdown at the cursor) plus an Edit/Preview tab toggle, not a live rich-text/contenteditable editor. This keeps the implementation simple and safe (no HTML is ever stored, only markdown-lite text) and avoids the cross-browser fragility of building a WYSIWYG editor from scratch with no external libraries.
+
+**Supported syntax** (rendered only in the Preview tab, via `renderNoteMarkdown` in `watch-page.js`):
+
+```
+# / ## / ###   heading levels (rendered as styled text, not real <h1>-<h3> tags,
+               so user notes never pollute the page's real heading outline)
+**bold**, *italic*
+05:00 / 1:05:23   any MM:SS or H:MM:SS token auto-links to a clickable
+                  timestamp that seeks the player to that position
+```
+
+The "Insert current time" toolbar button inserts the player's live position in the same `MM:SS` format so typed and inserted timestamps always match the auto-linking regex.
+
+Notes autosave ~600ms after the user stops typing, and flush immediately on `visibilitychange` so a note isn't lost if the user navigates away mid-debounce.
+
 ## Firebase Authentication
 
 Firebase project: **Improving Muslim** (`improving-muslim`)
@@ -412,7 +441,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 | Service | Purpose |
 |---|---|
 | Firebase Authentication | Google Sign-In only |
-| Cloud Firestore | Cloud storage for watch progress, saved items, streaks, and opt-in public leaderboard rows |
+| Cloud Firestore | Cloud storage for watch progress, notes, saved items, streaks, and opt-in public leaderboard rows |
 
 ### How sync works
 
@@ -420,7 +449,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 
 1. Initialises the Firebase app using the project config.
 2. Listens for Google auth state changes.
-3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress key; saved items are deduped by key; streak stats are merged), writes the merged result back to both localStorage and Firestore.
+3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress/notes key; saved items are deduped by key; streak stats are merged), writes the merged result back to both localStorage and Firestore.
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
 5. If a signed-in user opts into the community leaderboard, writes only their public display name and streak summary to `leaderboard/{uid}`. Watch history and saved items are never public.
 6. On sign-out: stops syncing; localStorage continues to work as normal.
@@ -430,6 +459,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 ```
 users/{uid}/data/sync  (single document)
   progress: { "lecture-progress:playlistId:episodeId": { currentTime, duration, updatedAt, completed, _card }, ... }
+  notes: { "lecture-notes:playlistId:episodeId": { text, updatedAt }, ... }
   saved: [ { key, type, title, subtitle, url, savedAt }, ... ]
   streak: {
     targetMinutes,
@@ -486,6 +516,7 @@ Add any new domains here if the site is ever served from a different origin.
 | Data | Synced |
 |---|---|
 | Watch progress | Yes |
+| Episode notes | Yes |
 | Saved items | Yes |
 | Daily streak stats | Yes |
 | Public leaderboard row | Optional, opt-in only |

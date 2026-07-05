@@ -1,6 +1,7 @@
 (function () {
   const SAVED_KEY = "improving-muslim:saved-items";
   const PROGRESS_PREFIX = "lecture-progress:";
+  const NOTES_PREFIX = "lecture-notes:";
   const STREAK_KEY = "improving-muslim:study-streak";
   const DEFAULT_STREAK_TARGET_MINUTES = 30;
   const STREAK_TARGET_OPTIONS = [20, 30, 40];
@@ -67,6 +68,14 @@
 
   function standaloneProgressKey(lecture) {
     return `${PROGRESS_PREFIX}standalone:${lecture.id}`;
+  }
+
+  function notesKey(series, episode) {
+    return `${NOTES_PREFIX}${series.playlistId}:${episode.id}`;
+  }
+
+  function standaloneNotesKey(lecture) {
+    return `${NOTES_PREFIX}standalone:${lecture.id}`;
   }
 
   function readJsonStorage(key, fallback = {}) {
@@ -288,6 +297,7 @@
   window.IMUtils = {
     SAVED_KEY,
     PROGRESS_PREFIX,
+    NOTES_PREFIX,
     STREAK_KEY,
     STREAK_TARGET_OPTIONS,
     escapeHtml,
@@ -301,6 +311,8 @@
     standaloneLectureThumbnailUrl,
     progressKey,
     standaloneProgressKey,
+    notesKey,
+    standaloneNotesKey,
     readJsonStorage,
     writeJsonStorage,
     removeStorageItem,

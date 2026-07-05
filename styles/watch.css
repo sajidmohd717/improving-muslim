@@ -457,3 +457,227 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+
+/* ─── My Notes panel ─────────────────────────────────────────────────────── */
+
+.notes-panel {
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  padding: 16px 18px 18px;
+}
+
+.notes-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.notes-panel-head h2 {
+  margin: 0;
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.notes-tabs {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  padding: 4px;
+}
+
+.notes-tabs button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 6px 14px;
+}
+
+.notes-tabs button.is-active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.notes-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.notes-format-btn,
+.notes-timestamp-btn {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 6px 10px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.notes-format-btn {
+  min-width: 34px;
+}
+
+.notes-format-btn:hover,
+.notes-format-btn:focus-visible,
+.notes-timestamp-btn:hover,
+.notes-timestamp-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.notes-timestamp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--accent-strong);
+}
+
+.notes-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+  margin: 0 2px;
+}
+
+.notes-textarea {
+  display: block;
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 12px 14px;
+}
+
+.notes-textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
+}
+
+.notes-textarea::placeholder {
+  color: var(--muted);
+}
+
+.notes-preview-body {
+  min-height: 160px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.notes-preview-body .notes-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.notes-preview-body .note-line {
+  margin: 0 0 0.9em;
+}
+
+.notes-preview-body .note-line:last-child {
+  margin-bottom: 0;
+}
+
+.notes-preview-body .note-heading {
+  margin: 0.4em 0 0.6em;
+  font-family: "Inria Serif", Georgia, serif;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.notes-preview-body .note-h1 {
+  font-size: 1.35rem;
+}
+
+.notes-preview-body .note-h2 {
+  font-size: 1.15rem;
+}
+
+.notes-preview-body .note-h3 {
+  font-size: 1.02rem;
+  color: var(--accent-strong);
+}
+
+.notes-preview-body strong {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.note-timestamp {
+  display: inline;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(23, 107, 91, 0.12);
+  color: var(--accent-strong);
+  font: inherit;
+  font-weight: 800;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.note-timestamp:hover,
+.note-timestamp:focus-visible {
+  background: var(--accent);
+  color: var(--on-accent);
+  outline: none;
+}
+
+.notes-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.notes-status {
+  margin: 0;
+  min-height: 1.2em;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.notes-clear-btn {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  padding: 4px 0;
+}
+
+.notes-clear-btn:hover,
+.notes-clear-btn:focus-visible {
+  color: var(--rose);
+  outline: none;
+}

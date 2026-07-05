@@ -15,6 +15,7 @@
   var FIREBASE_VERSION = '10.12.0';
   var FIREBASE_BASE    = 'https://www.gstatic.com/firebasejs/' + FIREBASE_VERSION + '/';
   var PROGRESS_PREFIX  = 'lecture-progress:';
+  var NOTES_PREFIX     = 'lecture-notes:';
   var SAVED_KEY        = 'improving-muslim:saved-items';
   var STREAK_KEY       = 'improving-muslim:study-streak';
   var STREAK_TARGET_OPTIONS = [20, 30, 40];
@@ -36,6 +37,8 @@
 
   /* ── Merge helpers ────────────────────────────────────────────────────── */
 
+  // Generic "newest updatedAt wins per key" merge -- also reused for notes,
+  // since both are maps of storageKey -> { ..., updatedAt }.
   function mergeProgress(local, cloud) {
     var merged = Object.assign({}, cloud || {});
     Object.keys(local || {}).forEach(function (key) {
@@ -84,24 +87,29 @@
   /* ── Read / write localStorage ────────────────────────────────────────── */
 
   function readLocal() {
-    var progress = {}, saved = [], streak = {};
+    var progress = {}, notes = {}, saved = [], streak = {};
     try {
       for (var i = 0; i < localStorage.length; i++) {
         var k = localStorage.key(i);
         if (k && k.startsWith(PROGRESS_PREFIX)) {
           try { progress[k] = JSON.parse(localStorage.getItem(k)); } catch (_) {}
+        } else if (k && k.startsWith(NOTES_PREFIX)) {
+          try { notes[k] = JSON.parse(localStorage.getItem(k)); } catch (_) {}
         }
       }
     } catch (_) {}
     try { saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
     try { streak = JSON.parse(localStorage.getItem(STREAK_KEY) || '{}'); } catch (_) {}
-    return { progress: progress, saved: saved, streak: streak };
+    return { progress: progress, notes: notes, saved: saved, streak: streak };
   }
 
   function writeLocal(data) {
     try {
       Object.keys(data.progress || {}).forEach(function (k) {
         localStorage.setItem(k, JSON.stringify(data.progress[k]));
+      });
+      Object.keys(data.notes || {}).forEach(function (k) {
+        localStorage.setItem(k, JSON.stringify(data.notes[k]));
       });
       if (Array.isArray(data.saved)) {
         localStorage.setItem(SAVED_KEY, JSON.stringify(data.saved));
@@ -124,12 +132,13 @@
         var cloud = snap.data();
         payload = {
           progress: mergeProgress(local.progress, cloud.progress || {}),
+          notes:    mergeProgress(local.notes, cloud.notes || {}),
           saved:    mergeSaved(local.saved, cloud.saved || []),
           streak:   mergeStreak(local.streak, cloud.streak || {}),
         };
         writeLocal(payload);
       } else {
-        payload = { progress: local.progress, saved: local.saved, streak: local.streak };
+        payload = { progress: local.progress, notes: local.notes, saved: local.saved, streak: local.streak };
       }
       payload.lastSyncedAt = Date.now();
       return doc.set(payload);
@@ -785,7 +794,7 @@
     },
 
     onLocalWrite: function (key) {
-      if (_user && key && (key.startsWith(PROGRESS_PREFIX) || key === SAVED_KEY || key === STREAK_KEY)) {
+      if (_user && key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY)) {
         schedulePush();
       }
       if (key === STREAK_KEY) {
