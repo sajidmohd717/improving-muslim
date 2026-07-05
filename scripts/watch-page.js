@@ -224,6 +224,29 @@ function saveProgress() {
   writeJsonStorage(progressKey(currentEpisode), payload);
 }
 
+// Seeking (dragging the scrubber) doesn't commit a new resume position right
+// away. A seek only overwrites saved progress after it holds steady for
+// SEEK_SETTLE_MS — this gives a short undo window for accidental drags or
+// misclicks: seek back before it settles and the original position survives.
+const SEEK_SETTLE_MS = 5000;
+let seekPending = false;
+let seekSettleTimer = null;
+let suppressSeekBuffer = false; // true only for the programmatic resume-on-load seek
+
+function commitPendingSeek() {
+  seekPending = false;
+  seekSettleTimer = null;
+  saveProgress();
+}
+
+function handleSeeking() {
+  resetStudyTimer();
+  if (suppressSeekBuffer) return;
+  seekPending = true;
+  clearTimeout(seekSettleTimer);
+  seekSettleTimer = setTimeout(commitPendingSeek, SEEK_SETTLE_MS);
+}
+
 const MAX_TRACKABLE_PLAYBACK_RATE = 2.75;
 let lastTrackedAt = 0;
 let lastTrackedPosition = 0;
@@ -488,11 +511,17 @@ player.addEventListener("loadedmetadata", () => {
 
   if (resumeTime > 10 && !almostFinished) {
     try {
+      suppressSeekBuffer = true;
       player.currentTime = resumeTime;
     } catch (error) {
+      suppressSeekBuffer = false;
       return;
     }
   }
+});
+
+player.addEventListener("seeked", () => {
+  suppressSeekBuffer = false;
 });
 
 if (currentEpisode.videoSrc) {
@@ -519,17 +548,19 @@ if (currentEpisode.videoSrc) {
 
 player.addEventListener("timeupdate", () => {
   trackStudyTime();
-  saveProgress();
+  if (!seekPending) saveProgress();
 });
 
 player.addEventListener("pause", () => {
   trackStudyTime(true);
-  saveProgress();
+  if (!seekPending) saveProgress();
   updateMediaSessionState("paused");
 });
 
 player.addEventListener("ended", () => {
   trackStudyTime(true);
+  clearTimeout(seekSettleTimer);
+  seekPending = false;
   if (
     writeJsonStorage(progressKey(currentEpisode), {
       currentTime: player.duration || currentEpisode.duration || 0,
@@ -558,7 +589,7 @@ player.addEventListener("play", () => {
   updateMediaSessionState("playing");
 });
 
-player.addEventListener("seeking", resetStudyTimer);
+player.addEventListener("seeking", handleSeeking);
 
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
 const autoplayToast       = document.querySelector("#autoplay-toast");
