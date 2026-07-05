@@ -120,9 +120,9 @@
             <div>
               <h3>What is stored locally</h3>
               <p>
-                Watch progress, saved items, theme preference, and player settings are kept in your
-                browser's local storage. They never leave your device and are not visible to us or
-                to anyone else.
+                Watch progress, saved items, daily streak progress, theme preference, and player
+                settings are kept in your browser's local storage. They never leave your device
+                unless you sign in to sync them.
               </p>
             </div>
           </article>
@@ -161,14 +161,26 @@
             <div>
               <h3>What we store in the cloud</h3>
               <p>
-                Your watch progress and saved items are synced to Cloud Firestore (a Google
-                Firebase service) so they follow you across devices. Security rules ensure each
-                account can only read and write its own data.
+                Your watch progress, saved items, and daily streak stats are synced to Cloud
+                Firestore (a Google Firebase service) so they follow you across devices. Security
+                rules ensure each account can only read and write its own private learning data.
               </p>
             </div>
           </article>
           <article class="principle-item">
             <span>03</span>
+            <div>
+              <h3>Community leaderboard</h3>
+              <p>
+                The streak leaderboard is opt-in only. If you join, the public row contains only
+                your display name, current streak, best streak, daily target, last completed day,
+                and update time. Your email, watch history, saved items, and daily heatmap details
+                are never public. Leaving the leaderboard removes that public row.
+              </p>
+            </div>
+          </article>
+          <article class="principle-item">
+            <span>04</span>
             <div>
               <h3>How to delete your data</h3>
               <p>
@@ -214,7 +226,7 @@
             <div>
               <h3>Feedback and error reports</h3>
               <p>
-                The feedback form sends your message through FormSubmit to our contact inbox — your
+                The feedback form sends your message through FormSubmit to our contact inbox - your
                 email address is included only if you choose to provide it. If a page crashes or a
                 video fails to load, an automatic report with the page URL and browser version is
                 sent the same way so we can fix it. These reports contain no name, email, or

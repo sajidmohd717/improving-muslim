@@ -378,7 +378,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 | Service | Purpose |
 |---|---|
 | Firebase Authentication | Google Sign-In only |
-| Cloud Firestore | Cloud storage for watch progress and saved items |
+| Cloud Firestore | Cloud storage for watch progress, saved items, streaks, and opt-in public leaderboard rows |
 
 ### How sync works
 
@@ -386,32 +386,55 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 
 1. Initialises the Firebase app using the project config.
 2. Listens for Google auth state changes.
-3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress key; saved items are deduped by key), writes the merged result back to both localStorage and Firestore.
+3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress key; saved items are deduped by key; streak stats are merged), writes the merged result back to both localStorage and Firestore.
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
-5. On sign-out: stops syncing; localStorage continues to work as normal.
+5. If a signed-in user opts into the community leaderboard, writes only their public display name and streak summary to `leaderboard/{uid}`. Watch history and saved items are never public.
+6. On sign-out: stops syncing; localStorage continues to work as normal.
 
 ### Firestore data structure
 
 ```
-users/{uid}/sync  (single document)
+users/{uid}/data/sync  (single document)
   progress: { "lecture-progress:playlistId:episodeId": { currentTime, duration, updatedAt, completed, _card }, ... }
-  savedItems: [ { key, type, title, subtitle, url, savedAt }, ... ]
-  lastSyncedAt: timestamp
+  saved: [ { key, type, title, subtitle, url, savedAt }, ... ]
+  streak: {
+    targetMinutes,
+    todayDate,
+    todaySeconds,
+    current,
+    best,
+    lastCompletedDate,
+    days: { "YYYY-MM-DD": { seconds, completed }, ... },
+    publicOptIn,
+    publicName,
+    updatedAt,
+    targetUpdatedAt
+  }
+  lastSyncedAt: timestamp in milliseconds
+
+leaderboard/{uid}  (public, opt-in only)
+  displayName: string
+  current: number
+  best: number
+  targetMinutes: 20 | 30 | 40
+  lastCompletedDate: "YYYY-MM-DD"
+  updatedAt: timestamp in milliseconds
 ```
 
 ### Firestore security rules
 
-Users can only read and write their own document:
+The deployable rules live in `firestore.rules` and are referenced by `firebase.json`.
+They enforce:
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}
+- `users/{uid}/data/sync` can only be read and written by that signed-in user.
+- `leaderboard/{uid}` can be read publicly, but only written or deleted by that same signed-in user.
+- Leaderboard rows may only contain safe public fields: `displayName`, `current`, `best`, `targetMinutes`, `lastCompletedDate`, and `updatedAt`.
+- Emails, watch history, saved items, and detailed daily heatmap data are not allowed in public leaderboard rows.
+
+Deploy rules after editing them:
+
+```powershell
+firebase deploy --only firestore:rules --project improving-muslim
 ```
 
 ### Authorised domains
@@ -430,6 +453,8 @@ Add any new domains here if the site is ever served from a different origin.
 |---|---|
 | Watch progress | Yes |
 | Saved items | Yes |
+| Daily streak stats | Yes |
+| Public leaderboard row | Optional, opt-in only |
 | Theme preference | No — device-local by design |
 | Autoplay setting | No — device-local by design |
 

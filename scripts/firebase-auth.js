@@ -479,18 +479,31 @@
     var streak = readStreak();
     streak.publicOptIn = Boolean(enabled);
     if (enabled && !streak.publicName) {
-      streak.publicName = _user && (_user.displayName || _user.email)
+      streak.publicName = sanitizePublicName(_user && (_user.displayName || _user.email)
         ? String(_user.displayName || _user.email).split('@')[0]
-        : 'Learner';
+        : 'Learner');
     }
     writeStreak(streak);
-    if (enabled) pushLeaderboardEntry(streak);
+    if (enabled) {
+      pushLeaderboardEntry(streak);
+    } else {
+      deleteLeaderboardEntry();
+    }
     renderStreakPanel('leaderboard');
   }
 
+  function sanitizePublicName(value) {
+    var cleaned = String(value || 'Learner')
+      .replace(/[@<>]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 60);
+    return cleaned || 'Learner';
+  }
+
   function publicNameForUser(streak) {
-    if (streak.publicName) return streak.publicName;
-    if (_user && _user.displayName) return _user.displayName;
+    if (streak.publicName) return sanitizePublicName(streak.publicName);
+    if (_user && _user.displayName) return sanitizePublicName(_user.displayName);
     return 'Learner';
   }
 
@@ -505,6 +518,13 @@
       updatedAt: Date.now(),
     }, { merge: true }).catch(function (err) {
       console.warn('[IMAuth] Leaderboard update failed:', err.message);
+    });
+  }
+
+  function deleteLeaderboardEntry() {
+    if (!_user || !_db) return Promise.resolve();
+    return _db.collection('leaderboard').doc(_user.uid).delete().catch(function (err) {
+      console.warn('[IMAuth] Leaderboard delete failed:', err.message);
     });
   }
 
@@ -526,12 +546,6 @@
       '<div class="leaderboard-list" id="leaderboard-list">' +
         '<p class="leaderboard-empty">Loading community streaks...</p>' +
       '</div>';
-
-    if (!signedIn) {
-      document.getElementById('leaderboard-list').innerHTML =
-        '<p class="leaderboard-empty">Sign in from Settings to join and view your place among other learners.</p>';
-      return;
-    }
 
     if (!_db) {
       document.getElementById('leaderboard-list').innerHTML =

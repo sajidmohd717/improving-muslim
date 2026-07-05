@@ -1,0 +1,83 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function optionalSyncFieldsAreSafe() {
+      return (!('progress' in request.resource.data) || request.resource.data.progress is map)
+        && (!('saved' in request.resource.data) || request.resource.data.saved is list)
+        && (!('streak' in request.resource.data) || request.resource.data.streak is map)
+        && (!('lastSyncedAt' in request.resource.data) || request.resource.data.lastSyncedAt is int);
+    }
+
+    function safeSyncDocument() {
+      return request.resource.data.keys().hasOnly([
+        'progress',
+        'saved',
+        'streak',
+        'lastSyncedAt'
+      ]) && optionalSyncFieldsAreSafe();
+    }
+
+    function safeLeaderboardDocument() {
+      return request.resource.data.keys().hasOnly([
+        'displayName',
+        'current',
+        'best',
+        'targetMinutes',
+        'lastCompletedDate',
+        'updatedAt'
+      ])
+      && request.resource.data.keys().hasAll([
+        'displayName',
+        'current',
+        'best',
+        'targetMinutes',
+        'lastCompletedDate',
+        'updatedAt'
+      ])
+      && request.resource.data.displayName is string
+      && request.resource.data.displayName.matches('^[^@<>]{1,60}$')
+      && request.resource.data.current is int
+      && request.resource.data.current >= 0
+      && request.resource.data.current <= 5000
+      && request.resource.data.best is int
+      && request.resource.data.best >= request.resource.data.current
+      && request.resource.data.best <= 5000
+      && (
+        request.resource.data.targetMinutes == 20
+        || request.resource.data.targetMinutes == 30
+        || request.resource.data.targetMinutes == 40
+      )
+      && request.resource.data.lastCompletedDate is string
+      && request.resource.data.lastCompletedDate.matches('^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+      && request.resource.data.updatedAt is int
+      && request.resource.data.updatedAt > 0;
+    }
+
+    match /users/{userId}/data/{documentId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && documentId == 'sync'
+        && safeSyncDocument();
+      allow delete: if isOwner(userId);
+    }
+
+    match /leaderboard/{userId} {
+      allow read: if true;
+      allow create, update: if isOwner(userId) && safeLeaderboardDocument();
+      allow delete: if isOwner(userId);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
