@@ -2,7 +2,10 @@
  * Cloudflare Worker template for Improving Muslim AI search reranking.
  *
  * Required Worker secrets / vars:
- * - OPENAI_API_KEY: private OpenAI API key
+ * - AI_PROVIDER: optional, defaults to deepseek
+ * - DEEPSEEK_API_KEY: private DeepSeek API key when AI_PROVIDER=deepseek
+ * - DEEPSEEK_MODEL: optional, defaults to deepseek-v4-flash
+ * - OPENAI_API_KEY: private OpenAI API key when AI_PROVIDER=openai
  * - OPENAI_MODEL: optional, defaults to gpt-4o-mini
  * - ALLOWED_ORIGIN: optional, defaults to https://improvingmuslim.com
  *
@@ -32,8 +35,9 @@ export default {
     if (request.method !== 'POST') {
       return json({ error: 'Method not allowed' }, 405, corsHeaders);
     }
-    if (!env.OPENAI_API_KEY) {
-      return json({ error: 'OPENAI_API_KEY is not configured' }, 500, corsHeaders);
+    const provider = (env.AI_PROVIDER || 'deepseek').toLowerCase();
+    if (!providerConfig(env, provider).apiKey) {
+      return json({ error: `${providerConfig(env, provider).secretName} is not configured` }, 500, corsHeaders);
     }
 
     let body;
@@ -87,46 +91,11 @@ export default {
     };
 
     try {
-      const response = await fetch('https://api.openai.com/v1/responses', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: env.OPENAI_MODEL || 'gpt-4o-mini',
-          input: [
-            {
-              role: 'system',
-              content: 'You are a careful search reranker for an Islamic lecture platform. Respond as strict JSON.',
-            },
-            {
-              role: 'user',
-              content: JSON.stringify(prompt),
-            },
-          ],
-          text: {
-            format: {
-              type: 'json_schema',
-              name: 'search_ranking',
-              strict: true,
-              schema,
-            },
-          },
-        }),
-      });
+      const { response, data, text } = provider === 'openai'
+        ? await callOpenAI(env, prompt, schema)
+        : await callDeepSeek(env, prompt);
+      if (!response.ok) return handleProviderError(response, data, corsHeaders);
 
-      const data = await response.json();
-      if (!response.ok) {
-        const message = data.error?.message || '';
-        if (response.status === 429 || /quota|billing/i.test(message)) {
-          aiUnavailableUntil = Date.now() + 5 * 60 * 1000;
-          return json({ results: [], fallback: 'ai-unavailable' }, 200, corsHeaders);
-        }
-        return json({ error: 'AI search temporarily unavailable' }, 502, corsHeaders);
-      }
-
-      const text = data.output_text || extractOutputText(data);
       const parsed = JSON.parse(text || '{"results":[]}');
       const validIds = new Set(items.map((item) => item.id));
       const results = (Array.isArray(parsed.results) ? parsed.results : [])
@@ -145,6 +114,106 @@ export default {
     }
   },
 };
+
+function providerConfig(env, provider) {
+  if (provider === 'openai') {
+    return {
+      apiKey: env.OPENAI_API_KEY,
+      secretName: 'OPENAI_API_KEY',
+      model: env.OPENAI_MODEL || 'gpt-4o-mini',
+    };
+  }
+  return {
+    apiKey: env.DEEPSEEK_API_KEY,
+    secretName: 'DEEPSEEK_API_KEY',
+    model: env.DEEPSEEK_MODEL || 'deepseek-v4-flash',
+  };
+}
+
+async function callDeepSeek(env, prompt) {
+  const config = providerConfig(env, 'deepseek');
+  const response = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${config.apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: config.model,
+      messages: [
+        {
+          role: 'system',
+          content: [
+            'You are a careful search reranker for an Islamic lecture platform.',
+            'Return only valid JSON with this shape:',
+            '{"results":[{"id":"provided-id","score":0.95,"reason":"short reason"}]}',
+            'Use only IDs from the provided items. Do not invent IDs.',
+          ].join(' '),
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(prompt),
+        },
+      ],
+      response_format: { type: 'json_object' },
+      max_tokens: 1200,
+      stream: false,
+    }),
+  });
+  const data = await response.json();
+  return {
+    response,
+    data,
+    text: data.choices?.[0]?.message?.content || '',
+  };
+}
+
+async function callOpenAI(env, prompt, schema) {
+  const config = providerConfig(env, 'openai');
+  const response = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${config.apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: config.model,
+      input: [
+        {
+          role: 'system',
+          content: 'You are a careful search reranker for an Islamic lecture platform. Respond as strict JSON.',
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(prompt),
+        },
+      ],
+      text: {
+        format: {
+          type: 'json_schema',
+          name: 'search_ranking',
+          strict: true,
+          schema,
+        },
+      },
+    }),
+  });
+  const data = await response.json();
+  return {
+    response,
+    data,
+    text: data.output_text || extractOutputText(data),
+  };
+}
+
+function handleProviderError(response, data, headers) {
+  const message = data.error?.message || data.message || '';
+  if (response.status === 429 || /quota|billing|balance|insufficient/i.test(message)) {
+    aiUnavailableUntil = Date.now() + 5 * 60 * 1000;
+    return json({ results: [], fallback: 'ai-unavailable' }, 200, headers);
+  }
+  return json({ error: 'AI search temporarily unavailable' }, 502, headers);
+}
 
 function cleanText(value, maxLength) {
   return String(value || '').replace(/\s+/g, ' ').trim().slice(0, maxLength);

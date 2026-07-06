@@ -129,17 +129,81 @@ Videos are not stored in Git. Large MP4 files are hosted on Cloudflare R2 and re
 
 Homepage search is submit-based: suggestions appear while typing, then the dedicated search results state renders after Enter or the Search button. The browser always has a normal local keyword fallback, so search should keep working even if AI is not configured.
 
-Optional AI reranking is controlled by `aiSearchEndpoint` in `scripts/home-config.js`. Keep it empty until a server-side endpoint is deployed. Never put an OpenAI, Claude, or other private AI API key in browser JavaScript.
+AI reranking is enabled through a Cloudflare Worker endpoint configured in `scripts/home-config.js`:
 
-The current server template is `workers/ai-search-worker.js`. It is designed for Cloudflare Workers:
+```js
+aiSearchEndpoint: "https://improving-muslim-ai-search.improving-muslim.workers.dev"
+```
 
-1. Deploy the Worker.
-2. Store `OPENAI_API_KEY` as a Worker secret.
-3. Optionally set `OPENAI_MODEL` and `ALLOWED_ORIGIN`.
-4. Set `aiSearchEndpoint` in `scripts/home-config.js` to the Worker URL.
-5. Bump the `home-config.js` and `script.js` cache-bust query strings in `index.html`.
+Never put an OpenAI, Claude, or other private AI API key in browser JavaScript. The browser only sends the user's submitted query plus trimmed catalog metadata to the Worker. The Worker calls OpenAI with the private key and returns ranked item IDs.
 
-The first AI version is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks OpenAI for strict JSON-ranked IDs, and the homepage shows those IDs with an "AI match" badge. Longer term, the better semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
+Current production Worker:
+
+| Field | Value |
+|---|---|
+| Worker name | `improving-muslim-ai-search` |
+| Worker URL | `https://improving-muslim-ai-search.improving-muslim.workers.dev` |
+| Source file | `workers/ai-search-worker.js` |
+| Wrangler config | `wrangler.jsonc` |
+| Active provider | `deepseek` |
+| Required secret | `DEEPSEEK_API_KEY` |
+| Public vars | `ALLOWED_ORIGIN=https://improvingmuslim.com`, `AI_PROVIDER=deepseek`, `DEEPSEEK_MODEL=deepseek-v4-flash` |
+
+### AI Search Runtime Flow
+
+1. User types in the homepage search box.
+2. `scripts/home-search.js` shows suggestions only; it does not rerender the whole feed on every keystroke.
+3. User presses Enter or clicks Search.
+4. `scripts/script.js` immediately renders normal local keyword results, logs the submitted search event when signed in, and starts the AI rerank request in the background.
+5. The Worker receives `{ query, items }`, validates CORS/origin, calls the active AI provider, and returns ranked IDs.
+6. If ranked IDs come back, the homepage reorders/filters results and shows an "AI match" badge.
+7. If the Worker fails, OpenAI quota is unavailable, or no useful IDs come back, the homepage keeps the normal local search results.
+
+This means AI search should enhance search quality without being a single point of failure.
+
+### Deploying The Worker
+
+Use Wrangler from the repo root:
+
+```powershell
+npx wrangler secret put DEEPSEEK_API_KEY
+npx wrangler deploy
+```
+
+The secret is stored in Cloudflare, not Git. `.env`, `.dev.vars`, and `.wrangler/` are ignored in `.gitignore`; keep it that way.
+
+The Worker also still has an inactive OpenAI code path. To switch back later, set `AI_PROVIDER=openai`, require/store `OPENAI_API_KEY`, and set `OPENAI_MODEL`. Do not keep both providers active from browser code; provider choice belongs inside the Worker.
+
+To test the live Worker without the browser:
+
+```powershell
+$json = '{"query":"money in islam","items":[{"id":"video:test-money","title":"Money and Riba in Islam","speaker":"Test Speaker","topic":"Finance","type":"video","text":"A lecture about money, riba, halal income, and Islamic finance."},{"id":"video:test-prayer","title":"How to Improve Salah","speaker":"Test Speaker","topic":"Prayer","type":"video","text":"A lecture about prayer focus and khushu."}]}'
+$json | curl.exe -k -sS -i -X POST "https://improving-muslim-ai-search.improving-muslim.workers.dev" -H "Content-Type: application/json" -H "Origin: https://improvingmuslim.com" --data-binary "@-"
+```
+
+Expected healthy AI response:
+
+```json
+{"results":[{"id":"video:test-money","score":0.95,"reason":"Relevant to money and riba."}]}
+```
+
+Expected safe fallback response when OpenAI quota/billing is unavailable:
+
+```json
+{"results":[],"fallback":"ai-unavailable"}
+```
+
+During initial deployment on July 6, 2026, the Worker deployed correctly and the OpenAI secret was accepted, but OpenAI returned a quota/billing error because ChatGPT Plus billing does not include API usage. The active provider was then moved to DeepSeek because the project already has an active DeepSeek API account and DeepSeek is cheaper for this reranking use case. The Worker converts quota/billing/balance errors into the safe fallback above and caches the unavailable state briefly, so production search remains usable. If AI search appears inactive, check the active provider's API balance/quota before changing frontend code.
+
+### Editing AI Search
+
+- Frontend search UX and fallback behavior: `scripts/home-search.js` and `scripts/script.js`.
+- Worker provider selection, prompt/schema/CORS/fallback behavior: `workers/ai-search-worker.js`.
+- Endpoint URL and homepage metadata: `scripts/home-config.js`.
+- Deployment name, Worker vars, and required secrets: `wrangler.jsonc`.
+- Search analytics storage: signed-in submissions create `searchEvents/{eventId}` in Firestore; clients cannot read those events directly.
+
+The first AI version is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks the active provider for JSON-ranked IDs, and the homepage shows those IDs with an "AI match" badge. Longer term, the better semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
 
 ## Video Hosting Pattern
 

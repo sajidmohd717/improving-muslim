@@ -7,11 +7,12 @@
   "preview_urls": false,
   "secrets": {
     "required": [
-      "OPENAI_API_KEY"
+      "DEEPSEEK_API_KEY"
     ]
   },
   "vars": {
     "ALLOWED_ORIGIN": "https://improvingmuslim.com",
-    "OPENAI_MODEL": "gpt-4o-mini"
+    "AI_PROVIDER": "deepseek",
+    "DEEPSEEK_MODEL": "deepseek-v4-flash"
   }
 }
