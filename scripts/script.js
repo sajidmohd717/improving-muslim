@@ -865,20 +865,27 @@ function renderSeries() {
   let series = flattenSeries(searchSections())
     .filter(isAllowedSeries)
     .filter((item) => {
-      if (aiIds) return aiOrder.has(searchItemId(item));
       if (!isSearching) return true;
+      const id = searchItemId(item);
       const match = homeSearch.assessSeries(item, state.searchTerm);
-      if (match.score <= 0) return false;
-      searchScores.set(searchItemId(item), match.score);
-      if (match.strong) strongIds.add(searchItemId(item));
-      return true;
+      if (match.score > 0) searchScores.set(id, match.score);
+      if (match.strong) strongIds.add(id);
+      // AI ranking augments the keyword results, it must not shrink them:
+      // strong keyword matches stay even when the AI ranker omits them.
+      if (aiIds) return aiOrder.has(id) || match.strong;
+      return match.score > 0;
     })
     .filter(seriesMatchesSpeaker)
     .filter(seriesMatchesContentType)
     .filter((item) => !state.hideWatched || !isItemWatched(item))
     .map(enrichSeries);
   series = aiIds
-    ? series.sort((a, b) => aiOrder.get(searchItemId(a)) - aiOrder.get(searchItemId(b)))
+    ? series.sort((a, b) => {
+        const rankA = aiOrder.has(searchItemId(a)) ? aiOrder.get(searchItemId(a)) : Infinity;
+        const rankB = aiOrder.has(searchItemId(b)) ? aiOrder.get(searchItemId(b)) : Infinity;
+        if (rankA !== rankB) return rankA - rankB;
+        return (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0);
+      })
     : isSearching && state.sortBy === "random"
     ? [...series].sort((a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0))
     : getSortedSeries(series);

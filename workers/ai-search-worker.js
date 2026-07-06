@@ -138,7 +138,7 @@ const EMBEDDING_MODEL = '@cf/baai/bge-m3';
 // Cosine-similarity floor for a real match, and how far below the best
 // match an item may fall before it stops being worth showing.
 const MIN_SIMILARITY = 0.4;
-const MAX_DROP_FROM_TOP = 0.12;
+const MAX_DROP_FROM_TOP = 0.2;
 
 async function rankByEmbeddings(env, query, items) {
   const texts = items.map((item) =>
