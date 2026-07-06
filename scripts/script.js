@@ -114,6 +114,7 @@ const state = {
     pending: false,
     results: null,
     reasonById: {},
+    scoreById: {},
     message: "",
   },
 };
@@ -285,7 +286,7 @@ const homeSearch = window.IMHomeSearch.create({
   catalog: searchCatalog,
   onSubmit(query) {
     state.searchTerm = query;
-    state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, message: "" };
+    state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
     renderSeries();
     if (query) {
       scrollToSeriesResults();
@@ -892,10 +893,20 @@ function renderSeries() {
 
   // Items that only matched buried text (recaps, keyword lists) are shown
   // under a "possibly related" divider instead of posing as real results.
+  // Once AI scores arrive, the same applies to AI-ranked items that score
+  // well below the AI's best match: they trail as "related" too.
   let related = [];
-  if (isSearching && !aiIds) {
-    related = series.filter((item) => !strongIds.has(searchItemId(item)));
-    series = series.filter((item) => strongIds.has(searchItemId(item)));
+  if (isSearching) {
+    const aiScores = state.aiSearch.scoreById || {};
+    const topAiScore = aiIds ? Math.max(0, ...aiIds.map((id) => aiScores[id] || 0)) : 0;
+    const isTopResult = (item) => {
+      const id = searchItemId(item);
+      if (strongIds.has(id)) return true;
+      if (!aiIds || !aiOrder.has(id)) return false;
+      return topAiScore <= 0 || (aiScores[id] || 0) >= topAiScore * 0.6;
+    };
+    related = series.filter((item) => !isTopResult(item));
+    series = series.filter(isTopResult);
   }
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
@@ -1044,21 +1055,23 @@ async function runAiSearch(query) {
     const results = Array.isArray(data.results) ? data.results : [];
     const validIds = new Set(searchCatalog().map(searchItemId));
     const reasonById = {};
+    const scoreById = {};
     const ids = [];
     results.forEach((result) => {
       const id = String(result.id || "").toLowerCase();
       if (!validIds.has(id) || ids.includes(id)) return;
       ids.push(id);
+      scoreById[id] = Number(result.score) || 0;
       if (result.reason) reasonById[id] = String(result.reason).slice(0, 180);
     });
     const message = String(data.message || "").replace(/\s+/g, " ").trim().slice(0, 240);
     state.aiSearch = ids.length
-      ? { query, pending: false, results: ids, reasonById, message: "" }
-      : { query, pending: false, results: null, reasonById: {}, message };
+      ? { query, pending: false, results: ids, reasonById, scoreById, message: "" }
+      : { query, pending: false, results: null, reasonById: {}, scoreById: {}, message };
   } catch (error) {
     console.warn("[HomeSearch] AI search unavailable:", error.message);
     if (state.searchTerm === requestQuery) {
-      state.aiSearch = { query, pending: false, results: null, reasonById: {}, message: "" };
+      state.aiSearch = { query, pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
     }
   }
   renderSeries();
@@ -1067,7 +1080,7 @@ async function runAiSearch(query) {
 async function loadCategory(category) {
   state.activeCategory = category;
   state.searchTerm = "";
-  state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, message: "" };
+  state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
   homeSearch.reset();
   renderCategories();
   showSkeletons(6);
