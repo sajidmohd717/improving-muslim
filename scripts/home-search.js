@@ -68,6 +68,7 @@
     ['taqwa', 'piety'],
     ['deen', 'din', 'religion'],
     ['heart', 'hearts', 'qalb'],
+    ['akhlaq', 'akhlaaq', 'manners', 'character', 'etiquette', 'adab'],
     ['sahaba', 'sahabah', 'companions', 'companion'],
     ['arabic', 'arab'],
   ];

@@ -114,6 +114,7 @@ const state = {
     pending: false,
     results: null,
     reasonById: {},
+    message: "",
   },
 };
 
@@ -283,7 +284,7 @@ const homeSearch = window.IMHomeSearch.create({
   catalog: searchCatalog,
   onSubmit(query) {
     state.searchTerm = query;
-    state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {} };
+    state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, message: "" };
     renderSeries();
     if (query) {
       scrollToSeriesResults();
@@ -909,9 +910,12 @@ function renderSeries() {
       );
       return;
     }
+    const aiEmptyMessage = state.aiSearch.query === state.searchTerm ? state.aiSearch.message : "";
     setStatus(
       state.searchTerm
-        ? `No results for "${escapeHtml(state.searchTerm)}". Try another title, speaker, or topic — or <a href="./pages/explore.html">browse by topic on Explore</a>.`
+        ? aiEmptyMessage
+          ? `${escapeHtml(aiEmptyMessage)} In the meantime, <a href="./pages/explore.html">browse by topic on Explore</a>.`
+          : `We don't have lectures on "${escapeHtml(state.searchTerm)}" just yet — but we're adding new topics regularly, and your search helps us decide what to upload next. In the meantime, <a href="./pages/explore.html">browse by topic on Explore</a>.`
         : 'No lectures in this category yet. <a href="./pages/explore.html">Browse by topic on Explore</a> or check back soon.'
     );
     return;
@@ -1018,13 +1022,14 @@ async function runAiSearch(query) {
       ids.push(id);
       if (result.reason) reasonById[id] = String(result.reason).slice(0, 180);
     });
+    const message = String(data.message || "").replace(/\s+/g, " ").trim().slice(0, 240);
     state.aiSearch = ids.length
-      ? { query, pending: false, results: ids, reasonById }
-      : { query, pending: false, results: null, reasonById: {} };
+      ? { query, pending: false, results: ids, reasonById, message: "" }
+      : { query, pending: false, results: null, reasonById: {}, message };
   } catch (error) {
     console.warn("[HomeSearch] AI search unavailable:", error.message);
     if (state.searchTerm === requestQuery) {
-      state.aiSearch = { query, pending: false, results: null, reasonById: {} };
+      state.aiSearch = { query, pending: false, results: null, reasonById: {}, message: "" };
     }
   }
   renderSeries();
@@ -1033,7 +1038,7 @@ async function runAiSearch(query) {
 async function loadCategory(category) {
   state.activeCategory = category;
   state.searchTerm = "";
-  state.aiSearch = { query: "", pending: false, results: null, reasonById: {} };
+  state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, message: "" };
   homeSearch.reset();
   renderCategories();
   showSkeletons(6);
