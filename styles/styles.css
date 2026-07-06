@@ -7,7 +7,7 @@
 @import "./nav.css?v=20260706-streak-ranks"; /* Site header, top nav, bottom mobile nav             */
 @import "./layout.css?v=20260706-search-suggestions";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260705-streaks";          /* Continue-watching strip & cards                    */
-@import "./cards.css?v=20260702-dark-1";   /* Series cards, speaker cards, category filters      */
+@import "./cards.css?v=20260706-ai-search";   /* Series cards, speaker cards, category filters      */
 @import "./components.css?v=20260702-dark-1"; /* Shared UI: buttons, panels, sort, footer, errors  */
 @import "./about.css";         /* About page                                         */
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */

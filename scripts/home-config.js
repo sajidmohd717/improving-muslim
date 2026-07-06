@@ -1,5 +1,8 @@
 window.IMHomeConfig = {
   apiRoot: "https://sajidmohd717.github.io/series-api",
+  // Optional server-side AI reranking endpoint. Keep empty until a Cloudflare
+  // Worker or other backend is deployed with a private API key.
+  aiSearchEndpoint: "https://improving-muslim-ai-search.improving-muslim.workers.dev",
 
   categories: [
     { name: "All", value: "foryou" },

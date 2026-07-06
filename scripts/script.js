@@ -1,5 +1,6 @@
 const homeConfig = window.IMHomeConfig || {};
 const API_ROOT = homeConfig.apiRoot || "https://sajidmohd717.github.io/series-api";
+const AI_SEARCH_ENDPOINT = homeConfig.aiSearchEndpoint || "";
 const categories = homeConfig.categories || [{ name: "All", value: "foryou" }];
 
 const categoryNameMap = Object.fromEntries(
@@ -108,6 +109,12 @@ const state = {
   activeSpeaker: null,
   contentType: "all",
   hideWatched: localStorage.getItem("im-hide-watched") === "true",
+  aiSearch: {
+    query: "",
+    pending: false,
+    results: null,
+    reasonById: {},
+  },
 };
 
 function enrichSeries(item) {
@@ -222,8 +229,50 @@ function uniqueBy(items, getKey) {
 function searchCatalog() {
   return uniqueBy(
     flattenSeries(mergeLocalSeries(state.sections, "foryou")).filter(isAllowedSeries),
-    (item) => `${item.contentType || "series"}:${getSeriesUrl(item)}:${item.title}`.toLowerCase(),
+    searchItemId,
   );
+}
+
+function searchItemId(item) {
+  return `${item.contentType || "series"}:${getSeriesUrl(item)}:${item.title}`.toLowerCase();
+}
+
+function searchTextForItem(item) {
+  const parts = [
+    item.title,
+    item.speaker,
+    item.topic,
+    item.episodes,
+    item.description,
+    item._recap,
+    item._keywords,
+  ];
+  if (Array.isArray(item._cats)) {
+    item._cats.forEach((cat) => {
+      parts.push(cat);
+      parts.push(categoryNameMap[cat] || "");
+    });
+  }
+  if (item.duration) parts.push(formatDuration(item.duration));
+  if (item._hasCaptions) parts.push("captions subtitles cc");
+  if (item._globalKey && window[item._globalKey]) {
+    (window[item._globalKey].episodes || []).slice(0, 20).forEach((episode) => {
+      parts.push(episode.title);
+      if (episode.recap) parts.push(episode.recap.slice(0, 500));
+    });
+  }
+  return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+}
+
+function aiSearchPayloadItems() {
+  return searchCatalog().slice(0, 80).map((item) => ({
+    id: searchItemId(item),
+    title: item.title || "",
+    speaker: item.speaker || "",
+    topic: item.topic || "",
+    type: item.contentType === "video" ? "video" : "series",
+    text: searchTextForItem(item).slice(0, 1800),
+  }));
 }
 
 const homeSearch = window.IMHomeSearch.create({
@@ -234,10 +283,12 @@ const homeSearch = window.IMHomeSearch.create({
   catalog: searchCatalog,
   onSubmit(query) {
     state.searchTerm = query;
+    state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {} };
     renderSeries();
     if (query) {
       scrollToSeriesResults();
       logSearch(query);
+      runAiSearch(query);
     }
   },
 });
@@ -802,15 +853,20 @@ function getSeriesUrl(series) {
 
 function renderSeries() {
   const isSearching = Boolean(state.searchTerm);
-  const series = getSortedSeries(
-    flattenSeries(searchSections())
-      .filter(isAllowedSeries)
-      .filter(seriesMatchesSearch)
-      .filter(seriesMatchesSpeaker)
-      .filter(seriesMatchesContentType)
-      .filter((item) => !state.hideWatched || !isItemWatched(item))
-      .map(enrichSeries)
-  );
+  const aiIds = state.aiSearch.query === state.searchTerm && Array.isArray(state.aiSearch.results)
+    ? state.aiSearch.results
+    : null;
+  const aiOrder = new Map((aiIds || []).map((id, index) => [id, index]));
+  let series = flattenSeries(searchSections())
+    .filter(isAllowedSeries)
+    .filter((item) => aiIds ? aiOrder.has(searchItemId(item)) : seriesMatchesSearch(item))
+    .filter(seriesMatchesSpeaker)
+    .filter(seriesMatchesContentType)
+    .filter((item) => !state.hideWatched || !isItemWatched(item))
+    .map(enrichSeries);
+  series = aiIds
+    ? series.sort((a, b) => aiOrder.get(searchItemId(a)) - aiOrder.get(searchItemId(b)))
+    : getSortedSeries(series);
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
   document.body.classList.toggle("search-mode", isSearching);
@@ -825,7 +881,9 @@ function renderSeries() {
       : "Lecture Series";
   }
   const resultLabel = state.contentType === "videos" ? "video" : state.contentType === "series" ? "series" : "item";
-  els.resultCount.textContent = `${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`}`;
+  els.resultCount.textContent = state.aiSearch.pending && state.aiSearch.query === state.searchTerm
+    ? `Searching with AI... ${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`} so far`
+    : `${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`}${aiIds ? " ranked by AI" : ""}`;
 
   if (!series.length) {
     els.seriesGrid.innerHTML = "";
@@ -869,6 +927,7 @@ function renderSeries() {
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
             ${item._label ? `<span class="label-badge label-${item._label.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(item._label)}</span>` : ""}
+            ${state.aiSearch.reasonById[searchItemId(item)] ? `<span class="label-badge label-ai">AI match</span>` : ""}
             ${item._badge
               ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
               : item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
@@ -912,9 +971,47 @@ function logSearch(query) {
   });
 }
 
+async function runAiSearch(query) {
+  if (!AI_SEARCH_ENDPOINT || !query) return;
+  const requestQuery = query;
+  try {
+    const response = await fetch(AI_SEARCH_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query,
+        items: aiSearchPayloadItems(),
+      }),
+    });
+    if (!response.ok) throw new Error(`AI search failed (${response.status})`);
+    const data = await response.json();
+    if (state.searchTerm !== requestQuery) return;
+    const results = Array.isArray(data.results) ? data.results : [];
+    const validIds = new Set(searchCatalog().map(searchItemId));
+    const reasonById = {};
+    const ids = [];
+    results.forEach((result) => {
+      const id = String(result.id || "").toLowerCase();
+      if (!validIds.has(id) || ids.includes(id)) return;
+      ids.push(id);
+      if (result.reason) reasonById[id] = String(result.reason).slice(0, 180);
+    });
+    state.aiSearch = ids.length
+      ? { query, pending: false, results: ids, reasonById }
+      : { query, pending: false, results: null, reasonById: {} };
+  } catch (error) {
+    console.warn("[HomeSearch] AI search unavailable:", error.message);
+    if (state.searchTerm === requestQuery) {
+      state.aiSearch = { query, pending: false, results: null, reasonById: {} };
+    }
+  }
+  renderSeries();
+}
+
 async function loadCategory(category) {
   state.activeCategory = category;
   state.searchTerm = "";
+  state.aiSearch = { query: "", pending: false, results: null, reasonById: {} };
   homeSearch.reset();
   renderCategories();
   showSkeletons(6);

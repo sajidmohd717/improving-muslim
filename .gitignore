@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+.wrangler/
+.env
+.env.*
+.dev.vars
+.dev.vars.*
 
 # Video publishing scratch (scripts/publish.ps1): downloaded MP4s + batch inputs.
 # Never commit these — videos live on Cloudflare R2, not in git.

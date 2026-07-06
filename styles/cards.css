@@ -388,6 +388,12 @@
   border: 1px solid rgba(140, 100, 30, 0.2);
 }
 
+.label-ai {
+  background: rgba(56, 94, 150, 0.1);
+  color: #385e96;
+  border: 1px solid rgba(56, 94, 150, 0.22);
+}
+
 .label-beginner-friendly {
   background: rgba(40, 120, 60, 0.09);
   color: #2a6e3a;

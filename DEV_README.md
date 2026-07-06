@@ -125,6 +125,22 @@ The static website is deployed with GitHub Pages from the `main` branch root.
 
 Videos are not stored in Git. Large MP4 files are hosted on Cloudflare R2 and referenced by URL in the episode data.
 
+## AI Search
+
+Homepage search is submit-based: suggestions appear while typing, then the dedicated search results state renders after Enter or the Search button. The browser always has a normal local keyword fallback, so search should keep working even if AI is not configured.
+
+Optional AI reranking is controlled by `aiSearchEndpoint` in `scripts/home-config.js`. Keep it empty until a server-side endpoint is deployed. Never put an OpenAI, Claude, or other private AI API key in browser JavaScript.
+
+The current server template is `workers/ai-search-worker.js`. It is designed for Cloudflare Workers:
+
+1. Deploy the Worker.
+2. Store `OPENAI_API_KEY` as a Worker secret.
+3. Optionally set `OPENAI_MODEL` and `ALLOWED_ORIGIN`.
+4. Set `aiSearchEndpoint` in `scripts/home-config.js` to the Worker URL.
+5. Bump the `home-config.js` and `script.js` cache-bust query strings in `index.html`.
+
+The first AI version is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks OpenAI for strict JSON-ranked IDs, and the homepage shows those IDs with an "AI match" badge. Longer term, the better semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
+
 ## Video Hosting Pattern
 
 R2 bucket: `islamic-lectures-videos`

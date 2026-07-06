@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "improving-muslim-ai-search",
+  "main": "workers/ai-search-worker.js",
+  "compatibility_date": "2026-07-06",
+  "workers_dev": true,
+  "preview_urls": false,
+  "secrets": {
+    "required": [
+      "OPENAI_API_KEY"
+    ]
+  },
+  "vars": {
+    "ALLOWED_ORIGIN": "https://improvingmuslim.com",
+    "OPENAI_MODEL": "gpt-4o-mini"
+  }
+}
