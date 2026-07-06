@@ -32,6 +32,11 @@
   --gold: #c89b3c;
   --rose: #a6484f;
   --shadow: 0 18px 45px rgba(24, 32, 27, 0.1);
+  /* Neutral dropdown/menu surfaces (search autocomplete, etc.) — kept
+     grayscale on purpose so menus read like YouTube's, not tinted green. */
+  --menu-bg: #ffffff;
+  --menu-line: #e3e3e3;
+  --menu-hover: rgba(0, 0, 0, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,6 +69,9 @@
   --gold: #d7b45c;
   --rose: #e08c94;
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  --menu-bg: #212121;
+  --menu-line: #3d3d3d;
+  --menu-hover: rgba(255, 255, 255, 0.1);
 }
 
 * {

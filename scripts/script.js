@@ -880,13 +880,25 @@ function renderSeries() {
       ? `Search results for "${state.searchTerm}"`
       : "Lecture Series";
   }
-  const resultLabel = state.contentType === "videos" ? "video" : state.contentType === "series" ? "series" : "item";
-  els.resultCount.textContent = state.aiSearch.pending && state.aiSearch.query === state.searchTerm
-    ? `Searching with AI... ${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`} so far`
-    : `${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`}${aiIds ? " ranked by AI" : ""}`;
+  const aiPending = state.aiSearch.pending && state.aiSearch.query === state.searchTerm;
+  const videoCount = series.filter((item) => item.contentType === "video").length;
+  const seriesCount = series.length - videoCount;
+  const breakdownParts = [];
+  if (seriesCount) breakdownParts.push(`${seriesCount} series`);
+  if (videoCount) breakdownParts.push(`${videoCount} ${videoCount === 1 ? "video" : "videos"}`);
+  const breakdown = breakdownParts.join(" · ") || "0 results";
+  els.resultCount.innerHTML = aiPending
+    ? `<span class="ai-search-spinner" aria-hidden="true"></span>Searching with AI… ${breakdown} so far`
+    : `${breakdown}${aiIds ? " · ranked by AI" : ""}`;
 
   if (!series.length) {
     els.seriesGrid.innerHTML = "";
+    if (aiPending) {
+      setStatus(
+        `<span class="ai-search-spinner" aria-hidden="true"></span> No instant matches for "${escapeHtml(state.searchTerm)}" — AI is searching descriptions and topics. This can take a few seconds…`
+      );
+      return;
+    }
     setStatus(
       state.searchTerm
         ? `No results for "${escapeHtml(state.searchTerm)}". Try another title, speaker, or topic — or <a href="./pages/explore.html">browse by topic on Explore</a>.`

@@ -3,9 +3,9 @@
    Order matters: later files can override earlier ones.
 ───────────────────────────────────────────────────────────────────────────── */
 
-@import "./base.css?v=20260702-dark-1";          /* CSS custom properties, reset, sr-only, is-hidden  */
+@import "./base.css?v=20260706-search-ux";          /* CSS custom properties, reset, sr-only, is-hidden  */
 @import "./nav.css?v=20260706-streak-ranks"; /* Site header, top nav, bottom mobile nav             */
-@import "./layout.css?v=20260706-search-suggestions";        /* Hero, content-section wrappers, section headings   */
+@import "./layout.css?v=20260706-search-ux";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260705-streaks";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260706-ai-search";   /* Series cards, speaker cards, category filters      */
 @import "./components.css?v=20260702-dark-1"; /* Shared UI: buttons, panels, sort, footer, errors  */

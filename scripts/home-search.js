@@ -29,6 +29,26 @@
     return String(value || '').toLowerCase().includes(query);
   }
 
+  // Words that carry no search signal; dropped before token matching so
+  // queries like "seerah of the prophet pbuh" still hit "seerah" + "prophet".
+  var STOP_WORDS = new Set([
+    'the', 'of', 'a', 'an', 'in', 'on', 'and', 'or', 'for', 'to', 'with',
+    'about', 'pbuh', 'saw', 'sws', 'ra', 'as',
+  ]);
+
+  function queryTokens(query) {
+    return normalizeQuery(query)
+      .split(' ')
+      .filter(function (token) { return token.length > 1 && !STOP_WORDS.has(token); });
+  }
+
+  // Matches "softeners" against "soften", "reminders" against "reminder", etc.
+  function tokenInText(token, text) {
+    if (text.includes(token)) return true;
+    var stem = token.replace(/(ers|ies|ing|ed|es|s)$/, '');
+    return stem.length >= 4 && text.includes(stem);
+  }
+
   function uniqueBy(items, getKey) {
     var seen = new Set();
     return items.filter(function (item) {
@@ -221,7 +241,11 @@
         });
       }
 
-      return parts.filter(Boolean).join(' ').toLowerCase().includes(query);
+      var haystack = parts.filter(Boolean).join(' ').toLowerCase();
+      if (haystack.includes(query)) return true;
+      var tokens = queryTokens(query);
+      if (!tokens.length) return false;
+      return tokens.every(function (token) { return tokenInText(token, haystack); });
     }
 
     return {
