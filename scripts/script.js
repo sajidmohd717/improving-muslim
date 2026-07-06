@@ -857,15 +857,25 @@ function renderSeries() {
     ? state.aiSearch.results
     : null;
   const aiOrder = new Map((aiIds || []).map((id, index) => [id, index]));
+  const searchScores = new Map();
   let series = flattenSeries(searchSections())
     .filter(isAllowedSeries)
-    .filter((item) => aiIds ? aiOrder.has(searchItemId(item)) : seriesMatchesSearch(item))
+    .filter((item) => {
+      if (aiIds) return aiOrder.has(searchItemId(item));
+      if (!isSearching) return true;
+      const score = homeSearch.scoreSeries(item, state.searchTerm);
+      if (score <= 0) return false;
+      searchScores.set(searchItemId(item), score);
+      return true;
+    })
     .filter(seriesMatchesSpeaker)
     .filter(seriesMatchesContentType)
     .filter((item) => !state.hideWatched || !isItemWatched(item))
     .map(enrichSeries);
   series = aiIds
     ? series.sort((a, b) => aiOrder.get(searchItemId(a)) - aiOrder.get(searchItemId(b)))
+    : isSearching && state.sortBy === "random"
+    ? [...series].sort((a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0))
     : getSortedSeries(series);
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 

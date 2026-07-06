@@ -33,8 +33,54 @@
   // queries like "seerah of the prophet pbuh" still hit "seerah" + "prophet".
   var STOP_WORDS = new Set([
     'the', 'of', 'a', 'an', 'in', 'on', 'and', 'or', 'for', 'to', 'with',
-    'about', 'pbuh', 'saw', 'sws', 'ra', 'as',
+    'about', 'pbuh', 'saw', 'sws', 'ra', 'as', 'how', 'what', 'why', 'is',
+    'my', 'your', 'lecture', 'lectures', 'series', 'video', 'videos',
   ]);
+
+  // Transliteration variants and close synonyms. Any word in a group expands
+  // to the whole group, so "solah", "namaz", and "prayer" all find "salah".
+  var SYNONYM_GROUPS = [
+    ['salah', 'solah', 'salat', 'salaat', 'solat', 'salaah', 'namaz', 'prayer', 'prayers', 'praying'],
+    ['dua', 'duas', 'duaa', "du'a", 'supplication', 'supplications'],
+    ['quran', 'koran', 'quraan', "qur'an"],
+    ['tafsir', 'tafseer', 'exegesis'],
+    ['seerah', 'sirah', 'sira', 'seera', 'biography'],
+    ['hadith', 'hadeeth', 'ahadith', 'hadiths'],
+    ['sunnah', 'sunna'],
+    ['ramadan', 'ramadhan', 'ramzan', 'ramadaan'],
+    ['fasting', 'sawm', 'siyam', 'fast'],
+    ['zakat', 'zakah', 'zakaat', 'charity', 'sadaqah', 'sadaqa'],
+    ['hajj', 'haj', 'pilgrimage', 'umrah', 'umra'],
+    ['aqeedah', 'aqidah', 'aqeeda', 'creed', 'belief', 'beliefs'],
+    ['fiqh', 'jurisprudence', 'rulings'],
+    ['akhirah', 'akhira', 'hereafter', 'afterlife'],
+    ['jannah', 'paradise', 'heaven'],
+    ['jahannam', 'hellfire', 'hell'],
+    ['shaytan', 'shaitan', 'satan', 'devil', 'iblis'],
+    ['iman', 'eman', 'emaan', 'imaan', 'faith'],
+    ['tawbah', 'tawba', 'repentance', 'repent', 'istighfar'],
+    ['riba', 'interest', 'usury'],
+    ['nikah', 'nikaah', 'marriage'],
+    ['prophet', 'messenger', 'rasul', 'rasool', 'nabi'],
+    ['muhammad', 'muhammed', 'mohammad', 'mohammed'],
+    ['dhikr', 'zikr', 'thikr', 'remembrance'],
+    ['sabr', 'sabar', 'patience'],
+    ['taqwa', 'piety'],
+    ['deen', 'din', 'religion'],
+    ['heart', 'hearts', 'qalb'],
+    ['sahaba', 'sahabah', 'companions', 'companion'],
+    ['arabic', 'arab'],
+  ];
+
+  var SYNONYM_LOOKUP = {};
+  SYNONYM_GROUPS.forEach(function (group) {
+    group.forEach(function (word) { SYNONYM_LOOKUP[word] = group; });
+  });
+
+  function stemToken(token) {
+    var stem = token.replace(/(ers|ies|ing|ed|es|s)$/, '');
+    return stem.length >= 4 ? stem : token;
+  }
 
   function queryTokens(query) {
     return normalizeQuery(query)
@@ -42,11 +88,56 @@
       .filter(function (token) { return token.length > 1 && !STOP_WORDS.has(token); });
   }
 
+  function tokenVariants(token) {
+    var variants = new Set([token]);
+    var stem = stemToken(token);
+    variants.add(stem);
+    (SYNONYM_LOOKUP[token] || SYNONYM_LOOKUP[stem] || []).forEach(function (word) {
+      variants.add(word);
+      variants.add(stemToken(word));
+    });
+    return Array.from(variants);
+  }
+
+  // True when a and b are within one edit (insert/delete/substitute) or one
+  // adjacent swap of each other — catches typos like "ramadna" or "shiekh".
+  function withinOneEdit(a, b) {
+    if (a === b) return true;
+    var lenDiff = a.length - b.length;
+    if (lenDiff < -1 || lenDiff > 1) return false;
+    if (lenDiff === 0) {
+      var mismatches = [];
+      for (var k = 0; k < a.length; k++) {
+        if (a[k] !== b[k]) {
+          if (mismatches.length === 2) return false;
+          mismatches.push(k);
+        }
+      }
+      if (mismatches.length <= 1) return true;
+      // Exactly two mismatches: allow if they are adjacent swapped letters.
+      var p = mismatches[0], q = mismatches[1];
+      return q === p + 1 && a[p] === b[q] && a[q] === b[p];
+    }
+    var long = a.length > b.length ? a : b;
+    var short = a.length > b.length ? b : a;
+    var i = 0, j = 0, edits = 0;
+    while (i < long.length && j < short.length) {
+      if (long[i] === short[j]) { i++; j++; continue; }
+      if (++edits > 1) return false;
+      i++;
+    }
+    return true;
+  }
+
+  function textWords(text) {
+    return text.split(/[^a-z0-9']+/).filter(Boolean);
+  }
+
   // Matches "softeners" against "soften", "reminders" against "reminder", etc.
   function tokenInText(token, text) {
     if (text.includes(token)) return true;
-    var stem = token.replace(/(ers|ies|ing|ed|es|s)$/, '');
-    return stem.length >= 4 && text.includes(stem);
+    var stem = stemToken(token);
+    return stem !== token && text.includes(stem);
   }
 
   function uniqueBy(items, getKey) {
@@ -212,40 +303,89 @@
       closeSuggestions();
     }
 
-    function matchesSeries(series, query) {
-      query = normalizeQuery(query);
-      if (!query) return true;
-
-      var parts = [
-        series.title,
-        series.speaker,
-        series.topic,
-        series.episodes,
-        series.description,
-        series._recap,
-        series._keywords,
-      ];
-
+    // Weighted fields: a title hit should rank far above a hit buried in an
+    // episode recap. Weights are relative, only their ratios matter.
+    function buildFields(series) {
+      var topicParts = [series.topic];
       if (Array.isArray(series._cats)) {
         series._cats.forEach(function (cat) {
-          parts.push(cat);
-          parts.push(categoryNameMap[cat] || '');
-        });
-      }
-      if (series.duration) parts.push(formatDuration(series.duration));
-      if (series._hasCaptions) parts.push('captions subtitles cc');
-      if (series._globalKey && window[series._globalKey]) {
-        (window[series._globalKey].episodes || []).forEach(function (episode) {
-          parts.push(episode.title);
-          if (episode.recap) parts.push(episode.recap.slice(0, 400));
+          topicParts.push(cat);
+          topicParts.push(categoryNameMap[cat] || '');
         });
       }
 
-      var haystack = parts.filter(Boolean).join(' ').toLowerCase();
-      if (haystack.includes(query)) return true;
+      var restParts = [series.episodes, series.description, series._recap, series._keywords];
+      if (series.duration) restParts.push(formatDuration(series.duration));
+      if (series._hasCaptions) restParts.push('captions subtitles cc');
+      if (series._globalKey && window[series._globalKey]) {
+        (window[series._globalKey].episodes || []).forEach(function (episode) {
+          restParts.push(episode.title);
+          if (episode.recap) restParts.push(episode.recap.slice(0, 400));
+        });
+      }
+
+      return [
+        { text: String(series.title || '').toLowerCase(), weight: 10 },
+        { text: String(series.speaker || '').toLowerCase(), weight: 6 },
+        { text: topicParts.filter(Boolean).join(' ').toLowerCase(), weight: 5 },
+        { text: restParts.filter(Boolean).join(' ').toLowerCase(), weight: 2 },
+      ];
+    }
+
+    // Strength of the best way this token matches the field text:
+    // exact word > substring/stem > one-typo fuzzy. 0 = no match.
+    function tokenStrengthInField(token, variants, fieldText, fieldWords) {
+      var i, v;
+      for (i = 0; i < variants.length; i++) {
+        if (fieldWords.has(variants[i])) return 1;
+      }
+      for (i = 0; i < variants.length; i++) {
+        v = variants[i];
+        if (v.length >= 4 && fieldText.includes(v)) return 0.75;
+      }
+      if (token.length >= 5) {
+        var words = Array.from(fieldWords);
+        for (i = 0; i < words.length; i++) {
+          if (words[i].length >= 4 && withinOneEdit(token, words[i])) return 0.55;
+        }
+      }
+      return 0;
+    }
+
+    // Relevance score: 0 means "not a match", higher means better. At least
+    // half the meaningful tokens must match so single stray words don't
+    // flood multi-word queries with junk.
+    function scoreSeries(series, query) {
+      query = normalizeQuery(query);
+      if (!query) return 1;
+
+      var fields = buildFields(series);
+      var fieldWords = fields.map(function (field) { return new Set(textWords(field.text)); });
+      var fullText = fields.map(function (field) { return field.text; }).join(' ');
       var tokens = queryTokens(query);
-      if (!tokens.length) return false;
-      return tokens.every(function (token) { return tokenInText(token, haystack); });
+      if (!tokens.length) return fullText.includes(query) ? 1 : 0;
+
+      var total = 0;
+      var matched = 0;
+      tokens.forEach(function (token) {
+        var variants = tokenVariants(token);
+        var best = 0;
+        fields.forEach(function (field, index) {
+          var strength = tokenStrengthInField(token, variants, field.text, fieldWords[index]);
+          if (strength * field.weight > best) best = strength * field.weight;
+        });
+        if (best > 0) matched++;
+        total += best;
+      });
+
+      if (matched < Math.ceil(tokens.length / 2)) return 0;
+      if (fullText.includes(query)) total += 8;
+      var coverage = matched / tokens.length;
+      return total * (0.3 + 0.7 * coverage * coverage);
+    }
+
+    function matchesSeries(series, query) {
+      return scoreSeries(series, query) > 0;
     }
 
     return {
@@ -254,6 +394,7 @@
       matchesSeries: matchesSeries,
       normalizeQuery: normalizeQuery,
       reset: reset,
+      scoreSeries: scoreSeries,
     };
   }
 
