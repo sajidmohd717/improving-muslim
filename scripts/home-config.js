@@ -1,0 +1,57 @@
+window.IMHomeConfig = {
+  apiRoot: "https://sajidmohd717.github.io/series-api",
+
+  categories: [
+    { name: "All", value: "foryou" },
+    { name: "Available now", value: "available" },
+    { name: "Purification", value: "purification" },
+    { name: "Prayer", value: "prayer" },
+    { name: "Dhikr", value: "dhikr" },
+    { name: "Hadith", value: "hadith" },
+    { name: "Seerah", value: "seerah" },
+    { name: "Sahaba", value: "sahaba" },
+    { name: "Quran", value: "quran" },
+    { name: "Tafsir", value: "tafsir" },
+    { name: "Aqeedah", value: "aqeedah" },
+    { name: "Prophets", value: "prophets" },
+    { name: "Angels", value: "angels" },
+    { name: "Arabic", value: "arabic" },
+    { name: "Fiqh", value: "fiqh" },
+    { name: "Hereafter", value: "hereafter" },
+  ],
+
+  descriptions: {
+    "Enjoy Your Prayer":
+      "A step-by-step journey through salah, helping prayer become more present, meaningful, and loved.",
+    "Why Me | 2024 Ramadan Series":
+      "A reflective Ramadan series on hardship, divine decree, purpose, and learning to see tests through a more faithful lens.",
+    "Change of Heart":
+      "A series focused on the inner life: sincerity, repentance, discipline, and the work of returning the heart to Allah.",
+    "Angels in Your Presence":
+      "A study of angels and how belief in the unseen can reshape worship, character, and daily awareness.",
+    "40 Hadith of Imam Nawawi":
+      "Foundational hadith explained with practical lessons for worship, character, and daily decision-making.",
+    "Seerah of Prophet Muhammed (S)":
+      "A detailed walk through the Prophet's life, context, sacrifices, and guidance for the ummah.",
+    "Fortress Of The Muslim":
+      "Daily duas and adhkar from Hisnul Muslim, taught in a simple and memorable way.",
+    "Madina Arabic":
+      "A structured Arabic course for building grammar, vocabulary, and confidence with Islamic texts.",
+  },
+
+  // Remote API entries can include material that is intentionally absent from
+  // this platform. Keep these lists centralized so homepage filtering is easy
+  // to review without digging through rendering code.
+  excludedSpeakerNames: [
+    [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
+      .map((code) => String.fromCharCode(code))
+      .join(""),
+  ],
+
+  excludedSeriesTitles: [
+    "the message of the quran in 30 lessons",
+    "the parables of the quran",
+    "wisdoms of the quran - ramadan series 2024",
+    "heart matters ramadan series 2023",
+  ],
+};

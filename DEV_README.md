@@ -11,7 +11,8 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
-- `scripts/script.js` renders homepage speakers, categories, and series cards.
+- `scripts/home-config.js` holds homepage categories, curated descriptions, and remote-feed exclusions.
+- `scripts/script.js` renders homepage speakers, categories, and series cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).

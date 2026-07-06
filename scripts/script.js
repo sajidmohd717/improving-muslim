@@ -1,23 +1,6 @@
-const API_ROOT = "https://sajidmohd717.github.io/series-api";
-
-const categories = [
-  { name: "All", value: "foryou" },
-  { name: "Available now", value: "available" },
-  { name: "Purification", value: "purification" },
-  { name: "Prayer", value: "prayer" },
-  { name: "Dhikr", value: "dhikr" },
-  { name: "Hadith", value: "hadith" },
-  { name: "Seerah", value: "seerah" },
-  { name: "Sahaba", value: "sahaba" },
-  { name: "Quran", value: "quran" },
-  { name: "Tafsir", value: "tafsir" },
-  { name: "Aqeedah", value: "aqeedah" },
-  { name: "Prophets", value: "prophets" },
-  { name: "Angels", value: "angels" },
-  { name: "Arabic", value: "arabic" },
-  { name: "Fiqh", value: "fiqh" },
-  { name: "Hereafter", value: "hereafter" },
-];
+const homeConfig = window.IMHomeConfig || {};
+const API_ROOT = homeConfig.apiRoot || "https://sajidmohd717.github.io/series-api";
+const categories = homeConfig.categories || [{ name: "All", value: "foryou" }];
 
 const categoryNameMap = Object.fromEntries(
   categories.filter(c => c.value !== "foryou").map(c => [c.value, c.name])
@@ -61,21 +44,8 @@ const standaloneLectureUrl = (lecture) => window.IMUtils.standaloneLectureUrl(le
 const standaloneLectureThumbnailUrl = (lecture) => window.IMUtils.standaloneLectureThumbnailUrl(lecture);
 const standaloneProgressKey = (lecture) => window.IMUtils.standaloneProgressKey(lecture);
 
-const excludedSpeakerNames = new Set([
-  [117, 116, 104, 109, 97, 110, 32, 105, 98, 110, 32, 102, 97, 114, 111, 111, 113]
-    .map((code) => String.fromCharCode(code))
-    .join(""),
-]);
-
-// Series removed from the platform whose cards still arrive from the remote
-// series-api feed with external YouTube links, so the registry-slug guard
-// cannot catch them. Compared lowercased against the card title.
-const excludedSeriesTitles = new Set([
-  "the message of the quran in 30 lessons",
-  "the parables of the quran",
-  "wisdoms of the quran - ramadan series 2024",
-  "heart matters ramadan series 2023",
-]);
+const excludedSpeakerNames = new Set(homeConfig.excludedSpeakerNames || []);
+const excludedSeriesTitles = new Set(homeConfig.excludedSeriesTitles || []);
 
 const imageMap = window.IMUtils.imageMap;
 
@@ -128,22 +98,7 @@ const localCategoryFallbacks = (() => {
 
 const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
 
-const descriptions = {
-  "Enjoy Your Prayer":
-    "A step-by-step journey through salah, helping prayer become more present, meaningful, and loved.",
-  "Why Me | 2024 Ramadan Series":
-    "A reflective Ramadan series on hardship, divine decree, purpose, and learning to see tests through a more faithful lens.",
-  "Change of Heart":
-    "A series focused on the inner life: sincerity, repentance, discipline, and the work of returning the heart to Allah.",
-  "Angels in Your Presence":
-    "A study of angels and how belief in the unseen can reshape worship, character, and daily awareness.",
-  "40 Hadith of Imam Nawawi":
-    "A structured study of Imam an-Nawawi's foundational hadith collection with lessons for belief, worship, and character.",
-  "10 Promised Jannah":
-    "A focused series on the ten companions who were promised Jannah, exploring their lives, virtues, sacrifice, and lessons for believers today.",
-  "Allah's Words to Musa Were Meant for You Too":
-    "A calming standalone reminder from the story of Musa about listening to Allah's words, protecting salah, and preparing for the meeting with Him.",
-};
+const descriptions = homeConfig.descriptions || {};
 
 const state = {
   activeCategory: initialCategoryFromUrl(),
