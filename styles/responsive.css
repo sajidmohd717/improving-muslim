@@ -266,11 +266,6 @@
     align-items: stretch;
   }
 
-  .streak-target-field {
-    width: 100%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .continue-hero .continue-body {
     gap: 4px;
     padding: 12px 14px 14px;

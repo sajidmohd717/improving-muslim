@@ -462,13 +462,15 @@ users/{uid}/data/sync  (single document)
   notes: { "lecture-notes:playlistId:episodeId": { text, updatedAt }, ... }
   saved: [ { key, type, title, subtitle, url, savedAt }, ... ]
   streak: {
-    targetMinutes,
+    targetMinutes,       // always 30 -- fixed, not user-selectable (see below)
     todayDate,
     todaySeconds,
     current,
     best,
     lastCompletedDate,
     days: { "YYYY-MM-DD": { seconds, completed }, ... },
+    freezesAvailable,        // banked streak freezes, 0-2
+    freezeMilestonesClaimed, // total 7-day milestones ever granted a freeze for
     publicOptIn,
     publicName,
     updatedAt,
@@ -480,7 +482,7 @@ leaderboard/{uid}  (public, opt-in only)
   displayName: string
   current: number
   best: number
-  targetMinutes: 20 | 30 | 40
+  targetMinutes: 30
   lastCompletedDate: "YYYY-MM-DD"
   updatedAt: timestamp in milliseconds
 ```
@@ -500,6 +502,23 @@ Deploy rules after editing them:
 ```powershell
 firebase deploy --only firestore:rules --project improving-muslim
 ```
+
+### Streak Ranks and Freezes
+
+The daily streak goal is fixed at 30 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. The logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback) and is duplicated in `scripts/firebase-auth.js`'s own `normalizeStreak` (needed because `firebase-auth.js` runs on every page, including ones that don't load `utils.js`) — keep both in sync when changing streak behavior.
+
+**Ranks** (`STREAK_RANKS`, derived from `current`, highest match wins):
+
+| Rank | Minimum current streak |
+|---|---|
+| Iron | 5 days |
+| Bronze | 10 days |
+| Silver | 20 days |
+| Platinum | 40 days (max rank) |
+
+Shown as a badge next to the streak count in the personal tab, on each leaderboard row (computed client-side from `row.current`, no extra Firestore field needed), and in the Settings page summary.
+
+**Streak freezes** (Duolingo-style leniency): every 7 consecutive days of a streak earns 1 freeze, banked up to a max of 2 (`FREEZE_MILESTONE_DAYS`, `MAX_BANKED_FREEZES`). If a day is missed, `normalizeStreak` silently spends 1 freeze per missed day to bridge the gap and keep the streak alive — no user action needed, it just doesn't reset. If the gap is larger than the available freezes, the streak resets to 0, but any banked freezes are **not** consumed (they carry over to the next streak attempt) since they weren't enough to save it. A full reset also resets `freezeMilestonesClaimed` so the new streak earns milestones from day 1 again.
 
 ### Authorised domains
 

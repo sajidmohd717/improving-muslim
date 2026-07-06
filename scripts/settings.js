@@ -6,8 +6,7 @@ const {
   readSavedItems,
   readStudyStreak,
   removeStorageItem,
-  setStudyStreakTarget,
-  STREAK_TARGET_OPTIONS,
+  getStreakRank,
   storageKeysWithPrefix,
 } = window.IMUtils;
 
@@ -18,7 +17,6 @@ const savedSummary = document.querySelector("#saved-items-summary");
 const savedList = document.querySelector("#saved-items-list");
 const resetSavedButton = document.querySelector("#reset-saved-items");
 const streakSummary = document.querySelector("#streak-settings-summary");
-const streakTargetInputs = Array.from(document.querySelectorAll('input[name="streak-target"]'));
 
 function progressKeys() {
   return storageKeysWithPrefix(PROGRESS_PREFIX);
@@ -67,25 +65,13 @@ function renderStreakSettings() {
   const watchedMinutes = Math.floor(todaySeconds / 60);
   const remainingMinutes = Math.max(0, Math.ceil((targetSeconds - todaySeconds) / 60));
   const complete = todaySeconds >= targetSeconds;
+  const rank = getStreakRank ? getStreakRank(streak.current) : null;
+  const rankNote = rank ? ` ${rank.name} rank.` : "";
 
   streakSummary.textContent = complete
-    ? `Today's ${streak.targetMinutes} minute goal is complete. Current streak: ${streak.current} ${streak.current === 1 ? "day" : "days"}.`
-    : `${watchedMinutes} of ${streak.targetMinutes} minutes watched today. ${remainingMinutes} ${remainingMinutes === 1 ? "minute" : "minutes"} left to keep the streak.`;
-
-  streakTargetInputs.forEach((input) => {
-    input.checked = Number(input.value) === streak.targetMinutes;
-  });
+    ? `Today's ${streak.targetMinutes} minute goal is complete. Current streak: ${streak.current} ${streak.current === 1 ? "day" : "days"}.${rankNote}`
+    : `${watchedMinutes} of ${streak.targetMinutes} minutes watched today. ${remainingMinutes} ${remainingMinutes === 1 ? "minute" : "minutes"} left to keep the streak.${rankNote}`;
 }
-
-streakTargetInputs.forEach((input) => {
-  input.addEventListener("change", () => {
-    if (!input.checked || !STREAK_TARGET_OPTIONS.includes(Number(input.value))) return;
-    if (setStudyStreakTarget(Number(input.value))) {
-      if (status) status.textContent = `Daily streak goal set to ${input.value} minutes.`;
-      renderStreakSettings();
-    }
-  });
-});
 
 renderStreakSettings();
 

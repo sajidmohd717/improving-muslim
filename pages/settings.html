@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260706-clickable-meta" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260706-streak-ranks" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <title>Settings | Improving Muslim</title>
   </head>
@@ -163,23 +163,8 @@
             <h2 id="streak-settings-title">Daily streak goal</h2>
             <p id="streak-settings-summary">Checking today's learning streak...</p>
           </div>
-          <fieldset class="streak-target-field" aria-label="Daily streak goal">
-            <legend class="sr-only">Daily streak goal</legend>
-            <label>
-              <input type="radio" name="streak-target" value="20" aria-label="20 minute daily streak goal" />
-              <span>20 min</span>
-            </label>
-            <label>
-              <input type="radio" name="streak-target" value="30" aria-label="30 minute daily streak goal" />
-              <span>30 min</span>
-            </label>
-            <label>
-              <input type="radio" name="streak-target" value="40" aria-label="40 minute daily streak goal" />
-              <span>40 min</span>
-            </label>
-          </fieldset>
         </div>
-        <p class="settings-note">Streaks count actual lecture playback time and reset gently when a day is missed.</p>
+        <p class="settings-note">Fixed at 30 minutes of actual lecture playback for everyone, so leaderboard streaks are directly comparable. Earn 1 streak freeze every 7-day streak (up to 2 banked) — if a day is missed, a freeze covers it automatically.</p>
       </section>
 
       <section class="settings-section" aria-labelledby="saved-items-title">
@@ -254,9 +239,9 @@
       <a href="./pages/privacy.html">Privacy</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>
-    <script src="./scripts/utils.js?v=20260706-notes"></script>
-    <script src="./scripts/settings.js?v=20260705-system-theme" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260706-notes-sync" defer></script>
+    <script src="./scripts/utils.js?v=20260706-streak-ranks"></script>
+    <script src="./scripts/settings.js?v=20260706-streak-ranks" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260706-streak-ranks" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

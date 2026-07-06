@@ -3,8 +3,22 @@
   const PROGRESS_PREFIX = "lecture-progress:";
   const NOTES_PREFIX = "lecture-notes:";
   const STREAK_KEY = "improving-muslim:study-streak";
+  // Fixed for everyone (not user-selectable) so the leaderboard's day counts
+  // are directly comparable -- a 20-min learner and a 40-min learner used to
+  // rank against each other unevenly.
   const DEFAULT_STREAK_TARGET_MINUTES = 30;
-  const STREAK_TARGET_OPTIONS = [20, 30, 40];
+  const FREEZE_MILESTONE_DAYS = 7; // earn 1 streak freeze every N consecutive days
+  const MAX_BANKED_FREEZES = 2; // matches Duolingo's cap
+  const STREAK_RANKS = [
+    { name: "Platinum", min: 40 },
+    { name: "Silver", min: 20 },
+    { name: "Bronze", min: 10 },
+    { name: "Iron", min: 5 },
+  ];
+
+  function getStreakRank(days) {
+    return STREAK_RANKS.find((rank) => (Number(days) || 0) >= rank.min) || null;
+  }
 
   function escapeHtml(value = "") {
     return String(value)
@@ -138,19 +152,51 @@
     return addDays(dateKey, 1) === todayKey;
   }
 
+  function daysBetween(fromKey, toKey) {
+    const [fy, fm, fd] = String(fromKey || "").split("-").map(Number);
+    const [ty, tm, td] = String(toKey || "").split("-").map(Number);
+    if (!fy || !fm || !fd || !ty || !tm || !td) return 0;
+    const from = new Date(fy, fm - 1, fd);
+    const to = new Date(ty, tm - 1, td);
+    return Math.round((to - from) / 86_400_000);
+  }
+
   function normalizeStreak(raw = {}) {
     const today = localDateKey();
-    const targetMinutes = STREAK_TARGET_OPTIONS.includes(Number(raw.targetMinutes))
-      ? Number(raw.targetMinutes)
-      : DEFAULT_STREAK_TARGET_MINUTES;
+    const targetMinutes = DEFAULT_STREAK_TARGET_MINUTES;
     const targetSeconds = targetMinutes * 60;
-    const todayDate = raw.todayDate === today ? today : today;
     const todaySeconds = raw.todayDate === today ? Math.max(0, Number(raw.todaySeconds) || 0) : 0;
-    const lastCompletedDate = raw.lastCompletedDate || "";
-    const current =
-      lastCompletedDate === today || isYesterday(lastCompletedDate, today)
-        ? Math.max(0, Number(raw.current) || 0)
-        : 0;
+    let lastCompletedDate = raw.lastCompletedDate || "";
+    let current = Math.max(0, Number(raw.current) || 0);
+    let freezesAvailable = Math.max(0, Math.min(MAX_BANKED_FREEZES, Number(raw.freezesAvailable) || 0));
+    let freezeMilestonesClaimed = Math.max(0, Number(raw.freezeMilestonesClaimed) || 0);
+
+    // Streak freeze: a short gap since the last completed day is silently
+    // covered by banked freezes instead of breaking the streak, as long as
+    // there are enough of them (one freeze per missed day).
+    const stillContinuous = lastCompletedDate === today || isYesterday(lastCompletedDate, today);
+    if (!stillContinuous && lastCompletedDate) {
+      const gap = daysBetween(lastCompletedDate, today) - 1;
+      if (gap > 0 && gap <= freezesAvailable && current > 0) {
+        freezesAvailable -= gap;
+        lastCompletedDate = addDays(today, -1);
+      } else {
+        current = 0;
+        freezeMilestonesClaimed = 0; // a fresh streak earns milestones from day 1 again
+      }
+    } else if (!stillContinuous) {
+      current = 0;
+      freezeMilestonesClaimed = 0;
+    }
+
+    // Grant any newly-crossed 7-day milestones. The milestone still counts as
+    // "claimed" even if the bank was already full, so it isn't re-granted later.
+    const milestonesEarned = Math.floor(current / FREEZE_MILESTONE_DAYS);
+    if (milestonesEarned > freezeMilestonesClaimed) {
+      freezesAvailable = Math.min(MAX_BANKED_FREEZES, freezesAvailable + (milestonesEarned - freezeMilestonesClaimed));
+      freezeMilestonesClaimed = milestonesEarned;
+    }
+
     const days = {};
     const sourceDays = raw.days && typeof raw.days === "object" ? raw.days : {};
     Object.keys(sourceDays)
@@ -174,12 +220,14 @@
 
     return {
       targetMinutes,
-      todayDate,
+      todayDate: today,
       todaySeconds,
       current,
       best: Math.max(0, Number(raw.best) || 0, current),
       lastCompletedDate,
       days,
+      freezesAvailable,
+      freezeMilestonesClaimed,
       publicOptIn: Boolean(raw.publicOptIn),
       publicName: raw.publicName || "",
       updatedAt: Number(raw.updatedAt) || 0,
@@ -193,26 +241,6 @@
 
   function writeStudyStreak(streak) {
     return writeJsonStorage(STREAK_KEY, normalizeStreak(streak));
-  }
-
-  function setStudyStreakTarget(minutes) {
-    const targetMinutes = STREAK_TARGET_OPTIONS.includes(Number(minutes))
-      ? Number(minutes)
-      : DEFAULT_STREAK_TARGET_MINUTES;
-    const streak = readStudyStreak();
-    streak.targetMinutes = targetMinutes;
-    streak.targetUpdatedAt = Date.now();
-    if (streak.todaySeconds >= targetMinutes * 60 && streak.lastCompletedDate !== streak.todayDate) {
-      streak.current = isYesterday(streak.lastCompletedDate, streak.todayDate) ? streak.current + 1 : 1;
-      streak.best = Math.max(streak.best, streak.current);
-      streak.lastCompletedDate = streak.todayDate;
-    }
-    streak.days[streak.todayDate] = {
-      seconds: streak.todaySeconds,
-      completed: streak.todaySeconds >= targetMinutes * 60 || streak.lastCompletedDate === streak.todayDate,
-    };
-    streak.updatedAt = Date.now();
-    return writeStudyStreak(streak);
   }
 
   function recordStudySeconds(seconds) {
@@ -299,7 +327,8 @@
     PROGRESS_PREFIX,
     NOTES_PREFIX,
     STREAK_KEY,
-    STREAK_TARGET_OPTIONS,
+    STREAK_RANKS,
+    getStreakRank,
     escapeHtml,
     formatViewCount,
     formatViews: formatViewCount,
@@ -320,7 +349,6 @@
     localDateKey,
     readStudyStreak,
     writeStudyStreak,
-    setStudyStreakTarget,
     recordStudySeconds,
     readSavedItems,
     writeSavedItems,

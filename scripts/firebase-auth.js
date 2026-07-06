@@ -18,9 +18,25 @@
   var NOTES_PREFIX     = 'lecture-notes:';
   var SAVED_KEY        = 'improving-muslim:saved-items';
   var STREAK_KEY       = 'improving-muslim:study-streak';
-  var STREAK_TARGET_OPTIONS = [20, 30, 40];
+  // Fixed for everyone (not user-selectable) so leaderboard day counts are
+  // directly comparable across users.
   var DEFAULT_STREAK_TARGET_MINUTES = 30;
+  var FREEZE_MILESTONE_DAYS = 7; // earn 1 streak freeze every N consecutive days
+  var MAX_BANKED_FREEZES = 2; // matches Duolingo's cap
+  var STREAK_RANKS = [
+    { name: 'Platinum', min: 40 },
+    { name: 'Silver', min: 20 },
+    { name: 'Bronze', min: 10 },
+    { name: 'Iron', min: 5 },
+  ];
   var PUSH_DEBOUNCE_MS = 3000;
+
+  function getStreakRank(days) {
+    for (var i = 0; i < STREAK_RANKS.length; i++) {
+      if ((Number(days) || 0) >= STREAK_RANKS[i].min) return STREAK_RANKS[i];
+    }
+    return null;
+  }
 
   var _user         = null;
   var _db           = null;
@@ -210,18 +226,52 @@
     return addDays(dateKey, 1) === (todayKey || localDateKey());
   }
 
+  function daysBetween(fromKey, toKey) {
+    var fromParts = String(fromKey || '').split('-').map(Number);
+    var toParts = String(toKey || '').split('-').map(Number);
+    if (!fromParts[0] || !fromParts[1] || !fromParts[2] || !toParts[0] || !toParts[1] || !toParts[2]) return 0;
+    var from = new Date(fromParts[0], fromParts[1] - 1, fromParts[2]);
+    var to = new Date(toParts[0], toParts[1] - 1, toParts[2]);
+    return Math.round((to - from) / 86400000);
+  }
+
   function normalizeStreak(raw) {
     raw = raw || {};
     var today = localDateKey();
-    var targetMinutes = STREAK_TARGET_OPTIONS.indexOf(Number(raw.targetMinutes)) >= 0
-      ? Number(raw.targetMinutes)
-      : DEFAULT_STREAK_TARGET_MINUTES;
+    var targetMinutes = DEFAULT_STREAK_TARGET_MINUTES;
     var targetSeconds = targetMinutes * 60;
     var todaySeconds = raw.todayDate === today ? Math.max(0, Number(raw.todaySeconds) || 0) : 0;
     var lastCompletedDate = raw.lastCompletedDate || '';
-    var current = (lastCompletedDate === today || isYesterday(lastCompletedDate, today))
-      ? Math.max(0, Number(raw.current) || 0)
-      : 0;
+    var current = Math.max(0, Number(raw.current) || 0);
+    var freezesAvailable = Math.max(0, Math.min(MAX_BANKED_FREEZES, Number(raw.freezesAvailable) || 0));
+    var freezeMilestonesClaimed = Math.max(0, Number(raw.freezeMilestonesClaimed) || 0);
+
+    // Streak freeze: a short gap since the last completed day is silently
+    // covered by banked freezes instead of breaking the streak, as long as
+    // there are enough of them (one freeze per missed day).
+    var stillContinuous = lastCompletedDate === today || isYesterday(lastCompletedDate, today);
+    if (!stillContinuous && lastCompletedDate) {
+      var gap = daysBetween(lastCompletedDate, today) - 1;
+      if (gap > 0 && gap <= freezesAvailable && current > 0) {
+        freezesAvailable -= gap;
+        lastCompletedDate = addDays(today, -1);
+      } else {
+        current = 0;
+        freezeMilestonesClaimed = 0; // a fresh streak earns milestones from day 1 again
+      }
+    } else if (!stillContinuous) {
+      current = 0;
+      freezeMilestonesClaimed = 0;
+    }
+
+    // Grant any newly-crossed 7-day milestones. The milestone still counts as
+    // "claimed" even if the bank was already full, so it isn't re-granted later.
+    var milestonesEarned = Math.floor(current / FREEZE_MILESTONE_DAYS);
+    if (milestonesEarned > freezeMilestonesClaimed) {
+      freezesAvailable = Math.min(MAX_BANKED_FREEZES, freezesAvailable + (milestonesEarned - freezeMilestonesClaimed));
+      freezeMilestonesClaimed = milestonesEarned;
+    }
+
     var days = {};
     var sourceDays = raw.days && typeof raw.days === 'object' ? raw.days : {};
     Object.keys(sourceDays).sort().slice(-90).forEach(function (dateKey) {
@@ -246,6 +296,8 @@
       best: Math.max(0, Number(raw.best) || 0, current),
       lastCompletedDate: lastCompletedDate,
       days: days,
+      freezesAvailable: freezesAvailable,
+      freezeMilestonesClaimed: freezeMilestonesClaimed,
       publicOptIn: Boolean(raw.publicOptIn),
       publicName: raw.publicName || '',
       updatedAt: Number(raw.updatedAt) || 0,
@@ -272,20 +324,6 @@
     } catch (_) {
       return false;
     }
-  }
-
-  function setStreakTarget(minutes) {
-    var streak = readStreak();
-    var target = STREAK_TARGET_OPTIONS.indexOf(Number(minutes)) >= 0
-      ? Number(minutes)
-      : DEFAULT_STREAK_TARGET_MINUTES;
-    streak.targetMinutes = target;
-    streak.targetUpdatedAt = Date.now();
-    streak.days[streak.todayDate] = {
-      seconds: streak.todaySeconds,
-      completed: streak.todaySeconds >= target * 60 || streak.lastCompletedDate === streak.todayDate,
-    };
-    writeStreak(streak);
   }
 
   function formatStreakMinutes(seconds) {
@@ -399,11 +437,6 @@
       if (close) closeStreakPanel();
       var tab = event.target.closest('[data-streak-tab]');
       if (tab) renderStreakPanel(tab.dataset.streakTab);
-      var target = event.target.closest('[data-streak-target]');
-      if (target) {
-        setStreakTarget(Number(target.dataset.streakTarget));
-        renderStreakPanel('personal');
-      }
       var opt = event.target.closest('[data-streak-opt-in]');
       if (opt) {
         updatePublicOptIn(opt.dataset.streakOptIn === 'on');
@@ -471,6 +504,17 @@
     var percent = targetSeconds > 0 ? Math.min(100, Math.round(todaySeconds / targetSeconds * 100)) : 0;
     var complete = todaySeconds >= targetSeconds || streak.lastCompletedDate === streak.todayDate;
     var remaining = Math.max(0, Math.ceil((targetSeconds - todaySeconds) / 60));
+    var rank = getStreakRank(streak.current);
+    var nextRank = null;
+    for (var i = STREAK_RANKS.length - 1; i >= 0; i--) {
+      if (STREAK_RANKS[i].min > streak.current) { nextRank = STREAK_RANKS[i]; break; }
+    }
+    var rankBadgeHtml = rank
+      ? ' <span class="streak-rank-badge rank-' + rank.name.toLowerCase() + '">' + rank.name + '</span>'
+      : '';
+    var rankNoteHtml = nextRank
+      ? '<p class="streak-rank-next">' + (nextRank.min - streak.current) + ' more ' + ((nextRank.min - streak.current) === 1 ? 'day' : 'days') + ' to ' + nextRank.name + '</p>'
+      : (rank ? '<p class="streak-rank-next">Highest rank reached. Beautiful consistency.</p>' : '');
     body.innerHTML =
       '<div class="streak-panel-summary">' +
         '<div class="streak-panel-orb ' + (streak.current > 0 ? 'is-active' : '') + '" style="--streak-progress:' + percent + '%">' +
@@ -479,27 +523,23 @@
         '</div>' +
         '<div class="streak-panel-copy">' +
           '<small>' + (complete ? 'Goal complete today' : 'Today in progress') + '</small>' +
-          '<h3>' + (streak.current > 0 ? streak.current + ' day streak' : 'Start your streak today') + '</h3>' +
+          '<h3>' + (streak.current > 0 ? streak.current + ' day streak' : 'Start your streak today') + rankBadgeHtml + '</h3>' +
           '<p>' + formatStreakMinutes(todaySeconds) + ' of ' + streak.targetMinutes + ' minutes watched today. ' +
             (complete ? 'Beautifully kept.' : remaining + ' min left to keep it going.') + '</p>' +
           '<div class="streak-panel-track" aria-label="' + percent + '% of the daily learning goal complete"><span style="width:' + percent + '%"></span></div>' +
+          rankNoteHtml +
         '</div>' +
       '</div>' +
       '<div class="streak-panel-stats">' +
         '<span><strong>' + streak.current + '</strong><small>Current</small></span>' +
         '<span><strong>' + streak.best + '</strong><small>Best</small></span>' +
-        '<span><strong>' + streak.targetMinutes + '</strong><small>Daily min</small></span>' +
-      '</div>' +
-      '<div class="streak-target-row" aria-label="Daily streak goal">' +
-        STREAK_TARGET_OPTIONS.map(function (minutes) {
-          return '<button type="button" class="' + (minutes === streak.targetMinutes ? 'is-active' : '') + '" data-streak-target="' + minutes + '">' + minutes + ' min</button>';
-        }).join('') +
+        '<span><strong>' + streak.freezesAvailable + '</strong><small>' + (streak.freezesAvailable === 1 ? 'Freeze' : 'Freezes') + '</small></span>' +
       '</div>' +
       '<div class="streak-heatmap-wrap">' +
         '<div class="streak-heatmap-head"><strong>This month</strong><span>Filled days met your goal</span></div>' +
         '<div class="streak-heatmap" aria-label="Monthly streak heatmap">' + buildHeatmap(streak) + '</div>' +
       '</div>' +
-      '<p class="streak-panel-note">Only actual lecture playback time counts. Skipping ahead does not fill the streak.</p>';
+      '<p class="streak-panel-note">Only actual lecture playback time counts. Skipping ahead does not fill the streak. Earn 1 streak freeze every 7-day streak (up to 2 banked) — it silently covers one missed day.</p>';
   }
 
   function buildHeatmap(streak) {
@@ -622,9 +662,14 @@
                 '<button type="button" class="leaderboard-edit-btn" data-edit-name aria-label="Edit your display name">' + buildEditIconSvg() + '</button>' +
               '</span>'
             : '<span class="leaderboard-name">' + escapeHtml(row.displayName || 'Learner') + '</span>';
+          var rowRank = getStreakRank(Number(row.current) || 0);
+          var rowRankHtml = rowRank
+            ? '<span class="streak-rank-badge rank-' + rowRank.name.toLowerCase() + '">' + rowRank.name + '</span>'
+            : '';
           return '<div class="leaderboard-row ' + (own ? 'is-you' : '') + '">' +
             '<span class="leaderboard-rank">' + (index + 1) + '</span>' +
             nameHtml +
+            rowRankHtml +
             '<strong>' + (Number(row.current) || 0) + ' days</strong>' +
           '</div>';
         }).join('');
