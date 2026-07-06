@@ -5,6 +5,11 @@
   margin: 0 auto;
 }
 
+.admin-auth[hidden],
+.admin-dashboard[hidden] {
+  display: none;
+}
+
 .admin-hero {
   padding: clamp(42px, 7vw, 82px) 0 20px;
 }

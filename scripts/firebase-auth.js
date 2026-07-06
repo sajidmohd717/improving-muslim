@@ -26,6 +26,7 @@
   var _pushTimer    = null;
   var _listeners    = [];
   var _initialized  = false;
+  var _authReady    = false;
 
   /* ── Firestore document reference ────────────────────────────────────── */
 
@@ -145,6 +146,7 @@
       notifyListeners();
     }).catch(function (err) {
       console.warn('[IMAuth] Sync pull failed:', err.message);
+      notifyListeners();
     });
   }
 
@@ -310,6 +312,7 @@
 
   window.IMAuth = {
     get currentUser() { return _user; },
+    get authReady() { return _authReady; },
 
     signIn: function () {
       if (!window.firebase) return Promise.reject(new Error('Firebase not loaded'));
@@ -371,6 +374,7 @@
 
       firebase.auth().onAuthStateChanged(function (user) {
         _user = user;
+        _authReady = true;
         if (window.IMStreakUI) window.IMStreakUI.injectButton();
         injectAuthButton();
         if (window.IMStreakUI) window.IMStreakUI.updateButtons();

@@ -190,6 +190,10 @@
 
     window.IMAuth.onAuthStateChanged(function (user) {
       if (!user) {
+        if (!window.IMAuth.authReady) {
+          setAuthMessage('<p>Checking admin access...</p>');
+          return;
+        }
         setAuthMessage(
           '<p>Sign in with the admin Google account to view analytics.</p>' +
           '<a class="primary-link" href="./pages/sign-in.html">Sign in</a>',
