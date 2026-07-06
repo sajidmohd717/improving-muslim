@@ -160,6 +160,11 @@ function getSortedSeries(list) {
   return list;
 }
 
+function searchSections() {
+  if (!state.searchTerm) return state.sections;
+  return mergeLocalSeries(state.sections, "foryou");
+}
+
 const els = {
   menuToggle: document.querySelector(".menu-toggle"),
   siteMenu: document.querySelector("#site-menu"),
@@ -172,8 +177,10 @@ const els = {
   seriesGrid: document.querySelector("#series-grid"),
   statusMessage: document.querySelector("#status-message"),
   resultCount: document.querySelector("#result-count"),
+  seriesTitle: document.querySelector("#series-title"),
   searchForm: document.querySelector(".search-form"),
   searchInput: document.querySelector("#series-search"),
+  searchSuggestions: document.querySelector("#search-suggestions"),
   sortTrigger: document.querySelector("#sort-trigger"),
   sortDisplay: document.querySelector("#sort-display"),
   sortOptions: document.querySelector("#sort-options"),
@@ -201,6 +208,39 @@ function normalizeSections(sections) {
 function flattenSeries(sections) {
   return sections.flatMap((section) => section.seriesList);
 }
+
+function uniqueBy(items, getKey) {
+  const seen = new Set();
+  return items.filter((item) => {
+    const key = getKey(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function searchCatalog() {
+  return uniqueBy(
+    flattenSeries(mergeLocalSeries(state.sections, "foryou")).filter(isAllowedSeries),
+    (item) => `${item.contentType || "series"}:${getSeriesUrl(item)}:${item.title}`.toLowerCase(),
+  );
+}
+
+const homeSearch = window.IMHomeSearch.create({
+  els,
+  escapeHtml,
+  formatDuration,
+  categoryNameMap,
+  catalog: searchCatalog,
+  onSubmit(query) {
+    state.searchTerm = query;
+    renderSeries();
+    if (query) {
+      scrollToSeriesResults();
+      logSearch(query);
+    }
+  },
+});
 
 // Slugs of series registered in data/series-registry.js. Cards from the
 // remote series-api that point at an unregistered series-detail id would
@@ -702,43 +742,7 @@ function renderCategories() {
 }
 
 function seriesMatchesSearch(series) {
-  if (!state.searchTerm) return true;
-
-  const parts = [
-    series.title,
-    series.speaker,
-    series.topic,
-    series.episodes,
-    series.description,
-    series._recap,
-    series._keywords,
-  ];
-
-  // Category slugs and display names
-  if (Array.isArray(series._cats)) {
-    series._cats.forEach(c => {
-      parts.push(c);
-      parts.push(categoryNameMap[c] || "");
-    });
-  }
-
-  // Duration as text (for standalone videos)
-  if (series.duration) parts.push(formatDuration(series.duration));
-
-  // Captions keyword
-  if (series._hasCaptions) parts.push("captions subtitles cc");
-
-  // Episode titles and recaps if that series' data file is loaded
-  if (series._globalKey && window[series._globalKey]) {
-    const epData = window[series._globalKey];
-    (epData.episodes || []).forEach(ep => {
-      parts.push(ep.title);
-      if (ep.recap) parts.push(ep.recap.slice(0, 400));
-    });
-  }
-
-  const haystack = parts.filter(Boolean).join(" ").toLowerCase();
-  return haystack.includes(state.searchTerm);
+  return homeSearch.matchesSeries(series, state.searchTerm);
 }
 
 function seriesMatchesContentType(series) {
@@ -797,8 +801,9 @@ function getSeriesUrl(series) {
 }
 
 function renderSeries() {
+  const isSearching = Boolean(state.searchTerm);
   const series = getSortedSeries(
-    flattenSeries(state.sections)
+    flattenSeries(searchSections())
       .filter(isAllowedSeries)
       .filter(seriesMatchesSearch)
       .filter(seriesMatchesSpeaker)
@@ -808,11 +813,17 @@ function renderSeries() {
   );
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
+  document.body.classList.toggle("search-mode", isSearching);
   els.activeCategoryLabel.textContent = state.activeSpeaker
     ? state.activeSpeaker
-    : state.searchTerm
-    ? `Search in ${categoryName}`
+    : isSearching
+    ? "Search"
     : categoryName;
+  if (els.seriesTitle) {
+    els.seriesTitle.textContent = isSearching
+      ? `Search results for "${state.searchTerm}"`
+      : "Lecture Series";
+  }
   const resultLabel = state.contentType === "videos" ? "video" : state.contentType === "series" ? "series" : "item";
   els.resultCount.textContent = `${series.length} ${series.length === 1 ? resultLabel : `${resultLabel}s`}`;
 
@@ -883,10 +894,28 @@ function renderSeries() {
     .join("");
 }
 
+function scrollToSeriesResults() {
+  const target = document.querySelector("#series");
+  if (!target) return;
+  requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+function logSearch(query) {
+  if (!query || !window.IMAuth || typeof window.IMAuth.logSearch !== "function") return;
+  window.IMAuth.logSearch({
+    query,
+    resultCount: document.querySelectorAll(".series-card").length,
+    contentType: state.contentType,
+    category: state.activeCategory,
+  });
+}
+
 async function loadCategory(category) {
   state.activeCategory = category;
   state.searchTerm = "";
-  els.searchInput.value = "";
+  homeSearch.reset();
   renderCategories();
   showSkeletons(6);
 
@@ -985,7 +1014,7 @@ function bindEvents() {
     if (saveButton) {
       const card = saveButton.closest(".series-card");
       const title = card?.querySelector(".series-title")?.textContent.trim();
-      const item = flattenSeries(state.sections).find((series) => series.title === title);
+      const item = flattenSeries(searchSections()).find((series) => series.title === title);
       if (item) toggleSavedSeries(item, saveButton.dataset.seriesUrl, saveButton);
       closeCardMenu(saveButton.closest(".card-menu"));
       return;
@@ -995,7 +1024,7 @@ function bindEvents() {
     if (shareButton) {
       const card = shareButton.closest(".series-card");
       const title = card?.querySelector(".series-title")?.textContent.trim();
-      const item = flattenSeries(state.sections).find((series) => series.title === title);
+      const item = flattenSeries(searchSections()).find((series) => series.title === title);
       if (item) shareSeries(item, shareButton.dataset.seriesUrl, shareButton);
       closeCardMenu(shareButton.closest(".card-menu"));
       return;
@@ -1009,16 +1038,7 @@ function bindEvents() {
     }
   });
 
-  els.searchForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    state.searchTerm = els.searchInput.value.trim().toLowerCase();
-    renderSeries();
-  });
-
-  els.searchInput.addEventListener("input", () => {
-    state.searchTerm = els.searchInput.value.trim().toLowerCase();
-    renderSeries();
-  });
+  homeSearch.init();
 
   els.statusMessage.addEventListener("click", (event) => {
     if (event.target.matches(".retry-button")) {

@@ -10,8 +10,16 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email in [
+          'sajidmohammad460519@gmail.com'
+        ];
+    }
+
     function optionalSyncFieldsAreSafe() {
       return (!('progress' in request.resource.data) || request.resource.data.progress is map)
+        && (!('notes' in request.resource.data) || request.resource.data.notes is map)
         && (!('saved' in request.resource.data) || request.resource.data.saved is list)
         && (!('streak' in request.resource.data) || request.resource.data.streak is map)
         && (!('lastSyncedAt' in request.resource.data) || request.resource.data.lastSyncedAt is int);
@@ -20,6 +28,7 @@ service cloud.firestore {
     function safeSyncDocument() {
       return request.resource.data.keys().hasOnly([
         'progress',
+        'notes',
         'saved',
         'streak',
         'lastSyncedAt'
@@ -62,6 +71,48 @@ service cloud.firestore {
       && request.resource.data.updatedAt > 0;
     }
 
+    function safeSearchEvent() {
+      return signedIn()
+        && request.resource.data.keys().hasOnly([
+          'query',
+          'queryLower',
+          'resultCount',
+          'contentType',
+          'category',
+          'userId',
+          'createdAt',
+          'createdAtMs'
+        ])
+        && request.resource.data.keys().hasAll([
+          'query',
+          'queryLower',
+          'resultCount',
+          'contentType',
+          'category',
+          'userId',
+          'createdAt',
+          'createdAtMs'
+        ])
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.query is string
+        && request.resource.data.query.size() > 0
+        && request.resource.data.query.size() <= 160
+        && request.resource.data.queryLower is string
+        && request.resource.data.queryLower.size() > 0
+        && request.resource.data.queryLower.size() <= 160
+        && request.resource.data.resultCount is int
+        && request.resource.data.resultCount >= 0
+        && request.resource.data.resultCount <= 10000
+        && request.resource.data.contentType is string
+        && request.resource.data.contentType.matches('^(all|series|videos)$')
+        && request.resource.data.category is string
+        && request.resource.data.category.size() > 0
+        && request.resource.data.category.size() <= 60
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.createdAtMs is int
+        && request.resource.data.createdAtMs > 0;
+    }
+
     match /users/{userId}/data/{documentId} {
       allow read: if isOwner(userId);
       allow create, update: if isOwner(userId)
@@ -74,6 +125,12 @@ service cloud.firestore {
       allow read: if true;
       allow create, update: if isOwner(userId) && safeLeaderboardDocument();
       allow delete: if isOwner(userId);
+    }
+
+    match /searchEvents/{eventId} {
+      allow create: if safeSearchEvent();
+      allow read: if isAdmin();
+      allow update, delete: if false;
     }
 
     match /{document=**} {

@@ -5,7 +5,7 @@
 
 @import "./base.css?v=20260702-dark-1";          /* CSS custom properties, reset, sr-only, is-hidden  */
 @import "./nav.css?v=20260706-streak-ranks"; /* Site header, top nav, bottom mobile nav             */
-@import "./layout.css?v=20260702-dark-1";        /* Hero, content-section wrappers, section headings   */
+@import "./layout.css?v=20260706-search-suggestions";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260705-streaks";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260702-dark-1";   /* Series cards, speaker cards, category filters      */
 @import "./components.css?v=20260702-dark-1"; /* Shared UI: buttons, panels, sort, footer, errors  */
@@ -17,10 +17,11 @@
 @import "./watch.css?v=20260706-dark-tip-fix";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260706-streak-ranks"; /* Breakpoint overrides (≤900px, ≤600px)   */
+@import "./responsive.css?v=20260706-search-suggestions"; /* Breakpoint overrides (≤900px, ≤600px)   */
 @import "./history.css?v=20260627-relative-time";    /* Watch history page                            */
 @import "./saved.css?v=20260627-grouped-saved";      /* Saved items page                              */
 @import "./roadmap.css";       /* Roadmap page                                       */
 @import "./copyright.css";     /* Copyright / permissions page                       */
+@import "./admin.css?v=20260706-admin-dashboard"; /* Private admin analytics dashboard          */
 @import "./transitions.css";   /* View Transitions API rules                         */
 @import "./auth.css?v=20260705-dark-muted"; /* Google sign-in button, avatar, settings account panel */

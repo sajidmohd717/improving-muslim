@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
+    <meta name="referrer" content="origin" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Private analytics dashboard for Improving Muslim." />
+    <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
+    <link rel="manifest" href="./public/site.webmanifest" />
+    <meta name="theme-color" content="#176b5b" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260706-admin-dashboard" />
+    <script src="./scripts/theme.js?v=20260705-system-theme"></script>
+    <title>Admin Dashboard | Improving Muslim</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Improving Muslim home">
+          <img src="./public/icon.png" alt="" />
+          <span>Improving Muslim</span>
+        </a>
+        <div class="site-menu page-menu">
+          <a href="./index.html">Home</a>
+          <a href="./pages/explore.html">Explore</a>
+          <a href="./pages/speakers.html">Speakers</a>
+          <a href="./pages/history.html">History</a>
+          <a href="./pages/saved.html">Saved</a>
+        </div>
+        <div class="nav-more" id="nav-more">
+          <button class="nav-more-trigger" id="nav-more-trigger" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
+            <svg class="nav-more-icon-menu" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="nav-more-label">More</span>
+            <svg class="nav-more-icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-more-menu" id="nav-more-menu" role="menu" hidden>
+            <a href="./pages/settings.html" role="menuitem">Settings</a>
+            <a href="./pages/roadmap.html" role="menuitem">Roadmap</a>
+            <a href="./pages/feedback.html" role="menuitem">Feedback</a>
+            <a href="./pages/privacy.html" role="menuitem">Privacy</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="admin-hero">
+        <p class="eyebrow">Private dashboard</p>
+        <h1>Admin analytics</h1>
+        <p>
+          Review submitted searches so you can spot demand, missing topics, and content ideas.
+          More analytics can be added here as the platform starts collecting those events.
+        </p>
+      </section>
+
+      <section class="admin-auth" id="admin-auth" aria-live="polite">
+        <p>Checking admin access...</p>
+      </section>
+
+      <section class="admin-dashboard" id="admin-dashboard" hidden>
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">Search demand</p>
+            <h2>Submitted searches</h2>
+          </div>
+          <button class="quiet-link" id="admin-refresh-btn" type="button">Refresh</button>
+        </div>
+
+        <div class="admin-metrics" id="admin-metrics"></div>
+
+        <div class="admin-grid">
+          <section class="admin-card" aria-labelledby="top-searches-title">
+            <div class="admin-card-head">
+              <h3 id="top-searches-title">Top searches</h3>
+              <span id="top-searches-count"></span>
+            </div>
+            <div class="admin-list" id="top-searches-list"></div>
+          </section>
+
+          <section class="admin-card" aria-labelledby="zero-searches-title">
+            <div class="admin-card-head">
+              <h3 id="zero-searches-title">No-result searches</h3>
+              <span>Content gaps</span>
+            </div>
+            <div class="admin-list" id="zero-searches-list"></div>
+          </section>
+        </div>
+
+        <section class="admin-card" aria-labelledby="recent-searches-title">
+          <div class="admin-card-head">
+            <h3 id="recent-searches-title">Recent searches</h3>
+            <span id="admin-updated-at"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th scope="col">Query</th>
+                  <th scope="col">Results</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">When</th>
+                </tr>
+              </thead>
+              <tbody id="recent-searches-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-card admin-next" aria-labelledby="analytics-next-title">
+          <h3 id="analytics-next-title">Next analytics to add</h3>
+          <div class="admin-next-grid">
+            <span>Video watch time</span>
+            <span>Most saved lectures</span>
+            <span>Completion/drop-off rates</span>
+            <span>Country/device traffic</span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Private product dashboard.</p>
+      <a href="./index.html">Home</a>
+      <a href="./pages/settings.html">Settings</a>
+    </footer>
+
+    <script src="./scripts/utils.js?v=20260706-streak-ui" defer></script>
+    <script src="./scripts/streak-ui.js?v=20260706-streak-ui" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260706-admin-dashboard" defer></script>
+    <script src="./scripts/admin-dashboard.js?v=20260706-admin-dashboard" defer></script>
+    <script src="./scripts/nav-more.js" defer></script>
+    <script src="./scripts/nav-state.js" defer></script>
+  </body>
+</html>

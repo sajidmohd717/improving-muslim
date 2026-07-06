@@ -101,6 +101,21 @@
     position: relative;
   }
 
+  .search-suggestions {
+    max-height: min(340px, 58vh);
+  }
+
+  .search-suggestion {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 11px;
+  }
+
+  .search-suggestion span {
+    max-width: 100%;
+  }
+
   .nav-streak-btn {
     min-width: 44px;
     width: 44px;
@@ -190,6 +205,24 @@
   #series-title,
   #result-count {
     display: none;
+  }
+
+  body.search-mode #active-category-label,
+  body.search-mode #series-title,
+  body.search-mode #result-count {
+    display: block;
+  }
+
+  body.search-mode .row-heading {
+    align-items: flex-start;
+  }
+
+  body.search-mode .series-controls {
+    justify-content: flex-start;
+  }
+
+  body.search-mode .hero {
+    padding-top: 8px;
   }
 
   .series-section {

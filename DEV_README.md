@@ -13,6 +13,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
 - `scripts/home-config.js` holds homepage categories, curated descriptions, and remote-feed exclusions.
 - `scripts/script.js` renders homepage speakers, categories, and series cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
+- `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
@@ -22,6 +23,8 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `data/standalone-lectures-data.js` holds all standalone (non-series) lecture objects in a single `window.standaloneLectures` array.
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
 - `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
+- `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
+- `pages/admin.html` is a direct-link private admin dashboard. It currently reads submitted search analytics for allowlisted admin emails only.
 - `assets/captions/` contains WebVTT captions, grouped by series slug or `standalone/{speaker-slug}/`.
 - `assets/thumbnail/standalone/{speaker-slug}/` holds standalone lecture thumbnails.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
@@ -452,7 +455,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 2. Listens for Google auth state changes.
 3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress/notes key; saved items are deduped by key; streak stats are merged), writes the merged result back to both localStorage and Firestore.
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
-5. If a signed-in user opts into the community leaderboard, writes only their public display name and streak summary to `leaderboard/{uid}`. Watch history and saved items are never public.
+5. Hands Firebase user/database access to `scripts/streak-ui.js`, which writes only opt-in public display names and streak summaries to `leaderboard/{uid}`. Watch history and saved items are never public.
 6. On sign-out: stops syncing; localStorage continues to work as normal.
 
 ### Firestore data structure
@@ -486,6 +489,16 @@ leaderboard/{uid}  (public, opt-in only)
   targetMinutes: 30
   lastCompletedDate: "YYYY-MM-DD"
   updatedAt: timestamp in milliseconds
+
+searchEvents/{eventId}  (private analytics, signed-in submissions only)
+  query: string
+  queryLower: string
+  resultCount: number
+  contentType: "all" | "series" | "videos"
+  category: string
+  userId: uid
+  createdAt: server timestamp
+  createdAtMs: timestamp in milliseconds
 ```
 
 ### Firestore security rules
@@ -497,6 +510,8 @@ They enforce:
 - `leaderboard/{uid}` can be read publicly, but only written or deleted by that same signed-in user.
 - Leaderboard rows may only contain safe public fields: `displayName`, `current`, `best`, `targetMinutes`, `lastCompletedDate`, and `updatedAt`.
 - Emails, watch history, saved items, and detailed daily heatmap data are not allowed in public leaderboard rows.
+- `searchEvents/{eventId}` is create-only for signed-in users and cannot be read, updated, or deleted by clients.
+- Admin dashboard reads are limited in Firestore rules to the allowlisted admin email in `isAdmin()`.
 
 Deploy rules after editing them:
 
@@ -506,7 +521,7 @@ firebase deploy --only firestore:rules --project improving-muslim
 
 ### Streak Ranks and Freezes
 
-The daily streak goal is fixed at 30 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. The logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback) and is duplicated in `scripts/firebase-auth.js`'s own `normalizeStreak` (needed because `firebase-auth.js` runs on every page, including ones that don't load `utils.js`) — keep both in sync when changing streak behavior.
+The daily streak goal is fixed at 30 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and gives `streak-ui.js` access to the current Firebase user and Firestore instance.
 
 **Ranks** (`STREAK_RANKS`, derived from `current`, highest match wins):
 

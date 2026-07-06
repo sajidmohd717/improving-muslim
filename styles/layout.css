@@ -42,6 +42,7 @@ h2 {
 }
 
 .search-form {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -53,6 +54,11 @@ h2 {
   box-shadow: var(--shadow);
 }
 
+.search-form:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 16px 36px rgba(24, 32, 27, 0.12);
+}
+
 .search-form input {
   min-width: 0;
   flex: 1;
@@ -60,6 +66,66 @@ h2 {
   background: transparent;
   color: var(--ink);
   padding: 13px 12px;
+  outline: none;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: 4px;
+  max-height: min(360px, 62vh);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: 0 18px 42px rgba(24, 32, 27, 0.16);
+  padding: 6px;
+}
+
+.search-suggestions[hidden] {
+  display: none;
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 11px 12px;
+  text-align: left;
+}
+
+.search-suggestion span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.search-suggestion small {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.search-suggestion:hover,
+.search-suggestion:focus-visible,
+.search-suggestion.is-active {
+  background: rgba(23, 107, 91, 0.09);
   outline: none;
 }
 
@@ -76,6 +142,43 @@ h2 {
 .search-form button:hover,
 .retry-button:hover {
   background: var(--accent-strong);
+}
+
+body.search-mode .hero {
+  padding: 24px 0 8px;
+}
+
+body.search-mode .hero-content {
+  max-width: none;
+}
+
+body.search-mode .hero .eyebrow,
+body.search-mode .hero h1,
+body.search-mode .hero-copy {
+  display: none;
+}
+
+body.search-mode .search-form {
+  width: min(100%, 860px);
+}
+
+body.search-mode .continue-section,
+body.search-mode .streak-section,
+body.search-mode #categories {
+  display: none;
+}
+
+body.search-mode .series-section {
+  padding-top: 16px;
+}
+
+body.search-mode .row-heading {
+  align-items: center;
+  padding-bottom: 6px;
+}
+
+body.search-mode #active-category-label {
+  color: var(--rose);
 }
 
 .content-section {
