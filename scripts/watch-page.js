@@ -3,6 +3,7 @@ const {
   getSeriesRegistry,
   getStandaloneLectureRegistry,
   isEpisodeAvailable,
+  seriesUrl,
   recordStudySeconds,
   readJsonStorage,
   writeJsonStorage,
@@ -41,10 +42,11 @@ const seriesRegistry = getSeriesRegistry();
 const standaloneLectureRegistry = getStandaloneLectureRegistry();
 
 const params = new URLSearchParams(window.location.search);
-const standaloneLectureId = params.get("lecture");
+const pageData = document.body?.dataset || {};
+const standaloneLectureId = params.get("lecture") || pageData.lectureId;
 const standaloneLecture = standaloneLectureId ? standaloneLectureRegistry[standaloneLectureId] : null;
 const isStandalone = Boolean(standaloneLecture);
-const seriesSlug = params.get("series");
+const seriesSlug = params.get("series") || pageData.seriesSlug;
 if (!isStandalone && seriesSlug && !seriesRegistry[seriesSlug]) {
   window.location.replace("./index.html");
   throw new Error("Unknown series: " + seriesSlug);
@@ -60,7 +62,7 @@ const series = isStandalone
       episodes: [{ ...standaloneLecture, number: null }],
     }
   : seriesRegistry[seriesSlug || "change-of-heart"] || window.changeOfHeartSeries;
-const seriesPageUrl = series.seriesPageUrl || "./index.html";
+const seriesPageUrl = isStandalone ? series.seriesPageUrl : seriesUrl(series);
 const episodeUrl = (episode) =>
   isStandalone ? window.IMUtils.standaloneLectureUrl(standaloneLecture) : window.IMUtils.episodeUrl(series, episode);
 const episodeThumbnailUrl = (episode) =>
@@ -72,9 +74,9 @@ const progressKey = (episode) =>
 const notesKey = (episode) =>
   isStandalone ? window.IMUtils.standaloneNotesKey(standaloneLecture) : window.IMUtils.notesKey(series, episode);
 
-const requestedVideoId = params.get("video");
+const requestedVideoId = params.get("video") || pageData.videoId;
 if (!isStandalone && requestedVideoId && !series.episodes.some((ep) => ep.id === requestedVideoId)) {
-  window.location.replace(`./pages/series-detail.html?id=${series.slug}`);
+  window.location.replace(seriesPageUrl);
   throw new Error("Unknown episode: " + requestedVideoId);
 }
 const currentEpisode =
@@ -158,9 +160,7 @@ function savedItem() {
     type: isStandalone ? "video" : "episode",
     title: currentTitleLabel,
     subtitle: isStandalone ? `${series.speaker} - Standalone video` : `${series.title} - ${series.speaker}`,
-    url: isStandalone
-      ? `./pages/watch.html?lecture=${currentEpisode.id}`
-      : `./pages/watch.html?series=${series.slug}&video=${currentEpisode.id}`,
+    url: episodeUrl(currentEpisode),
     savedAt: Date.now(),
   };
 }

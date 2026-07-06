@@ -1,7 +1,7 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl, imageMap } = window.IMUtils;
+const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl, seriesUrl, imageMap } = window.IMUtils;
 const localSeries = getAllSeries();
 const standaloneLectures = getStandaloneLectures();
 
@@ -32,7 +32,7 @@ function localSeriesCard(series) {
     topic: series.topic || "Series",
     episodes: `${series.episodes.length} Lectures`,
     thumbnailImage: localThumbnail(series),
-    link: series.seriesPageUrl,
+    link: seriesUrl(series),
     viewcount: formatViewCount(totalViews),
     description: series.description,
   };

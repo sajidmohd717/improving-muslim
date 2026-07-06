@@ -1,7 +1,7 @@
 /*
- * Generates sitemap.xml from the series registry plus the static page list.
- * Series URLs always match data/series-registry.js, so adding or removing a
- * series never requires a manual sitemap edit.
+ * Generates sitemap.xml from the static page list, the series registry, and
+ * the generated SEO watch pages. Series added to the registry and episodes
+ * added to data files are picked up automatically.
  *
  *   node scripts/generate-sitemap.js          rewrite sitemap.xml
  *   node scripts/generate-sitemap.js --check  fail if sitemap.xml is stale
@@ -29,16 +29,41 @@ const staticPaths = [
 ];
 
 const sandbox = { window: {} };
-runInNewContext(readFileSync(join(root, "data/series-registry.js"), "utf8"), sandbox);
+
+function loadScript(relativePath) {
+  const cleanPath = relativePath.replace(/^\.\//, "").split("?")[0];
+  runInNewContext(readFileSync(join(root, cleanPath), "utf8"), sandbox, { filename: cleanPath });
+}
+
+loadScript("./data/series-registry.js");
 const seriesConfig = sandbox.window.seriesConfig || [];
 if (!seriesConfig.length) {
-  console.error("No series found in data/series-registry.js — refusing to write an empty sitemap.");
+  console.error("No series found in data/series-registry.js; refusing to write an empty sitemap.");
   process.exit(1);
 }
 
+for (const entry of seriesConfig) {
+  loadScript(entry.dataFile);
+}
+loadScript("./data/standalone-lectures-data.js");
+
+const seriesUrls = seriesConfig.map((series) => `${ORIGIN}/series/${encodeURIComponent(series.slug)}/`);
+const watchUrls = seriesConfig.flatMap((entry) => {
+  const series = sandbox.window[entry.globalKey];
+  if (!series?.episodes) return [];
+  return series.episodes
+    .filter((episode) => episode.videoSrc)
+    .map((episode) => `${ORIGIN}/watch/${encodeURIComponent(series.slug)}/${encodeURIComponent(episode.id)}/`);
+});
+const standaloneUrls = (sandbox.window.standaloneLectures || [])
+  .filter((lecture) => lecture.videoSrc)
+  .map((lecture) => `${ORIGIN}/watch/standalone/${encodeURIComponent(lecture.id)}/`);
+
 const urls = [
   ...staticPaths.map((p) => ORIGIN + p),
-  ...seriesConfig.map((s) => `${ORIGIN}/pages/series-detail.html?id=${s.slug}`),
+  ...seriesUrls,
+  ...watchUrls,
+  ...standaloneUrls,
 ];
 
 const xml =
@@ -52,11 +77,11 @@ const target = join(root, "sitemap.xml");
 if (process.argv.includes("--check")) {
   const current = readFileSync(target, "utf8").replace(/\r\n/g, "\n");
   if (current !== xml) {
-    console.error("sitemap.xml is out of date with the series registry. Run: npm run sitemap");
+    console.error("sitemap.xml is out of date. Run: npm run sitemap");
     process.exit(1);
   }
-  console.log(`Sitemap matches the registry (${seriesConfig.length} series, ${urls.length} URLs).`);
+  console.log(`Sitemap matches generated routes (${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
 } else {
   writeFileSync(target, xml);
-  console.log(`Wrote sitemap.xml (${seriesConfig.length} series, ${urls.length} URLs).`);
+  console.log(`Wrote sitemap.xml (${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
 }

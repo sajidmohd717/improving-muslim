@@ -38,6 +38,7 @@ const {
   PROGRESS_PREFIX,
   storageKeysWithPrefix,
   writeSavedItems,
+  seriesUrl,
 } = window.IMUtils;
 const episodeUrl = (series, episode) => window.IMUtils.episodeUrl(series, episode);
 const episodeThumbnailUrl = (series, episode) => window.IMUtils.episodeThumbnailUrl(series, episode);
@@ -66,7 +67,7 @@ const fallbackData = (() => {
       speaker: entry.speaker,
       episodes: `${entry.episodeCount} Lectures`,
       thumbnailImage: entry.thumbnailSrc,
-      link: `./pages/series-detail.html?id=${entry.slug}`,
+      link: seriesUrl(entry),
     });
   }
   return sections;
@@ -90,7 +91,7 @@ const localCategoryFallbacks = (() => {
         speaker: entry.speaker,
         episodes: `${entry.episodeCount} Lectures`,
         thumbnailImage: entry.thumbnailSrc,
-        link: `./pages/series-detail.html?id=${entry.slug}`,
+        link: seriesUrl(entry),
       });
     }
   }
@@ -383,7 +384,7 @@ function localSeriesSections(category = "foryou") {
       episodes: episodesText,
       episodesCls,
       thumbnailImage: entry.thumbnailSrc,
-      link: `./pages/series-detail.html?id=${entry.slug}`,
+      link: seriesUrl(entry),
       description: entry.description,
       contentType: "series",
       _globalKey: entry.globalKey,
@@ -851,7 +852,7 @@ function seriesProgressSummary(seriesTitle) {
 function getSeriesUrl(series) {
   if (series.contentType === "video") return series.link;
   const local = availableLocalSeries().find(s => s.title === series.title);
-  if (local) return local.seriesPageUrl;
+  if (local) return seriesUrl(local);
   return series.link;
 }
 

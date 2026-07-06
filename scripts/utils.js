@@ -53,15 +53,19 @@
     return Boolean(episode?.videoSrc || episode?.youtubeId);
   }
 
+  function seriesUrl(series) {
+    return series?.slug ? `./series/${encodeURIComponent(series.slug)}/` : "./pages/series.html";
+  }
+
   function episodeUrl(series, episode) {
     if (!episode?.videoSrc && episode?.youtubeId) {
       return `https://www.youtube.com/watch?v=${episode.youtubeId}`;
     }
-    return `./pages/watch.html?series=${encodeURIComponent(series.slug)}&video=${encodeURIComponent(episode.id)}`;
+    return `./watch/${encodeURIComponent(series.slug)}/${encodeURIComponent(episode.id)}/`;
   }
 
   function standaloneLectureUrl(lecture) {
-    return `./pages/watch.html?lecture=${encodeURIComponent(lecture.id)}`;
+    return `./watch/standalone/${encodeURIComponent(lecture.id)}/`;
   }
 
   function episodeThumbnailUrl(series, episode) {
@@ -337,6 +341,7 @@
     formatViews: formatViewCount,
     formatDuration,
     isEpisodeAvailable,
+    seriesUrl,
     episodeUrl,
     standaloneLectureUrl,
     episodeThumbnailUrl,

@@ -33,7 +33,7 @@
   }
 
   function card(series, status) {
-    const url = `./pages/series-detail.html?id=${encodeURIComponent(series.slug)}`;
+    const url = `./series/${encodeURIComponent(series.slug)}/`;
     const total = Number(series.episodeCount) || 0;
     const available = Math.min(Number(series.availableCount) || 0, total);
     const percent = total > 0 ? Math.round((available / total) * 100) : 0;

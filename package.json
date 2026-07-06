@@ -8,8 +8,10 @@
     "start": "python -m http.server 4173",
     "check:a11y": "node scripts/check-a11y.js",
     "check:js": "node scripts/check-js.js",
+    "check:seo-pages": "node scripts/generate-seo-pages.js --check",
     "check:sitemap": "node scripts/generate-sitemap.js --check",
+    "seo-pages": "node scripts/generate-seo-pages.js",
     "sitemap": "node scripts/generate-sitemap.js",
-    "check": "npm run check:js && npm run check:a11y && npm run check:sitemap"
+    "check": "npm run check:js && npm run check:a11y && npm run check:seo-pages && npm run check:sitemap"
   }
 }

@@ -14,7 +14,7 @@
 
   grid.innerHTML = (window.seriesConfig || [])
     .map((series) => {
-      const url = `./pages/series-detail.html?id=${encodeURIComponent(series.slug)}`;
+      const url = `./series/${encodeURIComponent(series.slug)}/`;
       const available = Number(series.availableCount) || 0;
       const total = Number(series.episodeCount) || 0;
       const availability = available > 0 && available < total

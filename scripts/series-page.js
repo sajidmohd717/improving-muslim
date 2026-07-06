@@ -1,6 +1,6 @@
 (function () {
   const params = new URLSearchParams(window.location.search);
-  const seriesId = params.get("id");
+  const seriesId = params.get("id") || document.body?.dataset.seriesId;
   const config = (window.seriesConfig || []).find((c) => c.slug === seriesId);
 
   if (!config) {
@@ -40,6 +40,7 @@
     let activeFilter = "all";
 
     function renderHero() {
+      heroContent?.querySelectorAll(".series-cta-row, .series-progress-summary, .series-avail-note, .card-actions").forEach((node) => node.remove());
       const eyebrow = document.querySelector(".series-hero .eyebrow");
       const heading = document.querySelector(".series-hero h1");
       const heroCopy = document.querySelector(".series-hero .hero-copy");
@@ -187,7 +188,7 @@
     }
 
     function currentSeriesUrl() {
-      return series.seriesPageUrl || `./pages/series-detail.html?id=${series.slug}`;
+      return window.IMUtils.seriesUrl(series);
     }
 
     function isSeriesSaved() {

@@ -1,10 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="../" />
     <meta name="referrer" content="origin" />
+    <meta name="robots" content="noindex, follow" />
     <meta
       name="description"
       content="Focused video player for Islamic lecture series episodes."
@@ -135,7 +136,7 @@
             <nav class="watch-breadcrumb" aria-label="Breadcrumb">
               <a href="./index.html">Home</a>
               <span aria-hidden="true">›</span>
-              <a id="watch-kicker" href="./pages/series-detail.html?id=change-of-heart">Series</a>
+              <a id="watch-kicker" href="./series/change-of-heart/">Series</a>
               <span aria-hidden="true">›</span>
               <span id="watch-breadcrumb-ep">Episode</span>
             </nav>
@@ -276,17 +277,19 @@
     <script>
       /* Load only the series data file needed for this watch page */
       (function () {
-        var lecture = new URLSearchParams(location.search).get('lecture');
+        var params = new URLSearchParams(location.search);
+        var pageData = document.body ? document.body.dataset : {};
+        var lecture = params.get('lecture') || pageData.lectureId;
         if (lecture) return;
-        var slug = new URLSearchParams(location.search).get('series') || 'change-of-heart';
+        var slug = params.get('series') || pageData.seriesSlug || 'change-of-heart';
         var config = (window.seriesConfig || []).find(function (c) { return c.slug === slug; });
         var src = config && config.dataFile;
         if (src) document.write('<script src="' + src + '"><\/script>');
       })();
     </script>
-    <script src="./scripts/utils.js?v=20260706-streak-ui"></script>
+    <script src="./scripts/utils.js?v=20260706-seo-routes"></script>
     <script src="./scripts/streak-ui.js?v=20260706-streak-ui" defer></script>
-    <script src="./scripts/watch-page.js?v=20260706-action-status-clear" defer></script>
+    <script src="./scripts/watch-page.js?v=20260706-seo-routes" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
@@ -311,7 +314,7 @@
       </a>
     </nav>
     <script src="./scripts/nav-more.js" defer></script>
-    <script src="./scripts/nav-state.js" defer></script>
+    <script src="./scripts/nav-state.js?v=20260706-seo-routes" defer></script>
     <script src="./scripts/firebase-auth.js?v=20260706-streak-ui" defer></script>
   </body>
 </html>

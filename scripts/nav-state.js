@@ -5,6 +5,12 @@ const DEFAULT_SERIES_URL = "./pages/series.html";
 function normalizeSeriesUrl(url) {
   try {
     const parsed = new URL(url, window.location.href);
+    const seriesMatch = parsed.pathname.match(/\/series\/([^/]+)\/?$/);
+    if (seriesMatch) return `./series/${seriesMatch[1]}/`;
+    if (parsed.pathname.endsWith("/pages/series-detail.html")) {
+      const id = parsed.searchParams.get("id");
+      return id ? `./series/${encodeURIComponent(id)}/` : DEFAULT_SERIES_URL;
+    }
     const page = parsed.pathname.split("/").pop();
     return page.startsWith("series-") && page.endsWith(".html") ? `./pages/${page}` : DEFAULT_SERIES_URL;
   } catch (error) {
@@ -29,6 +35,16 @@ function readLastSeriesUrl() {
 }
 
 function currentSeriesUrl() {
+  const seriesMatch = window.location.pathname.match(/\/series\/([^/]+)\/?$/);
+  if (seriesMatch) {
+    return `./series/${seriesMatch[1]}/`;
+  }
+
+  if (window.location.pathname.endsWith("/pages/series-detail.html")) {
+    const id = new URLSearchParams(window.location.search).get("id");
+    return id ? `./series/${encodeURIComponent(id)}/` : "";
+  }
+
   const page = window.location.pathname.split("/").pop();
   if (page.startsWith("series-") && page.endsWith(".html")) {
     return `./pages/${page}`;
@@ -48,7 +64,7 @@ document.querySelectorAll(".js-last-series-link").forEach((link) => {
 });
 
 /* Inject a back button on inner pages for mobile users */
-if (window.location.pathname.includes('/pages/')) {
+if (window.location.pathname.includes('/pages/') || window.location.pathname.includes('/series/') || window.location.pathname.includes('/watch/')) {
   const navShell = document.querySelector('.nav-shell');
   if (navShell) {
     const btn = document.createElement('button');
@@ -107,7 +123,10 @@ document.addEventListener("click", (event) => {
   if (!link) return;
 
   const href = link.getAttribute("href");
-  if (href && href.startsWith("./pages/series-") && href.endsWith(".html")) {
+  if (
+    href &&
+    ((href.startsWith("./pages/series-") && href.endsWith(".html")) || href.startsWith("./series/"))
+  ) {
     saveLastSeriesUrl(href);
   }
 });
