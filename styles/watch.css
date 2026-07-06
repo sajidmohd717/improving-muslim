@@ -148,6 +148,16 @@
   font-weight: 700;
 }
 
+#watch-meta a {
+  color: var(--accent-strong);
+}
+
+#watch-meta a:hover,
+#watch-meta a:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
 .watch-note {
   max-width: 620px;
   font-size: 0.92rem;

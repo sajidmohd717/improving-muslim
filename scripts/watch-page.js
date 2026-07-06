@@ -370,9 +370,36 @@ function updateMediaSessionState(state) {
   navigator.mediaSession.playbackState = state;
 }
 
+// Speaker/topic in the meta line link out to the speaker profile and the
+// homepage filtered to that category, so learners can find more from the
+// same teacher or subject without leaving the player.
+function speakerProfileUrl() {
+  const slug = isStandalone
+    ? standaloneLecture.speakerSlug
+    : (window.speakers || []).find((s) => s.name === series.speaker)?.slug;
+  return slug ? `./pages/speaker.html?speaker=${encodeURIComponent(slug)}` : null;
+}
+
+function primaryCategorySlug() {
+  if (isStandalone) return (currentEpisode.categories || [])[0] || null;
+  const entry = (window.seriesConfig || []).find((e) => e.slug === series.slug);
+  return entry && Array.isArray(entry.categories) ? entry.categories[0] : null;
+}
+
 document.title = `${currentTitleLabel} | Improving Muslim`;
 title.textContent = currentTitleLabel;
-meta.textContent = `${series.speaker} · ${series.topic} · ${formatDate(currentEpisode.published)}`;
+{
+  const speakerHref = speakerProfileUrl();
+  const categorySlug = primaryCategorySlug();
+  const categoryHref = categorySlug ? `./index.html?category=${encodeURIComponent(categorySlug)}#series` : null;
+  const speakerHtml = speakerHref
+    ? `<a href="${speakerHref}">${escapeHtml(series.speaker)}</a>`
+    : escapeHtml(series.speaker);
+  const topicHtml = categoryHref
+    ? `<a href="${categoryHref}">${escapeHtml(series.topic)}</a>`
+    : escapeHtml(series.topic);
+  meta.innerHTML = `${speakerHtml} · ${topicHtml} · ${escapeHtml(formatDate(currentEpisode.published))}`;
+}
 const breadcrumbEp = document.querySelector("#watch-breadcrumb-ep");
 // Standalone lectures have no series page to link through, so a 3-segment
 // "Home > Standalone Video > Standalone Video" breadcrumb is just noise and
