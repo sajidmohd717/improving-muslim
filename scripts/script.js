@@ -247,6 +247,7 @@ function searchTextForItem(item) {
     item.description,
     item._recap,
     item._keywords,
+    item._topics,
   ];
   if (Array.isArray(item._cats)) {
     item._cats.forEach((cat) => {
@@ -386,6 +387,7 @@ function localSeriesSections(category = "foryou") {
       contentType: "series",
       _globalKey: entry.globalKey,
       _keywords: entry.searchKeywords || "",
+      _topics: entry.topicKeywords || "",
       _cats: cats,
       _badge: availBadge(entry),
       _label: entry.label || null,
@@ -859,14 +861,16 @@ function renderSeries() {
     : null;
   const aiOrder = new Map((aiIds || []).map((id, index) => [id, index]));
   const searchScores = new Map();
+  const strongIds = new Set();
   let series = flattenSeries(searchSections())
     .filter(isAllowedSeries)
     .filter((item) => {
       if (aiIds) return aiOrder.has(searchItemId(item));
       if (!isSearching) return true;
-      const score = homeSearch.scoreSeries(item, state.searchTerm);
-      if (score <= 0) return false;
-      searchScores.set(searchItemId(item), score);
+      const match = homeSearch.assessSeries(item, state.searchTerm);
+      if (match.score <= 0) return false;
+      searchScores.set(searchItemId(item), match.score);
+      if (match.strong) strongIds.add(searchItemId(item));
       return true;
     })
     .filter(seriesMatchesSpeaker)
@@ -878,6 +882,14 @@ function renderSeries() {
     : isSearching && state.sortBy === "random"
     ? [...series].sort((a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0))
     : getSortedSeries(series);
+
+  // Items that only matched buried text (recaps, keyword lists) are shown
+  // under a "possibly related" divider instead of posing as real results.
+  let related = [];
+  if (isSearching && !aiIds) {
+    related = series.filter((item) => !strongIds.has(searchItemId(item)));
+    series = series.filter((item) => strongIds.has(searchItemId(item)));
+  }
   const categoryName = categories.find((category) => category.value === state.activeCategory)?.name || "For You";
 
   document.body.classList.toggle("search-mode", isSearching);
@@ -897,12 +909,13 @@ function renderSeries() {
   const breakdownParts = [];
   if (seriesCount) breakdownParts.push(`${seriesCount} series`);
   if (videoCount) breakdownParts.push(`${videoCount} ${videoCount === 1 ? "video" : "videos"}`);
-  const breakdown = breakdownParts.join(" · ") || "0 results";
+  const breakdown = breakdownParts.join(" · ") || (related.length ? "No exact matches" : "0 results");
+  const relatedNote = related.length ? ` · ${related.length} related` : "";
   els.resultCount.innerHTML = aiPending
-    ? `<span class="ai-search-spinner" aria-hidden="true"></span>Searching with AI… ${breakdown} so far`
-    : `${breakdown}${aiIds ? " · ranked by AI" : ""}`;
+    ? `<span class="ai-search-spinner" aria-hidden="true"></span>Searching with AI… ${breakdown}${relatedNote} so far`
+    : `${breakdown}${relatedNote}${aiIds ? " · ranked by AI" : ""}`;
 
-  if (!series.length) {
+  if (!series.length && !related.length) {
     els.seriesGrid.innerHTML = "";
     if (aiPending) {
       setStatus(
@@ -922,8 +935,7 @@ function renderSeries() {
   }
 
   setStatus("", false);
-  els.seriesGrid.innerHTML = series
-    .map((item, i) => {
+  const seriesCardHtml = (item, i) => {
       const seriesUrl = getSeriesUrl(item);
       const isVideo = item.contentType === "video";
       const description =
@@ -975,8 +987,18 @@ function renderSeries() {
           </div>
         </article>
       `;
-    })
-    .join("");
+  };
+  const relatedDivider = related.length
+    ? `<div class="related-divider" role="separator">${
+        series.length
+          ? "Not exact matches — possibly related"
+          : `No exact matches for "${escapeHtml(state.searchTerm)}" — but these touch on it`
+      }</div>`
+    : "";
+  els.seriesGrid.innerHTML =
+    series.map(seriesCardHtml).join("") +
+    relatedDivider +
+    related.map((item, i) => seriesCardHtml(item, series.length + i)).join("");
 }
 
 function scrollToSeriesResults() {

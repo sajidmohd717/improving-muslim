@@ -307,7 +307,7 @@
     // Weighted fields: a title hit should rank far above a hit buried in an
     // episode recap. Weights are relative, only their ratios matter.
     function buildFields(series) {
-      var topicParts = [series.topic];
+      var topicParts = [series.topic, series._topics];
       if (Array.isArray(series._cats)) {
         series._cats.forEach(function (cat) {
           topicParts.push(cat);
@@ -353,36 +353,54 @@
       return 0;
     }
 
-    // Relevance score: 0 means "not a match", higher means better. At least
-    // half the meaningful tokens must match so single stray words don't
-    // flood multi-word queries with junk.
-    function scoreSeries(series, query) {
+    // Relevance assessment. score: 0 means "not a match", higher is better.
+    // strong: the item matched in a headline field (title/speaker/topic),
+    // so we can honestly present it as a real result. Items that only hit
+    // buried description/recap/keyword text are "related", not results —
+    // a passing mention of gratitude in one episode recap does not make a
+    // series about gratitude.
+    function assessSeries(series, query) {
       query = normalizeQuery(query);
-      if (!query) return 1;
+      if (!query) return { score: 1, strong: true };
 
       var fields = buildFields(series);
       var fieldWords = fields.map(function (field) { return new Set(textWords(field.text)); });
       var fullText = fields.map(function (field) { return field.text; }).join(' ');
+      var headlineText = fields.slice(0, 3).map(function (field) { return field.text; }).join(' ');
       var tokens = queryTokens(query);
-      if (!tokens.length) return fullText.includes(query) ? 1 : 0;
+      if (!tokens.length) {
+        if (!fullText.includes(query)) return { score: 0, strong: false };
+        return { score: 1, strong: headlineText.includes(query) };
+      }
 
       var total = 0;
       var matched = 0;
+      var strongTokens = 0;
       tokens.forEach(function (token) {
         var variants = tokenVariants(token);
         var best = 0;
+        var strongHit = false;
         fields.forEach(function (field, index) {
           var strength = tokenStrengthInField(token, variants, field.text, fieldWords[index]);
           if (strength * field.weight > best) best = strength * field.weight;
+          if (strength >= 0.75 && field.weight >= 5) strongHit = true;
         });
         if (best > 0) matched++;
+        if (strongHit) strongTokens++;
         total += best;
       });
 
-      if (matched < Math.ceil(tokens.length / 2)) return 0;
+      if (matched < Math.ceil(tokens.length / 2)) return { score: 0, strong: false };
       if (fullText.includes(query)) total += 8;
       var coverage = matched / tokens.length;
-      return total * (0.3 + 0.7 * coverage * coverage);
+      return {
+        score: total * (0.3 + 0.7 * coverage * coverage),
+        strong: strongTokens >= Math.ceil(tokens.length / 2) || headlineText.includes(query),
+      };
+    }
+
+    function scoreSeries(series, query) {
+      return assessSeries(series, query).score;
     }
 
     function matchesSeries(series, query) {
@@ -390,6 +408,7 @@
     }
 
     return {
+      assessSeries: assessSeries,
       closeSuggestions: closeSuggestions,
       init: init,
       matchesSeries: matchesSeries,

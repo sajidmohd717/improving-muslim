@@ -52,6 +52,20 @@ export default {
     if (!query || !items.length) {
       return json({ results: [] }, 200, corsHeaders);
     }
+    // Semantic ranking via Workers AI embeddings: fast (~100ms), cheap, and
+    // understands meaning ("happiness" ≠ every series whose recap says
+    // "happy"). Falls through to the chat model when the binding is missing,
+    // errors out, or nothing is semantically close (the chat model then
+    // writes the friendly "we don't have this topic yet" message).
+    if (env.AI) {
+      try {
+        const semantic = await rankByEmbeddings(env, query, items);
+        if (semantic) return json(semantic, 200, corsHeaders);
+      } catch (error) {
+        console.warn('Embedding ranking failed, falling back to chat:', error.message);
+      }
+    }
+
     if (Date.now() < aiUnavailableUntil) {
       return json({ results: [], fallback: 'ai-unavailable' }, 200, corsHeaders);
     }
@@ -119,6 +133,54 @@ export default {
     }
   },
 };
+
+const EMBEDDING_MODEL = '@cf/baai/bge-m3';
+// Cosine-similarity floor for a real match, and how far below the best
+// match an item may fall before it stops being worth showing.
+const MIN_SIMILARITY = 0.4;
+const MAX_DROP_FROM_TOP = 0.12;
+
+async function rankByEmbeddings(env, query, items) {
+  const texts = items.map((item) =>
+    [item.title, item.speaker, item.topic, item.text].filter(Boolean).join('. ').slice(0, 1200)
+  );
+  const [queryResult, itemResult] = await Promise.all([
+    env.AI.run(EMBEDDING_MODEL, { text: [query] }),
+    env.AI.run(EMBEDDING_MODEL, { text: texts }),
+  ]);
+  const queryVector = queryResult?.data?.[0];
+  const itemVectors = itemResult?.data;
+  if (!queryVector || !Array.isArray(itemVectors) || itemVectors.length !== items.length) {
+    return null;
+  }
+
+  const scored = items
+    .map((item, index) => ({ id: item.id, score: cosineSimilarity(queryVector, itemVectors[index]) }))
+    .sort((a, b) => b.score - a.score);
+  const top = scored[0]?.score || 0;
+  const results = scored
+    .filter((entry) => entry.score >= MIN_SIMILARITY && entry.score >= top - MAX_DROP_FROM_TOP)
+    .slice(0, 12)
+    .map((entry) => ({ id: entry.id, score: Number(entry.score.toFixed(4)), reason: '' }));
+
+  // Nothing semantically close: return null so the chat model can confirm
+  // and write the friendly empty-state message.
+  if (!results.length) return null;
+  return { results, message: '' };
+}
+
+function cosineSimilarity(a, b) {
+  let dot = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+  return denominator ? dot / denominator : 0;
+}
 
 function providerConfig(env, provider) {
   if (provider === 'openai') {

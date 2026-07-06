@@ -140,6 +140,24 @@
   gap: 18px;
 }
 
+.related-divider {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.related-divider::before,
+.related-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+
 .series-card {
   display: flex;
   flex-direction: column;
