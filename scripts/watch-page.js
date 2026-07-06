@@ -121,6 +121,20 @@ const saveEpisodeButton = document.querySelector("#save-episode-button");
 const shareEpisodeButton = document.querySelector("#share-episode-button");
 const actionStatus = document.querySelector("#watch-action-status");
 
+// Save/share confirmations ("Saved for later", "Share sheet opened", ...) are
+// meant to be brief, like a toast -- without this they'd sit there forever
+// since nothing else ever clears watch-action-status.
+let actionStatusTimer = null;
+function setActionStatus(message, durationMs = 3000) {
+  clearTimeout(actionStatusTimer);
+  actionStatus.textContent = message;
+  if (durationMs) {
+    actionStatusTimer = setTimeout(() => {
+      actionStatus.textContent = "";
+    }, durationMs);
+  }
+}
+
 player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
@@ -172,9 +186,9 @@ function toggleSavedEpisode() {
 
   if (writeSavedItems(nextItems)) {
     updateSaveButton();
-    actionStatus.textContent = existing >= 0 ? "Removed from saved items." : "Saved for later on this device.";
+    setActionStatus(existing >= 0 ? "Removed from saved items." : "Saved for later on this device.");
   } else {
-    actionStatus.textContent = "Could not save on this device.";
+    setActionStatus("Could not save on this device.");
   }
 }
 
@@ -189,14 +203,14 @@ async function shareEpisode() {
   try {
     if (navigator.share) {
       await navigator.share(shareData);
-      actionStatus.textContent = "Share sheet opened.";
+      setActionStatus("Share sheet opened.");
       return;
     }
 
     await navigator.clipboard.writeText(url);
-    actionStatus.textContent = "Episode link copied.";
+    setActionStatus("Episode link copied.");
   } catch {
-    actionStatus.textContent = "Could not share from this browser.";
+    setActionStatus("Could not share from this browser.");
   }
 }
 
