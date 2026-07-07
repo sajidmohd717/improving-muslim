@@ -657,7 +657,17 @@ if (notesTextarea) {
 // Diagnoses why a video failed and returns a user-facing message + cause tag.
 // Cause precedence: real MediaError > slow connection > unknown stall.
 const STALL_TIMEOUT_MS = 20_000;
+const MAX_AUTO_RETRIES = 2;
 let stallTimer = null;
+let autoRetries = 0;
+
+function retryVideoLoad() {
+  unavailable.classList.add("is-hidden");
+  setVideoLoading(true);
+  // load() fires loadstart (re-arming the stall timer) and loadedmetadata
+  // (restoring the saved resume position), so no extra bookkeeping needed.
+  player.load();
+}
 
 function clearStallTimer() {
   if (stallTimer !== null) {
@@ -683,10 +693,12 @@ function diagnoseVideoFailure(videoEl) {
   const conn = navigator.connection;
   const slowConn = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g');
   const hasData = videoEl.buffered.length > 0;
-  if (slowConn || hasData) {
-    return { cause: 'slow', heading: 'Slow connection', body: 'Your connection is too slow to stream this video right now. Try pausing for a minute to let it buffer, then press play.' };
+  // Safari and Firefox never expose navigator.connection, so a stall there is
+  // most likely a connection hiccup, not a broken file.
+  if (slowConn || hasData || !conn) {
+    return { cause: 'slow', heading: 'Connection trouble', body: 'This is usually a connection hiccup. Check your internet and try again.' };
   }
-  return { cause: 'stall', heading: 'Video couldn\'t load', body: 'The file may need to be re-processed before it can stream. We\'ve been notified and will look into it — please check back later.' };
+  return { cause: 'stall', heading: 'Video couldn\'t load', body: 'This is usually a connection hiccup — try again in a moment. We\'ve also been notified in case it\'s a problem on our side.' };
 }
 
 function reportVideoIssue(videoSrc, cause, readyState) {
@@ -696,7 +708,7 @@ function reportVideoIssue(videoSrc, cause, readyState) {
   payload.set('_template', 'box');
   payload.set('page', location.href);
   payload.set('cause', cause);
-  payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}`);
+  payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}, autoRetries: ${autoRetries}`);
   payload.set('videoSrc', videoSrc || '(unknown)');
   payload.set('browser', navigator.userAgent);
   fetch('https://formsubmit.co/ajax/contact@improvingmuslim.com', {
@@ -708,7 +720,11 @@ function reportVideoIssue(videoSrc, cause, readyState) {
 
 function showVideoError(videoEl, videoSrc) {
   const { cause, heading, body } = diagnoseVideoFailure(videoEl);
-  unavailable.innerHTML = `<strong>${heading}</strong><span>${body}</span>`;
+  unavailable.innerHTML = `<strong>${heading}</strong><span>${body}</span><button type="button" class="video-retry-btn">Try again</button>`;
+  unavailable.querySelector(".video-retry-btn").addEventListener("click", () => {
+    autoRetries = 0;
+    retryVideoLoad();
+  });
   unavailable.classList.remove("is-hidden");
   // Only report issues we need to investigate; slow connections are expected
   if (cause !== 'slow') {
@@ -725,6 +741,11 @@ player.addEventListener("loadstart", () => {
     clearStallTimer();
     stallTimer = setTimeout(() => {
       if (player.readyState < 2) {
+        if (!player.error && autoRetries < MAX_AUTO_RETRIES) {
+          autoRetries += 1;
+          retryVideoLoad();
+          return;
+        }
         setVideoLoading(false);
         showVideoError(player, currentEpisode.videoSrc);
       }
@@ -738,16 +759,23 @@ player.addEventListener("waiting", () => {
 
 player.addEventListener("canplay", () => {
   clearStallTimer();
+  autoRetries = 0;
   setVideoLoading(false);
 });
 
 player.addEventListener("playing", () => {
   clearStallTimer();
+  autoRetries = 0;
   setVideoLoading(false);
 });
 
 player.addEventListener("error", () => {
   clearStallTimer();
+  if (player.error?.code === MediaError.MEDIA_ERR_NETWORK && autoRetries < MAX_AUTO_RETRIES) {
+    autoRetries += 1;
+    retryVideoLoad();
+    return;
+  }
   setVideoLoading(false);
   if (player.currentSrc) {
     showVideoError(player, player.currentSrc);
