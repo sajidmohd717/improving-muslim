@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#fffdf8"/>
+  <rect x="856" width="424" height="720" fill="#f7f3ec"/>
+  <line x1="856" y1="0" x2="856" y2="720" stroke="#ded6c8" stroke-width="2"/>
+  
+  <g transform="translate(950 210) scale(0.46)">
+    <path d="M256 76c54 38 102 91 102 168v104H154V244c0-77 48-130 102-168Z" fill="#f7f3ec" stroke="#176b5b" stroke-width="24" stroke-linejoin="round"/>
+    <path d="M256 145c32 25 58 59 58 107v96H198v-96c0-48 26-82 58-107Z" fill="#176b5b"/>
+    <path d="M256 191c17 16 31 38 31 68v89h-62v-89c0-30 14-52 31-68Z" fill="#fffdf8"/>
+    <path d="M96 368c58-16 112-7 160 26 48-33 102-42 160-26v38c-58-14-112-5-160 28-48-33-102-42-160-28v-38Z" fill="#fffdf8" stroke="#176b5b" stroke-width="22" stroke-linejoin="round"/>
+    <path d="M256 394v40" stroke="#c89b3c" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="256" cy="57" r="15" fill="#c89b3c"/>
+    <circle cx="128" cy="150" r="12" fill="#c89b3c"/>
+    <circle cx="384" cy="150" r="12" fill="#c89b3c"/>
+  </g>
+  <text x="84" y="104" fill="#176b5b" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="900" letter-spacing="2.2">IMPROVING MUSLIM</text>
+  
+    <text x="84" y="250" text-anchor="start" fill="#18201b" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800">
+      <tspan x="84" dy="0">Islamic lectures.</tspan><tspan x="84" dy="82">No ads. No distractions.</tspan>
+    </text>
+  
+    <text x="84" y="430" text-anchor="start" fill="#68726b" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">
+      <tspan x="84" dy="0">Complete series from trusted speakers, organized by topic.</tspan><tspan x="84" dy="40">Free, forever.</tspan>
+    </text>
+  
+    <rect x="84" y="530" width="520" height="84" rx="14" fill="#176b5b"/>
+    <text x="118" y="584.24" text-anchor="start" fill="#fffdf8" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">improvingmuslim.com</text>
+</svg>

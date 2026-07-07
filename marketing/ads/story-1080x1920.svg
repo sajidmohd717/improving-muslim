@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <rect width="1080" height="1920" fill="#fffdf8"/>
+  <circle cx="540" cy="430" r="190" fill="#f7f3ec" stroke="#ded6c8" stroke-width="2"/>
+  
+  <g transform="translate(392 285) scale(0.58)">
+    <path d="M256 76c54 38 102 91 102 168v104H154V244c0-77 48-130 102-168Z" fill="#f7f3ec" stroke="#176b5b" stroke-width="24" stroke-linejoin="round"/>
+    <path d="M256 145c32 25 58 59 58 107v96H198v-96c0-48 26-82 58-107Z" fill="#176b5b"/>
+    <path d="M256 191c17 16 31 38 31 68v89h-62v-89c0-30 14-52 31-68Z" fill="#fffdf8"/>
+    <path d="M96 368c58-16 112-7 160 26 48-33 102-42 160-26v38c-58-14-112-5-160 28-48-33-102-42-160-28v-38Z" fill="#fffdf8" stroke="#176b5b" stroke-width="22" stroke-linejoin="round"/>
+    <path d="M256 394v40" stroke="#c89b3c" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="256" cy="57" r="15" fill="#c89b3c"/>
+    <circle cx="128" cy="150" r="12" fill="#c89b3c"/>
+    <circle cx="384" cy="150" r="12" fill="#c89b3c"/>
+  </g>
+  <text x="540" y="760" text-anchor="middle" fill="#176b5b" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="900" letter-spacing="2.6">IMPROVING MUSLIM</text>
+  
+    <text x="540" y="920" text-anchor="middle" fill="#18201b" font-family="Inter, Arial, sans-serif" font-size="92" font-weight="800">
+      <tspan x="540" dy="0">Islamic lectures.</tspan><tspan x="540" dy="112">No ads.</tspan><tspan x="540" dy="112">No distractions.</tspan>
+    </text>
+  
+    <text x="540" y="1280" text-anchor="middle" fill="#68726b" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="700">
+      <tspan x="540" dy="0">Complete series from trusted speakers,</tspan><tspan x="540" dy="50">organized by topic. Free, forever.</tspan>
+    </text>
+  
+    <rect x="210" y="1430" width="660" height="104" rx="17" fill="#176b5b"/>
+    <text x="540" y="1496.76" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, sans-serif" font-size="41" font-weight="900">improvingmuslim.com</text>
+  <circle cx="493" cy="1650" r="8" fill="#c89b3c"/><circle cx="524" cy="1650" r="8" fill="#c89b3c"/><circle cx="555" cy="1650" r="8" fill="#c89b3c"/>
+</svg>
