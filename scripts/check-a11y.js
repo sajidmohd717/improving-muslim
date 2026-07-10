@@ -59,9 +59,13 @@ for (const file of pageFiles) {
 
   for (const match of html.matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/gi)) {
     const ariaLabel = attr(match[0], "aria-label");
+    const className = attr(match[0], "class") || "";
     const visibleText = textWithoutTags(match[1]);
     if (!ariaLabel && !visibleText) {
       report(file, "button needs visible text or aria-label.");
+    }
+    if (/\bnav-more-trigger\b/.test(className) && !ariaLabel) {
+      report(file, "responsive More menu button needs an aria-label.");
     }
   }
 

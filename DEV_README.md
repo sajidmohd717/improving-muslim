@@ -11,7 +11,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
-- `scripts/home-config.js` holds homepage categories, curated descriptions, and remote-feed exclusions.
+- `scripts/home-config.js` holds homepage categories, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
 - `scripts/script.js` renders homepage speakers, categories, and series cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
@@ -89,8 +89,10 @@ The homepage feed default is a fresh shuffle per visit — an intentional produc
 Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
 
 1. `npm run check:js` — syntax check of every file in `scripts/` and `data/` (auto-discovered, no list to maintain).
-2. `npm run check:a11y` — Custom accessibility audit of all HTML pages.
-3. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
+2. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
+3. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
+4. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
+5. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
 
 If either step fails, GitHub marks the push red and sends a notification. Check the Actions tab at `github.com/sajidmohd717/islamic-lectures-react/actions` after each push to confirm green.
 
@@ -99,6 +101,8 @@ The same checks can be run locally before pushing:
 ```bash
 npm run check
 ```
+
+After the first dependency install, run `npx playwright install chromium` once to install the local browser used by the smoke tests. CI installs Chromium automatically.
 
 Do not skip the checks before pushing. A red CI run means something is broken in production.
 
@@ -743,7 +747,7 @@ Run checks before pushing:
 npm run check
 ```
 
-`npm run check` runs `check:js` (Node.js syntax check on all JS and data files) and `check:a11y` (accessibility audit of all HTML pages: missing titles, duplicate IDs, unlabeled images/buttons/inputs, unsafe external links, heading hierarchy).
+`npm run check` runs the JavaScript, accessibility, generated SEO page, sitemap, and Playwright browser smoke checks. The smoke suite uses `playwright.config.js`, `tests/smoke.spec.js`, and the dependency-free local server in `scripts/test-server.js`.
 
 ## Deployment Workflow
 

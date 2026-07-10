@@ -1,5 +1,6 @@
 const homeConfig = window.IMHomeConfig || {};
 const API_ROOT = homeConfig.apiRoot || "https://sajidmohd717.github.io/series-api";
+const CATALOG_VERSION = homeConfig.catalogVersion || "1";
 const AI_SEARCH_ENDPOINT = homeConfig.aiSearchEndpoint || "";
 const categories = homeConfig.categories || [{ name: "All", value: "foryou" }];
 
@@ -1093,7 +1094,9 @@ async function loadCategory(category) {
   }
 
   try {
-    const response = await fetch(`${API_ROOT}/${category}-data.json?t=${Date.now()}`);
+    const response = await fetch(
+      `${API_ROOT}/${category}-data.json?v=${encodeURIComponent(CATALOG_VERSION)}`,
+    );
     if (!response.ok) {
       throw new Error(`Could not load ${category}`);
     }
