@@ -570,6 +570,8 @@ The remaining lessons follow: humans are deficient in knowledge, so we should no
       "./assets/thumbnail/standalone/yahya-al-raaby/quran-your-best-companion.jpg",
     videoSrc:
       "https://videos.improvingmuslim.com/yahya-al-raaby/stand-alone/quran-your-best-companion.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/yahya-al-raaby/quran-your-best-companion.vtt",
     description:
       "A heartfelt reminder from Ustadh Yahya Al-Raaby on taking the Quran as your closest companion — how a living relationship with Allah's words brings guidance, comfort, and light, and why the believer who keeps the Quran near is never truly alone.",
   },
