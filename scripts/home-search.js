@@ -418,5 +418,12 @@
     };
   }
 
-  window.IMHomeSearch = { create: create, normalizeQuery: normalizeQuery };
+  // queryTokens/tokenVariants are shared with transcript-search.js so query
+  // tokenization, stemming, and synonym expansion stay identical everywhere.
+  window.IMHomeSearch = {
+    create: create,
+    normalizeQuery: normalizeQuery,
+    queryTokens: queryTokens,
+    tokenVariants: tokenVariants,
+  };
 })();

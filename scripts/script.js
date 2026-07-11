@@ -280,6 +280,73 @@ function aiSearchPayloadItems() {
   }));
 }
 
+// ── Transcript search results ────────────────────────────────────────────────
+// "Mentioned inside lectures": IMTranscriptSearch finds the lectures whose
+// captions mention the query and the exact moments they do; each moment links
+// to the watch page with a ?t= timestamp. Rendered below the catalogue results
+// so title/topic matches always come first.
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightSnippet(snippet, matchedWords) {
+  const escaped = escapeHtml(snippet);
+  if (!matchedWords?.length) return escaped;
+  const pattern = new RegExp(`(${matchedWords.map(escapeRegExp).join("|")})`, "gi");
+  return escaped.replace(pattern, "<mark>$1</mark>");
+}
+
+function runTranscriptSearch(query) {
+  const section = document.querySelector("#transcript-section");
+  const list = document.querySelector("#transcript-results");
+  if (!section || !list) return;
+  if (!query || !window.IMTranscriptSearch) {
+    section.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+
+  window.IMTranscriptSearch.search(query)
+    .then((results) => {
+      if (state.searchTerm !== query) return; // stale response for an older query
+      const itemsByKey = new Map((window.catalogIndex?.items || []).map((item) => [item.key, item]));
+      const cards = results
+        .map((result) => ({ result, item: itemsByKey.get(result.key) }))
+        .filter(({ item }) => item)
+        .map(({ result, item }) => {
+          const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
+          const moments = result.moments
+            .map(
+              (moment) => `
+                <a class="transcript-moment" href="${escapeHtml(item.url)}?t=${moment.time}">
+                  <span class="transcript-time">${formatDuration(moment.time)}</span>
+                  <span class="transcript-snippet">${highlightSnippet(moment.snippet, moment.matchedWords)}</span>
+                </a>`,
+            )
+            .join("");
+          return `
+            <article class="transcript-card">
+              <a class="transcript-card-head" href="${escapeHtml(item.url)}?t=${result.moments[0].time}">
+                <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
+                <span>
+                  <small>${escapeHtml(context)}</small>
+                  <strong>${escapeHtml(item.title)}</strong>
+                </span>
+              </a>
+              <div class="transcript-moments">${moments}</div>
+            </article>`;
+        });
+
+      section.hidden = !cards.length;
+      list.innerHTML = cards.join("");
+    })
+    .catch(() => {
+      if (state.searchTerm !== query) return;
+      section.hidden = true;
+      list.innerHTML = "";
+    });
+}
+
 const homeSearch = window.IMHomeSearch.create({
   els,
   escapeHtml,
@@ -290,6 +357,7 @@ const homeSearch = window.IMHomeSearch.create({
     state.searchTerm = query;
     state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
     renderSeries();
+    runTranscriptSearch(query);
     if (query) {
       scrollToSeriesResults();
       logSearch(query);
@@ -1181,6 +1249,7 @@ async function loadCategory(category) {
   state.searchTerm = "";
   state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
   homeSearch.reset();
+  runTranscriptSearch("");
   renderCategories();
   showSkeletons(6);
 

@@ -27,6 +27,9 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `scripts/generate-catalog.js` builds `data/catalog-data.js` from the registry, series data files, standalone lectures, and `assets/captions/`.
 - `scripts/related-videos.js` is the pure ranking module (`window.IMRelated.rankRelated`) behind the watch page's "Related lectures" sidebar: term-vector cosine similarity, category overlap, same-speaker and recency boosts, watched demotion, and per-series/per-speaker diversity caps. Loaded on the watch template before `watch-page.js`, which renders the results (and, for standalone lectures, uses the top result as the "Up next" card and autoplay-next target).
 - The homepage's "Because you watched" shelves (`renderRecommendationShelves` in `scripts/script.js`) reuse the same catalog + `IMRelated` ranking, seeded from the two most recent meaningfully-watched lectures in local watch history (completed, or 2+ minutes in). At most two shelves render; new visitors with no history see none. Shelf styles live in `styles/home.css`.
+- `data/transcript-index-data.js` is a generated token → lecture index over every caption transcript. Never edit by hand — regenerate with `npm run transcript-index` whenever captions or lecture data change; CI verifies it with `npm run check:transcript-index`. Transcript text is never duplicated into the index.
+- `scripts/generate-transcript-index.js` builds that index from the registry, data files, and `assets/captions/`.
+- `scripts/transcript-search.js` powers the homepage's "Mentioned inside lectures" search section: it lazy-loads the transcript index on first search, picks candidate lectures from the postings, fetches only those lectures' VTT files, and returns timestamped snippets. Each result links to the watch page with a `?t=` parameter, which `watch-page.js` honours on load (a `?t=` seek wins over the saved resume position). Query tokenization/stemming/synonyms are shared with `home-search.js` via `window.IMHomeSearch.queryTokens`/`tokenVariants`.
 - `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
 - `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
 - `pages/admin.html` is a direct-link private admin dashboard. It currently reads submitted search analytics for allowlisted admin emails only.
@@ -522,11 +525,12 @@ The canonical public routes are:
 
 ```bash
 npm run catalog
+npm run transcript-index
 npm run seo-pages
 npm run sitemap
 ```
 
-(`npm run catalog` regenerates `data/catalog-data.js`, the related-lectures index — run it whenever episode data, standalone lectures, or captions change.)
+(`npm run catalog` regenerates `data/catalog-data.js`, the related-lectures index, and `npm run transcript-index` regenerates `data/transcript-index-data.js`, the transcript search index — run both whenever episode data, standalone lectures, or captions change.)
 
 The older query-string pages remain compatibility fallbacks for existing links.
 

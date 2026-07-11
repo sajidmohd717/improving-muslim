@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260711-shelves" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260711-transcripts" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <script src="./scripts/error-handler.js?v=20260608-auth-hotfix"></script>
     <script type="application/ld+json">
@@ -184,6 +184,14 @@
         <div class="status-message" id="status-message" role="status">Loading series...</div>
         <div class="series-grid" id="series-grid"></div>
       </section>
+
+      <section class="content-section transcript-section" id="transcript-section" aria-labelledby="transcript-title" hidden>
+        <div class="section-heading">
+          <p class="eyebrow">From the transcripts</p>
+          <h2 id="transcript-title">Mentioned inside lectures</h2>
+        </div>
+        <div class="transcript-results" id="transcript-results"></div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -206,8 +214,9 @@
     <script src="./scripts/streak-ui.js?v=20260706-streak-ui" defer></script>
     <script src="./scripts/home-config.js?v=20260711-catalog-cache" defer></script>
     <script src="./scripts/related-videos.js?v=20260711-related" defer></script>
-    <script src="./scripts/home-search.js?v=20260706-search-tiers" defer></script>
-    <script src="./scripts/script.js?v=20260711-shelves" defer></script>
+    <script src="./scripts/home-search.js?v=20260711-transcripts" defer></script>
+    <script src="./scripts/transcript-search.js?v=20260711-transcripts" defer></script>
+    <script src="./scripts/script.js?v=20260711-transcripts" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

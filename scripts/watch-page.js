@@ -797,6 +797,19 @@ player.addEventListener("loadedmetadata", () => {
     captionTrack.track.mode = currentEpisode.captionsSrc ? "showing" : "disabled";
   }
 
+  // ?t= deep links (e.g. from transcript search results) win over the saved
+  // resume position — the visitor asked for a specific moment.
+  const requestedStart = Number(params.get("t"));
+  if (Number.isFinite(requestedStart) && requestedStart > 0) {
+    try {
+      suppressSeekBuffer = true;
+      player.currentTime = Math.min(requestedStart, Math.max(0, player.duration - 1));
+    } catch (error) {
+      suppressSeekBuffer = false;
+    }
+    return;
+  }
+
   const progress = readProgress(currentEpisode);
   const resumeTime = Number(progress.currentTime) || 0;
   const almostFinished = resumeTime > player.duration - 30;
