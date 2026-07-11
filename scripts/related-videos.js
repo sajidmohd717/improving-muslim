@@ -64,6 +64,8 @@
    *   excludeSeries  series slug to omit entirely (its episodes are already
    *                  listed in the sidebar), or null
    *   isWatched      optional (item) => boolean, demotes completed lectures
+   *   popularity     optional {key: {p, c}} play counts (IMPopularity) used
+   *                  as a mild log-scaled prior
    *   limit          max results, default 8
    */
   function rankRelated(options) {
@@ -71,17 +73,26 @@
     var seed = items.find(function (item) { return item.key === options.currentKey; });
     if (!seed) return [];
     var isWatched = options.isWatched || function () { return false; };
+    var popularity = options.popularity || {};
     var limit = options.limit || 8;
+
+    var maxPlays = 0;
+    items.forEach(function (item) {
+      var plays = popularity[item.key]?.p || 0;
+      if (plays > maxPlays) maxPlays = plays;
+    });
 
     var scored = [];
     items.forEach(function (item) {
       if (item.key === options.currentKey) return;
       if (options.excludeSeries && item.series === options.excludeSeries) return;
+      var plays = popularity[item.key]?.p || 0;
       var score =
         3 * cosine(seed.terms, item.terms) +
         1.2 * categoryOverlap(seed.categories, item.categories) +
         (item.speaker && item.speaker === seed.speaker ? 0.8 : 0) +
-        recencyBoost(item.published);
+        recencyBoost(item.published) +
+        (maxPlays > 0 ? 0.25 * (Math.log(1 + plays) / Math.log(1 + maxPlays)) : 0);
       if (isWatched(item)) score *= WATCHED_MULTIPLIER;
       if (score > 0) scored.push({ item: item, score: score });
     });

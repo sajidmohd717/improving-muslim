@@ -141,6 +141,12 @@ player.setAttribute("playsinline", "");
 player.setAttribute("webkit-playsinline", "");
 player.setAttribute("x-webkit-airplay", "allow");
 
+// Catalog key for this lecture — used by related ranking and the anonymous
+// popularity counters (same scheme as data/catalog-data.js).
+const catalogKey = isStandalone
+  ? `video:${currentEpisode.id}`
+  : `episode:${series.slug}:${currentEpisode.id}`;
+
 const currentTitleLabel = isStandalone
   ? currentEpisode.title
   : `Episode ${currentEpisode.number}: ${currentEpisode.title}`;
@@ -894,6 +900,14 @@ player.addEventListener("play", () => {
   updateMediaSessionState("playing");
 });
 
+// Anonymous aggregate popularity counters (no user ids). "play" fires once
+// per page view on the first real playback; "complete" when the video ends.
+// IMPopularity dedupes per lecture per day on this device.
+if (window.IMPopularity) {
+  player.addEventListener("playing", () => window.IMPopularity.logPlay(catalogKey), { once: true });
+  player.addEventListener("ended", () => window.IMPopularity.logComplete(catalogKey), { once: true });
+}
+
 player.addEventListener("seeking", handleSeeking);
 
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
@@ -1041,18 +1055,20 @@ if (window.matchMedia("(max-width: 900px)").matches) {
     return;
   }
 
-  const currentKey = isStandalone
-    ? `video:${currentEpisode.id}`
-    : `episode:${series.slug}:${currentEpisode.id}`;
-
   const isWatched = (item) =>
     Boolean(readJsonStorage(`${window.IMUtils.PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {}).completed);
 
+  // Popularity prior comes from the local cache (instant); refreshCounts()
+  // updates that cache in the background for the next page view.
+  const popularity = window.IMPopularity ? window.IMPopularity.cachedCounts() : {};
+  if (window.IMPopularity) window.IMPopularity.refreshCounts();
+
   const related = window.IMRelated.rankRelated({
     items: catalogItems,
-    currentKey,
+    currentKey: catalogKey,
     excludeSeries: isStandalone ? null : series.slug,
     isWatched,
+    popularity,
     limit: isStandalone ? 9 : 6,
   });
 

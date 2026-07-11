@@ -29,6 +29,7 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - The homepage's "Because you watched" shelves (`renderRecommendationShelves` in `scripts/script.js`) reuse the same catalog + `IMRelated` ranking, seeded from the two most recent meaningfully-watched lectures in local watch history (completed, or 2+ minutes in). At most two shelves render; new visitors with no history see none. Shelf styles live in `styles/home.css`.
 - `data/transcript-index-data.js` is a generated token → lecture index over every caption transcript. Never edit by hand — regenerate with `npm run transcript-index` whenever captions or lecture data change; CI verifies it with `npm run check:transcript-index`. Transcript text is never duplicated into the index.
 - `scripts/generate-transcript-index.js` builds that index from the registry, data files, and `assets/captions/`.
+- `scripts/popularity.js`, `workers/popularity-worker.js`, and `wrangler.popularity.jsonc` implement the anonymous popularity counters ("Popular right now" shelf, play counts, ranking prior). See the Popularity Signals section below.
 - `scripts/transcript-search.js` powers the homepage's "Mentioned inside lectures" search section: it lazy-loads the transcript index on first search, picks candidate lectures from the postings, fetches only those lectures' VTT files, and returns timestamped snippets. Each result links to the watch page with a `?t=` parameter, which `watch-page.js` honours on load (a `?t=` seek wins over the saved resume position). Query tokenization/stemming/synonyms are shared with `home-search.js` via `window.IMHomeSearch.queryTokens`/`tokenVariants`.
 - `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
 - `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
@@ -231,6 +232,35 @@ During initial deployment on July 6, 2026, the Worker deployed correctly and the
 - Search analytics storage: signed-in submissions create `searchEvents/{eventId}` in Firestore; clients cannot read those events directly.
 
 The current AI feature is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks the active provider for JSON-ranked IDs, and the homepage combines those scores with deterministic local relevance tiers. Longer term, the stronger semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
+
+## Popularity Signals
+
+Anonymous, aggregate-only play/completion counters per lecture — no user ids, no IPs stored. They power the homepage "Popular right now" shelf, the play-count labels on it, and a mild log-scaled popularity prior inside `IMRelated.rankRelated`.
+
+| Piece | Location |
+|---|---|
+| Worker (POST /event, GET /popular) | `workers/popularity-worker.js` |
+| Wrangler config | `wrangler.popularity.jsonc` |
+| Browser client (beacons + cached counts) | `scripts/popularity.js` |
+| Play/complete beacons | `scripts/watch-page.js` |
+| "Popular right now" shelf | `renderPopularShelf` in `scripts/script.js` |
+
+The frontend degrades silently until the Worker is deployed: no errors, no shelf, no ranking boost. To deploy:
+
+```powershell
+npx wrangler kv namespace create POPULARITY
+# paste the returned namespace id into wrangler.popularity.jsonc
+npx wrangler deploy -c wrangler.popularity.jsonc
+```
+
+To test the live Worker:
+
+```powershell
+'{"key":"video:qadr-and-sabr","event":"play"}' | curl.exe -sS -i -X POST "https://improving-muslim-popularity.improving-muslim.workers.dev/event" -H "Content-Type: application/json" -H "Origin: https://improvingmuslim.com" --data-binary "@-"
+curl.exe -sS "https://improving-muslim-popularity.improving-muslim.workers.dev/popular" -H "Origin: https://improvingmuslim.com"
+```
+
+Behavioral notes: the browser sends at most one play and one complete per lecture per device per day (localStorage dedupe); `GET /popular` is edge-cached for 15 minutes and the browser caches it in localStorage for 30 minutes; the shelf only appears once at least four lectures have 2+ plays. KV increments are read-modify-write, so rare concurrent plays can lose a count — acceptable for a best-effort signal. The Worker endpoint URL is a constant at the top of `scripts/popularity.js`.
 
 ## Video Hosting Pattern
 

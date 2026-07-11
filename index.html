@@ -145,6 +145,14 @@
       <!-- "Because you watched" shelves, filled by renderRecommendationShelves() -->
       <div id="recommendation-shelves"></div>
 
+      <section class="content-section shelf-section" id="popular-section" aria-labelledby="popular-title" hidden>
+        <div class="section-heading">
+          <p class="eyebrow">Trending</p>
+          <h2 id="popular-title">Popular right now</h2>
+        </div>
+        <div class="shelf-strip" id="popular-list"></div>
+      </section>
+
       <section class="content-section" id="categories" aria-label="Browse by topic" data-reveal>
         <div class="category-strip" id="category-list" role="list"></div>
       </section>
@@ -213,10 +221,11 @@
     <script src="./scripts/utils.js?v=20260706-seo-routes" defer></script>
     <script src="./scripts/streak-ui.js?v=20260706-streak-ui" defer></script>
     <script src="./scripts/home-config.js?v=20260711-catalog-cache" defer></script>
-    <script src="./scripts/related-videos.js?v=20260711-related" defer></script>
+    <script src="./scripts/popularity.js?v=20260711-popularity" defer></script>
+    <script src="./scripts/related-videos.js?v=20260711-popularity" defer></script>
     <script src="./scripts/home-search.js?v=20260711-transcripts" defer></script>
     <script src="./scripts/transcript-search.js?v=20260711-transcripts" defer></script>
-    <script src="./scripts/script.js?v=20260711-transcripts" defer></script>
+    <script src="./scripts/script.js?v=20260711-popularity" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">

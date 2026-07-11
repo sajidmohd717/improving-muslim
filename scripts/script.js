@@ -797,6 +797,56 @@ function catalogProgress(item) {
   return readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {});
 }
 
+// Shared card markup for the horizontal shelf rows ("Because you watched",
+// "Popular right now"). metaText is the small line under the title.
+function shelfCardHtml(item, metaText) {
+  const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
+  return `
+    <a class="shelf-card" href="${escapeHtml(item.url)}">
+      <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
+      <span class="shelf-card-body">
+        <small>${escapeHtml(context)}</small>
+        <strong>${escapeHtml(item.title)}</strong>
+        ${metaText ? `<em>${escapeHtml(metaText)}</em>` : ""}
+      </span>
+    </a>`;
+}
+
+// "Popular right now": anonymous play counts from the popularity Worker,
+// shown to everyone — it is the one personalization-free shelf, so brand-new
+// visitors get social proof even with no watch history. Hidden until the
+// Worker is deployed and enough plays accumulate.
+function renderPopularShelf() {
+  const section = document.querySelector("#popular-section");
+  const list = document.querySelector("#popular-list");
+  if (!section || !list || !window.IMPopularity) return;
+  const catalogItems = window.catalogIndex?.items || [];
+  if (!catalogItems.length) return;
+
+  window.IMPopularity.refreshCounts().then((counts) => {
+    const ranked = catalogItems
+      .map((item) => ({ item, plays: counts[item.key]?.p || 0 }))
+      .filter(({ plays }) => plays >= 2)
+      .sort((a, b) => b.plays - a.plays)
+      .slice(0, 8);
+
+    // A "popular" shelf with one or two entries reads as noise, not signal.
+    if (ranked.length < 4) {
+      section.hidden = true;
+      list.innerHTML = "";
+      return;
+    }
+
+    list.innerHTML = ranked
+      .map(({ item, plays }) => {
+        const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
+        return shelfCardHtml(item, [`${plays} plays`, mins].filter(Boolean).join(" · "));
+      })
+      .join("");
+    section.hidden = false;
+  });
+}
+
 function renderRecommendationShelves() {
   const host = document.querySelector("#recommendation-shelves");
   if (!host) return;
@@ -837,7 +887,13 @@ function renderRecommendationShelves() {
     if (usedSeedGroups.has(seedGroup)) continue;
 
     const picks = window.IMRelated
-      .rankRelated({ items: catalogItems, currentKey: seed.item.key, isWatched, limit: 12 })
+      .rankRelated({
+        items: catalogItems,
+        currentKey: seed.item.key,
+        isWatched,
+        popularity: window.IMPopularity ? window.IMPopularity.cachedCounts() : {},
+        limit: 12,
+      })
       .filter((item) => {
         if (alreadyPicked.has(item.key)) return false;
         // Started-but-unfinished lectures already live in the continue strip.
@@ -857,20 +913,11 @@ function renderRecommendationShelves() {
       const headingId = `shelf-title-${shelfIndex}`;
       const cards = picks
         .map((item) => {
-          const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
           const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
           const meta = [item.kind === "episode" ? item.speaker : "", isWatched(item) ? "Watched" : mins]
             .filter(Boolean)
             .join(" · ");
-          return `
-            <a class="shelf-card" href="${escapeHtml(item.url)}">
-              <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
-              <span class="shelf-card-body">
-                <small>${escapeHtml(context)}</small>
-                <strong>${escapeHtml(item.title)}</strong>
-                ${meta ? `<em>${escapeHtml(meta)}</em>` : ""}
-              </span>
-            </a>`;
+          return shelfCardHtml(item, meta);
         })
         .join("");
       return `
@@ -1418,6 +1465,7 @@ renderSpeakers();
 renderCategories();
 renderContinueWatching();
 renderRecommendationShelves();
+renderPopularShelf();
 renderStudyStreak();
 bindEvents();
 loadCategory(state.activeCategory);

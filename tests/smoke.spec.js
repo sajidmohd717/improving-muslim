@@ -12,6 +12,9 @@ async function preparePage(page) {
   await page.route("https://videos.improvingmuslim.com/**", (route) =>
     route.fulfill({ status: 204, body: "" }),
   );
+  await page.route("https://improving-muslim-popularity.improving-muslim.workers.dev/**", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: '{"items":{}}' }),
+  );
   return pageErrors;
 }
 
