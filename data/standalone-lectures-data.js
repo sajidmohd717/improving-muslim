@@ -329,4 +329,266 @@ The heart of the talk is the four escalating stages through which Allah calls a 
 
 The fourth stage is the one he ends on, and it inverts every expectation. The final catastrophe is not death, illness, murder, or ruin. It is that Allah simply lets you go — leaves you to your desires and your wealth, sending no more reminders at all, because you abandoned Him and He has left you to yourself. Quoting "do not be like those who forgot Allah, so He made them forget themselves," he warns that this abandonment is the true disaster, and prays instead to be among those whom Allah loves and who love Him, winning the best of this world and the next.`,
   },
+  {
+    id: "can-a-muslim-get-rich",
+    title: "Can a Muslim Get Rich?",
+    speaker: "Belal Assaad",
+    speakerSlug: "belal-assaad",
+    categories: ["purification"],
+    topic: "Wealth & Contentment",
+    typeLabel: "Standalone Video",
+    published: "2024-05-21",
+    duration: 2423,
+    sourceUrl: "https://www.youtube.com/watch?v=hgenV1VL2JY",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/belal-assaad/can-a-muslim-get-rich.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/belal-assaad/stand-alone/can-a-muslim-get-rich.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/belal-assaad/can-a-muslim-get-rich.vtt",
+    description:
+      "A corrective look at wealth and materialism from an Islamic lens: Belal Assaad shows that a Muslim can absolutely be rich, that financial independence is beloved to Allah, and how to keep wealth in the hand without letting it into the heart.",
+    takeaways: [
+      "**A Muslim can absolutely be wealthy**: Wealth used rightly is encouraged in the Quran and Sunnah — it supports the community and can make you more beloved to Allah. \"The upper (giving) hand is better than the lower (receiving) hand\": financial independence is better than dependence.",
+      "**Spend on your dependents first**: Your wife, children, and those who rely on you take priority. That obligatory spending is itself the best charity; the next-best charity is what is left over beyond your needs. Neglecting your family even in the name of charity to others is not allowed.",
+      "**Don't leave your heirs vulnerable trusting \"Allah will provide\"**: Allah provides both without asking and through your effort — and He commanded the effort. Sa'd ibn Abi Waqqas was told by the Prophet ﷺ not to will away more than a third of his wealth; leaving your family financially independent is far better than leaving them to beg (Surah An-Nisa 4:9).",
+      "**The Prophet ﷺ sought refuge from poverty and disbelief together**: He would seek refuge from kufr and faqr (poverty) in the same dua, because poverty can breed desperation, the selling of one's dignity, resorting to haram, and even ingratitude or disbelief.",
+      "**Wealth is a test, not a sin — the heart is what matters**: \"Accumulation has made you heedless\" warns about how you relate to wealth, not wealth itself. Earn halal, spend halal, pay zakah, stay humble and grateful, and never let money become what your heart worships.",
+      "**Avoid unnecessary debt, and document your dealings**: Islam discourages habitual borrowing. The longest verse in the Quran — the \"ayah of debt\" (2:282) — commands writing down and witnessing loans and contracts in detail, precisely to protect people's financial rights.",
+      "**Two kinds of rich people**: those who are financially independent but enslaved to their money, and those who are truly independent OF their money — carrying an abundance mindset, trusting their rizq is with Allah, treating wealth as a means and never an end. Be the second.",
+    ],
+    recap: `In this lecture Belal Assaad sets out to correct common misconceptions Muslims hold about wealth and materialism, opening with a blunt question: can a Muslim be rich? His answer is an emphatic yes — and more than that, being resourceful and wealthy is actively encouraged in the Quran and Sunnah as a means to support one's family, the community, and the cause of Allah.
+
+He grounds this in the hadith that the giving hand is better than the receiving hand, and that a person should spend first on those who depend on them. The Prophet ﷺ taught that obligatory spending on your wife, children, and dependents is the best charity of all, and that the next-best charity is what remains beyond your own needs. Neglecting your family — even to give to others — is impermissible; their rights come first.
+
+A central theme is the misconception that leaving wealth to your children shows a lack of trust in Allah's provision. The speaker uses Surah An-Nisa (4:9) — "let those fear who would leave behind weak offspring" — and the famous hadith of Sa'd ibn Abi Waqqas, whom the Prophet ﷺ stopped from giving away more than a third of his estate, to argue the opposite: Allah provides both directly and through the effort He commanded us to make, so leaving your family financially secure is more beloved to Allah than leaving them to beg.
+
+He then explores why the Prophet ﷺ sought refuge from disbelief (kufr) and poverty (faqr) in the same breath. Scholars explain that poverty can drive a person to desperation, to selling their dignity, to dealing in haram to survive, and even to ingratitude or acts of disbelief. He is careful to note that a person forced into haram purely to survive is excused — but the point stands that poverty is spiritually dangerous, which is why the Prophet ﷺ, though he chose an ascetic life, never loved poverty nor was truly poor.
+
+The speaker showcases wealthy companions — noting that seven of the ten promised Paradise were affluent, that Abdur-Rahman ibn Awf's wealth would run into hundreds of millions today, and that even those who started poor, like Ali (ra), were taught by the Prophet ﷺ to trade and profit. A Muslim, he argues, invests, trades, educates themselves on halal and haram earning and spending, and only then pursues wealth freely.
+
+He balances this firmly: wealth is a test just as poverty is. The verse "accumulation has made you heedless" is about how a person approaches wealth, not wealth itself. What matters is obedience, worship, and whether wealth enters the heart and breeds stinginess, arrogance, and heedlessness. He warns against habitual, unnecessary borrowing, walking through the Prophet's ﷺ reluctance to pray over one who died in debt, and unpacking the longest verse in the Quran — the "ayah of debt" (2:282) — which commands believers to write down and witness their loans and contracts in careful detail, and even touches on transparency with one's spouse about money for the sake of inheritance rights.
+
+He closes on the heart. There are people who are financially independent yet controlled by their money, and people who are independent of their money — who hold an abundance mindset, know their provision is with Allah, give without fear of loss, and treat wealth as a means rather than an end. Allah loves to see the effect of His blessings on His servant; the believer wears and enjoys them with gratitude and humility, never letting wealth become the thing they truly worship.`,
+  },
+  {
+    id: "story-of-prophet-zakariya",
+    title: "The Story of Prophet Zakariya & His Powerful Dua",
+    speaker: "Majed Mahmoud",
+    speakerSlug: "majed-mahmoud",
+    categories: ["prophets"],
+    topic: "Prophets & Dua",
+    typeLabel: "Standalone Video",
+    published: "2024-10-01",
+    duration: 4026,
+    sourceUrl: "https://www.youtube.com/watch?v=t6-hNAdt7vM",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/majed-mahmoud/story-of-prophet-zakariya.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/majed-mahmoud/stand-alone/story-of-prophet-zakariya.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/majed-mahmoud/story-of-prophet-zakariya.vtt",
+    description:
+      "A walk through Prophet Zakariya's three duas in the Quran and the decades of persistence behind them — how he asked privately and sincerely for a righteous heir in old age, why he refused to give up, and the qualities that make a dua worthy of being answered.",
+    takeaways: [
+      "**Make dua privately and sincerely**: Zakariya called on his Lord \"in secret\" (Surah Maryam) — choosing the right place and moment, protecting his sincerity, and pouring out his weakness to Allah. Showing weakness to people humiliates; showing it to Allah dignifies, because He turns weakness into strength.",
+      "**Let your dua's opening reveal what you're asking for**: Zakariya laid out his situation — brittle bones, hair aflame with white, a lifetime of answered duas, fear for the leadership after him, a barren wife — before asking for a righteous heir. A good dua builds its case before making its request.",
+      "**Ask for children for the right reason**: Prophets leave no inheritance, so Zakariya wasn't asking for someone to inherit wealth but to inherit knowledge, faith, and the ability to lead and preach. He asked for a child \"pleasing to You\" — the model for how parents should pray for their children.",
+      "**When you are moved to do good, act immediately**: Old as he was, Zakariya rushed to sponsor Maryam, and it was seeing her miraculous provision from Allah that moved him to renew his dua. Motivation fades within days — act on it while the fire is lit.",
+      "**Upgrade your dua instead of downgrading it**: As it grew more impossible, Zakariya asked for more, not less — a righteous line, not just a single child. The harder the ask, the more broken and humble you become before Allah, who says such things are \"easy\" for Him.",
+      "**Never be hasty with dua**: The three qualities that get duas answered (Surah Al-Anbiya 90) are racing to good deeds, calling on Allah in hope and fear, and humility. The Prophet ﷺ warned that duas fail only when a person gives up saying \"I asked and asked and saw nothing.\"",
+      "**Every dua is a win**: A dua is either answered, or a coming harm is averted by it, or it is stored as reward for the Hereafter — and each repetition counts. So a dua is never wasted, even when the specific thing you asked for is withheld.",
+    ],
+    recap: `In this session Majed Mahmoud teaches the story of Prophet Zakariya through his three supplications in the Quran, asking the audience to set aside what they already know and meet Zakariya fresh, as the Quran introduces him in Surah Maryam: "a mention of the mercy of your Lord to His servant Zakariya."
+
+The first and most detailed dua models how to ask. Zakariya calls on Allah privately and quietly — for sincerity, and because the most heartfelt requests are often too personal to say aloud. He opens by laying his weakness completely bare: his bones have grown brittle, his head is aflame with white hair, yet he testifies that he was never once disappointed when he called on Allah. The speaker draws the lesson that exposing weakness to people is humiliating, but exposing it to Allah is dignifying — Allah turns the weakness into strength. Only after this introduction does Zakariya ask for what he wants: an heir. And crucially, he specifies why — not to inherit money (prophets leave no inheritance; their estate goes to the community) but to inherit knowledge, faith, prophethood, and the leadership of his people. He asks for a child "pleasing to You," which the speaker holds up as the template for how every parent should pray for their children, and a springboard into raising children who put Allah before everything, and into the hadith that a person's deeds end at death except for three: ongoing charity, beneficial knowledge, and a righteous child who prays for them — all three involving other people.
+
+The talk connects Zakariya's longing for children to the Islamic priority of marriage and family, and the Prophet's ﷺ guidance to choose a spouse for religion above looks, wealth, and status. It then turns to the turning point: Zakariya, as Maryam's guardian, repeatedly finds her supplied with out-of-season provision, and when he asks, she answers that it is "from Allah, who provides without measure." Witnessing a living miracle — sustenance with no visible means — moves the old prophet to renew his dua for a child, teaching that when you are moved to do good you must act at once, before the motivation fades.
+
+A central theme is the "dua upgrade." Rather than lowering his hopes as the years made a child seem more impossible, Zakariya raised them, asking for a righteous progeny. The harder the request, the more humble and broken a servant becomes before Allah, who declares such things "easy." When the angels finally give him the news of a son, Yahya — a name no one had borne before — Zakariya, overwhelmed, asks how he can have a child given his age and his wife's barrenness; the answer is simply that Allah does as He wills, reminding him he himself was created from nothing. He asks for a sign and is told he will be unable to speak to people for three days except in gestures, though healthy — able only to glorify Allah, teaching that blessings should be met with gratitude and worship, not heedlessness.
+
+The lecture closes on why Zakariya's near-impossible dua was answered, drawing from Surah Al-Anbiya the three qualities of those whose calls are heard: they raced to good deeds, called on Allah in hope and fear, and were humble before Him. The Prophet ﷺ taught that Allah answers as long as one is not hasty — and "hasty" means abandoning the dua saying "I asked and asked and never saw it." Majed reinforces this with the story of a devoted young man who left the masjid and abandoned prayer because nine months of duas seemed unanswered, and how he was brought back by the teaching that every dua yields one of three outcomes — the thing asked for, a harm averted, or reward stored for the Hereafter — so that no dua is ever wasted, and the believer never stops asking.`,
+  },
+  {
+    id: "story-of-prophet-yunus",
+    title: "The Story of Prophet Yunus & the People of Ninevah",
+    speaker: "Majed Mahmoud",
+    speakerSlug: "majed-mahmoud",
+    categories: ["prophets"],
+    topic: "Repentance & Dhikr",
+    typeLabel: "Standalone Video",
+    published: "2024-09-23",
+    duration: 4271,
+    sourceUrl: "https://www.youtube.com/watch?v=9UCiglDIB_w",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/majed-mahmoud/story-of-prophet-yunus.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/majed-mahmoud/stand-alone/story-of-prophet-yunus.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/majed-mahmoud/story-of-prophet-yunus.vtt",
+    description:
+      "The story of Prophet Yunus and the people of Ninevah — nine years of unanswered calling, the mistake of leaving before Allah's command, the darkness of the whale, and the dua that saved him — with a deep look at why his private life of dhikr, not his public work, is what rescued him.",
+    takeaways: [
+      "**Stay at your post until Allah releases you**: Yunus called his people for years with no belief, then left in frustration just before the punishment — without Allah's command. Prophets don't abandon the mission until told to; his ordeal in the whale came from leaving even a few minutes early.",
+      "**Never give up just before the change**: Ninevah's 100,000+ people were the only nation in history to believe entirely — and it happened right after Yunus left. The lesson (and the final verse, 10:109): be patient until Allah judges, because the breakthrough often comes at the last moment.",
+      "**The dua of Yunus rescues from any distress**: \"La ilaha illa anta, subhanaka, inni kuntu min al-zalimin\" — affirming Allah's oneness, declaring Him free of all fault, and confessing one's own wrong. The Prophet ﷺ said no one in distress makes this dua except that Allah relieves them.",
+      "**A sincere apology carries no excuses**: Yunus said \"I wronged myself\" and stopped — no justifications. The moment you add \"but I worked so hard,\" the apology weakens. Allah loves the servant who returns and says simply, I was wrong.",
+      "**Your private life determines your worth**: Allah said Yunus would have stayed in the whale until the Day of Judgment had he not been of those who constantly glorified Allah — not because he was a prophet or preached to thousands. Default to sincerity and private worship; go public only when there is greater benefit.",
+      "**Small, hidden dhikr is immensely heavy**: \"La ilaha illa Allah\" outweighed 99 scrolls of sins in the hadith of the card, and saying \"Subhan Allah\" 100 times earns 1,000 good deeds and erases 1,000 sins. Fill the private, invisible account no one sees but Allah.",
+    ],
+    recap: `Majed Mahmoud tells the story of Prophet Yunus, beginning with his noble character — like every prophet, he was well-mannered, honest, and trusted, because prophethood rests on character, not merely speech. Yunus was sent to the people of Ninevah (in the region of modern Mosul, Iraq), a city of over 100,000 idol-worshippers, not one of whom believed. Over roughly nine years he called the rich and poor, young and old, and was mocked and rejected throughout — a reminder that anyone who wants good for others must expect to be criticised and belittled along the way.
+
+Eventually Allah warned that the people had three days to believe or face destruction. Yunus pleaded with them across those days, but just before the deadline, seeing the sky darken with the coming punishment, he stormed off in anger and frustration — leaving before Allah commanded him to. The speaker stresses that prophets are not permitted to abandon their assignment until Allah gives the word (as Nuh waited for the water and Lut waited for the morning); Yunus's whole ordeal flows from departing even minutes early, and that severity matches his high rank, just as the mistakes of the beloved and the senior are held to a higher standard.
+
+Fleeing overseas, Yunus boards a laden ship that is soon caught in a violent storm. To lighten the load the passengers cast lots to throw someone overboard, and Yunus's name comes up three times against all odds. He throws himself into the dark ocean, and a whale — prepared by Allah for exactly this moment — swallows him without crushing his bones. In three layers of darkness (the night, the ocean, and the whale's belly), Yunus calls out the famous dua: "There is no god but You; glory be to You; I was among the wrongdoers." Majed dissects it: the affirmation of tawhid (the heaviest of all deeds, illustrated by the hadith of the man whose single card of "la ilaha illa Allah" outweighs ninety-nine scrolls of sin), the declaration that Allah is free of every defect, and a confession with no excuses attached — because excuses weaken an apology, and Allah loves the servant who simply admits, "I was wrong."
+
+The turning point the speaker dwells on is Allah's statement that had Yunus not been of those who constantly glorified Allah, he would have remained in the whale until the Day of Resurrection. It was not his prophethood, his preaching to a hundred thousand, or his charity that saved him, but his private, habitual dhikr. From this he draws the session's central lesson: your private life determines your value. Public work is excellent and sometimes necessary, but the default of the believer is sincerity and hidden worship — and the invisible account of "Subhan Allah" (100 times earning 1,000 rewards and erasing 1,000 sins) and quiet remembrance is what truly weighs on the Day of Judgment. He urges everyone to bank such hidden good deeds for a "rainy day."
+
+The whale casts Yunus, drained and raw, onto a bare shore, where Allah grows a gourd (squash/pumpkin) plant over him — a fruit whose real nutritional benefits (for mood, eyes, and skin) mirror exactly what a starved, sun-and-acid-worn body would need. Restored, Yunus is sent back to his mission, having learned to persevere to his last breath and never lose hope. And he returns to find his people — the very ones who mocked him — now all believing, the only nation in history to believe completely, having accepted faith in time. Closing on the final verse of Surah Yunus (10:109), the speaker underscores its command to follow the revelation and be patient until Allah judges, illustrating with a personal story of landing a job against all odds precisely because he answered an interview question honestly about his faith — the very thing he feared would cost him was what secured it.`,
+  },
+  {
+    id: "story-of-prophet-ayyub",
+    title: "The Story of Prophet Ayyub & His Beautiful Patience",
+    speaker: "Majed Mahmoud",
+    speakerSlug: "majed-mahmoud",
+    categories: ["prophets", "purification"],
+    topic: "Patience",
+    typeLabel: "Standalone Video",
+    published: "2024-09-17",
+    duration: 4598,
+    sourceUrl: "https://www.youtube.com/watch?v=SJ-0GL-DEWY",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/majed-mahmoud/story-of-prophet-ayyub.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/majed-mahmoud/stand-alone/story-of-prophet-ayyub.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/majed-mahmoud/story-of-prophet-ayyub.vtt",
+    description:
+      "A detailed telling of Prophet Ayyub's trials — losing his wealth, his children, and then his health for eighteen years — used to teach what patience (sabr) actually means in Islam, why hardship is never proof that Allah is displeased, and how to handle loss, intrusive thoughts, and accusation.",
+    takeaways: [
+      "**Patience in Islam is active, not passive**: Sabr has three parts — the heart never loses hope in Allah, the tongue never complains about Allah, and the limbs are never used in disobedience. By that definition it is never \"okay\" to lose your patience, which is why Allah rewards the patient \"without measure.\"",
+      "**Hardship is not a sign that Allah is displeased**: Allah gives wealth, health, and family to those He loves and those He doesn't — but He gives faith and nearness only to those He loves. Ease granted to a persistent sinner can be a slow trap (istidraj), like cheese set in a snare.",
+      "**The full reward of patience is at the first strike**: The Prophet ﷺ taught the grieving woman that patience counts most at the first shock. Ayyub's instinct on hearing devastating news was to fall into sujood and say \"alhamdulillah in every situation\" — praising Allah in loss as in blessing.",
+      "**Everyone is tested — it is never \"why me\"**: Allah promises to test every soul, so the believer's comfort is shared struggle, not exemption. And \"Allah does not burden a soul beyond what it can bear\" (2:286) — six words to hold onto when carrying any trial.",
+      "**Intrusive thoughts of disbelief are from Shaytan, not you**: When the companions were tormented by thoughts they'd rather burn than utter, the Prophet ﷺ said hating them is itself a sign of faith. Don't entertain or investigate the whisper — turn away and affirm your belief in Allah.",
+      "**Guard your reputation and your oaths**: Ayyub's hardest trial was the accusation that his suffering meant hidden sin — dignity, once attacked, is the deepest wound. And the \"bundle of grass\" verse shows even a prophet was held to honour his oath without causing real harm, teaching that Allah's name and one's word are to be honoured.",
+    ],
+    recap: `Majed Mahmoud opens by challenging a common phrase — "I'm about to lose my patience" — and argues that many of us struggle because we misunderstand what sabr means. Borrowing an English teacher's observation that "patience" sounds passive while sabr is active, he gives the scholars' three-part definition: a heart that never loses hope in Allah, a tongue that never complains about Allah, and limbs never used in His disobedience. By that measure it is never acceptable to lose one's sabr — which is precisely why Allah promises the patient a reward "without account," an open cheque signed with an infinite amount.
+
+He then introduces Ayyub: a great-grandson of Ibrahim, married to a granddaughter of Yusuf, physically strong, handsome, truthful, grateful, and humble. Ayyub was a genuinely wealthy man — the speaker playfully tallies his herds into millions — yet his wealth never touched his heart. He refused to sleep full while a neighbour was hungry, and refused extra clothing while anyone around him lacked it. Then Allah blessed him with prophethood, naming him among the role models Allah chose for all people. The speaker uses this to make a point about closeness to Allah: greater rank brings greater responsibility and greater testing, just as a bigger salary brings a heavier workload — and warns, through the grim parable of the wolf that licks a blood-coated blade until it bleeds to death, against focusing on the pleasure of the forbidden while ignoring its pain.
+
+Then come the trials, foreshadowed by an envious man who insists Ayyub only worships because life is perfect and would abandon faith if tested. First his wealth is destroyed — raiders seize his livestock and lightning burns his flocks — and Ayyub falls immediately into prostration. Next, a storm collapses the house where all ten of his children are gathered, killing them; he weeps, says "to Allah we belong and to Him we return," and still says alhamdulillah. The speaker weaves in the teaching that the full reward of patience is at the first strike, the sunnah of turning to salah at hard news, and real modern stories of parents who lost children, to press home that everyone is tested — it is never "why me" but "why us" — and that certainty in Allah's wisdom and reward is what makes patience possible. He recounts the story of Umm Sulaym and Abu Talha, who bore the death of their child as returning a trust to its Owner, and were blessed with righteous offspring.
+
+The heaviest trial is Ayyub's health: a disease that spreads across his entire body for eighteen years, until people shun him and he is driven from the town, cared for only by his faithful wife, who eventually sells her hair for food. Two former friends accuse him of hidden sin, which the speaker names as the deepest wound of all — an attack on a righteous person's dignity — and Ayyub answers only with quiet certainty and a mention of his own scrupulousness. Shaytan compounds it with whispers against Allah, and Majed pauses on the hadith that hating such intrusive thoughts is itself proof of faith: don't entertain or investigate the whisper, just turn from it and affirm belief in Allah and His Messenger.
+
+Finally, at Ayyub's lowest point — after his wife returns having sold her hair — he makes his restrained, dignified dua: "Adversity has touched me, and You are the most merciful." Allah commands him to strike the ground; a spring bursts forth, and washing in it and drinking from it heals him inside and out, restoring his youth, strength, and (as the speaker's daughter notes) even his wife's hair. His wealth is doubled and clouds rain gold and silver. The Quran frames the whole story as a lesson twice over — "for the servants of Allah" and "for those of understanding" — so that every believer locks shut the door of thinking suffering means Allah's hatred, and every thinking person remembers that life and wealth can change in an instant. He closes on the verse of the bundle of grass, teaching the sanctity of oaths and Allah's name, and the Prophet's ﷺ dua seeking refuge from the loss of blessings and from sudden, shocking calamity.`,
+  },
+  {
+    id: "six-lessons-from-the-destroyed-garden",
+    title: "6 Lessons From the Destroyed Garden",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["quran", "purification"],
+    topic: "Gratitude & Heedlessness",
+    typeLabel: "Standalone Video",
+    published: "2023-05-07",
+    duration: 4193,
+    sourceUrl: "https://www.youtube.com/watch?v=wLF2LkAN3q8",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/six-lessons-from-the-destroyed-garden.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/six-lessons-from-the-destroyed-garden.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-taymiyyah/six-lessons-from-the-destroyed-garden.vtt",
+    description:
+      "Abu Taymiyyah draws practical life lessons from the parable of the companions of the garden in Surah al-Qalam — the heirs who plotted to withhold charity and lost everything overnight — on gratitude, self-accountability, raising children, and knowing Allah.",
+    takeaways: [
+      "**Allah can remove a blessing in a heartbeat**: The garden was destroyed overnight; misusing what Allah gives — a body, wealth, a platform, a car — invites its removal. A sin is rarely committed with a blessing except that Allah eventually strips it away.",
+      "**When calamity strikes, be self-critical, not defiant**: The garden's owners said \"Glory be to Allah, we were wrongdoers.\" The safe response to hardship is to hold yourself to account — a win-win: if it was for sin, you repent; if it was to raise your rank, you've drawn nearer either way. Retaliating and blaming is the real danger.",
+      "**Don't rush to \"this is happening because Allah loves me\"**: Trials do befall the righteous, but assuming that while living in open disobedience is self-delusion. Raise the possibility of sin first, repent, and stop looking down on others whose faults may soon become your own.",
+      "**A trial that draws you closer to Allah beats a blessing that pulls you away**: Wealth that carries someone into haram or arrogance is no gift; Allah may withhold to keep you humble and grounded. Hardship also weans you off relying on people until you turn to Allah alone.",
+      "**Educate your children — knowledge outlasts inheritance**: The heirs mocked their righteous father and destroyed themselves because he left them wealth without teaching them. A parent entrusted with children who fails to teach and advise them is warned severely; beneficial knowledge and a righteous child who prays for you outlast any estate.",
+      "**Knowing Allah through His names and attributes is what steadies faith**: Most sins and even despair trace back to a weak knowledge of Allah. Learning who Allah is — al-Hakeem, al-Razzaq, and the rest — deepens love, fear, and trust, and equips a believer to navigate doubts, desires, and hardship (with a closing reminder on the blessing and reward of charity).",
+    ],
+    recap: `Abu Taymiyyah frames this lecture around the Quran as the true source of contentment and healing, opening warmly with a reminder that the houses of Allah are for everyone — the long-time regular and the first-time attendee alike — and that no one should be looked down on for how they come to the masjid. He then turns to the parable of the companions of the garden in Surah al-Qalam, which Allah uses to warn the ungrateful: a righteous man used to give the poor their share of his garden's harvest, but when he died his sons called him foolish for it and secretly resolved to harvest everything at dawn before any needy person could come. Because they swore to do it without saying "insha'Allah," Allah sent a fire that destroyed the garden overnight; they arrived to find it blackened, first thinking they were lost, then realising they had been deprived. The most upright among them reminded them he had warned them, and they turned to self-blame — "Glory be to Allah, we were wrongdoers" — hoping their Lord would give them something better.
+
+From this the speaker extracts his lessons. First, Allah can take away any blessing in an instant — illustrated with the sobering true story of his friend who took a selfie at a football stadium and by that evening had lost his ability to speak and walk, confined to a wheelchair. Misusing the blessings Allah gives — the body, wealth, a following, a car used for showing off — invites their removal, as the archers of Uhud learned when disobedience turned victory to loss.
+
+Second, when calamity comes the believer should be self-critical rather than defiant, exactly as the garden's owners were. He cautions against the easy, deluding response of "this is happening because Allah loves me" while living in disobedience, and offers the scholars' win-win: raise the possibility that a hardship is due to sin, and either way you gain — repentance if it was sin, elevation if it was a test. He warns, with several examples, against looking down on others, since the fault you scorn may soon become your own.
+
+Third, a calamity that brings you closer to Allah is better than a blessing that drives you away; wealth that leads to haram, arrogance, or Pharaoh-like hardness of heart is no favour, and Allah sometimes withholds or takes in order to keep a servant humble and turn them back to Him alone, off their dependence on people. Fourth, he presses the duty to educate one's children: the heirs were ruined because their righteous father left them wealth without teaching them its purpose, and he warns that a parent who provides materially but neglects their children's Islamic upbringing has, in effect, deceived them — whereas beneficial knowledge and a child who prays for you outlast any inheritance.
+
+Finally, he argues that the root of most sin and even of despair is a weak knowledge of Allah, and that knowing Allah through His names and attributes — al-Hakeem, al-Razzaq, and the rest — deepens love, fear, and trust, steadies a believer against the doubts and "isms" pushed on campuses, and reframes hardship as wisdom. He illustrates with the woman who refused to fast out of anger at Allah despite living in comfort, tracing her attitude back to not truly knowing her Lord, and closes on the blessing and increasing reward of charity.`,
+  },
+  {
+    id: "ten-lessons-from-musa-and-khidr",
+    title: "10 Lessons From Musa & Khidr in Surat al-Kahf",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["quran", "prophets"],
+    topic: "Surah Al-Kahf",
+    typeLabel: "Standalone Video",
+    published: "2023-05-04",
+    duration: 5053,
+    sourceUrl: "https://www.youtube.com/watch?v=M29pf_x60p8",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/ten-lessons-from-musa-and-khidr.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/ten-lessons-from-musa-and-khidr.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-taymiyyah/ten-lessons-from-musa-and-khidr.vtt",
+    description:
+      "Abu Taymiyyah extracts ten practical lessons from the encounter between Musa and Khidr in Surat al-Kahf — a study in why things happen for reasons we can't see, the limits of our knowledge, the sanctity of life, and the humility and adab required to seek knowledge.",
+    takeaways: [
+      "**Everything happens for a reason**: Khidr's shocking acts — holing the boat, taking the boy's life, repairing a wall for free — each concealed a mercy Musa couldn't see. This is the Quran's answer to the \"problem of evil\": nothing Allah decrees is purely evil, and the hardship in front of you may be shielding you from something far worse.",
+      "**We are deficient in knowledge — don't be hasty to judge**: Musa, a prophet, couldn't grasp Khidr's wisdom. Before condemning a decision you don't understand — especially from someone more senior or experienced — ask the reason instead of carving your verdict in stone.",
+      "**The sanctity of a Muslim's life is immense**: The Prophet ﷺ said the destruction of the Kaaba is lesser to Allah than the unlawful taking of a believer's life. Carrying weapons to intimidate or harm others over trivial disputes reflects how cheaply we've come to hold something Allah made sacred.",
+      "**When trapped between two harms, take the lesser**: Khidr's actions illustrate a key legal maxim — weighing benefits and harms and, when forced to choose, taking the lesser of two evils. Being firm in your faith is greater than life itself; better to meet Allah sound in belief.",
+      "**Your righteousness protects your children**: The wall's treasure was preserved for two orphans because their father — generations back — was righteous. To raise righteous children: rectify yourself first, make dua for them, pray your sunnah prayers at home where they can see, and seek Allah's refuge for them.",
+      "**Seeking knowledge demands humility and adab**: Musa — one of the five greatest prophets — travelled far to learn from someone with knowledge he lacked, and asked permission humbly. Never let mastery in a worldly field, or a status you've reached, make you too proud to sit and learn your religion; and know that some knowledge is granted only by Allah, so keep asking Him for it.",
+    ],
+    recap: `Abu Taymiyyah opens, as in his companion lectures, by insisting the Quran is a guidance and cure addressed to everyone — "O people," not only the already-practising — and welcoming those who come to the masjid however far along their journey they are. He explains his method of drawing practical benefits from Quranic passages so they can be lived day to day, and turns to the encounter between Musa and Khidr in Surat al-Kahf, supplementing the Quran with the detailed hadith of Ubayy ibn Ka'b (noting that Quran and Sunnah are inseparable). He recounts how Musa, after claiming to be the most knowledgeable, was directed by Allah to a servant with knowledge he did not possess, found him at the junction of the two seas by the sign of the escaping fish, and asked to follow and learn — only to be told he would not be able to bear it.
+
+He retells the three episodes: Khidr holes the boat of poor fishermen (to save it from a tyrant king who seized every sound vessel), takes the life of a boy (whose survival would have dragged his believing parents into disbelief, and whom Allah would replace with someone better), and repairs a collapsing wall without pay (to preserve buried treasure for two orphans until they came of age, because their father had been righteous). Musa's impatience at each act, and Khidr's final explanations, become the frame for ten lessons.
+
+The first and most developed is that everything happens for a reason: the "evil" we perceive often conceals a mercy, and this is Islam's answer to the problem of evil raised on university campuses — nothing Allah creates is purely evil. He supports it with vivid personal testimony (a friend being shot, his family moving him out of London, brothers who went to prison or worse) and the wisdom that Allah sometimes removes what we possess to keep us humble and spare us Pharaoh-like arrogance, urging gratitude by looking at those with less. He stresses throughout that navigating modern doubts — atheism, "isms," gender confusion reaching even children — requires real knowledge, illustrated by the woman "angry with Allah" in her mansion for want of understanding her Lord.
+
+The remaining lessons follow: humans are deficient in knowledge, so we should not be hasty to condemn decisions — especially of our seniors, our scholars, or our experienced parents — that we don't fully understand; the taking of innocent life is among the gravest sins, with the sanctity of a believer greater in Allah's sight than the Kaaba itself; the legal maxim of weighing harms and choosing the lesser of two evils; and that Allah protects a person's offspring through their righteousness — from which he gives four Quranic keys to raising righteous children: rectify yourself, make dua for them, pray your voluntary prayers at home so they witness worship, and seek Allah's protection for them. He closes on the etiquette of knowledge: Musa's humility in learning from someone lesser in rank, the danger of letting worldly mastery breed too much pride to study the deen, the adab owed to a teacher, the virtue of travelling for knowledge, and the reality that some knowledge is granted by Allah alone — so a seeker must keep knocking on that door, doing a little every day, because only knowledge lets a believer navigate the trials and temptations of the age.`,
+  },
+  {
+    id: "quran-your-best-companion",
+    title: "Quran — Your Best Companion",
+    speaker: "Yahya Al-Raaby",
+    speakerSlug: "yahya-al-raaby",
+    categories: ["quran"],
+    topic: "Quran Reflection",
+    typeLabel: "Standalone Video",
+    published: "2024-02-20",
+    duration: 4376,
+    sourceUrl: "https://www.youtube.com/watch?v=jAJAUxAatDg",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/yahya-al-raaby/quran-your-best-companion.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/yahya-al-raaby/stand-alone/quran-your-best-companion.mp4",
+    description:
+      "A heartfelt reminder from Ustadh Yahya Al-Raaby on taking the Quran as your closest companion — how a living relationship with Allah's words brings guidance, comfort, and light, and why the believer who keeps the Quran near is never truly alone.",
+  },
+  {
+    id: "never-give-up-on-dua",
+    title: "Why You Should Never Give Up on Du'aa",
+    speaker: "Majed Mahmoud",
+    speakerSlug: "majed-mahmoud",
+    categories: ["dhikr"],
+    topic: "Dua & Supplication",
+    typeLabel: "Standalone Video",
+    published: "2016-01-01",
+    duration: 1609,
+    sourceUrl: "https://www.youtube.com/watch?v=7MXYdzUejcY",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/majed-mahmoud/never-give-up-on-dua.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/majed-mahmoud/stand-alone/never-give-up-on-dua.mp4",
+    description:
+      "A moving reminder from Majed Mahmoud on the power of dua and why a believer should never give up on it — that Allah always answers, whether by granting what you asked, averting a harm, or storing something greater for the Hereafter, so no sincere supplication is ever wasted.",
+  },
 ];

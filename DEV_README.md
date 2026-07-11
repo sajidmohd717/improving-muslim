@@ -47,7 +47,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-Snapshot as of 11 July 2026: the catalog has 11 series and 12 standalone lectures. Seventy series episodes and all 12 standalone lectures are currently watchable, for 82 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 11 July 2026: the catalog has 11 series and 20 standalone lectures. Seventy series episodes and all 20 standalone lectures are currently watchable, for 90 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -81,6 +81,14 @@ Snapshot as of 11 July 2026: the catalog has 11 series and 12 standalone lecture
 | Ahmed the Repenter | Belal Assaad | Purification | Uploaded |
 | The Story of the 3 Trapped Men | Belal Assaad | Purification | Uploaded |
 | The 4 Stages of Allah's Guidance | Belal Assaad | Quran | Uploaded |
+| Can a Muslim Get Rich? | Belal Assaad | Purification | Uploaded |
+| Quran — Your Best Companion | Yahya Al-Raaby | Quran | Uploaded |
+| The Story of Prophet Zakariya & His Powerful Dua | Majed Mahmoud | Prophets | Uploaded |
+| The Story of Prophet Yunus & the People of Ninevah | Majed Mahmoud | Prophets | Uploaded |
+| The Story of Prophet Ayyub & His Beautiful Patience | Majed Mahmoud | Prophets | Uploaded |
+| Why You Should Never Give Up on Du'aa | Majed Mahmoud | Dhikr | Uploaded |
+| 6 Lessons From the Destroyed Garden | Abu Taymiyyah | Quran | Uploaded |
+| 10 Lessons From Musa & Khidr in Surat al-Kahf | Abu Taymiyyah | Quran | Uploaded |
 
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.

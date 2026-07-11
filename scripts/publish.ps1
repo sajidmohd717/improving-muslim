@@ -568,17 +568,23 @@ function Get-StandaloneCaptions {
   }
 
   New-Item -ItemType Directory -Force -Path $absDir | Out-Null
-  & yt-dlp --skip-download --write-auto-subs --sub-langs en-orig --sub-format vtt `
-    -o (Join-Path $absDir "$Lecture.%(ext)s") $Url *> $null
 
-  $global:LASTEXITCODE = 0
-  $origVtt = Join-Path $absDir "$Lecture.en-orig.vtt"
-  if (Test-Path $origVtt) {
-    Move-Item $origVtt $absVtt -Force
-    & node $CLEAN_VTT $absVtt *> $null
+  # Prefer the original English auto-track (en-orig), but fall back to the plain
+  # "en" auto-track: some videos only expose "en" (no "en-orig"), and requesting
+  # only en-orig would silently skip captions for them.
+  foreach ($lang in @("en-orig", "en")) {
+    & yt-dlp --skip-download --write-auto-subs --sub-langs $lang --sub-format vtt `
+      -o (Join-Path $absDir "$Lecture.%(ext)s") $Url *> $null
     $global:LASTEXITCODE = 0
-    Write-Ok "Captions saved + cleaned: $relPath"
-    return "./$relPath"
+
+    $langVtt = Join-Path $absDir "$Lecture.$lang.vtt"
+    if (Test-Path $langVtt) {
+      Move-Item $langVtt $absVtt -Force
+      & node $CLEAN_VTT $absVtt *> $null
+      $global:LASTEXITCODE = 0
+      Write-Ok "Captions saved + cleaned ($lang): $relPath"
+      return "./$relPath"
+    }
   }
 
   Write-Warn "No English auto-captions available for this video (skipping captionsSrc)"
