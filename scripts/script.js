@@ -720,6 +720,103 @@ function renderContinueWatching() {
   els.continueList.innerHTML = heroCard + compactCards;
 }
 
+// ── "Because you watched" shelves ────────────────────────────────────────────
+// Personalized rows seeded from the most recent meaningfully-watched lectures
+// (completed, or 2+ minutes in), ranked catalog-wide by IMRelated. Hidden for
+// new visitors with no history, and capped at two shelves so the catalogue
+// stays the page's centre of gravity.
+function catalogProgress(item) {
+  return readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {});
+}
+
+function renderRecommendationShelves() {
+  const host = document.querySelector("#recommendation-shelves");
+  if (!host) return;
+  const catalogItems = window.catalogIndex?.items || [];
+  if (!window.IMRelated || !catalogItems.length) {
+    host.innerHTML = "";
+    return;
+  }
+
+  const itemByProgressKey = new Map(
+    catalogItems.map((item) => [`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, item]),
+  );
+
+  const seeds = storageKeysWithPrefix(PROGRESS_PREFIX)
+    .map((key) => {
+      try {
+        const stored = readJsonStorage(key, {});
+        const item = itemByProgressKey.get(key);
+        if (!item || !stored.updatedAt) return null;
+        const engaged = stored.completed || (Number(stored.currentTime) || 0) >= 120;
+        return engaged ? { item, updatedAt: Number(stored.updatedAt) || 0 } : null;
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.updatedAt - a.updatedAt);
+
+  const isWatched = (item) => Boolean(catalogProgress(item).completed);
+  const alreadyPicked = new Set();
+  const usedSeedGroups = new Set();
+  const shelves = [];
+
+  for (const seed of seeds) {
+    if (shelves.length >= 2) break;
+    // One shelf per series (or per standalone lecture) keeps the two rows varied.
+    const seedGroup = seed.item.series || `standalone:${seed.item.id}`;
+    if (usedSeedGroups.has(seedGroup)) continue;
+
+    const picks = window.IMRelated
+      .rankRelated({ items: catalogItems, currentKey: seed.item.key, isWatched, limit: 12 })
+      .filter((item) => {
+        if (alreadyPicked.has(item.key)) return false;
+        // Started-but-unfinished lectures already live in the continue strip.
+        const stored = catalogProgress(item);
+        return !((Number(stored.currentTime) || 0) >= 10 && !stored.completed);
+      })
+      .slice(0, 8);
+    if (picks.length < 3) continue;
+
+    usedSeedGroups.add(seedGroup);
+    picks.forEach((item) => alreadyPicked.add(item.key));
+    shelves.push({ seed: seed.item, picks });
+  }
+
+  host.innerHTML = shelves
+    .map(({ seed, picks }, shelfIndex) => {
+      const headingId = `shelf-title-${shelfIndex}`;
+      const cards = picks
+        .map((item) => {
+          const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
+          const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
+          const meta = [item.kind === "episode" ? item.speaker : "", isWatched(item) ? "Watched" : mins]
+            .filter(Boolean)
+            .join(" · ");
+          return `
+            <a class="shelf-card" href="${escapeHtml(item.url)}">
+              <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
+              <span class="shelf-card-body">
+                <small>${escapeHtml(context)}</small>
+                <strong>${escapeHtml(item.title)}</strong>
+                ${meta ? `<em>${escapeHtml(meta)}</em>` : ""}
+              </span>
+            </a>`;
+        })
+        .join("");
+      return `
+        <section class="content-section shelf-section" aria-labelledby="${headingId}">
+          <div class="section-heading">
+            <p class="eyebrow">Because you watched</p>
+            <h2 id="${headingId}">${escapeHtml(seed.title)}</h2>
+          </div>
+          <div class="shelf-strip">${cards}</div>
+        </section>`;
+    })
+    .join("");
+}
+
 function renderStudyStreak() {
   if (!els.streakSection || !els.streakCard || !readStudyStreak) {
     return;
@@ -1251,6 +1348,7 @@ function bindEvents() {
 renderSpeakers();
 renderCategories();
 renderContinueWatching();
+renderRecommendationShelves();
 renderStudyStreak();
 bindEvents();
 loadCategory(state.activeCategory);
@@ -1262,11 +1360,13 @@ els.continueList?.addEventListener("click", (e) => {
   if (!card) return;
   try { localStorage.removeItem(card.dataset.progressKey); } catch {}
   renderContinueWatching();
+  renderRecommendationShelves();
   renderStudyStreak();
 });
 
 window.addEventListener("im-auth-state-changed", () => {
   renderContinueWatching();
+  renderRecommendationShelves();
   renderStudyStreak();
   renderSeries();
 });

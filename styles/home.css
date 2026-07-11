@@ -377,3 +377,73 @@
   outline: none;
   transform: translateY(-1px);
 }
+
+/* ─── "Because you watched" shelves ─────────────────────────────────────── */
+
+.shelf-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 236px;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.shelf-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 28px rgba(24, 32, 27, 0.08);
+  scroll-snap-align: start;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.15s;
+}
+
+.shelf-card:hover,
+.shelf-card:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.shelf-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.shelf-card-body {
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  padding: 11px 12px 14px;
+}
+
+.shelf-card-body small {
+  color: var(--rose);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shelf-card-body strong {
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.shelf-card-body em {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 600;
+}
