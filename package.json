@@ -7,15 +7,17 @@
     "dev": "python -m http.server 4173",
     "start": "python -m http.server 4173",
     "check:a11y": "node scripts/check-a11y.js",
+    "check:catalog": "node scripts/generate-catalog.js --check",
     "check:js": "node scripts/check-js.js",
     "check:seo-pages": "node scripts/generate-seo-pages.js --check",
     "check:sitemap": "node scripts/generate-sitemap.js --check",
     "check:vtt": "node scripts/clean-vtt.js --check assets/captions",
     "check:smoke": "playwright test",
+    "catalog": "node scripts/generate-catalog.js",
     "seo-pages": "node scripts/generate-seo-pages.js",
     "sitemap": "node scripts/generate-sitemap.js",
     "clean-vtt": "node scripts/clean-vtt.js assets/captions",
-    "check": "npm run check:js && npm run check:a11y && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
+    "check": "npm run check:js && npm run check:a11y && npm run check:catalog && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

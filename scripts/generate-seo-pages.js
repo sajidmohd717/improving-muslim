@@ -187,7 +187,7 @@ ${videoUrl ? `    <meta property="og:video" content="${escapeAttr(videoUrl)}" />
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260707-video-retry" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260711-related" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <script type="application/ld+json">
 ${renderJsonLd(jsonLd).split("\n").map((line) => `      ${line}`).join("\n")}

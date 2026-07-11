@@ -23,6 +23,9 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `data/*-data.js` files are the series data sources.
 - `data/standalone-lectures-data.js` holds all standalone (non-series) lecture objects in a single `window.standaloneLectures` array.
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
+- `data/catalog-data.js` is a generated flat index of every watchable episode and standalone lecture, each with normalized metadata and a TF-IDF term vector (built from titles, descriptions, keywords, takeaways, recaps, and caption transcripts). Never edit by hand — regenerate with `npm run catalog` after any content change, and CI verifies it with `npm run check:catalog`.
+- `scripts/generate-catalog.js` builds `data/catalog-data.js` from the registry, series data files, standalone lectures, and `assets/captions/`.
+- `scripts/related-videos.js` is the pure ranking module (`window.IMRelated.rankRelated`) behind the watch page's "Related lectures" sidebar: term-vector cosine similarity, category overlap, same-speaker and recency boosts, watched demotion, and per-series/per-speaker diversity caps. Loaded on the watch template before `watch-page.js`, which renders the results (and, for standalone lectures, uses the top result as the "Up next" card and autoplay-next target).
 - `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
 - `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
 - `pages/admin.html` is a direct-link private admin dashboard. It currently reads submitted search analytics for allowlisted admin emails only.
@@ -517,9 +520,12 @@ The canonical public routes are:
 `scripts/generate-seo-pages.js` creates those routes from `pages/series-detail.html`, `pages/watch.html`, the registry, and the episode data. The generated HTML is committed so GitHub Pages can serve useful metadata without server-side rendering. Edit the templates or data, never files inside `series/` or `watch/`, then run:
 
 ```bash
+npm run catalog
 npm run seo-pages
 npm run sitemap
 ```
+
+(`npm run catalog` regenerates `data/catalog-data.js`, the related-lectures index — run it whenever episode data, standalone lectures, or captions change.)
 
 The older query-string pages remain compatibility fallbacks for existing links.
 

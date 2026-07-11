@@ -431,7 +431,15 @@ setPlayerPoster(currentEpisode);
 
 if (playlistTitle) playlistTitle.textContent = isStandalone ? "More lectures" : series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
-if (episodeSidebar && isStandalone) episodeSidebar.hidden = true;
+// Standalone lectures have no episode list, but the sidebar still hosts the
+// catalog-wide related lectures rendered below — hide only the "Playing from"
+// heading and the empty list. If no related lectures can be ranked (e.g. the
+// catalog index failed to load), the related block hides the whole sidebar.
+if (episodeSidebar && isStandalone) {
+  episodeSidebar.querySelector(".section-heading")?.setAttribute("hidden", "");
+  episodeList.hidden = true;
+  episodeSidebar.setAttribute("aria-labelledby", "related-title");
+}
 
 try {
   localStorage.setItem("improving-muslim:last-series-url", seriesPageUrl);
@@ -881,6 +889,9 @@ const autoplayCountdown   = document.querySelector("#autoplay-countdown");
 const autoplayToastLink   = document.querySelector("#autoplay-toast-link");
 const autoplayToastCancel = document.querySelector("#autoplay-toast-cancel");
 let autoplayTimer = null;
+// Series episodes autoplay into the next episode; standalone lectures autoplay
+// into the top related lecture (assigned by the related block further down).
+let autoplayNextUrl = nextEpisode ? episodeUrl(nextEpisode) : null;
 
 function cancelAutoplay() {
   clearInterval(autoplayTimer);
@@ -889,8 +900,8 @@ function cancelAutoplay() {
 }
 
 player.addEventListener("ended", () => {
-  if (localStorage.getItem(AUTOPLAY_KEY) !== "on" || !nextEpisode || !autoplayToast) return;
-  const nextUrl = episodeUrl(nextEpisode);
+  if (localStorage.getItem(AUTOPLAY_KEY) !== "on" || !autoplayNextUrl || !autoplayToast) return;
+  const nextUrl = autoplayNextUrl;
   autoplayToastLink.href = nextUrl;
   autoplayToast.classList.remove("is-hidden");
   let remaining = 5;
@@ -997,6 +1008,89 @@ if (window.matchMedia("(max-width: 900px)").matches) {
     episodeSidebar.insertBefore(btn, episodeList);
   }
 }
+
+// ── Related lectures ─────────────────────────────────────────────────────────
+// Catalog-wide "more like this", ranked by IMRelated over the generated
+// catalog index (data/catalog-data.js). Series pages show it below the episode
+// list; standalone pages use the top result as their "Up next" card and
+// autoplay target.
+(function renderRelatedLectures() {
+  const relatedSection = document.querySelector("#related-section");
+  const relatedList = document.querySelector("#related-list");
+  const catalogItems = window.catalogIndex?.items || [];
+
+  function hideStandaloneSidebar() {
+    if (isStandalone && episodeSidebar) episodeSidebar.hidden = true;
+  }
+
+  if (!relatedSection || !relatedList || !window.IMRelated || !catalogItems.length) {
+    hideStandaloneSidebar();
+    return;
+  }
+
+  const currentKey = isStandalone
+    ? `video:${currentEpisode.id}`
+    : `episode:${series.slug}:${currentEpisode.id}`;
+
+  const isWatched = (item) =>
+    Boolean(readJsonStorage(`${window.IMUtils.PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {}).completed);
+
+  const related = window.IMRelated.rankRelated({
+    items: catalogItems,
+    currentKey,
+    excludeSeries: isStandalone ? null : series.slug,
+    isWatched,
+    limit: isStandalone ? 9 : 6,
+  });
+
+  if (!related.length) {
+    hideStandaloneSidebar();
+    return;
+  }
+
+  let listItems = related;
+  if (isStandalone) {
+    const upNext = related[0];
+    listItems = related.slice(1);
+    autoplayNextUrl = autoplayNextUrl || upNext.url;
+    const mins = upNext.duration ? `${Math.round(upNext.duration / 60)} min` : "";
+    const meta = [upNext.speaker, mins].filter(Boolean).join(" · ");
+    const upNextCard = document.createElement("a");
+    upNextCard.className = "up-next-card";
+    upNextCard.href = upNext.url;
+    upNextCard.innerHTML = `
+      <img src="${escapeHtml(upNext.thumb)}" alt="" loading="lazy" />
+      <span class="up-next-body">
+        <small>Up next</small>
+        <strong>${escapeHtml(upNext.title)}</strong>
+        ${meta ? `<em>${escapeHtml(meta)}</em>` : ""}
+      </span>
+      <span class="up-next-play" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+      </span>
+    `;
+    episodeSidebar.insertBefore(upNextCard, relatedSection);
+  }
+
+  relatedList.innerHTML = listItems
+    .map((item) => {
+      const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
+      const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
+      const meta = [item.kind === "episode" ? item.speaker : "", mins].filter(Boolean).join(" · ");
+      const watched = isWatched(item);
+      return `
+        <a class="compact-episode related-item ${watched ? "is-watched" : ""}" href="${escapeHtml(item.url)}">
+          <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
+          <span>
+            <small>${escapeHtml(context)}</small>
+            <strong>${escapeHtml(item.title)}</strong>
+            ${watched ? "<em>Watched</em>" : meta ? `<em>${escapeHtml(meta)}</em>` : ""}
+          </span>
+        </a>`;
+    })
+    .join("");
+  relatedSection.hidden = false;
+})();
 
 // ── Keyboard shortcuts ───────────────────────────────────────────────────────
 // Override the browser's native arrow-key seek (varies: 5s Chrome, 15s Firefox)
