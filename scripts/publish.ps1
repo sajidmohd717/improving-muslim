@@ -16,10 +16,16 @@
      pipeline including patching the series data file.
 
   3. Standalone lecture: pass -Standalone, -SpeakerSlug, -LectureSlug, and
-     -Url. This derives the standard speaker/stand-alone object key.
+     -Url. This derives the standard speaker/stand-alone object key, uploads
+     the video, then scaffolds the mechanical metadata: it downloads the
+     thumbnail, downloads + cleans the English captions, and prints a
+     ready-to-fill metadata object (duration, published date, sourceUrl,
+     thumbnailSrc, videoSrc, captionsSrc pre-populated; editorial fields left
+     as TODO). Pass -NoScaffold to skip the metadata scaffolding.
 
-  4. Batch: pass -BatchFile pointing at a text file of "slug|episode|url"
-     lines.
+  4. Series batch: pass -BatchFile pointing at a text file of "slug|episode|url"
+     lines. Add -Standalone to switch the batch format to
+     "speakerSlug|lectureSlug|url" lines for standalone lectures.
 
 .PARAMETER Series
   Series slug as it appears in series-registry.js (e.g. "change-of-heart").
@@ -55,6 +61,10 @@
   By default the local copy is deleted once R2 confirms the upload, so
   the download cache doesn't quietly grow on disk.
 
+.PARAMETER NoScaffold
+  Standalone mode only. Skip the post-upload metadata scaffolding (thumbnail
+  download, caption download/clean, and metadata stub). Upload only.
+
 .PARAMETER DryRun
   Show every command that would run without executing anything.
 
@@ -78,6 +88,8 @@ param(
   [switch]$Interactive,
   [switch]$SkipFix,
   [switch]$KeepLocal,
+  [switch]$NoScaffold,
+  [switch]$ScaffoldOnly,
   [switch]$DryRun
 )
 
@@ -90,6 +102,8 @@ $R2_PROFILE     = "r2"
 $CDN_BASE       = "https://videos.improvingmuslim.com"
 $TEMP_DIR       = Join-Path $PSScriptRoot "..\tmp\yt-dlp"
 $SERIES_REGISTRY = Join-Path $PSScriptRoot "..\data\series-registry.js"
+$PROJECT_ROOT   = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$CLEAN_VTT      = Join-Path $PSScriptRoot "clean-vtt.js"
 
 # yt-dlp format: best H.264 (avc1) video + best AAC/M4A audio, merged to mp4.
 # Filtering on ext=mp4 alone is NOT enough: YouTube serves 1440p/4K as AV1
@@ -473,6 +487,145 @@ function Publish-Episode {
   Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, regenerate SEO pages + sitemap, then run npm run check."
 }
 
+# ---- standalone metadata scaffolding ----
+
+# Fetch title, duration (seconds), upload date (YYYYMMDD), and video id from
+# YouTube in a single yt-dlp metadata call (no download). Returns a hashtable,
+# or $null if the lookup fails.
+function Get-VideoMeta {
+  param([string]$Url)
+  try {
+    $line = & yt-dlp --no-warnings --skip-download `
+      --print "%(id)s|%(duration)s|%(upload_date)s|%(title)s" $Url 2>$null | Select-Object -First 1
+    if (-not $line) { return $null }
+    $parts = $line -split '\|', 4
+    # yt-dlp --print --skip-download exits non-zero even on success (nothing was
+    # downloaded); we validated the output ourselves, so clear the leaked code.
+    $global:LASTEXITCODE = 0
+    return @{
+      id       = $parts[0]
+      duration = $parts[1]
+      uploaded = $parts[2]
+      title    = $parts[3]
+    }
+  }
+  catch { return $null }
+}
+
+# YYYYMMDD -> YYYY-MM-DD (returns "" if not an 8-digit date).
+function Format-UploadDate {
+  param([string]$Raw)
+  if ($Raw -match '^\d{8}$') {
+    return "{0}-{1}-{2}" -f $Raw.Substring(0, 4), $Raw.Substring(4, 2), $Raw.Substring(6, 2)
+  }
+  return ""
+}
+
+# Download the highest-quality thumbnail for a video id into the standalone
+# thumbnail path. Tries maxresdefault first, falls back to hqdefault.
+function Get-StandaloneThumbnail {
+  param([string]$VideoId, [string]$Speaker, [string]$Lecture)
+
+  $relDir = "assets/thumbnail/standalone/$Speaker"
+  $absDir = Join-Path $PROJECT_ROOT $relDir
+  $relPath = "$relDir/$Lecture.jpg"
+  $absPath = Join-Path $PROJECT_ROOT "assets/thumbnail/standalone/$Speaker/$Lecture.jpg"
+
+  if ($DryRun) {
+    Write-Host "    [DRY RUN] Would download thumbnail -> $relPath" -ForegroundColor DarkGray
+    return "./$relPath"
+  }
+
+  New-Item -ItemType Directory -Force -Path $absDir | Out-Null
+  foreach ($variant in @("maxresdefault", "hqdefault")) {
+    try {
+      Invoke-WebRequest -Uri "https://img.youtube.com/vi/$VideoId/$variant.jpg" `
+        -OutFile $absPath -ErrorAction Stop
+      if ((Get-Item $absPath).Length -gt 1024) {
+        Write-Ok "Thumbnail saved ($variant): $relPath"
+        return "./$relPath"
+      }
+    }
+    catch { }
+  }
+  Write-Warn "Could not download a thumbnail for video id $VideoId"
+  return "./$relPath"
+}
+
+# Download English auto-captions, rename to the catalog path, and normalise them
+# with clean-vtt.js. Returns the ./-relative captionsSrc, or "" if none exist.
+function Get-StandaloneCaptions {
+  param([string]$Url, [string]$Speaker, [string]$Lecture)
+
+  $relDir = "assets/captions/standalone/$Speaker"
+  $absDir = Join-Path $PROJECT_ROOT "assets/captions/standalone/$Speaker"
+  $absVtt = Join-Path $absDir "$Lecture.vtt"
+  $relPath = "$relDir/$Lecture.vtt"
+
+  if ($DryRun) {
+    Write-Host "    [DRY RUN] Would download + clean captions -> $relPath" -ForegroundColor DarkGray
+    return "./$relPath"
+  }
+
+  New-Item -ItemType Directory -Force -Path $absDir | Out-Null
+  & yt-dlp --skip-download --write-auto-subs --sub-langs en-orig --sub-format vtt `
+    -o (Join-Path $absDir "$Lecture.%(ext)s") $Url *> $null
+
+  $global:LASTEXITCODE = 0
+  $origVtt = Join-Path $absDir "$Lecture.en-orig.vtt"
+  if (Test-Path $origVtt) {
+    Move-Item $origVtt $absVtt -Force
+    & node $CLEAN_VTT $absVtt *> $null
+    $global:LASTEXITCODE = 0
+    Write-Ok "Captions saved + cleaned: $relPath"
+    return "./$relPath"
+  }
+
+  Write-Warn "No English auto-captions available for this video (skipping captionsSrc)"
+  return ""
+}
+
+# Print a ready-to-fill standalone lecture object with all the mechanical fields
+# pre-populated. The editorial fields (categories, topic, description, takeaways,
+# recap) are left as TODO placeholders for human/AI judgement.
+function Write-StandaloneStub {
+  param(
+    [string]$Speaker, [string]$Lecture, [hashtable]$Meta,
+    [string]$ThumbSrc, [string]$CaptionsSrc
+  )
+
+  $published = Format-UploadDate -Raw $Meta.uploaded
+  $duration  = if ($Meta.duration) { $Meta.duration } else { "0" }
+  $sourceUrl = "https://www.youtube.com/watch?v=$($Meta.id)"
+  $videoSrc  = "$CDN_BASE/$Speaker/stand-alone/$Lecture.mp4"
+  $capLine   = if ($CaptionsSrc) { "    captionsSrc: `"$CaptionsSrc`",`n" } else { "" }
+
+  $stub = @"
+  {
+    id: "$Lecture",
+    title: "$($Meta.title)",           // TODO: clean up title if needed
+    speaker: "TODO: Speaker Name",
+    speakerSlug: "$Speaker",
+    categories: ["TODO"],              // e.g. ["purification"], ["quran"]
+    topic: "TODO: Topic Display Name",
+    typeLabel: "Standalone Video",
+    published: "$published",
+    duration: $duration,
+    sourceUrl: "$sourceUrl",
+    thumbnailSrc: "$ThumbSrc",
+    videoSrc: "$videoSrc",
+$capLine    description: "TODO: short description for cards.",
+    // Optional editorial fields — add when the transcript has been reviewed:
+    // takeaways: ["..."],
+    // recap: ``# Section\n\nProse...``,
+  },
+"@
+
+  Write-Step "Metadata stub for data/standalone-lectures-data.js"
+  Write-Host $stub -ForegroundColor Gray
+  Write-Warn "Fill the TODO fields, then paste this object into data/standalone-lectures-data.js before the closing '];'."
+}
+
 function Publish-Standalone {
   param([string]$Speaker, [string]$Lecture, [string]$YouTubeUrl)
 
@@ -491,15 +644,82 @@ function Publish-Standalone {
   Write-Ok "R2 path: $objectKey"
   Write-Ok "Public URL: $publicUrl"
 
-  $downloadDir = Join-Path $TEMP_DIR "standalone\$Speaker"
-  Get-LocalVideo -Url $YouTubeUrl -DownloadDir $downloadDir -BaseName $Lecture
-  $fixedFile = Join-Path $downloadDir "$Lecture.mp4"
+  # -ScaffoldOnly skips the download/upload and just (re)generates the metadata
+  # assets — useful when the video is already on R2 and you only need the
+  # thumbnail, captions, and object stub.
+  if (-not $ScaffoldOnly) {
+    $downloadDir = Join-Path $TEMP_DIR "standalone\$Speaker"
+    Get-LocalVideo -Url $YouTubeUrl -DownloadDir $downloadDir -BaseName $Lecture
+    $fixedFile = Join-Path $downloadDir "$Lecture.mp4"
 
-  Send-ToR2 -LocalFile $fixedFile -Bucket $R2_BUCKET -ObjectKey $objectKey
-  Remove-LocalAfterUpload -LocalFile $fixedFile
+    Send-ToR2 -LocalFile $fixedFile -Bucket $R2_BUCKET -ObjectKey $objectKey
+    Remove-LocalAfterUpload -LocalFile $fixedFile
 
-  Write-Host "`n    Standalone lecture published: $publicUrl" -ForegroundColor Green
-  Write-Warn "Add its metadata to data/standalone-lectures-data.js, then regenerate SEO pages and the sitemap."
+    Write-Host "`n    Standalone lecture published: $publicUrl" -ForegroundColor Green
+  }
+  else {
+    Write-Ok "Scaffold-only: skipping download + upload"
+  }
+
+  # Scaffold the mechanical metadata (thumbnail, captions, stub) unless opted out.
+  if ($NoScaffold) {
+    Write-Warn "Add its metadata to data/standalone-lectures-data.js, then regenerate SEO pages and the sitemap."
+    return
+  }
+
+  Write-Step "Scaffolding standalone metadata"
+  $meta = Get-VideoMeta -Url $YouTubeUrl
+  if (-not $meta) {
+    Write-Warn "Could not fetch video metadata; add the object to data/standalone-lectures-data.js by hand."
+    return
+  }
+  $thumbSrc    = Get-StandaloneThumbnail -VideoId $meta.id -Speaker $Speaker -Lecture $Lecture
+  $captionsSrc = Get-StandaloneCaptions -Url $YouTubeUrl -Speaker $Speaker -Lecture $Lecture
+  Write-StandaloneStub -Speaker $Speaker -Lecture $Lecture -Meta $meta `
+    -ThumbSrc $thumbSrc -CaptionsSrc $captionsSrc
+  Write-Warn "After filling the stub: regenerate SEO pages + sitemap, then run npm run check."
+}
+
+# ---- standalone batch mode ----
+
+function Publish-StandaloneBatch {
+  param([string]$Path)
+
+  if (-not (Test-Path $Path)) {
+    throw "Batch file not found: $Path"
+  }
+
+  $lines = Get-Content $Path | Where-Object {
+    $_ -notmatch '^\s*#' -and $_ -notmatch '^\s*$'
+  }
+
+  Write-Step "Standalone batch mode: $($lines.Count) lectures to publish"
+
+  $ok = 0
+  $fail = 0
+
+  foreach ($line in $lines) {
+    $parts = $line -split '\|'
+    if ($parts.Count -lt 3) {
+      Write-Warn "Skipping malformed line (expected speakerSlug|lectureSlug|url): $line"
+      continue
+    }
+
+    $spk = $parts[0].Trim()
+    $lec = $parts[1].Trim()
+    $u = ($parts[2..($parts.Count - 1)] -join '|').Trim()
+
+    try {
+      Publish-Standalone -Speaker $spk -Lecture $lec -YouTubeUrl $u
+      $ok++
+    }
+    catch {
+      Write-Fail "Standalone $spk/$lec FAILED: $_"
+      $fail++
+    }
+  }
+
+  Write-Host "`nStandalone batch complete: $ok succeeded, $fail failed" -ForegroundColor $(if ($fail -gt 0) { "Yellow" } else { "Green" })
 }
 
 # ---- batch mode ----
@@ -617,7 +837,10 @@ function Invoke-Main {
     Write-Host "DRY RUN -- no changes will be made`n" -ForegroundColor Yellow
   }
 
-  if ($BatchFile) {
+  if ($Standalone -and $BatchFile) {
+    Publish-StandaloneBatch -Path $BatchFile
+  }
+  elseif ($BatchFile) {
     Publish-Batch -Path $BatchFile
   }
   elseif ($Standalone -and $SpeakerSlug -and $LectureSlug -and $Url) {
@@ -639,11 +862,14 @@ Usage:
   Single episode (full pipeline + data file patch):
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <youtube-url>
 
-  Standalone lecture (download + upload; add catalog metadata afterward):
+  Standalone lecture (upload + auto-scaffold thumbnail, captions, metadata stub):
     .\scripts\publish.ps1 -Standalone -SpeakerSlug <speaker-slug> -LectureSlug <lecture-slug> -Url <youtube-url>
 
-  Batch mode:
+  Series batch mode (slug|episode|url lines):
     .\scripts\publish.ps1 -BatchFile <path-to-file>
+
+  Standalone batch mode (speakerSlug|lectureSlug|url lines):
+    .\scripts\publish.ps1 -Standalone -BatchFile <path-to-file>
 
   Dry run:
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -DryRun
@@ -662,6 +888,10 @@ Usage:
 }
 
 # Run main unless the script is being dot-sourced (e.g. for testing).
+# Reaching the line after Invoke-Main means no terminating error occurred
+# (ErrorActionPreference = Stop), so report a clean exit code even if a helper's
+# native tool (e.g. yt-dlp --print) left a non-zero code behind.
 if ($MyInvocation.InvocationName -ne '.') {
   Invoke-Main
+  exit 0
 }

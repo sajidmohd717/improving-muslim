@@ -47,7 +47,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-Snapshot as of 11 July 2026: the catalog has 11 series and 8 standalone lectures. Seventy series episodes and all 8 standalone lectures are currently watchable, for 78 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 11 July 2026: the catalog has 11 series and 12 standalone lectures. Seventy series episodes and all 12 standalone lectures are currently watchable, for 82 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -77,6 +77,10 @@ Snapshot as of 11 July 2026: the catalog has 11 series and 8 standalone lectures
 | DUA: How to Get Your Dreams! | Yahya Al-Raaby | Dua | Uploaded |
 | A Poem To Soften The Hardened Heart | Abu Taymiyyah | Purification | Uploaded |
 | Effect of the Quran in Our Life | Abu Bakr Zoud | Quran | Uploaded |
+| The Qur'an and Depression | Omar Suleiman | Quran | Uploaded |
+| Ahmed the Repenter | Belal Assaad | Purification | Uploaded |
+| The Story of the 3 Trapped Men | Belal Assaad | Purification | Uploaded |
+| The 4 Stages of Allah's Guidance | Belal Assaad | Quran | Uploaded |
 
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
@@ -95,7 +99,8 @@ Every push and pull request to `main` triggers `.github/workflows/check.yml`, wh
 2. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
 3. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
 4. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
-5. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
+5. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
+6. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
 
 If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 
@@ -284,16 +289,25 @@ Requires `yt-dlp`, `ffmpeg`, and the AWS CLI with the `r2` profile (see above) o
 # Single episode: registry-driven, auto-derives the R2 path and patches the data file
 .\scripts\publish.ps1 -Series "why-me" -Episode 10 -Url "https://youtu.be/SGdznSHyJUQ"
 
-# Standalone lecture: derives {speaker}/stand-alone/{lecture}.mp4 and uploads it
+# Standalone lecture: uploads {speaker}/stand-alone/{lecture}.mp4, then scaffolds
+# the thumbnail, cleaned captions, and a ready-to-fill metadata object stub
 .\scripts\publish.ps1 -Standalone -SpeakerSlug "abu-bakr-zoud" `
   -LectureSlug "effect-of-the-quran-in-our-life" -Url "https://youtu.be/5mTqC9nb0SY"
 
-# Batch: a text file of "slug|episode|url" lines, one per episode
+# Series batch: a text file of "slug|episode|url" lines, one per episode
 .\scripts\publish.ps1 -BatchFile "episodes.txt"
+
+# Standalone batch: a text file of "speakerSlug|lectureSlug|url" lines
+.\scripts\publish.ps1 -Standalone -BatchFile "standalone.txt"
+
+# Scaffold only (video already on R2): re-pull thumbnail/captions + reprint stub
+.\scripts\publish.ps1 -Standalone -ScaffoldOnly -SpeakerSlug "..." -LectureSlug "..." -Url "https://..."
 
 # Preview only, no downloads/uploads/file changes
 .\scripts\publish.ps1 -Series "why-me" -Episode 10 -Url "https://..." -DryRun
 ```
+
+For standalone lectures the script now auto-scaffolds the mechanical metadata after upload: it fetches the duration and upload date, downloads the thumbnail (maxresdefault, falling back to hqdefault), downloads and cleans the English captions, and prints a metadata object with `id`, `speakerSlug`, `published`, `duration`, `sourceUrl`, `thumbnailSrc`, `videoSrc`, and `captionsSrc` pre-filled. Only the editorial fields (`speaker`, `categories`, `topic`, `description`, and optional `takeaways`/`recap`) are left as `TODO` for you to complete before pasting the object into `data/standalone-lectures-data.js`. Pass `-NoScaffold` to upload without scaffolding.
 
 **Video quality:** the script downloads the best available **H.264 (avc1)** stream, capped at 1080p — this is a deliberate ceiling, not a limitation of the tool. YouTube serves 1440p/4K only as AV1 (even inside an `.mp4` container), and AV1 playback is unreliable on older iOS/Safari and some Android WebViews. Since this site plays video natively with no transcoding step, 1080p H.264 is the highest resolution that's guaranteed to play across every target device. Before publishing a series you want in higher quality, check what's actually available with `yt-dlp -F "<url>"` — older/re-encoded YouTube uploads may only offer 144p-480p regardless of the codec cap.
 
@@ -311,7 +325,7 @@ npm run sitemap
 npm run check
 ```
 
-**After publishing a standalone lecture**, add its full object to `data/standalone-lectures-data.js` manually because the title, categories, topic, description, source metadata, thumbnail, and captions require editorial judgment. Download the source thumbnail and English captions when available, add their local paths, then run the same generation and check commands above.
+**After publishing a standalone lecture**, the script has already downloaded the thumbnail, downloaded and cleaned the captions, and printed a metadata stub. Fill the stub's `TODO` editorial fields (`speaker`, `categories`, `topic`, `description`, and — once the transcript is reviewed — `takeaways`/`recap`), paste the object into `data/standalone-lectures-data.js` before the closing `];`, then run the same generation and check commands above. The editorial fields still require human judgment; the mechanical fields no longer do.
 
 ### Manual upload (non-YouTube sources, or when the script doesn't apply)
 
@@ -408,6 +422,8 @@ yt-dlp --skip-download --write-auto-subs --sub-langs en-orig --sub-format vtt `
 Move-Item "assets\captions\standalone\{speaker-slug}\{id}.en-orig.vtt" `
   "assets\captions\standalone\{speaker-slug}\{id}.vtt"
 ```
+
+**Always run `npm run clean-vtt` after downloading any YouTube auto-captions.** YouTube's auto-caption VTTs pin every cue to the far left with settings like `align:start position:0%` on the timing line. The browser's native `<track>` renderer honours those settings, so the captions render hard against the left edge instead of bottom-centre — very visible on iPhone. `scripts/clean-vtt.js` strips those per-cue positioning settings (leaving the text untouched) so captions fall back to the default bottom-centre placement. It is idempotent and safe to run on the whole `assets/captions` tree. `npm run check` now includes `check:vtt`, which fails if any committed VTT still carries positioning settings — so this can't silently regress.
 
 Automatic captions are useful as an accessibility fallback, but they are not a reviewed transcript. Spot-check timing and wording, and prioritize human correction of Quran quotations, Arabic terms, names, and theological statements.
 
@@ -734,6 +750,8 @@ cmd /c "node scripts\transcript-to-vtt.js C:\path\to\pasted-text.txt > assets\ca
 ```
 
 The converter skips chapter heading lines, supports timestamps such as `0:11`, `59:55`, and `1:05:41`, and outputs WebVTT suitable for native video captions.
+
+Captions produced by `transcript-to-vtt.js` are already centre-aligned. Captions downloaded from YouTube auto-subs are **not** — run `npm run clean-vtt` on them (see the Standalone Lectures caption step above) to strip the left-pinning cue settings before committing.
 
 After generating captions, spot-check the file and verify it is reachable through the local server, not `file://`.
 

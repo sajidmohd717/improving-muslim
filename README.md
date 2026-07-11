@@ -16,7 +16,7 @@ The application is intentionally built with plain HTML, CSS, and JavaScript; it 
 - Light, dark, and system themes, reduced-motion support, responsive navigation, and generated crawlable series/watch pages
 - Local keyword search that works independently, with optional AI reranking through a Cloudflare Worker
 
-As of 11 July 2026, the catalog contains 11 series and 8 standalone lectures, with 78 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
+As of 11 July 2026, the catalog contains 11 series and 12 standalone lectures, with 82 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
 
 ## Run locally
 
@@ -53,6 +53,7 @@ Useful individual commands:
 | `npm run check:a11y` | Audit maintained HTML templates |
 | `npm run seo-pages` | Regenerate canonical `/series/` and `/watch/` pages |
 | `npm run sitemap` | Regenerate `sitemap.xml` from the catalog |
+| `npm run clean-vtt` | Normalize YouTube captions to bottom-center placement |
 | `npm run check:smoke` | Run browser smoke tests |
 
 ## Architecture and hosting
