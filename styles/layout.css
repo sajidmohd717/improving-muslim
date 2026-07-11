@@ -41,6 +41,20 @@ h2 {
   line-height: 1.65;
 }
 
+@media (min-width: 900px) {
+  .hero {
+    padding: clamp(42px, 6vw, 68px) 0 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.25rem, 5.6vw, 4.9rem);
+  }
+
+  .hero-copy {
+    margin: 14px 0 18px;
+  }
+}
+
 .search-form {
   position: relative;
   display: flex;
