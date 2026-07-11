@@ -178,4 +178,24 @@ From Allah's words to Musa, the lecture highlights the foundations of life: know
 
 The lecture closes by warning against being distracted from the Hereafter and by reminding listeners that the greatest preparation for meeting Allah is love of Allah and His Messenger. That love is nourished most deeply through the Quran, because nothing brings a person closer to Allah like His own words.`,
   },
+  {
+    id: "effect-of-the-quran-in-our-life",
+    title: "Effect of the Quran in Our Life",
+    speaker: "Abu Bakr Zoud",
+    speakerSlug: "abu-bakr-zoud",
+    categories: ["quran", "purification"],
+    topic: "Quran Reflection",
+    typeLabel: "Standalone Video",
+    published: "2023-04-19",
+    duration: 2392,
+    sourceUrl: "https://www.youtube.com/watch?v=5mTqC9nb0SY",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-bakr-zoud/effect-of-the-quran-in-our-life.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-bakr-zoud/stand-alone/effect-of-the-quran-in-our-life.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-bakr-zoud/effect-of-the-quran-in-our-life.vtt",
+    description:
+      "A reflective lecture on how the Quran transforms hearts, why Ramadan trains believers to receive it, and how approaching Allah's words with humility, personal need, and trust in His mercy can reshape everyday life.",
+  },
 ];

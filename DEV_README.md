@@ -1,18 +1,19 @@
-# Developer Notes
+# Improving Muslim Developer Guide
 
-This project is intentionally a plain HTML, CSS, and JavaScript site. Do not reintroduce React, Vite, or a build step unless the project direction explicitly changes.
+This project is intentionally a plain HTML, CSS, and JavaScript site. It does not use React. Do not introduce a client framework or application bundler unless the project direction explicitly changes. Small authoring-time generators and validation scripts are part of the current architecture, but production remains deployable as static files.
 
 This document is a living guide. The architecture, hosting choices, and workflow are expected to evolve as the platform grows. Treat these notes as current project context, not a rigid rulebook. Update this file whenever the actual workflow changes.
 
 ## Project Shape
 
 - `index.html` stays at the repository root because GitHub Pages serves it as the entry point.
-- `pages/` contains secondary HTML pages such as series pages, speaker profiles, settings, about, and watch.
+- `pages/` contains maintained secondary page templates and query-string compatibility routes such as series detail, watch, speaker profiles, settings, and about.
+- `series/` and `watch/` contain canonical, crawlable pages generated from the maintained templates and catalog data by `scripts/generate-seo-pages.js`. Never edit generated pages by hand.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
 - `scripts/home-config.js` holds homepage categories, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
-- `scripts/script.js` renders homepage speakers, categories, and series cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
+- `scripts/script.js` loads, merges, sorts, and renders homepage series and standalone lecture cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
@@ -28,8 +29,9 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `assets/captions/` contains WebVTT captions, grouped by series slug or `standalone/{speaker-slug}/`.
 - `assets/thumbnail/standalone/{speaker-slug}/` holds standalone lecture thumbnails.
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
-- `scripts/publish.ps1` is the YouTube-to-R2 episode publisher (download, faststart fix, upload, data file patch). See the Uploading Large Videos To R2 section below.
+- `scripts/publish.ps1` is the YouTube-to-R2 publisher (download, faststart fix, upload, and series data patching; standalone metadata remains editorial). See the Uploading Large Videos To R2 section below.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
+- `scripts/generate-seo-pages.js` and `scripts/generate-sitemap.js` generate canonical content routes and `sitemap.xml`; their `--check` modes keep committed output current.
 - `scripts/error-handler.js` catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit. It is currently loaded on the heavy interactive pages (index, history, saved, watch) — load it first, before all other scripts, on any page that includes it.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
 - `pages/explore.html` is the explore/browse page with topic-based filtering across series and standalone videos.
@@ -38,30 +40,30 @@ This document is a living guide. The architecture, hosting choices, and workflow
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
 - `public/` contains brand-facing assets: logo/favicons, the web manifest, and the social sharing preview image.
 - `public/social-preview-template.html` is the source template for regenerating `public/social-preview.png`. See the Social Preview Image section below.
-- `.github/workflows/check.yml` is the CI workflow that runs syntax and accessibility checks automatically on every push and pull request to `main`.
+- `.github/workflows/check.yml` runs the complete validation suite automatically on every push and pull request to `main`.
 - `CNAME` pins the GitHub Pages custom domain to `improvingmuslim.com`.
 
 All pages in `pages/` include a `<base href="../" />` tag. Keep all project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links resolve correctly from both `index.html` and inner pages.
 
 ## Current Content State
 
-The platform currently has 11 series and 7 standalone lectures.
+Snapshot as of 11 July 2026: the catalog has 11 series and 8 standalone lectures. Seventy series episodes and all 8 standalone lectures are currently watchable, for 78 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
-| Series | Speaker | Category | Status |
+| Series | Speaker | Category | Watchable |
 |---|---|---|---|
-| Enjoy Your Prayer | Ali Hammuda | Prayer | Partially unlocked |
-| Fortress of the Muslim | Assim Al-Hakeem | Dhikr | Partially unlocked |
-| Seerah of the Prophet (S) | Yasir Qadhi | Seerah | Partially unlocked |
-| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | Partially unlocked |
-| Change of Heart | Ali Hammuda | Purification | Partially unlocked |
-| Why Me? | Omar Suleiman | Purification | Partially unlocked |
-| Angels in Your Presence | Omar Suleiman | Angels | Partially unlocked |
-| Life of Muhammad (PBUH) | Mufti Menk | Seerah | Partially unlocked |
-| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | Partially unlocked |
-| Madina Arabic Books | Asif Meherali | Arabic | Partially unlocked |
-| Page by Page Tafseer | Ahsan Hanif | Quran | Partially unlocked |
+| Enjoy Your Prayer | Ali Hammuda | Prayer | 8 / 21 |
+| Fortress of the Muslim | Assim Al-Hakeem | Dhikr | 5 / 13 |
+| Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
+| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | 4 / 46 |
+| Change of Heart | Ali Hammuda | Purification | 10 / 16 |
+| Why Me? | Omar Suleiman | Purification | 13 / 30 |
+| Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
+| Life of Muhammad (PBUH) | Mufti Menk | Seerah | 8 / 30 |
+| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | 0 / 10 |
+| Madina Arabic Books | Asif Meherali | Arabic | 3 / 123 |
+| Page by Page Tafseer | Ahsan Hanif | Quran | 3 / 604 |
 
 ### Standalone Lectures
 
@@ -74,6 +76,7 @@ The platform currently has 11 series and 7 standalone lectures.
 | Only Allah Knows What You Went Through | Omar Suleiman | Purification | Uploaded |
 | DUA: How to Get Your Dreams! | Yahya Al-Raaby | Dua | Uploaded |
 | A Poem To Soften The Hardened Heart | Abu Taymiyyah | Purification | Uploaded |
+| Effect of the Quran in Our Life | Abu Bakr Zoud | Quran | Uploaded |
 
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
@@ -94,7 +97,7 @@ Every push and pull request to `main` triggers `.github/workflows/check.yml`, wh
 4. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
 5. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
 
-If either step fails, GitHub marks the push red and sends a notification. Check the Actions tab at `github.com/sajidmohd717/islamic-lectures-react/actions` after each push to confirm green.
+If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 
 The same checks can be run locally before pushing:
 
@@ -124,7 +127,7 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 
 The static website is deployed with GitHub Pages from the `main` branch root.
 
-- GitHub Pages URL: `https://sajidmohd717.github.io/islamic-lectures-react/`
+- GitHub Pages URL: `https://sajidmohd717.github.io/improving-muslim/`
 - Custom domain: `https://improvingmuslim.com`
 
 Videos are not stored in Git. Large MP4 files are hosted on Cloudflare R2 and referenced by URL in the episode data.
@@ -139,7 +142,7 @@ AI reranking is enabled through a Cloudflare Worker endpoint configured in `scri
 aiSearchEndpoint: "https://improving-muslim-ai-search.improving-muslim.workers.dev"
 ```
 
-Never put an OpenAI, Claude, or other private AI API key in browser JavaScript. The browser only sends the user's submitted query plus trimmed catalog metadata to the Worker. The Worker calls OpenAI with the private key and returns ranked item IDs.
+Never put a DeepSeek, OpenAI, Claude, or other private AI API key in browser JavaScript. The browser only sends the user's submitted query plus trimmed catalog metadata to the Worker. The Worker calls the active provider with its server-side secret and returns ranked item IDs.
 
 Current production Worker:
 
@@ -161,7 +164,7 @@ Current production Worker:
 4. `scripts/script.js` immediately renders normal local keyword results, logs the submitted search event when signed in, and starts the AI rerank request in the background.
 5. The Worker receives `{ query, items }`, validates CORS/origin, calls the active AI provider, and returns ranked IDs.
 6. If ranked IDs come back, the homepage reorders/filters results and shows an "AI match" badge.
-7. If the Worker fails, OpenAI quota is unavailable, or no useful IDs come back, the homepage keeps the normal local search results.
+7. If the Worker fails, the active provider is unavailable, or no useful IDs come back, the homepage keeps the normal local search results.
 
 This means AI search should enhance search quality without being a single point of failure.
 
@@ -191,7 +194,7 @@ Expected healthy AI response:
 {"results":[{"id":"video:test-money","score":0.95,"reason":"Relevant to money and riba."}]}
 ```
 
-Expected safe fallback response when OpenAI quota/billing is unavailable:
+Expected safe fallback response when the active provider is unavailable:
 
 ```json
 {"results":[],"fallback":"ai-unavailable"}
@@ -207,7 +210,7 @@ During initial deployment on July 6, 2026, the Worker deployed correctly and the
 - Deployment name, Worker vars, and required secrets: `wrangler.jsonc`.
 - Search analytics storage: signed-in submissions create `searchEvents/{eventId}` in Firestore; clients cannot read those events directly.
 
-The first AI version is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks the active provider for JSON-ranked IDs, and the homepage shows those IDs with an "AI match" badge. Longer term, the better semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
+The current AI feature is a lightweight reranker: the browser sends the current catalog metadata to the Worker, the Worker asks the active provider for JSON-ranked IDs, and the homepage combines those scores with deterministic local relevance tiers. Longer term, the stronger semantic-search upgrade is embeddings/vector search over titles, descriptions, recaps, captions, speakers, and topics, with the reranker used only for final ordering or explanations.
 
 ## Video Hosting Pattern
 
@@ -268,7 +271,7 @@ aws configure --profile r2
 # Default output format: json
 ```
 
-### Publishing a YouTube episode: use `scripts/publish.ps1`
+### Publishing from YouTube: use `scripts/publish.ps1`
 
 For any episode whose source is a YouTube video, prefer `scripts/publish.ps1` over doing the download/fix/upload steps by hand. It runs the full pipeline in one command: `yt-dlp` download → ffmpeg faststart remux → R2 upload → `videoSrc` patched into the series data file.
 
@@ -281,6 +284,10 @@ Requires `yt-dlp`, `ffmpeg`, and the AWS CLI with the `r2` profile (see above) o
 # Single episode: registry-driven, auto-derives the R2 path and patches the data file
 .\scripts\publish.ps1 -Series "why-me" -Episode 10 -Url "https://youtu.be/SGdznSHyJUQ"
 
+# Standalone lecture: derives {speaker}/stand-alone/{lecture}.mp4 and uploads it
+.\scripts\publish.ps1 -Standalone -SpeakerSlug "abu-bakr-zoud" `
+  -LectureSlug "effect-of-the-quran-in-our-life" -Url "https://youtu.be/5mTqC9nb0SY"
+
 # Batch: a text file of "slug|episode|url" lines, one per episode
 .\scripts\publish.ps1 -BatchFile "episodes.txt"
 
@@ -292,11 +299,19 @@ Requires `yt-dlp`, `ffmpeg`, and the AWS CLI with the `r2` profile (see above) o
 
 **Local disk:** downloaded files live under `tmp/yt-dlp/` (gitignored) and are deleted automatically once the R2 upload is confirmed, so the cache doesn't grow unbounded. Pass `-KeepLocal` to keep the file for spot-checking.
 
-**After running the script**, still do the two things it doesn't automate:
+**After publishing a series episode**, still do the two things the script doesn't automate:
 1. Bump `availableCount` in `data/series-registry.js` for that series.
 2. Bump the `?v=` cache-bust on that series' `dataFile` entry in the registry.
 
-Then run `npm run check`.
+Then regenerate canonical routes and run the checks:
+
+```powershell
+npm run seo-pages
+npm run sitemap
+npm run check
+```
+
+**After publishing a standalone lecture**, add its full object to `data/standalone-lectures-data.js` manually because the title, categories, topic, description, source metadata, thumbnail, and captions require editorial judgment. Download the source thumbnail and English captions when available, add their local paths, then run the same generation and check commands above.
 
 ### Manual upload (non-YouTube sources, or when the script doesn't apply)
 
@@ -356,7 +371,7 @@ Each standalone lecture object:
 
 ```js
 {
-  id: "unique-slug",               // used in ?lecture= URL param and progress key
+  id: "unique-slug",               // used in the canonical route and progress key
   title: "Lecture Title",
   speaker: "Speaker Name",
   speakerSlug: "speaker-slug",
@@ -375,7 +390,7 @@ Each standalone lecture object:
 }
 ```
 
-The watch URL for a standalone lecture is `./pages/watch.html?lecture={id}`. The `pages/watch.html` dynamic loader skips series file loading when the `lecture` parameter is present — `standalone-lectures-data.js` is always pre-loaded on that page.
+The canonical watch URL for a standalone lecture is `./watch/standalone/{id}/`. The compatibility route `./pages/watch.html?lecture={id}` remains supported. The watch template skips series file loading when the `lecture` parameter is present — `standalone-lectures-data.js` is always pre-loaded on that page.
 
 Thumbnail download: use the YouTube maxresdefault URL and save it locally:
 
@@ -383,6 +398,18 @@ Thumbnail download: use the YouTube maxresdefault URL and save it locally:
 Invoke-WebRequest -Uri "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg" `
   -OutFile "assets\thumbnail\standalone\{speaker-slug}\{id}.jpg"
 ```
+
+Check whether the source offers captions with `yt-dlp --list-subs "{youtube-url}"`. When only YouTube's English automatic track is available, download it as WebVTT and rename the generated `.en-orig.vtt` file to the catalog path:
+
+```powershell
+yt-dlp --skip-download --write-auto-subs --sub-langs en-orig --sub-format vtt `
+  -o "assets\captions\standalone\{speaker-slug}\{id}.%(ext)s" "{youtube-url}"
+
+Move-Item "assets\captions\standalone\{speaker-slug}\{id}.en-orig.vtt" `
+  "assets\captions\standalone\{speaker-slug}\{id}.vtt"
+```
+
+Automatic captions are useful as an accessibility fallback, but they are not a reviewed transcript. Spot-check timing and wording, and prioritize human correction of Quran quotations, Arabic terms, names, and theological statements.
 
 ## Episode Publishing Workflow
 
@@ -399,7 +426,8 @@ When adding a new watchable episode from a YouTube source, steps 1-4 below are h
 9. Keep `episode.id` unchanged — progress is keyed to the YouTube video ID, not the R2 URL.
 10. Make sure the local episode thumbnail exists as `assets/thumbnail/{series-slug}/episodes/episode-XX.jpg`.
 11. Bump `availableCount` and the `dataFile` cache-bust for that series in `data/series-registry.js`.
-12. Run `npm run check` and test locally.
+12. Run `npm run seo-pages` and `npm run sitemap` to update committed generated routes.
+13. Run `npm run check` and test locally.
 
 When an episode is not uploaded yet: omit `videoSrc`, keep `statusNote`. The series page and watch sidebar show it as `Uploading soon`.
 
@@ -412,16 +440,17 @@ To add a series:
 1. Create `data/{series-slug}-data.js` with the episode list (copy an existing data file as a template). Only add `videoSrc` for episodes actually uploaded to R2.
 2. Add one entry to `data/series-registry.js` (slug, dataFile, categories, sectionTitle, title, speaker, thumbnailSrc, description, episodeThumbnailPath, playlistId, episodeCount, availableCount). Optional roadmap fields: `roadmapStatus: "scheduled"` plus `roadmapTarget: "Fully uploaded by ..."` — otherwise the roadmap derives Uploading/Planned from `availableCount`.
 3. Add assets: `assets/thumbnail/{series-slug}/...` and, if the speaker is new, `data/speaker-data.js` plus a photo in `assets/speaker/`.
-4. Run `npm run sitemap` to regenerate sitemap.xml from the registry.
-5. Run `npm run check` and verify: homepage card, browse page, series page, watch page, roadmap.
+4. Run `npm run seo-pages` to generate the canonical series page and any watchable episode routes.
+5. Run `npm run sitemap` to regenerate `sitemap.xml` from the registry.
+6. Run `npm run check` and verify: homepage card, browse page, canonical series page, canonical watch page, and roadmap.
 
 ## Removing A Series
 
 1. Delete the registry entry in `data/series-registry.js` and delete `data/{series-slug}-data.js`.
 2. Delete `assets/thumbnail/{series-slug}/` and any captions under `assets/captions/{series-slug}/`.
-3. Run `npm run sitemap`, then `npm run check`.
-4. If the series still appears in the remote series-api feed with an external link, add its exact title (lowercased) to `excludedSeriesTitles` in `scripts/script.js`. Cards pointing at unregistered `series-detail` ids are dropped automatically.
-5. Direct URLs are guarded automatically: `series-detail.html?id=...` redirects to the browse page and `watch.html?series=...` redirects home for unregistered slugs.
+3. Run `npm run seo-pages` and `npm run sitemap`, then `npm run check`.
+4. If the series still appears in the remote `series-api` feed with an external link, add its exact title (lowercased) to `excludedSeriesTitles` in `scripts/home-config.js`. Cards pointing at unregistered series IDs are dropped automatically.
+5. Compatibility URLs are guarded automatically: `series-detail.html?id=...` redirects to the browse page and `watch.html?series=...` redirects home for unregistered slugs.
 6. If episodes were uploaded to R2, delete the objects from the `islamic-lectures-videos` bucket so direct video URLs stop working.
 
 ## Language Course Episodes
@@ -451,6 +480,25 @@ The watch page panel order is: Grammar Notes → Episode Recap. Key Takeaways do
 
 Grammar notes are meant for quick lookup — "what was tanwin again?" — without reading the full recap. Keep definitions to one concise sentence. The Arabic field should use fully vowelled text where possible.
 
+## Generated And Compatibility Routes
+
+The canonical public routes are:
+
+```text
+/series/{series-slug}/
+/watch/{series-slug}/{episode-id}/
+/watch/standalone/{lecture-id}/
+```
+
+`scripts/generate-seo-pages.js` creates those routes from `pages/series-detail.html`, `pages/watch.html`, the registry, and the episode data. The generated HTML is committed so GitHub Pages can serve useful metadata without server-side rendering. Edit the templates or data, never files inside `series/` or `watch/`, then run:
+
+```bash
+npm run seo-pages
+npm run sitemap
+```
+
+The older query-string pages remain compatibility fallbacks for existing links.
+
 ## Watch Page Dynamic Series Loading
 
 `pages/watch.html` loads only the data file needed for the current `?series=` parameter. The inline loader looks the slug up in `window.seriesConfig` and injects that entry's `dataFile`. The history, saved, and speaker pages use a similar loader that injects every registered `dataFile`. No page lists data files by hand.
@@ -465,7 +513,7 @@ Script tags use query string versioning to force browsers to fetch updated files
 <script src="./scripts/watch-page.js?v=20260607-stall-detection" defer></script>
 ```
 
-Update the version string on any script tag whenever its corresponding file changes and those changes need to reach users who have previously visited the page. The format is `YYYYMMDD-brief-description`. This applies to: `watch-page.js`, `series-page.js`, `utils.js`, `firebase-auth.js`, and all data files referenced in `watch.html`'s dynamic loader map.
+Update the version string on any script tag whenever its corresponding file changes and those changes need to reach users who have previously visited the page. The format is `YYYYMMDD-brief-description`. This applies to `watch-page.js`, `series-page.js`, `utils.js`, `firebase-auth.js`, and data-file URLs in `data/series-registry.js`. If a maintained template changes, regenerate the canonical routes afterward.
 
 ## Watch Progress and Cloud Sync
 
@@ -649,10 +697,11 @@ The OG image shared on WhatsApp, Instagram, and other platforms is `public/socia
 The source template is `public/social-preview-template.html`. Regenerate the PNG after any design changes using Chrome headless:
 
 ```powershell
+$root = (Get-Location).Path
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" `
   --headless=new --window-size=1200,630 `
-  --screenshot="C:\Users\sajid\Documents\GitHub\islamic-lectures-react\public\social-preview.png" `
-  "C:\Users\sajid\Documents\GitHub\islamic-lectures-react\public\social-preview-template.html"
+  --screenshot="$root\public\social-preview.png" `
+  "$root\public\social-preview-template.html"
 ```
 
 After regenerating, commit both the updated template and the new PNG together. Social platforms cache OG images aggressively — use `https://www.opengraph.xyz` to force a fresh fetch and verify the result.
@@ -733,7 +782,28 @@ Current UX principles:
 
 When changing UI, run the accessibility checks and inspect at least one mobile-width viewport.
 
+## Scaling Guardrails And Recommended Next Work
+
+The static architecture is still a good fit for the current product: it is inexpensive to host, resilient when optional services fail, and easy to deploy. The main scaling risk is now authoring duplication and catalog drift rather than browser performance.
+
+Prioritize these improvements before the catalog and contributor count grow substantially:
+
+1. **Add a catalog integrity validator.** It should verify unique slugs and episode IDs, `episodeCount` and `availableCount`, required metadata, local thumbnail/caption paths, R2 URL shape, and permission status. Make it part of `npm run check`. This removes the most likely class of publishing mistakes.
+2. **Generate the shared page shell.** Headers, navigation, footers, Firebase script order, and cache-bust strings are duplicated across many HTML templates. Introduce a small repository-owned generator or include system that still emits plain static HTML; do not add a client framework merely to solve authoring duplication.
+3. **Split the largest controllers by feature boundary.** As `scripts/script.js` and `scripts/watch-page.js` grow, extract search orchestration, catalog rendering, progress, notes, and player recovery into testable modules with explicit interfaces. Preserve the current global APIs temporarily for compatibility.
+4. **Add focused data and behavior tests.** Unit-test catalog merging, progress/streak normalization, Firebase merge behavior, route helpers, and search ranking. Keep Playwright for a few critical end-to-end journeys instead of making every edge case a browser test.
+5. **Automate content-health checks separately from pull-request CI.** A scheduled or manually triggered job can check external R2 media, caption URLs, remote-feed availability, and broken outbound links without making ordinary development depend on network stability.
+
+Defer a service worker until there is an explicit offline/cache invalidation policy. Videos should remain network-only; an eventual PWA should cache only the app shell and safe static assets.
+
 ## Local Development
+
+Install Node.js 20+, Python 3, and dependencies first:
+
+```bash
+npm install
+npx playwright install chromium
+```
 
 ```bash
 npm run dev

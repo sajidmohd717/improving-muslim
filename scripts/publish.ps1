@@ -15,7 +15,10 @@
   2. Single episode: pass -Series, -Episode, -Url. This runs the full
      pipeline including patching the series data file.
 
-  3. Batch: pass -BatchFile pointing at a text file of "slug|episode|url"
+  3. Standalone lecture: pass -Standalone, -SpeakerSlug, -LectureSlug, and
+     -Url. This derives the standard speaker/stand-alone object key.
+
+  4. Batch: pass -BatchFile pointing at a text file of "slug|episode|url"
      lines.
 
 .PARAMETER Series
@@ -30,6 +33,15 @@
 .PARAMETER BatchFile
   Path to a text file with lines in the format: slug|episode|url
   Comments start with #. Skips blank lines.
+
+.PARAMETER Standalone
+  Publish a standalone lecture instead of a numbered series episode.
+
+.PARAMETER SpeakerSlug
+  Speaker folder slug for standalone mode (e.g. "abu-bakr-zoud").
+
+.PARAMETER LectureSlug
+  Filename slug for standalone mode (e.g. "effect-of-the-quran-in-our-life").
 
 .PARAMETER Interactive
   Force interactive prompt mode (this is also the default when no other
@@ -50,6 +62,7 @@
   .\scripts\publish.ps1
   .\scripts\publish.ps1 -Series "change-of-heart" -Episode 11 -Url "https://..."
   .\scripts\publish.ps1 -BatchFile "episodes.txt"
+  .\scripts\publish.ps1 -Standalone -SpeakerSlug "abu-bakr-zoud" -LectureSlug "effect-of-the-quran-in-our-life" -Url "https://..."
   .\scripts\publish.ps1 -Series "life-of-muhammad-mufti-menk" -Episode 4 -Url "https://..." -DryRun
   .\scripts\publish.ps1 -Series "change-of-heart" -Episode 11 -Url "https://..." -KeepLocal
 #>
@@ -59,6 +72,9 @@ param(
   [int]$Episode,
   [string]$Url,
   [string]$BatchFile,
+  [switch]$Standalone,
+  [string]$SpeakerSlug,
+  [string]$LectureSlug,
   [switch]$Interactive,
   [switch]$SkipFix,
   [switch]$KeepLocal,
@@ -454,7 +470,36 @@ function Publish-Episode {
   Add-VideoSrc -DataFile $entry.dataFile -EpNum $EpNum -R2Path $r2Path
 
   Write-Host "`n    Episode $EpNum published: $publicUrl" -ForegroundColor Green
-  Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, then run: npm run check"
+  Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, regenerate SEO pages + sitemap, then run npm run check."
+}
+
+function Publish-Standalone {
+  param([string]$Speaker, [string]$Lecture, [string]$YouTubeUrl)
+
+  if ($Speaker -notmatch '^[a-z0-9]+(?:-[a-z0-9]+)*$') {
+    throw "SpeakerSlug must be a lowercase kebab-case slug"
+  }
+  if ($Lecture -notmatch '^[a-z0-9]+(?:-[a-z0-9]+)*$') {
+    throw "LectureSlug must be a lowercase kebab-case slug"
+  }
+
+  $objectKey = "$Speaker/stand-alone/$Lecture.mp4"
+  $publicUrl = "$CDN_BASE/$objectKey"
+
+  Write-Step "Publishing standalone lecture: $Lecture"
+  Write-Host "    YouTube: $YouTubeUrl"
+  Write-Ok "R2 path: $objectKey"
+  Write-Ok "Public URL: $publicUrl"
+
+  $downloadDir = Join-Path $TEMP_DIR "standalone\$Speaker"
+  Get-LocalVideo -Url $YouTubeUrl -DownloadDir $downloadDir -BaseName $Lecture
+  $fixedFile = Join-Path $downloadDir "$Lecture.mp4"
+
+  Send-ToR2 -LocalFile $fixedFile -Bucket $R2_BUCKET -ObjectKey $objectKey
+  Remove-LocalAfterUpload -LocalFile $fixedFile
+
+  Write-Host "`n    Standalone lecture published: $publicUrl" -ForegroundColor Green
+  Write-Warn "Add its metadata to data/standalone-lectures-data.js, then regenerate SEO pages and the sitemap."
 }
 
 # ---- batch mode ----
@@ -556,7 +601,7 @@ function Invoke-Interactive {
     try {
       $entry = Get-SeriesEntry -Slug $slug
       Add-VideoSrc -DataFile $entry.dataFile -EpNum ([int]$epNum) -R2Path $objectKey
-      Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, then run: npm run check"
+      Write-Warn "Remember to bump availableCount + cache-bust in series-registry.js, regenerate SEO pages + sitemap, then run npm run check."
     }
     catch {
       Write-Fail "Data file update failed: $_"
@@ -575,6 +620,9 @@ function Invoke-Main {
   if ($BatchFile) {
     Publish-Batch -Path $BatchFile
   }
+  elseif ($Standalone -and $SpeakerSlug -and $LectureSlug -and $Url) {
+    Publish-Standalone -Speaker $SpeakerSlug -Lecture $LectureSlug -YouTubeUrl $Url
+  }
   elseif ($Series -and $Episode -and $Url) {
     Publish-Episode -Slug $Series -EpNum $Episode -YouTubeUrl $Url
   }
@@ -590,6 +638,9 @@ Usage:
 
   Single episode (full pipeline + data file patch):
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <youtube-url>
+
+  Standalone lecture (download + upload; add catalog metadata afterward):
+    .\scripts\publish.ps1 -Standalone -SpeakerSlug <speaker-slug> -LectureSlug <lecture-slug> -Url <youtube-url>
 
   Batch mode:
     .\scripts\publish.ps1 -BatchFile <path-to-file>
