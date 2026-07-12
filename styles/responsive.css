@@ -705,6 +705,14 @@
     margin-top: 8px;
   }
 
+  .catalog-pagination {
+    margin-top: 20px;
+  }
+
+  .catalog-load-more {
+    width: 100%;
+  }
+
   .bottom-nav {
     display: flex;
   }

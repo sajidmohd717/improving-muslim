@@ -153,12 +153,74 @@ test("standalone-only categories stay on the local catalog", async ({ page }) =>
   expect(pageErrors).toEqual([]);
 });
 
+test("homepage batches a 500-video catalog without changing the session order", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const lectures = Array.from({ length: 500 }, (_, index) => ({
+    id: `synthetic-${index + 1}`,
+    title: `Synthetic Lecture ${String(index + 1).padStart(3, "0")}`,
+    speaker: "Synthetic Speaker",
+    speakerSlug: "synthetic-speaker",
+    categories: [index % 2 ? "quran" : "purification"],
+    topic: index % 2 ? "Quran" : "Purification",
+    typeLabel: "Standalone Video",
+    published: "2026-01-01",
+    duration: 1200,
+    sourceUrl: `https://www.youtube.com/watch?v=synthetic${index}`,
+    thumbnailSrc: "./public/social-preview.png",
+    videoSrc: `https://videos.improvingmuslim.com/synthetic/${index}.mp4`,
+    description: "Synthetic scale-test lecture.",
+  }));
+  await page.route("**/data/standalone-lectures-data.js*", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: `window.standaloneLectures = ${JSON.stringify(lectures)};`,
+    }),
+  );
+  await page.goto("/");
+
+  const cards = page.locator("#series-grid .series-card");
+  const status = page.locator("#catalog-pagination-status");
+  const loadMore = page.getByRole("button", { name: "Load 24 more results" });
+  await expect(cards).toHaveCount(24);
+  const resultCount = await page.locator("#result-count").textContent();
+  const seriesCount = Number(resultCount.match(/^(\d+) series/)?.[1]);
+  expect(seriesCount).toBeGreaterThan(0);
+  const totalResults = seriesCount + lectures.length;
+  await expect(status).toHaveText(`Showing 24 of ${totalResults}`);
+  const firstBatch = await cards.locator(".series-title").evaluateAll((titles) =>
+    titles.map((title) => ({ href: title.getAttribute("href"), text: title.textContent.trim() })),
+  );
+
+  await loadMore.click();
+  await expect(cards).toHaveCount(48);
+  await expect(status).toHaveText(`Showing 48 of ${totalResults}`);
+  const retainedBatch = await cards.locator(".series-title").evaluateAll((titles) =>
+    titles.slice(0, 24).map((title) => ({ href: title.getAttribute("href"), text: title.textContent.trim() })),
+  );
+  expect(retainedBatch).toEqual(firstBatch);
+  await expect(cards.nth(24).locator(".series-title")).toBeFocused();
+
+  await page.locator('[data-content-type="videos"]').dispatchEvent("click");
+  await expect(cards).toHaveCount(24);
+  await expect(status).toHaveText("Showing 24 of 500");
+
+  await page.getByRole("button", { name: "Purification", exact: true }).click();
+  await expect(cards).toHaveCount(24);
+  await expect(status).toHaveText("Showing 24 of 250");
+  expect(pageErrors).toEqual([]);
+});
+
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test("has an accessible keyboard-operated menu without horizontal overflow", async ({ page }) => {
     const pageErrors = await preparePage(page);
     await page.goto("/");
+
+    await expect(page.locator("#series-grid .series-card")).toHaveCount(12);
+    await expect(page.locator("#catalog-pagination-status")).toHaveText(/Showing 12 of \d+/);
+    await expect(page.getByRole("button", { name: /Load \d+ more results/ })).toBeVisible();
 
     const menuButton = page.getByRole("button", { name: "More menu" });
     const menu = page.locator("#nav-more-menu");

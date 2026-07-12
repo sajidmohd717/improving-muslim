@@ -111,6 +111,7 @@ const localCategoryFallbacks = (() => {
 const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
 
 const descriptions = homeConfig.descriptions || {};
+const catalogBatchSize = window.matchMedia?.("(max-width: 600px)").matches ? 12 : 24;
 
 const state = {
   activeCategory: initialCategoryFromUrl(),
@@ -120,6 +121,7 @@ const state = {
   activeSpeaker: null,
   contentType: "all",
   hideWatched: localStorage.getItem("im-hide-watched") === "true",
+  visibleCount: catalogBatchSize,
   aiSearch: {
     query: "",
     pending: false,
@@ -207,6 +209,9 @@ const els = {
   contentTypeFilter: document.querySelector("#content-type-filter"),
   activeCategoryLabel: document.querySelector("#active-category-label"),
   hideWatchedBtn: document.querySelector("#hide-watched-btn"),
+  catalogPagination: document.querySelector("#catalog-pagination"),
+  catalogPaginationStatus: document.querySelector("#catalog-pagination-status"),
+  catalogLoadMore: document.querySelector("#catalog-load-more"),
 };
 
 function cleanJson(text) {
@@ -365,6 +370,7 @@ const homeSearch = window.IMHomeSearch.create({
   onSubmit(query) {
     state.searchTerm = query;
     state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
+    resetCatalogPagination();
     renderSeries();
     runTranscriptSearch(query);
     if (query) {
@@ -1078,6 +1084,32 @@ function getSeriesUrl(series) {
   return series.link;
 }
 
+function resetCatalogPagination() {
+  state.visibleCount = catalogBatchSize;
+}
+
+function updateCatalogPagination(total, shown) {
+  if (!els.catalogPagination || !els.catalogPaginationStatus || !els.catalogLoadMore) return;
+  const needsPagination = total > catalogBatchSize;
+  els.catalogPagination.hidden = !needsPagination;
+  if (!needsPagination) {
+    els.catalogPaginationStatus.textContent = "";
+    els.catalogLoadMore.hidden = true;
+    return;
+  }
+
+  const remaining = Math.max(0, total - shown);
+  els.catalogPaginationStatus.textContent = remaining
+    ? `Showing ${shown} of ${total}`
+    : `Showing all ${total}`;
+  els.catalogLoadMore.hidden = remaining === 0;
+  if (remaining) {
+    const nextBatch = Math.min(catalogBatchSize, remaining);
+    els.catalogLoadMore.textContent = `Load ${nextBatch} more`;
+    els.catalogLoadMore.setAttribute("aria-label", `Load ${nextBatch} more results`);
+  }
+}
+
 function renderSeries() {
   const isSearching = Boolean(state.searchTerm);
   const aiIds = state.aiSearch.query === state.searchTerm && Array.isArray(state.aiSearch.results)
@@ -1158,6 +1190,7 @@ function renderSeries() {
 
   if (!series.length && !related.length) {
     els.seriesGrid.innerHTML = "";
+    updateCatalogPagination(0, 0);
     if (aiPending) {
       setStatus(
         `<span class="ai-search-spinner" aria-hidden="true"></span> No instant matches for "${escapeHtml(state.searchTerm)}" — AI is searching descriptions and topics. This can take a few seconds…`
@@ -1229,7 +1262,12 @@ function renderSeries() {
         </article>
       `;
   };
-  const relatedDivider = related.length
+  const totalResults = series.length + related.length;
+  const shown = Math.min(state.visibleCount, totalResults);
+  const visibleSeries = series.slice(0, shown);
+  const relatedSlots = Math.max(0, shown - series.length);
+  const visibleRelated = related.slice(0, relatedSlots);
+  const relatedDivider = visibleRelated.length
     ? `<div class="related-divider" role="separator">${
         series.length
           ? "Not exact matches — possibly related"
@@ -1237,9 +1275,10 @@ function renderSeries() {
       }</div>`
     : "";
   els.seriesGrid.innerHTML =
-    series.map(seriesCardHtml).join("") +
+    visibleSeries.map(seriesCardHtml).join("") +
     relatedDivider +
-    related.map((item, i) => seriesCardHtml(item, series.length + i)).join("");
+    visibleRelated.map((item, i) => seriesCardHtml(item, series.length + i)).join("");
+  updateCatalogPagination(totalResults, shown);
 }
 
 function scrollToSeriesResults() {
@@ -1303,6 +1342,7 @@ async function runAiSearch(query) {
 async function loadCategory(category) {
   state.activeCategory = category;
   state.searchTerm = "";
+  resetCatalogPagination();
   state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
   homeSearch.reset();
   runTranscriptSearch("");
@@ -1366,6 +1406,7 @@ function bindEvents() {
     const button = event.target.closest("[data-content-type]");
     if (!button) return;
     state.contentType = button.dataset.contentType;
+    resetCatalogPagination();
     els.contentTypeFilter.querySelectorAll("button").forEach((item) => {
       item.classList.toggle("is-active", item === button);
     });
@@ -1381,6 +1422,7 @@ function bindEvents() {
 
   els.hideWatchedBtn?.addEventListener("click", () => {
     state.hideWatched = !state.hideWatched;
+    resetCatalogPagination();
     localStorage.setItem("im-hide-watched", state.hideWatched);
     syncHideWatchedBtn();
     renderSeries();
@@ -1452,6 +1494,7 @@ function bindEvents() {
     if (!option) return;
     const value = option.dataset.value;
     state.sortBy = value;
+    resetCatalogPagination();
     els.sortDisplay.textContent = sortLabels[value] || value;
     els.sortOptions.querySelectorAll(".sort-option").forEach((o) => {
       o.classList.toggle("is-selected", o === option);
@@ -1460,6 +1503,15 @@ function bindEvents() {
     els.sortOptions.hidden = true;
     els.sortTrigger.setAttribute("aria-expanded", "false");
     renderSeries();
+  });
+
+  els.catalogLoadMore?.addEventListener("click", () => {
+    const previouslyShown = els.seriesGrid.querySelectorAll(".series-card").length;
+    state.visibleCount += catalogBatchSize;
+    renderSeries();
+    const cards = els.seriesGrid.querySelectorAll(".series-card");
+    const firstNewCard = cards[previouslyShown];
+    firstNewCard?.querySelector(".series-title")?.focus();
   });
 
   document.addEventListener("click", (event) => {

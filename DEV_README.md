@@ -117,7 +117,7 @@ Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automat
 statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah."
 ```
 
-The homepage feed default is a fresh shuffle per visit — an intentional product decision for fair discovery, so no series is permanently buried below the fold. Do not "fix" this by making the default order stable. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
+The homepage feed default is a fresh shuffle per visit — an intentional product decision for fair discovery, so no series is permanently buried below the fold. The shuffled order stays stable for that page session so loading another batch never moves cards the learner has already seen. The catalog renders 24 cards initially on desktop and 12 at mobile widths, then exposes an accessible `Load more` control in equal-sized batches. Search, category, content-type, sort, and hide-watched changes reset to the first batch. No publishing step is required for this behavior; new series and standalone lectures join it automatically. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
 ## CI / Automated Checks
 
@@ -129,7 +129,7 @@ Every push and pull request to `main` triggers `.github/workflows/check.yml`, wh
 4. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
 5. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
 6. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
-7. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, shared Explore taxonomy, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
+7. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, a synthetic 500-video catalog, shared Explore taxonomy, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu and catalog batch.
 
 If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 

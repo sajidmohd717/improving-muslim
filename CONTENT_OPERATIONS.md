@@ -164,6 +164,8 @@ Then verify locally:
 - Related lectures and Up next render after the catalog has been rebuilt.
 - The new speaker profile includes the lecture.
 
+The homepage automatically includes newly maintained content in its shuffled catalog. It renders the first 24 matching cards on desktop or 12 on mobile and reveals the rest through `Load more`; do not hand-place a new card or alter a batch size during publishing. When checking a new item that falls beyond the first batch, use search, its topic filter, or `Load more` to confirm it is discoverable.
+
 ## Adding a series episode
 
 ### 1. Publish the episode

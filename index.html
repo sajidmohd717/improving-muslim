@@ -191,6 +191,12 @@
         </div>
         <div class="status-message" id="status-message" role="status">Loading series...</div>
         <div class="series-grid" id="series-grid"></div>
+        <div class="catalog-pagination" id="catalog-pagination" hidden>
+          <p class="catalog-pagination-status" id="catalog-pagination-status" aria-live="polite"></p>
+          <button class="catalog-load-more" id="catalog-load-more" type="button" aria-controls="series-grid">
+            Load more
+          </button>
+        </div>
       </section>
 
       <section class="content-section transcript-section" id="transcript-section" aria-labelledby="transcript-title" hidden>
@@ -226,7 +232,7 @@
     <script src="./scripts/related-videos.js?v=20260711-popularity" defer></script>
     <script src="./scripts/home-search.js?v=20260711-transcripts" defer></script>
     <script src="./scripts/transcript-search.js?v=20260711-transcripts" defer></script>
-    <script src="./scripts/script.js?v=20260712-taxonomy" defer></script>
+    <script src="./scripts/script.js?v=20260712-pagination" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
