@@ -165,8 +165,9 @@ function stableRandomKey(title) {
 }
 
 function getSortedSeries(list) {
-  // Default is a fresh shuffle per visit so no series is permanently
-  // buried below the fold. "featured" is the curated registry order.
+  // "featured" is the curated registry order. The default discovery shuffle
+  // is upgraded to a personalized blend on the For You feed when meaningful
+  // watch history is available (see getPersonalizedHomeOrder below).
   if (state.sortBy === "featured") {
     return list;
   }
@@ -180,6 +181,100 @@ function getSortedSeries(list) {
     return [...list].sort((a, b) => a.title.localeCompare(b.title));
   }
   return list;
+}
+
+function catalogHomeIdentity(item) {
+  if (!item) return "";
+  return item.kind === "standalone" ? `video:${item.id}` : `series:${item.series}`;
+}
+
+function homeCardIdentity(item) {
+  if (!item) return "";
+  return item.contentType === "video" ? `video:${item.sourceId}` : `series:${item._seriesSlug}`;
+}
+
+function getPersonalizedHomeOrder(list) {
+  const catalogItems = window.catalogIndex?.items || [];
+  if (!window.IMRelated || !catalogItems.length) {
+    return { items: getSortedSeries(list), personalized: false };
+  }
+
+  const itemByProgressKey = new Map(
+    catalogItems.map((item) => [`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, item]),
+  );
+  const seeds = storageKeysWithPrefix(PROGRESS_PREFIX)
+    .map((key) => {
+      const stored = readJsonStorage(key, {});
+      const item = itemByProgressKey.get(key);
+      const engaged = stored.completed || (Number(stored.currentTime) || 0) >= 120;
+      return item && stored.updatedAt && engaged
+        ? { item, updatedAt: Number(stored.updatedAt) || 0 }
+        : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .slice(0, 3);
+
+  if (!seeds.length) {
+    return { items: getSortedSeries(list), personalized: false };
+  }
+
+  const popularity = window.IMPopularity ? window.IMPopularity.cachedCounts() : {};
+  const recommendationScores = new Map();
+  seeds.forEach(({ item: seed }, seedIndex) => {
+    const seedWeight = 1 / (seedIndex + 1);
+    window.IMRelated
+      .rankRelated({
+        items: catalogItems,
+        currentKey: seed.key,
+        isWatched: (item) => Boolean(
+          readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {}).completed,
+        ),
+        popularity,
+        limit: 36,
+      })
+      .forEach((item, rank) => {
+        // Started items already have a dedicated Continue learning card.
+        const progress = readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {});
+        if ((Number(progress.currentTime) || 0) >= 10 && !progress.completed) return;
+        const identity = catalogHomeIdentity(item);
+        if (!identity) return;
+        const rankWeight = 1 - rank / 36;
+        recommendationScores.set(
+          identity,
+          (recommendationScores.get(identity) || 0) + seedWeight * rankWeight,
+        );
+      });
+  });
+
+  const relevant = list
+    .filter((item) => recommendationScores.has(homeCardIdentity(item)))
+    .sort((a, b) => {
+      const difference =
+        recommendationScores.get(homeCardIdentity(b)) - recommendationScores.get(homeCardIdentity(a));
+      return difference || stableRandomKey(a.title) - stableRandomKey(b.title);
+    });
+  if (!relevant.length) {
+    return { items: getSortedSeries(list), personalized: false };
+  }
+
+  // Cap the recommendation pool and interleave one discovery card after every
+  // two relevant cards. This keeps the feed useful without creating a bubble.
+  const recommendationLimit = Math.min(12, Math.ceil(list.length / 2));
+  const recommended = relevant.slice(0, recommendationLimit);
+  const recommendedSet = new Set(recommended);
+  const discovery = list
+    .filter((item) => !recommendedSet.has(item))
+    .sort((a, b) => stableRandomKey(a.title) - stableRandomKey(b.title));
+  const blended = [];
+  while (recommended.length || discovery.length) {
+    for (let slot = 0; slot < 2 && recommended.length; slot += 1) {
+      blended.push(recommended.shift());
+    }
+    if (discovery.length) blended.push(discovery.shift());
+  }
+
+  return { items: blended, personalized: true };
 }
 
 function searchSections() {
@@ -472,6 +567,7 @@ function localSeriesSections(category = "foryou") {
       description: entry.description,
       contentType: "series",
       _globalKey: entry.globalKey,
+      _seriesSlug: entry.slug,
       _keywords: entry.searchKeywords || "",
       _topics: entry.topicKeywords || "",
       _cats: cats,
@@ -803,17 +899,9 @@ function renderContinueWatching() {
   els.continueList.innerHTML = heroCard + compactCards;
 }
 
-// ── "Because you watched" shelves ────────────────────────────────────────────
-// Personalized rows seeded from the most recent meaningfully-watched lectures
-// (completed, or 2+ minutes in), ranked catalog-wide by IMRelated. Hidden for
-// new visitors with no history, and capped at two shelves so the catalogue
-// stays the page's centre of gravity.
-function catalogProgress(item) {
-  return readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {});
-}
-
-// Shared card markup for the horizontal shelf rows ("Because you watched",
-// "Popular right now"). metaText is the small line under the title.
+// ── Homepage shelf cards ─────────────────────────────────────────────────────
+// Shared card markup for horizontal homepage shelves. metaText is the small
+// line under the title.
 function shelfCardHtml(item, metaText) {
   const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
   return `
@@ -860,91 +948,6 @@ function renderPopularShelf() {
       .join("");
     section.hidden = false;
   });
-}
-
-function renderRecommendationShelves() {
-  const host = document.querySelector("#recommendation-shelves");
-  if (!host) return;
-  const catalogItems = window.catalogIndex?.items || [];
-  if (!window.IMRelated || !catalogItems.length) {
-    host.innerHTML = "";
-    return;
-  }
-
-  const itemByProgressKey = new Map(
-    catalogItems.map((item) => [`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, item]),
-  );
-
-  const seeds = storageKeysWithPrefix(PROGRESS_PREFIX)
-    .map((key) => {
-      try {
-        const stored = readJsonStorage(key, {});
-        const item = itemByProgressKey.get(key);
-        if (!item || !stored.updatedAt) return null;
-        const engaged = stored.completed || (Number(stored.currentTime) || 0) >= 120;
-        return engaged ? { item, updatedAt: Number(stored.updatedAt) || 0 } : null;
-      } catch {
-        return null;
-      }
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.updatedAt - a.updatedAt);
-
-  const isWatched = (item) => Boolean(catalogProgress(item).completed);
-  const alreadyPicked = new Set();
-  const usedSeedGroups = new Set();
-  const shelves = [];
-
-  for (const seed of seeds) {
-    if (shelves.length >= 2) break;
-    // One shelf per series (or per standalone lecture) keeps the two rows varied.
-    const seedGroup = seed.item.series || `standalone:${seed.item.id}`;
-    if (usedSeedGroups.has(seedGroup)) continue;
-
-    const picks = window.IMRelated
-      .rankRelated({
-        items: catalogItems,
-        currentKey: seed.item.key,
-        isWatched,
-        popularity: window.IMPopularity ? window.IMPopularity.cachedCounts() : {},
-        limit: 12,
-      })
-      .filter((item) => {
-        if (alreadyPicked.has(item.key)) return false;
-        // Started-but-unfinished lectures already live in the continue strip.
-        const stored = catalogProgress(item);
-        return !((Number(stored.currentTime) || 0) >= 10 && !stored.completed);
-      })
-      .slice(0, 8);
-    if (picks.length < 3) continue;
-
-    usedSeedGroups.add(seedGroup);
-    picks.forEach((item) => alreadyPicked.add(item.key));
-    shelves.push({ seed: seed.item, picks });
-  }
-
-  host.innerHTML = shelves
-    .map(({ seed, picks }, shelfIndex) => {
-      const headingId = `shelf-title-${shelfIndex}`;
-      const cards = picks
-        .map((item) => {
-          const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
-          const meta = [item.kind === "episode" ? item.speaker : "", isWatched(item) ? "Watched" : mins]
-            .filter(Boolean)
-            .join(" · ");
-          return shelfCardHtml(item, meta);
-        })
-        .join("");
-      return `
-        <section class="content-section shelf-section" aria-labelledby="${headingId}">
-          <div class="section-heading">
-            <p class="eyebrow">Because you watched</p>
-            <h2 id="${headingId}">${escapeHtml(seed.title)}</h2>
-          </div>
-          <div class="shelf-strip">${cards}</div>
-        </section>`;
-    })
-    .join("");
 }
 
 function renderStudyStreak() {
@@ -1112,6 +1115,7 @@ function updateCatalogPagination(total, shown) {
 
 function renderSeries() {
   const isSearching = Boolean(state.searchTerm);
+  let personalizedHome = false;
   const aiIds = state.aiSearch.query === state.searchTerm && Array.isArray(state.aiSearch.results)
     ? state.aiSearch.results
     : null;
@@ -1135,16 +1139,24 @@ function renderSeries() {
     .filter(seriesMatchesContentType)
     .filter((item) => !state.hideWatched || !isItemWatched(item))
     .map(enrichSeries);
-  series = aiIds
-    ? series.sort((a, b) => {
+  if (aiIds) {
+    series = series.sort((a, b) => {
         const rankA = aiOrder.has(searchItemId(a)) ? aiOrder.get(searchItemId(a)) : Infinity;
         const rankB = aiOrder.has(searchItemId(b)) ? aiOrder.get(searchItemId(b)) : Infinity;
         if (rankA !== rankB) return rankA - rankB;
         return (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0);
-      })
-    : isSearching && state.sortBy === "random"
-    ? [...series].sort((a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0))
-    : getSortedSeries(series);
+      });
+  } else if (isSearching && state.sortBy === "random") {
+    series = [...series].sort(
+      (a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0),
+    );
+  } else if (state.sortBy === "random" && state.activeCategory === "foryou" && !state.activeSpeaker) {
+    const feed = getPersonalizedHomeOrder(series);
+    series = feed.items;
+    personalizedHome = feed.personalized;
+  } else {
+    series = getSortedSeries(series);
+  }
 
   // Items that only matched buried text (recaps, keyword lists) are shown
   // under a "possibly related" divider instead of posing as real results.
@@ -1174,8 +1186,11 @@ function renderSeries() {
   if (els.seriesTitle) {
     els.seriesTitle.textContent = isSearching
       ? `Search results for "${state.searchTerm}"`
-      : "Lecture Series";
+      : state.activeCategory === "foryou"
+      ? "For you"
+      : "Lectures and series";
   }
+  els.seriesGrid.dataset.feedMode = personalizedHome ? "personalized" : "discovery";
   const aiPending = state.aiSearch.pending && state.aiSearch.query === state.searchTerm;
   const videoCount = series.filter((item) => item.contentType === "video").length;
   const seriesCount = series.length - videoCount;
@@ -1525,7 +1540,6 @@ function bindEvents() {
 renderSpeakers();
 renderCategories();
 renderContinueWatching();
-renderRecommendationShelves();
 renderPopularShelf();
 renderStudyStreak();
 bindEvents();
@@ -1538,13 +1552,12 @@ els.continueList?.addEventListener("click", (e) => {
   if (!card) return;
   try { localStorage.removeItem(card.dataset.progressKey); } catch {}
   renderContinueWatching();
-  renderRecommendationShelves();
   renderStudyStreak();
+  renderSeries();
 });
 
 window.addEventListener("im-auth-state-changed", () => {
   renderContinueWatching();
-  renderRecommendationShelves();
   renderStudyStreak();
   renderSeries();
 });

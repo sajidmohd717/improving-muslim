@@ -31,6 +31,8 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   );
   await expect(page.getByRole("searchbox", { name: "Search lectures" })).toBeVisible();
   await expectCatalog(page);
+  await expect(page.getByRole("heading", { level: 2, name: "For you" })).toBeVisible();
+  await expect(page.locator("#series-grid")).toHaveAttribute("data-feed-mode", "discovery");
 
   const prayerFilter = page.getByRole("button", { name: "Prayer", exact: true });
   await prayerFilter.click();
@@ -41,6 +43,32 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   await search.fill("prayer");
   await search.press("Enter");
   await expect(page.locator("#series-grid .series-title", { hasText: "Enjoy Your Prayer" })).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});
+
+test("homepage blends watch-based recommendations into the For you grid", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.addInitScript(() => {
+    localStorage.setItem("lecture-progress:standalone:purpose-of-creation", JSON.stringify({
+      currentTime: 180,
+      duration: 900,
+      percent: 0.2,
+      completed: false,
+      updatedAt: Date.now(),
+    }));
+  });
+  const categoryLoaded = page.waitForResponse((response) =>
+    response.url().startsWith("https://sajidmohd717.github.io/series-api/"),
+  );
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await categoryLoaded;
+
+  await expect(page.locator("#continue-section")).toBeVisible();
+  await expect(page.locator("#series-grid")).toHaveAttribute("data-feed-mode", "personalized");
+  await expect(page.getByRole("heading", { level: 2, name: "For you" })).toBeVisible();
+  await expect(page.locator("#recommendation-shelves")).toHaveCount(0);
+  await expect(page.getByText("Because you watched", { exact: true })).toHaveCount(0);
+  await expectCatalog(page);
   expect(pageErrors).toEqual([]);
 });
 
@@ -152,7 +180,7 @@ test("category pages show focused topic content without homepage personalization
   await expect(page.locator("#category-summary")).toHaveText("41 lectures available across 2 series");
   await expect(page.locator("#category-series-grid .series-card")).toHaveCount(2);
   await expect(page.locator("#category-lectures-grid .series-card")).toHaveCount(18);
-  await expect(page.locator("#continue-section, #streak-section, #recommendation-shelves")).toHaveCount(0);
+  await expect(page.locator("#continue-section, #streak-section")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "All topics" })).toHaveAttribute("href", "./pages/explore.html");
 
   await page.goto("/pages/category.html?category=fiqh", { waitUntil: "domcontentloaded" });
@@ -205,7 +233,11 @@ test("homepage batches a 500-video catalog without changing the session order", 
       body: `window.standaloneLectures = ${JSON.stringify(lectures)};`,
     }),
   );
+  const categoryLoaded = page.waitForResponse((response) =>
+    response.url().startsWith("https://sajidmohd717.github.io/series-api/"),
+  );
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  await categoryLoaded;
 
   const cards = page.locator("#series-grid .series-card");
   const status = page.locator("#catalog-pagination-status");
@@ -284,6 +316,57 @@ test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) 
 
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
+
+  test("keeps streak and continue-learning summaries compact and ordered", async ({ page }) => {
+    const pageErrors = await preparePage(page);
+    await page.addInitScript(() => {
+      const now = new Date();
+      const todayKey = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0"),
+      ].join("-");
+      localStorage.setItem("lecture-progress:standalone:purpose-of-creation", JSON.stringify({
+        currentTime: 180,
+        duration: 900,
+        percent: 0.2,
+        completed: false,
+        updatedAt: Date.now(),
+      }));
+      localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
+        targetMinutes: 15,
+        todayDate: todayKey,
+        todaySeconds: 5 * 60,
+        current: 3,
+        best: 5,
+        lastCompletedDate: todayKey,
+        days: {},
+        freezesAvailable: 0,
+        freezeMilestonesClaimed: 0,
+        updatedAt: Date.now(),
+      }));
+    });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const streak = page.locator("#streak-section");
+    const continuing = page.locator("#continue-section");
+    await expect(streak).toBeVisible();
+    await expect(continuing).toBeVisible();
+    const layout = await page.evaluate(() => {
+      const streakSection = document.querySelector("#streak-section");
+      const continueSection = document.querySelector("#continue-section");
+      return {
+        streakBeforeContinue:
+          Boolean(streakSection.compareDocumentPosition(continueSection) & Node.DOCUMENT_POSITION_FOLLOWING),
+        streakCardHeight: document.querySelector("#streak-card").getBoundingClientRect().height,
+        continueCardHeight: document.querySelector(".continue-hero").getBoundingClientRect().height,
+      };
+    });
+    expect(layout.streakBeforeContinue).toBe(true);
+    expect(layout.streakCardHeight).toBeLessThanOrEqual(80);
+    expect(layout.continueCardHeight).toBeLessThanOrEqual(140);
+    expect(pageErrors).toEqual([]);
+  });
 
   test("has an accessible keyboard-operated menu without horizontal overflow", async ({ page }) => {
     const pageErrors = await preparePage(page);

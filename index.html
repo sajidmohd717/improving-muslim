@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260711-transcripts" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260713-mobile-home" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <script src="./scripts/error-handler.js?v=20260608-auth-hotfix"></script>
     <script type="application/ld+json">
@@ -130,6 +130,10 @@
         </div>
       </section>
 
+      <section class="content-section streak-section" id="streak-section" aria-labelledby="streak-title" hidden>
+        <div class="streak-card" id="streak-card"></div>
+      </section>
+
       <section class="content-section continue-section" id="continue-section" aria-labelledby="continue-title" hidden>
         <div class="section-heading">
           <p class="eyebrow">Pick up where you left off</p>
@@ -137,13 +141,6 @@
         </div>
         <div class="continue-strip" id="continue-list"></div>
       </section>
-
-      <section class="content-section streak-section" id="streak-section" aria-labelledby="streak-title" hidden>
-        <div class="streak-card" id="streak-card"></div>
-      </section>
-
-      <!-- "Because you watched" shelves, filled by renderRecommendationShelves() -->
-      <div id="recommendation-shelves"></div>
 
       <section class="content-section shelf-section" id="popular-section" aria-labelledby="popular-title" hidden>
         <div class="section-heading">
@@ -232,7 +229,7 @@
     <script src="./scripts/related-videos.js?v=20260711-popularity" defer></script>
     <script src="./scripts/home-search.js?v=20260711-transcripts" defer></script>
     <script src="./scripts/transcript-search.js?v=20260711-transcripts" defer></script>
-    <script src="./scripts/script.js?v=20260712-pagination" defer></script>
+    <script src="./scripts/script.js?v=20260713-personalized-feed" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
