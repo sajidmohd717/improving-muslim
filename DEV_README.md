@@ -14,7 +14,8 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
-- `scripts/home-config.js` holds homepage categories, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
+- `data/category-taxonomy.js` is the single source of truth for public topic names, descriptions, aliases, ordering, and homepage system filters. Both the homepage and Explore derive their category UI from it.
+- `scripts/home-config.js` holds homepage service endpoints, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
 - `scripts/script.js` loads, merges, sorts, and renders homepage series and standalone lecture cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
@@ -121,11 +122,12 @@ The homepage feed default is a fresh shuffle per visit — an intentional produc
 Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
 
 1. `npm run check:js` — syntax check of every file in `scripts/` and `data/` (auto-discovered, no list to maintain).
-2. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
-3. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
-4. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
-5. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
-6. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
+2. `npm run check:taxonomy` — verifies taxonomy structure, homepage coverage, and every category used by maintained series and standalone lectures.
+3. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
+4. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
+5. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
+6. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
+7. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, shared Explore taxonomy, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu.
 
 If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 

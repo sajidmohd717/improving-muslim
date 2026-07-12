@@ -8,24 +8,7 @@ window.IMHomeConfig = {
   // Worker or other backend is deployed with a private API key.
   aiSearchEndpoint: "https://improving-muslim-ai-search.improving-muslim.workers.dev",
 
-  categories: [
-    { name: "All", value: "foryou" },
-    { name: "Available now", value: "available" },
-    { name: "Purification", value: "purification" },
-    { name: "Prayer", value: "prayer" },
-    { name: "Dhikr", value: "dhikr" },
-    { name: "Hadith", value: "hadith" },
-    { name: "Seerah", value: "seerah" },
-    { name: "Sahaba", value: "sahaba" },
-    { name: "Quran", value: "quran" },
-    { name: "Tafsir", value: "tafsir" },
-    { name: "Aqeedah", value: "aqeedah" },
-    { name: "Prophets", value: "prophets" },
-    { name: "Angels", value: "angels" },
-    { name: "Arabic", value: "arabic" },
-    { name: "Fiqh", value: "fiqh" },
-    { name: "Hereafter", value: "hereafter" },
-  ],
+  categories: window.IMCategoryTaxonomy?.homepageFilters || [{ name: "All", value: "foryou" }],
 
   descriptions: {
     "Enjoy Your Prayer":

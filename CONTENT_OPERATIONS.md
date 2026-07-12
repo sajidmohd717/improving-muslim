@@ -27,6 +27,7 @@ npm run check
 - `data/standalone-lectures-data.js` for standalone lecture metadata.
 - `data/{series-slug}-data.js` for series episode metadata.
 - `data/series-registry.js` for series-level metadata and availability counts.
+- `data/category-taxonomy.js` for category names, descriptions, aliases, visibility, and ordering.
 - `data/speaker-data.js` when a new speaker is introduced.
 - `assets/thumbnail/` for local thumbnails.
 - `assets/captions/` for WebVTT captions.
@@ -97,6 +98,8 @@ Add the lecture object to `data/standalone-lectures-data.js`. Confirm every requ
 ```
 
 Use `categories`, not the legacy singular `category` field. Put the category that best matches learner intent first.
+
+Every category slug must already exist in `data/category-taxonomy.js`. Add or rename a category there once; the homepage and Explore will both update from that shared source. `npm run check:taxonomy` fails when maintained content uses an unknown category or when a public topic is omitted from homepage filters.
 
 Takeaways and recaps must come from a reviewed, sufficiently reliable transcript or from a careful review of the lecture itself. If automatic captions are too garbled to support accurate editorial notes, omit `takeaways` and `recap`, leave a short maintainer comment explaining why, and revisit the item when a corrected transcript becomes available. Never invent or infer religious claims merely to fill those fields.
 

@@ -63,6 +63,44 @@ test("homepage links through a generated series page to its watch page", async (
   expect(pageErrors).toEqual([]);
 });
 
+test("Explore renders every public category from the shared taxonomy", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.goto("/pages/explore.html");
+
+  const expected = await page.evaluate(() =>
+    window.IMCategoryTaxonomy.topics
+      .filter((topic) => topic.public)
+      .map((topic) => topic.value),
+  );
+  const rendered = await page
+    .locator("#explore-topic-grid [data-category]")
+    .evaluateAll((cards) => cards.map((card) => card.dataset.category));
+
+  expect(rendered).toEqual(expected);
+  expect(rendered).toContain("prophets");
+  expect(rendered).toContain("fiqh");
+  await expect(page.getByRole("link", { name: "Browse topic: Prophets" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Browse topic: Fiqh" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Request this topic: Hereafter" })).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});
+
+test("standalone-only categories stay on the local catalog", async ({ page }) => {
+  let fiqhFeedRequests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/fiqh-data.json")) fiqhFeedRequests += 1;
+  });
+  const pageErrors = await preparePage(page);
+  await page.goto("/?category=fiqh#series");
+
+  await expect(page.locator("#series-grid .series-title")).toHaveCount(1);
+  await expect(page.locator("#series-grid .series-title")).toHaveText(
+    "The 7 Commandments To A Successful Marriage",
+  );
+  expect(fiqhFeedRequests).toBe(0);
+  expect(pageErrors).toEqual([]);
+});
+
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 

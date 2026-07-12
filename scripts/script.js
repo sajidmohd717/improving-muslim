@@ -96,6 +96,15 @@ const localCategoryFallbacks = (() => {
       });
     }
   }
+  // A category can be represented only by standalone lectures (currently
+  // Aqeedah and Fiqh). Give those categories an empty local section list so
+  // loadCategory treats them as first-class local filters instead of fetching
+  // an unrelated remote feed before standalone cards are merged in.
+  for (const lecture of (window.standaloneLectures || [])) {
+    for (const cat of entryCategories(lecture)) {
+      if (!map[cat]) map[cat] = [];
+    }
+  }
   return map;
 })();
 

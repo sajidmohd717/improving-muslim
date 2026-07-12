@@ -51,6 +51,7 @@ Useful individual commands:
 |---|---|
 | `npm run check:js` | Validate browser and data JavaScript syntax |
 | `npm run check:a11y` | Audit maintained HTML templates |
+| `npm run check:taxonomy` | Validate category definitions and every category used by maintained content |
 | `npm run generate:content` | Regenerate the catalog, transcript index, canonical pages, and sitemap after content changes |
 | `npm run seo-pages` | Regenerate canonical `/series/` and `/watch/` pages |
 | `npm run sitemap` | Regenerate `sitemap.xml` from the catalog |

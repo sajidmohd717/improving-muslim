@@ -1,65 +1,4 @@
-const topics = [
-  {
-    name: "Purification",
-    value: "purification",
-    description: "Heart work, hardship, patience, and returning to Allah.",
-  },
-  {
-    name: "Prayer",
-    value: "prayer",
-    description: "Build focus, love, and consistency in salah.",
-  },
-  {
-    name: "Dhikr",
-    value: "dhikr",
-    description: "Daily remembrance, duas, and worship routines.",
-  },
-  {
-    name: "Hadith",
-    value: "hadith",
-    description: "Foundational narrations, character, and prophetic guidance.",
-  },
-  {
-    name: "Seerah",
-    value: "seerah",
-    description: "Walk through the life and mission of the Prophet.",
-  },
-  {
-    name: "Sahaba",
-    value: "sahaba",
-    description: "Stories and virtues of the companions.",
-  },
-  {
-    name: "Quran",
-    value: "quran",
-    description: "Reflection, tafsir, and lessons from revelation.",
-  },
-  {
-    name: "Angels",
-    value: "angels",
-    description: "Learn about the unseen and worship around us.",
-  },
-  {
-    name: "Arabic",
-    value: "arabic",
-    description: "Build language foundations for Quran understanding.",
-  },
-  {
-    name: "Tafsir",
-    value: "tafsir",
-    description: "Deeper meanings and commentary on the Quran.",
-  },
-  {
-    name: "Aqeedah",
-    value: "aqeedah",
-    description: "Core beliefs and clarity about faith.",
-  },
-  {
-    name: "Hereafter",
-    value: "hereafter",
-    description: "Death, accountability, Jannah, and preparing well.",
-  },
-];
+const topics = (window.IMCategoryTaxonomy?.topics || []).filter((topic) => topic.public);
 
 const paths = [
   {
@@ -120,7 +59,7 @@ function renderTopics() {
       const actionLabel = counts.total ? "Browse topic" : "Request this topic";
 
       return `
-        <a class="explore-card${disabledClass}" href="${href}" aria-label="${escapeHtml(actionLabel)}: ${escapeHtml(topic.name)}">
+        <a class="explore-card${disabledClass}" data-category="${escapeHtml(topic.value)}" href="${href}" aria-label="${escapeHtml(actionLabel)}: ${escapeHtml(topic.name)}">
           <span class="explore-card-kicker">${escapeHtml(countLabel(counts))}</span>
           <span class="explore-card-title">${escapeHtml(topic.name)}</span>
           <span class="explore-card-copy">${escapeHtml(topic.description)}</span>

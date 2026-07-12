@@ -14,13 +14,14 @@
     "check:transcript-index": "node scripts/generate-transcript-index.js --check",
     "check:vtt": "node scripts/clean-vtt.js --check assets/captions",
     "check:smoke": "playwright test",
+    "check:taxonomy": "node scripts/check-taxonomy.js",
     "generate:content": "npm run catalog && npm run transcript-index && npm run seo-pages && npm run sitemap",
     "catalog": "node scripts/generate-catalog.js",
     "seo-pages": "node scripts/generate-seo-pages.js",
     "sitemap": "node scripts/generate-sitemap.js",
     "transcript-index": "node scripts/generate-transcript-index.js",
     "clean-vtt": "node scripts/clean-vtt.js assets/captions",
-    "check": "npm run check:js && npm run check:a11y && npm run check:catalog && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
+    "check": "npm run check:js && npm run check:taxonomy && npm run check:a11y && npm run check:catalog && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"
