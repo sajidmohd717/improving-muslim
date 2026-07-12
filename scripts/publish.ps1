@@ -552,6 +552,43 @@ function Get-StandaloneThumbnail {
   return "./$relPath"
 }
 
+# Run yt-dlp's subtitle-only fetch for one language, retrying with backoff on
+# YouTube's timedtext rate limit (HTTP 429). Because $ErrorActionPreference is
+# "Stop" script-wide, redirecting a native command's stderr (even to $null)
+# wraps each stderr line as a terminating error in PowerShell 5.1 -- so this
+# must run inside try/catch or a 429 here would abort the whole publish (video
+# + upload already succeeded by this point) instead of just skipping captions.
+function Invoke-YtDlpSubtitles {
+  param([string]$Url, [string]$Lang, [string]$OutDir, [string]$BaseName)
+
+  $retryDelaysSeconds = @(20, 60, 120)
+  $langVtt = Join-Path $OutDir "$BaseName.$Lang.vtt"
+
+  for ($attempt = 1; $attempt -le ($retryDelaysSeconds.Count + 1); $attempt++) {
+    $errText = ""
+    try {
+      & yt-dlp --skip-download --write-auto-subs --sub-langs $Lang --sub-format vtt `
+        -o (Join-Path $OutDir "$BaseName.%(ext)s") $Url 2>&1 | Out-Null
+    }
+    catch {
+      $errText = $_.Exception.Message
+    }
+    $global:LASTEXITCODE = 0
+
+    if (Test-Path $langVtt) { return $langVtt }
+
+    $rateLimited = $errText -match '429'
+    if ($rateLimited -and $attempt -le $retryDelaysSeconds.Count) {
+      $delay = $retryDelaysSeconds[$attempt - 1]
+      Write-Warn "Rate-limited fetching '$Lang' captions (attempt $attempt/$($retryDelaysSeconds.Count + 1)) - retrying in ${delay}s"
+      Start-Sleep -Seconds $delay
+      continue
+    }
+    break
+  }
+  return $null
+}
+
 # Download English auto-captions, rename to the catalog path, and normalise them
 # with clean-vtt.js. Returns the ./-relative captionsSrc, or "" if none exist.
 function Get-StandaloneCaptions {
@@ -573,14 +610,10 @@ function Get-StandaloneCaptions {
   # "en" auto-track: some videos only expose "en" (no "en-orig"), and requesting
   # only en-orig would silently skip captions for them.
   foreach ($lang in @("en-orig", "en")) {
-    & yt-dlp --skip-download --write-auto-subs --sub-langs $lang --sub-format vtt `
-      -o (Join-Path $absDir "$Lecture.%(ext)s") $Url *> $null
-    $global:LASTEXITCODE = 0
-
-    $langVtt = Join-Path $absDir "$Lecture.$lang.vtt"
-    if (Test-Path $langVtt) {
+    $langVtt = Invoke-YtDlpSubtitles -Url $Url -Lang $lang -OutDir $absDir -BaseName $Lecture
+    if ($langVtt -and (Test-Path $langVtt)) {
       Move-Item $langVtt $absVtt -Force
-      & node $CLEAN_VTT $absVtt *> $null
+      try { & node $CLEAN_VTT $absVtt 2>&1 | Out-Null } catch { }
       $global:LASTEXITCODE = 0
       Write-Ok "Captions saved + cleaned ($lang): $relPath"
       return "./$relPath"
@@ -723,6 +756,11 @@ function Publish-StandaloneBatch {
       Write-Fail "Standalone $spk/$lec FAILED: $_"
       $fail++
     }
+
+    # Brief pacing between lectures so back-to-back yt-dlp calls (metadata,
+    # thumbnail, captions) across a large batch don't trip YouTube's per-IP
+    # rate limit on its own -- cheap insurance vs. the retry logic above.
+    if ($line -ne $lines[-1]) { Start-Sleep -Seconds 8 }
   }
 
   Write-Host "`nStandalone batch complete: $ok succeeded, $fail failed" -ForegroundColor $(if ($fail -gt 0) { "Yellow" } else { "Green" })
@@ -765,6 +803,10 @@ function Publish-Batch {
       Write-Fail "Episode $s #$e FAILED: $_"
       $fail++
     }
+
+    # Brief pacing between episodes -- see the matching comment in
+    # Publish-StandaloneBatch for why this helps avoid YouTube rate limits.
+    if ($line -ne $lines[-1]) { Start-Sleep -Seconds 8 }
   }
 
   Write-Host "`nBatch complete: $ok succeeded, $fail failed" -ForegroundColor $(if ($fail -gt 0) { "Yellow" } else { "Green" })

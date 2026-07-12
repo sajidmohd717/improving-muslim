@@ -593,4 +593,251 @@ The remaining lessons follow: humans are deficient in knowledge, so we should no
     description:
       "A moving reminder from Majed Mahmoud on the power of dua and why a believer should never give up on it — that Allah always answers, whether by granting what you asked, averting a harm, or storing something greater for the Hereafter, so no sincere supplication is ever wasted.",
   },
+  {
+    id: "worried-about-things",
+    title: "Are you Worried about things? Watch this!",
+    speaker: "Majed Mahmoud",
+    speakerSlug: "majed-mahmoud",
+    categories: ["purification"],
+    topic: "Trust in Allah",
+    typeLabel: "Standalone Video",
+    published: "2021-02-08",
+    duration: 815,
+    sourceUrl: "https://www.youtube.com/watch?v=FwKcm_tZN6A",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/majed-mahmoud/worried-about-things.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/majed-mahmoud/stand-alone/worried-about-things.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/majed-mahmoud/worried-about-things.vtt",
+    description:
+      "A short reminder from Majed Mahmoud for anyone anxious about children, income, marriage, or the future — drawing on the trust Prophet Ibrahim (AS) placed in Allah even as he was thrown into the fire, as a model for releasing worry into tawakkul.",
+    // NOTE: this video's YouTube auto-captions are unusually low-quality/garbled
+    // (poor ASR, not just noisy) — captionsSrc is kept as an accessibility
+    // fallback per DEV_README, but takeaways/recap were intentionally left out
+    // rather than risk misrepresenting the lecture from an unreliable transcript.
+    // Revisit with a manually corrected transcript if one becomes available.
+  },
+  {
+    id: "17-lessons-from-musa-and-khidr",
+    title: "17 Lessons From The Story of Musa & Khidr (AS)",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["quran", "prophets"],
+    topic: "Musa & Khidr",
+    typeLabel: "Standalone Video",
+    published: "2023-05-14",
+    duration: 7318,
+    sourceUrl: "https://www.youtube.com/watch?v=xjjKaMksDSM",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/17-lessons-from-musa-and-khidr.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/17-lessons-from-musa-and-khidr.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-taymiyyah/17-lessons-from-musa-and-khidr.vtt",
+    description:
+      "A detailed walkthrough of the hadith narrating Musa's (AS) journey to learn from Khidr, with Ustadh Abu Taymiyyah drawing out 17 practical benefits on patience, humility in seeking knowledge, weighing the lesser of two evils, and trusting Allah's wisdom behind hardship.",
+    takeaways: [
+      "**Everything happens for a reason**: Even when a decision looks harsh or confusing from the outside — like Khidr damaging the boat or taking the boy's life — there is a wisdom behind it that may only become clear later, or never in this life at all.",
+      "**Don't be hasty in passing judgment**: Musa (AS) questioned Khidr's actions before asking why. Give people the benefit of the doubt and ask for their reasoning before assuming the worst, especially with those more experienced or knowledgeable than you.",
+      "**Weigh the lesser of two evils**: When forced to choose between two harms, Islamic reasoning takes the lesser one — illustrated through examples from removing a sinning imam, to medical necessity, to guarding against a greater sin.",
+      "**Righteousness protects your offspring**: Khidr repaired the orphans' wall because their father was righteous. Work on your own character, pray in front of your children, make dua for them, and Allah preserves their affairs even generations later.",
+      "**Prepare yourself before committing to anything**: Musa was told in advance he wouldn't be able to be patient. Knowing what you're getting into — whether marriage, seeking knowledge, or an investment — makes it easier to endure the hardship that follows.",
+      "**Humility in seeking knowledge**: A prophet of Allah still humbled himself to learn from someone with knowledge he lacked. No one is too senior, too knowledgeable, or too accomplished to keep learning from others.",
+      "**Patience with a teacher's toughness prepares you to receive what they have**: Being firm or even blunt with a student can be part of solidifying knowledge — bearing it patiently is often what unlocks the benefit.",
+    ],
+    recap: `Ustadh Abu Taymiyyah works through the well-known hadith describing Musa's (AS) journey to meet and learn from Khidr, a righteous servant of Allah granted a kind of knowledge Musa did not possess. The story begins with Musa being asked who the most knowledgeable person on earth is; when he answers "I am," Allah gently disciplines him for not attributing that knowledge back to Allah, and directs him toward Khidr at the junction of the two seas.
+
+Musa agrees to accompany Khidr on the condition that he will be patient and ask no questions, despite being warned in advance that he won't manage it. Three incidents follow: Khidr damages a poor fisherman's boat, takes the life of a young boy, and repairs a wall in a village that had refused to host them — each time testing Musa's patience until he can no longer stay silent. Khidr eventually explains all three: the boat was damaged to save it from a tyrannical king who seized every seaworthy vessel by force; the boy was killed because his righteous parents would have been led into disbelief by his adult behavior; and the wall was straightened because a treasure buried beneath it belonged to two orphans whose father had been righteous.
+
+From this narrative, the lecture draws seventeen benefits, moving briskly through them in the second half. Early benefits center on trusting Allah's wisdom behind hardship — everything happens for a reason, even when the reasoning is inaccessible to us, whether that's a personal setback, a national calamity, or a war that scatters a community abroad. He illustrates this with personal stories, including a friend's death that redirected an entire generation of young men away from the streets and toward seeking knowledge.
+
+A significant portion is devoted to weighing the lesser of two evils as an Islamic legal principle, with examples ranging from an imam who sins privately, to a father choosing between two suitors, to lying to protect an innocent life, to a medical necessity involving an impermissible substance — each showing that Islamic law accounts for genuine dilemmas rather than offering only rigid absolutes. He also spends time on raising righteous children (working on yourself first, praying in front of them, making dua for them, and reciting the relevant verses), on humility in seeking knowledge regardless of your existing status or expertise, and on the etiquette of addressing a teacher respectfully. The lecture closes with benefits on solidifying knowledge through patience with a strict teacher, preparing mentally before committing to something difficult, easing your path through charity, not judging people's circumstances by appearances, protecting others' shared wealth even at a personal cost, forgetfulness not being held against you, and the value of saying "insha'Allah."`,
+  },
+  {
+    id: "surah-that-beautifies-your-character",
+    title: "The Surah That Beautifies Your Character",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["quran", "purification"],
+    topic: "Quran Reflection",
+    typeLabel: "Standalone Video",
+    published: "2022-12-29",
+    duration: 4057,
+    sourceUrl: "https://www.youtube.com/watch?v=B9y1NcEAO2g",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/surah-that-beautifies-your-character.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/surah-that-beautifies-your-character.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-taymiyyah/surah-that-beautifies-your-character.vtt",
+    description:
+      "Ustadh Abu Taymiyyah unpacks the etiquette-focused verses of Surah Al-Hujurat — guarding against complacency after worship, verifying news before spreading it, avoiding gossip and mockery, and keeping your private life more righteous than your public image.",
+    takeaways: [
+      "**Never become complacent after worship**: Even after Ramadan or a great deed, worship Allah between hope and fear rather than assuming acceptance — the righteous predecessors would beg Allah for six months to accept a good deed, then beg for six more to reach it again.",
+      "**Etiquette with Allah and etiquette with creation are both part of the Prophet's ﷺ mission**: \"I was only sent to perfect your manners\" is not a contradiction to the call to tawhid — both are essential, not competing, aspects of the message.",
+      "**Your reputation is in Allah's hands, not people's**: Praise and criticism from others cannot ultimately raise or lower you — only Allah does that, so seclude yourself with Him rather than chasing public approval, especially in matters like weddings and family decisions.",
+      "**Guard your private life**: Do more righteous deeds in private than in public — a sign of sincerity — because sins done behind closed doors are a major reason a person's public reputation eventually collapses.",
+      "**Verify information before spreading it**: An-Naba's command to verify news applies as much to WhatsApp forwards and social media posts today as it did to the report that nearly triggered a conflict in the Prophet's ﷺ time.",
+      "**Six steps for dealing with a tale-carrier (namimah)**: don't believe them, advise them to stop, dislike them for Allah's sake, don't assume the worst of the person being talked about, don't go spying to confirm it, and don't repeat what was said back to others.",
+      "**Mockery has six conditions to remain permissible joking**: don't mock the deen, be truthful, don't shock or frighten the other person, don't be excessive, and pick the right moment — never during hardship or grief.",
+    ],
+    recap: `Continuing a series on etiquette in the Quran, Ustadh Abu Taymiyyah opens with a warning against spiritual complacency: after performing good deeds — completing Ramadan, standing in the last ten nights, embracing the Sunnah — a person can slip into what he calls "saved sect syndrome," assuming their acceptance with Allah is guaranteed. The righteous predecessors did the opposite, worshipping between hope and fear and begging Allah for months just to have a single Ramadan accepted.
+
+He then addresses an apparent tension between the well-known hadith "I was only sent to perfect your manners" and the Quranic principle that every prophet was sent to call people to tawhid. The resolution, he explains, is that there are two categories of etiquette — etiquette with Allah (avoiding sin, fulfilling obligations) and etiquette with creation (manners, character) — and the Prophet's ﷺ mission encompassed both without contradiction, correcting a viral misuse of the hadith that stripped away its tawhid dimension entirely.
+
+Working through Surah Al-Hujurat, he covers the instruction not to raise one's voice over the Prophet ﷺ, and the etiquette of knocking only a limited number of times before leaving someone alone — extending the lesson to modern behavior like repeatedly calling or messaging someone until they block you. A recurring theme is that a person's standing is entirely in Allah's hands: praise and blame from people are ultimately meaningless compared to Allah raising or lowering someone, and chasing public approval — at weddings, in family disputes, on social media — often comes at the expense of pleasing Allah. He warns that sins committed privately are a major reason people eventually fall in public estimation, since Allah may lift the veil that had been concealing them, and that the antidote is doing more righteous deeds in private than in public.
+
+The lecture then moves to information ethics: the Quran's command in Surah Al-Hujurat to verify news before acting on it, illustrated by the historical incident that nearly triggered an unnecessary military response until the report was checked. From there he covers namimah (tale-carrying) in detail, drawing a parallel between the tale-carrier and the sorcerer as two figures who both specialize in dividing people who love each other, and lays out six steps for responding when someone brings you gossip: refuse to believe it outright, advise the person to stop, dislike them for it, avoid assuming the worst about whoever was discussed, refuse to go digging for confirmation, and don't repeat the story elsewhere. He closes with the Quran's prohibition on mockery and ridicule, outlining six conditions that keep joking permissible — not mocking the religion, staying truthful, not shocking or frightening anyone, not being excessive, and choosing an appropriate moment — noting how casually these lines are crossed on social media today.`,
+  },
+  {
+    id: "path-to-prestige-and-respect",
+    title: "The Path to Prestige and Respect",
+    speaker: "Belal Assaad",
+    speakerSlug: "belal-assaad",
+    categories: ["purification"],
+    topic: "Haya & Modesty",
+    typeLabel: "Standalone Video",
+    published: "2024-11-23",
+    duration: 4550,
+    sourceUrl: "https://www.youtube.com/watch?v=Dg3Vv35Y9rQ",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/belal-assaad/path-to-prestige-and-respect.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/belal-assaad/stand-alone/path-to-prestige-and-respect.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/belal-assaad/path-to-prestige-and-respect.vtt",
+    description:
+      "Belal Assaad explores haya — modesty, self-respect, and moral conscience — as a defining branch of faith: where it comes from, how it protects a person from immorality in private and public, and how parents can nurture it in their children from a young age.",
+    takeaways: [
+      "**Haya is a branch of faith, not low self-esteem**: it is an earnest desire to do what is right paired with a natural aversion to shameful or immoral acts, in private and in public — not the same as poor self-confidence or an inability to speak up.",
+      "**Every child is born with a natural instinct toward modesty**: Islam nurtures and channels this fitrah rather than creating it from nothing — seen in how naturally young children develop a sense of privacy and bashfulness as they grow.",
+      "**Disobedience strips away sensitivity to right and wrong**: the story of Adam and Hawwa shows that Shaytaan's real goal was never the forbidden tree itself, but removing their sense of shame — since a person indifferent to right and wrong is fully exposed to him.",
+      "**Haya operates in three directions**: in front of Allah when alone, in front of the angels, and with oneself — independent of whether any other human being is watching or would ever find out.",
+      "**The Prophet ﷺ modeled intense modesty without losing warmth or humor**: described as \"more shy than a virgin in her private quarters,\" he still joked truthfully and kindly with companions and elderly women — haya restrains what's wrong without erasing joy.",
+      "**Musa (AS) and the two women at the well show modesty paired with dignity**: their brief, precise words and Musa's own restraint — helping without flirting, then formally approaching the father — model interaction between genders that is respectful without being cold or transactional.",
+      "**People without haya show a recognizable pattern**: superficial charm, impulsivity, excessive confidence, and cold-heartedness — and rebuilding it starts with honest self-reflection, picking one or two specific goals, and consistent practice over 40–60 days until it becomes second nature.",
+    ],
+    recap: `Belal Assaad introduces haya — usually translated as modesty or shyness, though he argues neither captures it fully — as one of the defining branches of faith and the trait that most distinguishes a believer's character. He opens with two illustrative stories: a teenage boy caught shoplifting who briefly shows genuine embarrassment before performing bravado for his friends, and a young non-Muslim girl who instinctively covers herself out of natural bashfulness before her mother reassures her. Both illustrate his central claim, drawn from the Quranic concept of fitrah: haya is an inborn instinct that either grows through upbringing or is worn away by indifference.
+
+He is careful to distinguish haya from mere "shame," which implies something is inherently wrong with a person's body or nature. Haya, by contrast, is a moral compass — an earnest desire to do right and an aversion to what's shameful, whether or not anyone is watching. He roots this in the story of Adam and Hawwa: Shaytaan had no real interest in the forbidden tree itself, only in stripping away their sense of morality so they would become indifferent to disobeying Allah, at which point their covering fell away — a nakedness he reads as symbolic of what happens internally once haya is lost, not a comment on the body itself being shameful.
+
+A central passage draws on the Quranic account of Musa (AS) and the two women at the well in Madyan, reading their few words as a masterclass in dignified, modest interaction — brief, purposeful speech that reveals no more than necessary, paired with Musa's own restraint in helping them without ever crossing a line, and his formal approach to their father rather than any direct pursuit. He extends this into a broader, practical discussion of interaction between men and women: the concept of mahram and non-mahram relationships, lowering the gaze without becoming impractical or reclusive, and examples from the Prophet's ﷺ own life — including his subtle redirection of a young companion's gaze away from an attractive woman without embarrassing anyone — showing an Islamic middle path between total segregation and unrestricted mixing.
+
+He describes the Prophet ﷺ as more intensely shy than "a virgin in her private quarters," visibly reddening at any impropriety he witnessed, yet still joking warmly and truthfully with companions and elderly women alike — establishing that haya restrains wrongdoing without demanding humorlessness. He also cites Umar ibn al-Khattab's enforcement of honest trade and the story of a mother and daughter secretly diluting milk to sell, where the daughter's haya before Allah alone (rather than fear of being caught) led to her being sought out in marriage — through her, several later caliphs were born.
+
+Closing with practical guidance, Belal Assaad describes what happens when haya is absent: superficial charm, impulsivity, excessive confidence, and cold-heartedness, since the only thing restraining such a person is fear of getting caught, not conscience. He encourages parents to model modesty concretely — knocking before entering, dressing appropriately in front of children, and framing correction around behavior rather than a child's worth ("this isn't your character," not "you are bad") — and offers a simple method for adults seeking to rebuild their own haya: honest self-reflection, identifying one or two specific goals, and consistent practice over roughly 40 to 60 days until the change becomes second nature.`,
+  },
+  {
+    id: "how-shaytaan-plans-to-destroy-you",
+    title: "How Shaytaan Plans to DESTROY You",
+    speaker: "Abu Bakr Zoud",
+    speakerSlug: "abu-bakr-zoud",
+    categories: ["purification", "aqeedah"],
+    topic: "Shaytaan's Plan",
+    typeLabel: "Standalone Video",
+    published: "2024-08-01",
+    duration: 3275,
+    sourceUrl: "https://www.youtube.com/watch?v=5RAiIIABgPA",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-bakr-zoud/how-shaytaan-plans-to-destroy-you.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-bakr-zoud/stand-alone/how-shaytaan-plans-to-destroy-you.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-bakr-zoud/how-shaytaan-plans-to-destroy-you.vtt",
+    description:
+      "In this Strangers Podcast conversation, Shaykh Abu Bakr Zoud lays out Shaytaan's escalating seven-step plan against every believer — from doubt and disbelief, through innovation and major sins, down to simply wasting your time — and how to counter each stage.",
+    takeaways: [
+      "**Shaytaan's first and most preferred goal is disbelief**: he plants doubt about the unseen — the afterlife, angels, Allah's existence — and lets it grow through a lack of Quranic knowledge, since the Quran itself extinguishes doubts like a shooting star.",
+      "**Intrusive doubts during prayer are a sign of faith, not disbelief**: the companions worried about exactly this, and the Prophet ﷺ told them that resisting and disbelieving these thoughts — rather than acting on them — is itself a clear sign of iman.",
+      "**Second target: bidah (innovation)**: any act of worship performed to draw near to Allah without proof from the Quran or Sunnah, no matter how good the intention feels, since Allah completed the religion and nothing new can be added to it.",
+      "**Third target: major sins** — defined as any sin Allah promised the Hellfire, a specific punishment, or a curse for. Escaping major sins requires sincere repentance covering the past (regret), present (stopping the sin), and future (committing not to return).",
+      "**Fourth and fifth targets: minor sins and wasting time in permissible things**: persistence turns a minor sin into a major one, but minor sins are otherwise wiped out by good deeds like the five daily prayers — no separate repentance required.",
+      "**The sixth trap works through other people**: Shaytaan's most decorated soldiers are the ones who cause division between spouses, friends, and family — often via a friend's bad advice, a whispering third party, or straightforward manipulation.",
+      "**The mark of a righteous believer isn't sinlessness — it's quick return**: the Quran describes the righteous as those who, when they sin, immediately remember Allah and seek forgiveness, while Shaytaan's allies justify and normalize the same sin instead.",
+    ],
+    recap: `In this Strangers Podcast conversation, Shaykh Abu Bakr Zoud draws on Ibn al-Qayyim's writings to map out Shaytaan's methodical, escalating plan against every human being — a plan Allah himself describes in the Quran when Shaytaan vows to attack people from in front, behind, the right, and the left.
+
+The first and most desired outcome for Shaytaan is disbelief, achieved by planting doubt about matters of the unseen: the afterlife, angels, even Allah's existence. Left unaddressed by seeking Quranic knowledge, that seed of doubt grows until it displaces faith entirely. He reassures listeners that experiencing these intrusive thoughts is not itself a sign of disbelief — quite the opposite. Citing the hadith where companions confided their own disturbing doubts during prayer, the Prophet ﷺ told them that the very fact they were distressed and resisting these thoughts, rather than embracing them, was clear evidence of faith; Shaytaan targets those still fighting him, not those already on his side.
+
+Failing to induce disbelief, Shaytaan's second target is bidah — innovation in worship, defined as any act done to seek closeness to Allah without basis in the Quran or Sunnah. He explains why this ranks above major sins in danger: the innovator believes he is drawing nearer to Allah and rarely recognizes wrongdoing, whereas someone committing a major sin usually still knows it's wrong and is more likely to repent. Major sins are covered next, defined precisely as acts carrying an explicit threat of Hellfire, a specified punishment, or a curse — with a clear three-part formula for repentance: regretting the past, stopping the sin in the present, and committing to never return to it in the future.
+
+The remaining two steps are lower-stakes but still dangerous: minor sins (which good deeds like the five daily prayers erase without a dedicated repentance, unless committed persistently, which upgrades them to major sins) and simply wasting time on permissible matters — oversleeping, over-eating, endless leisure — as a final fallback when nothing else has worked. He also details a sixth, standalone tactic: attacking through other people, whether a badly-advising friend, a whispering acquaintance, or outright manipulation designed to divide spouses and families, illustrated by Iblis's own soldiers reporting back on which of them caused the most damage between a husband and wife. The conversation closes by redefining righteousness itself: not the absence of sin, but the reflex to immediately turn back to Allah after one — in contrast to Shaytaan's allies, who justify, normalize, and eventually redefine their sin as acceptable altogether.`,
+  },
+  {
+    id: "7-commandments-to-a-successful-marriage",
+    title: "The 7 Commandments To A Successful Marriage",
+    speaker: "Abu Taymiyyah",
+    speakerSlug: "abu-taymiyyah",
+    categories: ["purification", "fiqh"],
+    topic: "Marriage & Family",
+    typeLabel: "Standalone Video",
+    published: "2022-07-19",
+    duration: 6484,
+    sourceUrl: "https://www.youtube.com/watch?v=PViv63Gylmc",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/abu-taymiyyah/7-commandments-to-a-successful-marriage.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/abu-taymiyyah/stand-alone/7-commandments-to-a-successful-marriage.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/abu-taymiyyah/7-commandments-to-a-successful-marriage.vtt",
+    description:
+      "Ustadh Abu Taymiyyah lays out seven practical principles for a lasting marriage — from being self-critical when things go wrong, to resisting comparison and outside interference, to concrete advice for husbands and wives on kindness, finances, and speech.",
+    takeaways: [
+      "**Your relationship with Allah shapes your marriage**: disobedience — even starting married life with sin at the wedding itself — opens the door to discord, while sincere worship draws spouses closer to Allah and to each other.",
+      "**Be self-critical when things go wrong**: rather than blaming your spouse first, ask whether a sin of yours might be behind the difficulty — following the example of the righteous predecessors who searched their own conduct before pointing fingers elsewhere.",
+      "**The grass is not greener on the other side**: expect friction and adjustment in any marriage — no partner is perfect except in Jannah — and choose making dua and working through problems over repeatedly starting over with someone new.",
+      "**Don't let outside voices dictate your marriage**: unqualified friends, nosy relatives, or a spouse's own emotional venting to a third party can distort a dispute — always hear both sides before forming a judgment, as the Prophet ﷺ taught.",
+      "**Stop comparing your marriage to others**: what's shown online is a curated moment, not the full reality — many public \"ideal\" relationships have collapsed only after the struggles were hidden for years.",
+      "**Let go of past mistakes instead of scorekeeping**: constantly reviving old grievances prevents any relationship from healing; overlook others' faults as you hope Allah overlooks yours.",
+      "**Practical advice for husbands**: being kind to your wife isn't weakness, don't expect her to fund the household even if she's wealthy, and never resort to physical aggression — model the Prophet's ﷺ own gentleness and patience instead.",
+    ],
+    recap: `Ustadh Abu Taymiyyah opens with an appeal for humanitarian relief before turning to seven practical principles for marriage, aimed at both married and single listeners.
+
+The first and most emphasized principle is that a person's relationship with Allah has a direct bearing on their marriage — illustrated through the "triangle" of husband, wife, and Allah, where obedience draws all three closer together and sin pulls them apart. He warns specifically against beginning a marriage with sin — free-mixing, music, and other violations at the wedding itself — arguing this effectively declares war on Allah at the very moment a person should be most grateful, and connects this to the Quranic principle that misfortune often follows disobedience. The antidote is being self-critical: following the example of scholars like Muhammad ibn Sirin, who searched their own conduct for the sin behind a hardship rather than blaming others first.
+
+The second principle challenges the instinct to see an easier alternative outside the marriage — the "grass is greener" mentality — stressing that every relationship requires adjustment and sacrifice, and that no spouse is perfect outside of Jannah. The third addresses outside interference: friends without relevant experience, or a spouse selectively venting to a third party, can distort perception of a dispute, so hearing both sides — as Islamic legal procedure requires of a judge — is essential before forming a judgment.
+
+The fourth principle warns against comparing one's marriage to others, especially curated portrayals on social media, noting that outwardly "ideal" couples have collapsed only after years of concealed struggle. The fifth calls for letting go of past mistakes rather than constant scorekeeping, since no relationship survives if every fault is revived indefinitely; the sixth is having good thoughts of one's spouse rather than assuming the worst; and the seventh is remembering the good times rather than letting a single argument erase years of positive history.
+
+The lecture closes with distinct, practical advice: for husbands, that kindness to a wife is not weakness, that a wife is never obligated to fund the household regardless of her wealth, and that physical aggression is never the answer to conflict — modelled on the Prophet's ﷺ own restraint and humor with his wives; and for wives, a single overriding piece of advice about guarding one's speech, given the weight the Quran and Sunnah place on gratitude and restraint in what is said to a husband.`,
+  },
+  {
+    id: "approaching-the-quran-mind-soul-and-limbs",
+    title: "Approaching The Qur'an: The Mind, The Soul & The Limbs",
+    speaker: "Sheikh Jamal Abdinasir",
+    speakerSlug: "jamal-abdinasir",
+    categories: ["quran"],
+    topic: "Approaching the Quran",
+    typeLabel: "Standalone Video",
+    published: "2024-09-07",
+    duration: 3067,
+    sourceUrl: "https://www.youtube.com/watch?v=aFes-6_XYxw",
+    thumbnailSrc:
+      "./assets/thumbnail/standalone/jamal-abdinasir/approaching-the-quran-mind-soul-and-limbs.jpg",
+    videoSrc:
+      "https://videos.improvingmuslim.com/jamal-abdinasir/stand-alone/approaching-the-quran-mind-soul-and-limbs.mp4",
+    captionsSrc:
+      "./assets/captions/standalone/jamal-abdinasir/approaching-the-quran-mind-soul-and-limbs.vtt",
+    description:
+      "Sheikh Jamal Abdinasir explains that truly approaching the Quran means engaging it with the mind, the heart, and the limbs together — recognizing Allah's greatness, purifying your intention, and forcing yourself into consistent action until it becomes second nature.",
+    takeaways: [
+      "**Approach the Quran with your mind first**: recognizing Allah's greatness — that He is Lord of everything, does as He wills, and is never to be questioned — is what allows a believer to accept calamity without doubting Allah's wisdom or mercy.",
+      "**The heart is where Allah looks**: sincerity determines whether the Quran truly \"enters\" you; reading for any share of praise other than Allah's forfeits the reward entirely, however small that share seems.",
+      "**Purify your intention completely**: the hadith of the reciter, the scholar, and the martyr who did their deeds for reputation rather than Allah shows that outward righteousness without sincerity leads to the Hellfire, not Jannah.",
+      "**A strong heart carries a weak body, not the other way around**: an elderly man can walk far to the masjid on a weak body because his heart is strong, while a physically powerful young man may not get out of bed for Fajr.",
+      "**Approaching the Quran through the limbs means waging war against your own soul**: your nafs resists worship at first — force yourself into it consistently, and what feels heavy in the beginning becomes sweet with persistence.",
+      "**Every external trial is won only after the internal one is**: the Quran ties outward victory over one's enemies to first defeating the desires of one's own soul — illustrated through the story of Talut's army at the river.",
+      "**A pure heart cannot hold two loves that contradict**: love of the Quran and love of what displeases Allah cannot coexist in the same heart — the story of the French boy who stopped stealing and went on to memorize the Quran shows how one act of guidance can redirect an entire life.",
+    ],
+    recap: `Delivered at a UK masjid known for Quran memorization, Sheikh Jamal Abdinasir frames a complete approach to the Quran around three dimensions: the mind, the heart (soul), and the limbs — with one central point drawn from each so the lesson stays memorable and actionable.
+
+Approaching the Quran with the mind means recognizing Allah's greatness through what is revealed about Him — that He is Lord of the heavens and the earth, does as He wills, and gives the night for rest and the day for light. Once this greatness settles in the heart, a believer stops questioning Allah's decisions, including painful ones like floods or the suffering of the Ummah, trusting instead that Allah's wisdom and mercy exceed our own, and that calamities draw believers nearer to Him rather than away.
+
+Turning to the heart, he stresses that Allah looks only at the heart, not outward appearance, and only accepts a deed done entirely for His sake — even 1% attributed to a desire for praise from someone else voids the whole action, illustrated by the hadith of the reciter, the scholar, and the martyr who are the first three people thrown into the Fire despite their apparent piety, because their deeds were performed for reputation. He contrasts an elderly man who walks painfully to the masjid on a weak body but a strong heart, with a physically powerful young man who cannot get out of bed for Fajr — the heart, not the body, is what carries a person to Allah.
+
+The limbs represent the third dimension: actually forcing the soul into consistent worship, since the nafs does not want to pray, read Quran, or make dhikr on its own. He describes this as a war against one's own soul, quoting a scholar who dragged himself to worship against his own resistance until, eventually, it became something enjoyed rather than endured — and ties this to the Quranic principle that outward victory over one's enemies only follows an inward victory over one's own desires, illustrated by the test at the river in the story of Talut and Jalut.
+
+He closes with the story of a non-Muslim French boy caught stealing chocolate from a Turkish shopkeeper, who forgave him on two conditions — never steal from him or anyone else again — and gave him free chocolate from then on. After the shopkeeper's death, the boy received a gift: a Quran, which so moved him that he embraced Islam, memorized the entire Quran, and went on to call thousands of people to Islam in France and Africa. The lesson, Sheikh Jamal notes, is that a heart devoted to the Quran cannot simultaneously hold what contradicts it — love of the Quran and love of Allah's greatness must occupy the heart completely for the Quran to truly enter it.`,
+  },
 ];

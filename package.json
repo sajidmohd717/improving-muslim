@@ -14,6 +14,7 @@
     "check:transcript-index": "node scripts/generate-transcript-index.js --check",
     "check:vtt": "node scripts/clean-vtt.js --check assets/captions",
     "check:smoke": "playwright test",
+    "generate:content": "npm run catalog && npm run transcript-index && npm run seo-pages && npm run sitemap",
     "catalog": "node scripts/generate-catalog.js",
     "seo-pages": "node scripts/generate-seo-pages.js",
     "sitemap": "node scripts/generate-sitemap.js",

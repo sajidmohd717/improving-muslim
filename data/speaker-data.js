@@ -104,4 +104,11 @@ window.speakers = [
     bio:
       "Shaykh Dr. Ahsan Hanif is a British Islamic scholar, imam, and Qur'an teacher born and raised in Birmingham, UK. He memorised the Quran at age 13, earned a scholarship to the Islamic University of Madinah in 2000, and graduated from its Faculty of Shari'ah in 2006 with honours. He later completed a PhD in Islamic Law from the University of Birmingham. He serves as an imam and khateeb at Green Lane Masjid, and is widely known for his Page by Page Qur'an Tafseer series, teaching the themes and wisdoms of the Quran systematically, page by page.",
   },
+  {
+    name: "Sheikh Jamal Abdinasir",
+    slug: "jamal-abdinasir",
+    image: "./public/icon.png",
+    bio:
+      "Sheikh Jamal Abdinasir is a UK-based Qari and teacher of Qur'anic sciences who memorised the Qur'an by age 13. He holds an MA in Islamic Studies specialising in the Qur'an and its sciences, and Ijazah in the Ten Minor Qira'at under Sheikh AbdirRashid Ali Sufi, alongside continued study under Sheikh Shoieb, Dean of the Imam Jazari Institute. He teaches at the Imam Jazari Institute and Eman Academy, and is active internationally in Qur'anic da'wah, with a strong teaching presence in the UK and Qatar.",
+  },
 ];

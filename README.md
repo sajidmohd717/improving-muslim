@@ -16,7 +16,7 @@ The application is intentionally built with plain HTML, CSS, and JavaScript; it 
 - Light, dark, and system themes, reduced-motion support, responsive navigation, and generated crawlable series/watch pages
 - Local keyword search that works independently, with optional AI reranking through a Cloudflare Worker
 
-As of 11 July 2026, the catalog contains 11 series and 20 standalone lectures, with 90 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
+As of 12 July 2026, the catalog contains 11 series and 27 standalone lectures, with 97 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
 
 ## Run locally
 
@@ -51,6 +51,7 @@ Useful individual commands:
 |---|---|
 | `npm run check:js` | Validate browser and data JavaScript syntax |
 | `npm run check:a11y` | Audit maintained HTML templates |
+| `npm run generate:content` | Regenerate the catalog, transcript index, canonical pages, and sitemap after content changes |
 | `npm run seo-pages` | Regenerate canonical `/series/` and `/watch/` pages |
 | `npm run sitemap` | Regenerate `sitemap.xml` from the catalog |
 | `npm run clean-vtt` | Normalize YouTube captions to bottom-center placement |
@@ -62,7 +63,7 @@ The browser application has no framework, bundler, or runtime build step. Catalo
 
 The site is deployed from `main` with GitHub Pages. Videos are stored outside Git in Cloudflare R2, AI-assisted search runs behind a Cloudflare Worker, and optional account sync uses Firebase Authentication and Cloud Firestore.
 
-For the repository layout, content publishing workflow, security boundaries, and maintenance rules, see [DEV_README.md](./DEV_README.md).
+For the repeatable video-publishing and release checklist, see [CONTENT_OPERATIONS.md](./CONTENT_OPERATIONS.md). For the repository layout, architecture, security boundaries, and detailed maintenance rules, see [DEV_README.md](./DEV_README.md).
 
 ## Content rights and privacy
 

@@ -4,6 +4,8 @@ This project is intentionally a plain HTML, CSS, and JavaScript site. It does no
 
 This document is a living guide. The architecture, hosting choices, and workflow are expected to evolve as the platform grows. Treat these notes as current project context, not a rigid rulebook. Update this file whenever the actual workflow changes.
 
+For the short, repeatable checklist used whenever a video or series episode is added, changed, or removed, start with [CONTENT_OPERATIONS.md](./CONTENT_OPERATIONS.md). This guide remains the detailed reference; the operations checklist is the release procedure.
+
 ## Project Shape
 
 - `index.html` stays at the repository root because GitHub Pages serves it as the entry point.
@@ -55,7 +57,7 @@ All pages in `pages/` include a `<base href="../" />` tag. Keep all project link
 
 ## Current Content State
 
-Snapshot as of 11 July 2026: the catalog has 11 series and 20 standalone lectures. Seventy series episodes and all 20 standalone lectures are currently watchable, for 90 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 12 July 2026: the catalog has 11 series and 27 standalone lectures. Seventy series episodes and all 27 standalone lectures are currently watchable, for 97 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -97,6 +99,13 @@ Snapshot as of 11 July 2026: the catalog has 11 series and 20 standalone lecture
 | Why You Should Never Give Up on Du'aa | Majed Mahmoud | Dhikr | Uploaded |
 | 6 Lessons From the Destroyed Garden | Abu Taymiyyah | Quran | Uploaded |
 | 10 Lessons From Musa & Khidr in Surat al-Kahf | Abu Taymiyyah | Quran | Uploaded |
+| Are you Worried about things? Watch this! | Majed Mahmoud | Purification | Uploaded |
+| 17 Lessons From The Story of Musa & Khidr (AS) | Abu Taymiyyah | Quran, Prophets | Uploaded |
+| The Surah That Beautifies Your Character | Abu Taymiyyah | Quran, Purification | Uploaded |
+| The Path to Prestige and Respect | Belal Assaad | Purification | Uploaded |
+| How Shaytaan Plans to DESTROY You | Abu Bakr Zoud | Purification, Aqeedah | Uploaded |
+| The 7 Commandments To A Successful Marriage | Abu Taymiyyah | Purification, Fiqh | Uploaded |
+| Approaching The Qur'an: The Mind, The Soul & The Limbs | Sheikh Jamal Abdinasir | Quran | Uploaded |
 
 
 Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
@@ -362,11 +371,10 @@ For standalone lectures the script now auto-scaffolds the mechanical metadata af
 1. Bump `availableCount` in `data/series-registry.js` for that series.
 2. Bump the `?v=` cache-bust on that series' `dataFile` entry in the registry.
 
-Then regenerate canonical routes and run the checks:
+Then regenerate every derived content artifact and run the checks:
 
 ```powershell
-npm run seo-pages
-npm run sitemap
+npm run generate:content
 npm run check
 ```
 
@@ -885,6 +893,8 @@ npm run check
 ```
 
 `npm run check` runs the JavaScript, accessibility, generated SEO page, sitemap, and Playwright browser smoke checks. The smoke suite uses `playwright.config.js`, `tests/smoke.spec.js`, and the dependency-free local server in `scripts/test-server.js`.
+
+After any lecture, episode, caption, thumbnail reference, speaker, or series-registry change, first run `npm run generate:content`, then run `npm run check`. The generation command deliberately updates all four derived outputs together so search, recommendations, canonical routes, and the sitemap cannot drift independently.
 
 ## Deployment Workflow
 
