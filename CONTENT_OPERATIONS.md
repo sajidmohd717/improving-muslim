@@ -99,7 +99,7 @@ Add the lecture object to `data/standalone-lectures-data.js`. Confirm every requ
 
 Use `categories`, not the legacy singular `category` field. Put the category that best matches learner intent first.
 
-Every category slug must already exist in `data/category-taxonomy.js`. Add or rename a category there once; the homepage and Explore will both update from that shared source. `npm run check:taxonomy` fails when maintained content uses an unknown category or when a public topic is omitted from homepage filters.
+Every category slug must already exist in `data/category-taxonomy.js`. Add or rename a category there once; the homepage, Explore directory, dedicated category page, and sitemap will all update from that shared source. Do not create or hand-edit a separate page for each topic. `npm run check:taxonomy` fails when maintained content uses an unknown category or when a public topic is omitted from homepage filters.
 
 Takeaways and recaps must come from a reviewed, sufficiently reliable transcript or from a careful review of the lecture itself. If automatic captions are too garbled to support accurate editorial notes, omit `takeaways` and `recap`, leave a short maintainer comment explaining why, and revisit the item when a corrected transcript becomes available. Never invent or infer religious claims merely to fill those fields.
 

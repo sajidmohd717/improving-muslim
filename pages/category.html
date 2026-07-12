@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="../" />
+    <meta name="referrer" content="origin" />
+    <meta name="description" content="Browse a focused Islamic lecture topic on Improving Muslim." />
+    <link rel="canonical" href="https://improvingmuslim.com/pages/category.html" />
+    <link rel="icon" href="./public/icon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./public/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
+    <link rel="manifest" href="./public/site.webmanifest" />
+    <meta name="theme-color" content="#176b5b" />
+    <meta property="og:site_name" content="Improving Muslim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://improvingmuslim.com/pages/category.html" />
+    <meta property="og:title" content="Topic | Improving Muslim" />
+    <meta property="og:description" content="Browse a focused Islamic lecture topic on Improving Muslim." />
+    <meta property="og:image" content="https://improvingmuslim.com/public/social-preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Topic | Improving Muslim" />
+    <meta name="twitter:description" content="Browse a focused Islamic lecture topic on Improving Muslim." />
+    <meta name="twitter:image" content="https://improvingmuslim.com/public/social-preview.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260712-category-pages" />
+    <script src="./scripts/theme.js?v=20260705-system-theme"></script>
+    <title>Topic | Improving Muslim</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="./index.html" aria-label="Improving Muslim home">
+          <img src="./public/icon.png" alt="" />
+          <span>Improving Muslim</span>
+        </a>
+        <div class="site-menu page-menu">
+          <a href="./index.html">Home</a>
+          <a href="./pages/explore.html">Explore</a>
+          <a href="./pages/speakers.html">Speakers</a>
+          <a href="./pages/history.html">History</a>
+          <a href="./pages/saved.html">Saved</a>
+        </div>
+        <div class="nav-more" id="nav-more">
+          <button class="nav-more-trigger" id="nav-more-trigger" type="button" aria-label="More menu" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
+            <svg class="nav-more-icon-menu" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="nav-more-label">More</span>
+            <svg class="nav-more-icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-more-menu" id="nav-more-menu" role="menu" hidden>
+            <a href="./pages/settings.html" role="menuitem">Settings</a>
+            <a href="./pages/about.html" role="menuitem">About</a>
+            <a href="./pages/roadmap.html" role="menuitem">Roadmap</a>
+            <a href="./pages/feedback.html" role="menuitem">Feedback</a>
+            <a href="./pages/donations.html" role="menuitem">Donate</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="category-hero" aria-labelledby="category-title">
+        <a class="category-back-link" href="./pages/explore.html">← All topics</a>
+        <p class="eyebrow">Topic library</p>
+        <h1 id="category-title">Topic</h1>
+        <p class="category-description" id="category-description"></p>
+        <p class="category-summary" id="category-summary" aria-live="polite"></p>
+      </section>
+
+      <div class="status-message category-status" id="category-status" role="status"></div>
+
+      <section class="content-section category-content-section" id="category-series-section" aria-labelledby="category-series-title" hidden>
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow" id="category-series-count">Series</p>
+            <h2 id="category-series-title">Lecture series</h2>
+          </div>
+        </div>
+        <div class="series-grid" id="category-series-grid"></div>
+      </section>
+
+      <section class="content-section category-content-section" id="category-lectures-section" aria-labelledby="category-lectures-title" hidden>
+        <div class="section-heading row-heading">
+          <div>
+            <p class="eyebrow" id="category-lectures-count">Lectures</p>
+            <h2 id="category-lectures-title">Individual lectures</h2>
+          </div>
+        </div>
+        <div class="series-grid" id="category-lectures-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for easy discovery and quiet study.</p>
+      <a href="./pages/about.html">Why this exists</a>
+      <a href="./pages/explore.html">Explore</a>
+      <a href="./pages/feedback.html">Feedback</a>
+      <a href="./pages/privacy.html">Privacy</a>
+      <a class="donate-link" href="./pages/donations.html">Donate</a>
+    </footer>
+
+    <script src="./data/category-taxonomy.js?v=20260712-taxonomy"></script>
+    <script src="./data/series-registry.js?v=20260705-search-keywords"></script>
+    <script src="./data/standalone-lectures-data.js?v=20260711-quran-effect" defer></script>
+    <script src="./scripts/utils.js?v=20260706-seo-routes" defer></script>
+    <script src="./scripts/category-page.js?v=20260712-category-pages" defer></script>
+    <script src="./scripts/nav-more.js" defer></script>
+    <script src="./scripts/nav-state.js?v=20260706-seo-routes" defer></script>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <a class="bottom-nav-item" href="./index.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/explore.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>Explore</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/history.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>History</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/saved.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span>Saved</span>
+      </a>
+      <a class="bottom-nav-item" href="./pages/speakers.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Speakers</span>
+      </a>
+    </nav>
+  </body>
+</html>

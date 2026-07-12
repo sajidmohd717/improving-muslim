@@ -1511,7 +1511,7 @@ function bindEvents() {
     renderSeries();
     const cards = els.seriesGrid.querySelectorAll(".series-card");
     const firstNewCard = cards[previouslyShown];
-    firstNewCard?.querySelector(".series-title")?.focus();
+    window.requestAnimationFrame(() => firstNewCard?.querySelector(".series-title")?.focus());
   });
 
   document.addEventListener("click", (event) => {

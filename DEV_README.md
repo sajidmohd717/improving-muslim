@@ -45,9 +45,9 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/generate-seo-pages.js` and `scripts/generate-sitemap.js` generate canonical content routes and `sitemap.xml`; their `--check` modes keep committed output current.
 - `scripts/error-handler.js` catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit. It is currently loaded on the heavy interactive pages (index, history, saved, watch) — load it first, before all other scripts, on any page that includes it.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
-- `pages/explore.html` is the explore/browse page with topic-based filtering across series and standalone videos.
-- `scripts/explore-page.js` drives the explore page — filters, topic counts, and card rendering.
-- `styles/explore.css` contains explore-page-specific styles.
+- `pages/explore.html` is the compact topic directory. Its cards link to focused category routes instead of filtering the personalized homepage.
+- `pages/category.html?category={slug}` is the dedicated topic library. `scripts/category-page.js` renders its deterministic series and standalone-lecture sections directly from the shared taxonomy and maintained content data; it intentionally has no continue-learning, streak, or recommendation shelves.
+- `scripts/explore-page.js` drives the Explore directory counts and card rendering. `styles/explore.css` contains both Explore-directory and focused-category styles.
 - `assets/thumbnail/` and `assets/speaker/` contain local image assets.
 - `public/` contains brand-facing assets: logo/favicons, the web manifest, and the social sharing preview image.
 - `public/social-preview-template.html` is the source template for regenerating `public/social-preview.png`. See the Social Preview Image section below.
@@ -56,7 +56,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 
 All pages in `pages/` include a `<base href="../" />` tag. Keep all project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links resolve correctly from both `index.html` and inner pages.
 
-Explore category counts have explicit meanings: registered series are counted from `seriesConfig`, currently watchable series episodes are the sum of matching registry `availableCount` values, standalone lectures are matching records with a real `videoSrc`, and total watchable content is available episodes plus standalone lectures. A category is browseable only when that total is greater than zero.
+Explore category counts have explicit meanings: registered series are counted from `seriesConfig`, currently watchable series episodes are the sum of matching registry `availableCount` values, standalone lectures are matching records with a real `videoSrc`, and total watchable content is available episodes plus standalone lectures. A category is browseable only when that total is greater than zero. The Explore card shows only the total watchable lecture count; the focused category page separates series from individual lectures and gives the detailed context.
 
 ## Current Content State
 

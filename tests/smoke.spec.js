@@ -46,7 +46,7 @@ test("homepage renders and supports search and topic filtering", async ({ page }
 
 test("homepage links through a generated series page to its watch page", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/");
+  await page.goto("/?category=purification#series");
   await expectCatalog(page);
 
   await page.locator('.series-title[href="./series/why-me/"]').click();
@@ -79,9 +79,12 @@ test("Explore renders every public category from the shared taxonomy", async ({ 
   expect(rendered).toEqual(expected);
   expect(rendered).toContain("prophets");
   expect(rendered).toContain("fiqh");
-  await expect(page.getByRole("link", { name: "Browse topic: Prophets" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Browse topic: Fiqh" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Request this topic: Hereafter" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open topic: Prophets" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open topic: Fiqh" })).toHaveAttribute(
+    "href",
+    "./pages/category.html?category=fiqh",
+  );
+  await expect(page.getByRole("link", { name: "Request topic: Hereafter" })).toBeVisible();
   expect(pageErrors).toEqual([]);
 });
 
@@ -125,14 +128,39 @@ test("Explore reports series, available episodes, and standalone lectures accura
 
   expect(rendered).toEqual(expected);
   await expect(page.locator('[data-category="purification"] .explore-card-kicker')).toHaveText(
-    "2 series · 23 available episodes · 18 standalone lectures",
+    "41 lectures",
   );
   await expect(page.locator('[data-category="fiqh"] .explore-card-kicker')).toHaveText(
-    "1 standalone lecture",
+    "1 lecture",
   );
-  await expect(page.getByRole("link", { name: "Request this topic: Sahaba" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Request topic: Sahaba" })).toBeVisible();
   await expect(page.locator('[data-category="sahaba"] .explore-card-kicker')).toHaveText(
-    "1 series · 0 available episodes",
+    "Coming soon",
+  );
+  expect(pageErrors).toEqual([]);
+});
+
+test("category pages show focused topic content without homepage personalization", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.goto("/pages/category.html?category=purification");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Purification" })).toBeVisible();
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://improvingmuslim.com/pages/category.html?category=purification",
+  );
+  await expect(page.locator("#category-summary")).toHaveText("41 lectures available across 2 series");
+  await expect(page.locator("#category-series-grid .series-card")).toHaveCount(2);
+  await expect(page.locator("#category-lectures-grid .series-card")).toHaveCount(18);
+  await expect(page.locator("#continue-section, #streak-section, #recommendation-shelves")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "All topics" })).toHaveAttribute("href", "./pages/explore.html");
+
+  await page.goto("/pages/category.html?category=fiqh");
+  await expect(page.getByRole("heading", { level: 1, name: "Fiqh" })).toBeVisible();
+  await expect(page.locator("#category-series-section")).toBeHidden();
+  await expect(page.locator("#category-lectures-grid .series-card")).toHaveCount(1);
+  await expect(page.locator("#category-lectures-grid .series-title")).toHaveText(
+    "The 7 Commandments To A Successful Marriage",
   );
   expect(pageErrors).toEqual([]);
 });

@@ -1,7 +1,7 @@
 /*
- * Generates sitemap.xml from the static page list, the series registry, and
- * the generated SEO watch pages. Series added to the registry and episodes
- * added to data files are picked up automatically.
+ * Generates sitemap.xml from the static page list, public category taxonomy,
+ * series registry, and generated SEO watch pages. Category availability,
+ * registered series, and uploaded lectures are picked up automatically.
  *
  *   node scripts/generate-sitemap.js          rewrite sitemap.xml
  *   node scripts/generate-sitemap.js --check  fail if sitemap.xml is stale
@@ -47,6 +47,22 @@ for (const entry of seriesConfig) {
 }
 loadScript("./data/standalone-lectures-data.js");
 
+loadScript("./data/category-taxonomy.js");
+const categoriesFor = (entry) => Array.isArray(entry?.categories) ? entry.categories : [entry?.category].filter(Boolean);
+const standaloneLectures = sandbox.window.standaloneLectures || [];
+const categoryUrls = (sandbox.window.IMCategoryTaxonomy?.topics || [])
+  .filter((topic) => {
+    if (!topic.public) return false;
+    const availableEpisodes = seriesConfig
+      .filter((series) => categoriesFor(series).includes(topic.value))
+      .reduce((total, series) => total + Math.max(0, Number(series.availableCount) || 0), 0);
+    const standaloneCount = standaloneLectures.filter(
+      (lecture) => lecture.videoSrc && categoriesFor(lecture).includes(topic.value),
+    ).length;
+    return availableEpisodes + standaloneCount > 0;
+  })
+  .map((topic) => `${ORIGIN}/pages/category.html?category=${encodeURIComponent(topic.value)}`);
+
 const seriesUrls = seriesConfig.map((series) => `${ORIGIN}/series/${encodeURIComponent(series.slug)}/`);
 const watchUrls = seriesConfig.flatMap((entry) => {
   const series = sandbox.window[entry.globalKey];
@@ -55,12 +71,13 @@ const watchUrls = seriesConfig.flatMap((entry) => {
     .filter((episode) => episode.videoSrc)
     .map((episode) => `${ORIGIN}/watch/${encodeURIComponent(series.slug)}/${encodeURIComponent(episode.id)}/`);
 });
-const standaloneUrls = (sandbox.window.standaloneLectures || [])
+const standaloneUrls = standaloneLectures
   .filter((lecture) => lecture.videoSrc)
   .map((lecture) => `${ORIGIN}/watch/standalone/${encodeURIComponent(lecture.id)}/`);
 
 const urls = [
   ...staticPaths.map((p) => ORIGIN + p),
+  ...categoryUrls,
   ...seriesUrls,
   ...watchUrls,
   ...standaloneUrls,
@@ -80,8 +97,8 @@ if (process.argv.includes("--check")) {
     console.error("sitemap.xml is out of date. Run: npm run sitemap");
     process.exit(1);
   }
-  console.log(`Sitemap matches generated routes (${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
+  console.log(`Sitemap matches generated routes (${categoryUrls.length} categories, ${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
 } else {
   writeFileSync(target, xml);
-  console.log(`Wrote sitemap.xml (${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
+  console.log(`Wrote sitemap.xml (${categoryUrls.length} categories, ${seriesUrls.length} series, ${watchUrls.length + standaloneUrls.length} watch URLs, ${urls.length} total).`);
 }

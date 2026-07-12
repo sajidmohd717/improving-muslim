@@ -12,7 +12,7 @@
 @import "./about.css";         /* About page                                         */
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */
 @import "./feedback.css";      /* Feedback page & form                               */
-@import "./explore.css?v=20260712-counts"; /* Explore page category discovery                 */
+@import "./explore.css?v=20260712-category-pages"; /* Explore and focused category discovery       */
 @import "./series-detail.css?v=20260702-dark-1";        /* Series/speaker hero, episode list & cards   */
 @import "./watch.css?v=20260711-related";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
