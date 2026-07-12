@@ -8,7 +8,7 @@
   'use strict';
 
   var utils = window.IMUtils || {};
-  var DEFAULT_STREAK_TARGET_MINUTES = utils.DEFAULT_STREAK_TARGET_MINUTES || 30;
+  var DEFAULT_STREAK_TARGET_MINUTES = utils.DEFAULT_STREAK_TARGET_MINUTES || 15;
   var STREAK_RANKS = utils.STREAK_RANKS || [
     { name: 'Platinum', min: 40 },
     { name: 'Silver', min: 20 },

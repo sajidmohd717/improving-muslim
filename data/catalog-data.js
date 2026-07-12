@@ -607,7 +607,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2011-04-01",
       "url": "./watch/seerah-yasir-qadhi/VOUp3ZZ9t3A/",
-      "thumb": "https://i.ytimg.com/vi/VOUp3ZZ9t3A/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-01.jpg",
       "terms": {
         "muhamm": 1,
         "specialit": 1,
@@ -653,7 +653,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2011-05-01",
       "url": "./watch/seerah-yasir-qadhi/udjM4dBVicE/",
-      "thumb": "https://i.ytimg.com/vi/udjM4dBVicE/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-02.jpg",
       "terms": {
         "muhamm": 1,
         "specialit": 1,
@@ -699,7 +699,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2011-05-01",
       "url": "./watch/seerah-yasir-qadhi/4F5qzMI2IKs/",
-      "thumb": "https://i.ytimg.com/vi/4F5qzMI2IKs/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-03.jpg",
       "terms": {
         "seerah": 1,
         "arabia": 0.54,
@@ -745,7 +745,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2011-06-01",
       "url": "./watch/seerah-yasir-qadhi/ey7UAi_Emgs/",
-      "thumb": "https://i.ytimg.com/vi/ey7UAi_Emgs/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-04.jpg",
       "terms": {
         "religiou": 1,
         "seerah": 0.75,
@@ -791,7 +791,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2015-01-14",
       "url": "./watch/seerah-yasir-qadhi/629isa8LujE/",
-      "thumb": "https://i.ytimg.com/vi/629isa8LujE/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-05.jpg",
       "terms": {
         "elephant": 1,
         "genealogy": 1,
@@ -2782,7 +2782,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-22",
       "url": "./watch/life-of-muhammad-mufti-menk/VO22l6-Qkys/",
-      "thumb": "https://i.ytimg.com/vi/VO22l6-Qkys/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-01.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -2828,7 +2828,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-23",
       "url": "./watch/life-of-muhammad-mufti-menk/5iwZPhswyKI/",
-      "thumb": "https://i.ytimg.com/vi/5iwZPhswyKI/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-02.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -2874,7 +2874,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-24",
       "url": "./watch/life-of-muhammad-mufti-menk/W2usJgjOSrQ/",
-      "thumb": "https://i.ytimg.com/vi/W2usJgjOSrQ/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-03.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -2920,7 +2920,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-25",
       "url": "./watch/life-of-muhammad-mufti-menk/B_S-eVQoWUc/",
-      "thumb": "https://i.ytimg.com/vi/B_S-eVQoWUc/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-04.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -2966,7 +2966,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-26",
       "url": "./watch/life-of-muhammad-mufti-menk/WbL6fwsxwLs/",
-      "thumb": "https://i.ytimg.com/vi/WbL6fwsxwLs/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-05.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -3012,7 +3012,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-27",
       "url": "./watch/life-of-muhammad-mufti-menk/CO0ETi5nFiQ/",
-      "thumb": "https://i.ytimg.com/vi/CO0ETi5nFiQ/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-06.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -3058,7 +3058,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-28",
       "url": "./watch/life-of-muhammad-mufti-menk/1YkPik5y1Gw/",
-      "thumb": "https://i.ytimg.com/vi/1YkPik5y1Gw/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-07.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,
@@ -3104,7 +3104,7 @@ window.catalogIndex = {
       "duration": null,
       "published": "2012-07-29",
       "url": "./watch/life-of-muhammad-mufti-menk/OF7gkEpHayA/",
-      "thumb": "https://i.ytimg.com/vi/OF7gkEpHayA/hqdefault.jpg",
+      "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-08.jpg",
       "terms": {
         "2012": 0.22,
         "seerah": 1,

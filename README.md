@@ -10,7 +10,7 @@ The application is intentionally built with plain HTML, CSS, and JavaScript; it 
 
 - Curated series, standalone lectures, topic browsing, speaker profiles, and typo-tolerant search
 - A focused HTML5 video player with captions, resume progress, next/previous navigation, autoplay controls, and Media Session support
-- Watch history, saved items, per-episode notes with clickable timestamps, and a 30-minute daily learning streak
+- Watch history, saved items, per-episode notes with clickable timestamps, and a 15-minute daily learning streak
 - Optional Google sign-in to sync progress, notes, saved items, and streak data across devices
 - An opt-in public streak leaderboard; private learning activity is not published
 - Light, dark, and system themes, reduced-motion support, responsive navigation, and generated crawlable series/watch pages

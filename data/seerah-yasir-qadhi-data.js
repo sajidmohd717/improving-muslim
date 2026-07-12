@@ -16,7 +16,6 @@
       title: "Specialities of Prophet Muhammed",
       published: "2011-04-01",
       views: 2400000,
-      thumbnailSrc: "https://i.ytimg.com/vi/VOUp3ZZ9t3A/hqdefault.jpg",
       videoSrc: "https://videos.improvingmuslim.com/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-1.mp4",
     },
     {
@@ -25,7 +24,6 @@
       title: "Specialities of Prophet Muhammed Part 2",
       published: "2011-05-01",
       views: 1000000,
-      thumbnailSrc: "https://i.ytimg.com/vi/udjM4dBVicE/hqdefault.jpg",
       videoSrc: "https://videos.improvingmuslim.com/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-2.mp4",
     },
     {
@@ -34,7 +32,6 @@
       title: "Why Study the Seerah? & Pre-Islamic Arabia",
       published: "2011-05-01",
       views: 859000,
-      thumbnailSrc: "https://i.ytimg.com/vi/4F5qzMI2IKs/hqdefault.jpg",
       videoSrc: "https://videos.improvingmuslim.com/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-3.mp4",
     },
     {
@@ -43,7 +40,6 @@
       title: "Religious Status of the World Before Islam",
       published: "2011-06-01",
       views: 848000,
-      thumbnailSrc: "https://i.ytimg.com/vi/ey7UAi_Emgs/hqdefault.jpg",
       videoSrc: "https://videos.improvingmuslim.com/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-4.mp4",
     },
     {
@@ -52,7 +48,6 @@
       title: "Genealogy & Year of the Elephant",
       published: "2015-01-14",
       views: 663000,
-      thumbnailSrc: "https://i.ytimg.com/vi/629isa8LujE/hqdefault.jpg",
       videoSrc: "https://videos.improvingmuslim.com/seerah-yasir-qadhi/seerah-yasir-qadhi-ep-5.mp4",
     },
     {

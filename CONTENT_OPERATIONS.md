@@ -238,6 +238,7 @@ Never delete generated routes by hand; let the generator reconcile them.
 - [ ] Speaker records and slugs match.
 - [ ] Local thumbnails and referenced captions exist.
 - [ ] Videos return successfully from R2.
+- [ ] `npm run check:content` passes with no integrity errors.
 - [ ] `npm run check:vtt` passes.
 - [ ] `npm run generate:content` completes.
 - [ ] `npm run check` completes with no failures.
@@ -252,6 +253,7 @@ Never delete generated routes by hand; let the generator reconcile them.
 
 | Failure | Usual cause | Fix |
 |---|---|---|
+| `check:content` | Duplicate IDs/routes, invalid metadata, count drift, missing local assets, or missing generated discovery paths | Read every reported owner, fix the maintained source or asset, then run `npm run generate:content` |
 | `check:catalog` | Metadata or captions changed | Run `npm run catalog` or `npm run generate:content` |
 | `check:transcript-index` | Captions or lecture data changed | Run `npm run transcript-index` or `npm run generate:content` |
 | `check:seo-pages` | A public route is missing or stale | Run `npm run seo-pages` or `npm run generate:content` |

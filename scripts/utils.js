@@ -6,7 +6,7 @@
   // Fixed for everyone (not user-selectable) so the leaderboard's day counts
   // are directly comparable -- a 20-min learner and a 40-min learner used to
   // rank against each other unevenly.
-  const DEFAULT_STREAK_TARGET_MINUTES = 30;
+  const DEFAULT_STREAK_TARGET_MINUTES = 15;
   const FREEZE_MILESTONE_DAYS = 7; // earn 1 streak freeze every N consecutive days
   const MAX_BANKED_FREEZES = 2; // matches Duolingo's cap
   const STREAK_RANKS = [
@@ -193,6 +193,13 @@
       freezeMilestonesClaimed = 0;
     }
 
+    // When the fixed goal is lowered, credit someone who has already reached
+    // the new threshold today without making them watch another second first.
+    if (todaySeconds >= targetSeconds && lastCompletedDate !== today) {
+      current = isYesterday(lastCompletedDate, today) ? current + 1 : 1;
+      lastCompletedDate = today;
+    }
+
     // Grant any newly-crossed 7-day milestones. The milestone still counts as
     // "claimed" even if the bank was already full, so it isn't re-granted later.
     const milestonesEarned = Math.floor(current / FREEZE_MILESTONE_DAYS);
@@ -240,7 +247,12 @@
   }
 
   function readStudyStreak() {
-    return normalizeStreak(readJsonStorage(STREAK_KEY, {}));
+    const raw = readJsonStorage(STREAK_KEY, {});
+    const normalized = normalizeStreak(raw);
+    if (JSON.stringify(raw) !== JSON.stringify(normalized)) {
+      writeJsonStorage(STREAK_KEY, normalized);
+    }
+    return normalized;
   }
 
   function writeStudyStreak(streak) {

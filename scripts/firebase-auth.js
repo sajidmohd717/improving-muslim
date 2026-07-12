@@ -19,6 +19,7 @@
   var NOTES_PREFIX     = utils.NOTES_PREFIX || 'lecture-notes:';
   var SAVED_KEY        = utils.SAVED_KEY || 'improving-muslim:saved-items';
   var STREAK_KEY       = utils.STREAK_KEY || 'improving-muslim:study-streak';
+  var STREAK_TARGET_MINUTES = utils.DEFAULT_STREAK_TARGET_MINUTES || 15;
   var PUSH_DEBOUNCE_MS = 3000;
 
   var _user         = null;
@@ -70,11 +71,10 @@
     if (!Object.keys(l).length) return c;
     if (!Object.keys(c).length) return l;
 
-    var targetFromLocal = (l.targetUpdatedAt || l.updatedAt || 0) >= (c.targetUpdatedAt || c.updatedAt || 0);
     var sameToday = l.todayDate && l.todayDate === c.todayDate;
     var newer = (l.updatedAt || 0) >= (c.updatedAt || 0) ? l : c;
     return Object.assign({}, newer, {
-      targetMinutes: targetFromLocal ? l.targetMinutes : c.targetMinutes,
+      targetMinutes: STREAK_TARGET_MINUTES,
       targetUpdatedAt: Math.max(l.targetUpdatedAt || 0, c.targetUpdatedAt || 0),
       todayDate: sameToday ? l.todayDate : newer.todayDate,
       todaySeconds: sameToday ? Math.max(l.todaySeconds || 0, c.todaySeconds || 0) : (newer.todaySeconds || 0),

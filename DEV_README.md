@@ -124,12 +124,13 @@ The homepage feed default is a fresh shuffle per visit — an intentional produc
 Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
 
 1. `npm run check:js` — syntax check of every file in `scripts/` and `data/` (auto-discovered, no list to maintain).
-2. `npm run check:taxonomy` — verifies taxonomy structure, homepage coverage, and every category used by maintained series and standalone lectures.
-3. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
-4. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
-5. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
-6. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
-7. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, a synthetic 500-video catalog, shared Explore taxonomy, generated series-to-watch navigation, runtime errors, and the 390px keyboard-accessible menu and catalog batch.
+2. `npm run check:content` — validates maintained catalog identity, metadata, speakers, media URL shapes, local assets, registry counts, generated catalog membership, canonical pages, and sitemap coverage.
+3. `npm run check:taxonomy` — verifies taxonomy structure, homepage coverage, and every category used by maintained series and standalone lectures.
+4. `npm run check:a11y` — custom accessibility audit of the maintained HTML page templates.
+5. `npm run check:seo-pages` — fails if any generated series or watch route is stale.
+6. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
+7. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
+8. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, a synthetic 500-video catalog, shared Explore taxonomy, generated series-to-watch navigation, streak-target migration, runtime errors, and the 390px keyboard-accessible menu and catalog batch.
 
 If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 
@@ -675,7 +676,7 @@ users/{uid}/data/sync  (single document)
   notes: { "lecture-notes:playlistId:episodeId": { text, updatedAt }, ... }
   saved: [ { key, type, title, subtitle, url, savedAt }, ... ]
   streak: {
-    targetMinutes,       // always 30 -- fixed, not user-selectable (see below)
+    targetMinutes,       // always 15 -- fixed, not user-selectable (see below)
     todayDate,
     todaySeconds,
     current,
@@ -695,7 +696,7 @@ leaderboard/{uid}  (public, opt-in only)
   displayName: string
   current: number
   best: number
-  targetMinutes: 30
+  targetMinutes: 15
   lastCompletedDate: "YYYY-MM-DD"
   updatedAt: timestamp in milliseconds
 
@@ -730,7 +731,7 @@ firebase deploy --only firestore:rules --project improving-muslim
 
 ### Streak Ranks and Freezes
 
-The daily streak goal is fixed at 30 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and gives `streak-ui.js` access to the current Firebase user and Firestore instance.
+The daily streak goal is fixed at 15 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. `normalizeStreak` migrates stored 30-minute records to 15 minutes and immediately credits the current day when its saved watch time already reaches the new threshold. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and forces merged cloud records onto the current fixed target before writing them back.
 
 **Ranks** (`STREAK_RANKS`, derived from `current`, highest match wins):
 
@@ -863,15 +864,14 @@ When changing UI, run the accessibility checks and inspect at least one mobile-w
 
 ## Scaling Guardrails And Recommended Next Work
 
-The static architecture is still a good fit for the current product: it is inexpensive to host, resilient when optional services fail, and easy to deploy. The main scaling risk is now authoring duplication and catalog drift rather than browser performance.
+The static architecture is still a good fit for the current product: it is inexpensive to host, resilient when optional services fail, and easy to deploy. `npm run check:content` now blocks the main catalog-drift and publishing-error classes locally and in CI. It intentionally performs no network requests; external R2 availability belongs in the scheduled content-health check below.
 
 Prioritize these improvements before the catalog and contributor count grow substantially:
 
-1. **Add a catalog integrity validator.** It should verify unique slugs and episode IDs, `episodeCount` and `availableCount`, required metadata, local thumbnail/caption paths, R2 URL shape, and permission status. Make it part of `npm run check`. This removes the most likely class of publishing mistakes.
-2. **Generate the shared page shell.** Headers, navigation, footers, Firebase script order, and cache-bust strings are duplicated across many HTML templates. Introduce a small repository-owned generator or include system that still emits plain static HTML; do not add a client framework merely to solve authoring duplication.
-3. **Split the largest controllers by feature boundary.** As `scripts/script.js` and `scripts/watch-page.js` grow, extract search orchestration, catalog rendering, progress, notes, and player recovery into testable modules with explicit interfaces. Preserve the current global APIs temporarily for compatibility.
-4. **Add focused data and behavior tests.** Unit-test catalog merging, progress/streak normalization, Firebase merge behavior, route helpers, and search ranking. Keep Playwright for a few critical end-to-end journeys instead of making every edge case a browser test.
-5. **Automate content-health checks separately from pull-request CI.** A scheduled or manually triggered job can check external R2 media, caption URLs, remote-feed availability, and broken outbound links without making ordinary development depend on network stability.
+1. **Generate the shared page shell.** Headers, navigation, footers, Firebase script order, and cache-bust strings are duplicated across many HTML templates. Introduce a small repository-owned generator or include system that still emits plain static HTML; do not add a client framework merely to solve authoring duplication.
+2. **Split the largest controllers by feature boundary.** As `scripts/script.js` and `scripts/watch-page.js` grow, extract search orchestration, catalog rendering, progress, notes, and player recovery into testable modules with explicit interfaces. Preserve the current global APIs temporarily for compatibility.
+3. **Add focused data and behavior tests.** Unit-test catalog merging, progress/streak normalization, Firebase merge behavior, route helpers, and search ranking. Keep Playwright for a few critical end-to-end journeys instead of making every edge case a browser test.
+4. **Automate content-health checks separately from pull-request CI.** A scheduled or manually triggered job can check external R2 media, caption URLs, remote-feed availability, and broken outbound links without making ordinary development depend on network stability.
 
 Defer a service worker until there is an explicit offline/cache invalidation policy. Videos should remain network-only; an eventual PWA should cache only the app shell and safe static assets.
 

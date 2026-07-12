@@ -24,7 +24,7 @@ async function expectCatalog(page) {
 
 test("homepage renders and supports search and topic filtering", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Find meaningful lecture series without the noise.",
@@ -46,7 +46,7 @@ test("homepage renders and supports search and topic filtering", async ({ page }
 
 test("homepage links through a generated series page to its watch page", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/?category=purification#series");
+  await page.goto("/?category=purification#series", { waitUntil: "domcontentloaded" });
   await expectCatalog(page);
 
   await page.locator('.series-title[href="./series/why-me/"]').click();
@@ -65,7 +65,7 @@ test("homepage links through a generated series page to its watch page", async (
 
 test("Explore renders every public category from the shared taxonomy", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/pages/explore.html");
+  await page.goto("/pages/explore.html", { waitUntil: "domcontentloaded" });
 
   const expected = await page.evaluate(() =>
     window.IMCategoryTaxonomy.topics
@@ -90,7 +90,7 @@ test("Explore renders every public category from the shared taxonomy", async ({ 
 
 test("Explore reports series, available episodes, and standalone lectures accurately", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/pages/explore.html");
+  await page.goto("/pages/explore.html", { waitUntil: "domcontentloaded" });
 
   const expected = await page.evaluate(() => {
     const categoriesFor = (entry) =>
@@ -142,7 +142,7 @@ test("Explore reports series, available episodes, and standalone lectures accura
 
 test("category pages show focused topic content without homepage personalization", async ({ page }) => {
   const pageErrors = await preparePage(page);
-  await page.goto("/pages/category.html?category=purification");
+  await page.goto("/pages/category.html?category=purification", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { level: 1, name: "Purification" })).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -155,7 +155,7 @@ test("category pages show focused topic content without homepage personalization
   await expect(page.locator("#continue-section, #streak-section, #recommendation-shelves")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "All topics" })).toHaveAttribute("href", "./pages/explore.html");
 
-  await page.goto("/pages/category.html?category=fiqh");
+  await page.goto("/pages/category.html?category=fiqh", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { level: 1, name: "Fiqh" })).toBeVisible();
   await expect(page.locator("#category-series-section")).toBeHidden();
   await expect(page.locator("#category-lectures-grid .series-card")).toHaveCount(1);
@@ -171,7 +171,7 @@ test("standalone-only categories stay on the local catalog", async ({ page }) =>
     if (request.url().includes("/fiqh-data.json")) fiqhFeedRequests += 1;
   });
   const pageErrors = await preparePage(page);
-  await page.goto("/?category=fiqh#series");
+  await page.goto("/?category=fiqh#series", { waitUntil: "domcontentloaded" });
 
   await expect(page.locator("#series-grid .series-title")).toHaveCount(1);
   await expect(page.locator("#series-grid .series-title")).toHaveText(
@@ -205,7 +205,7 @@ test("homepage batches a 500-video catalog without changing the session order", 
       body: `window.standaloneLectures = ${JSON.stringify(lectures)};`,
     }),
   );
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const cards = page.locator("#series-grid .series-card");
   const status = page.locator("#catalog-pagination-status");
@@ -239,12 +239,55 @@ test("homepage batches a 500-video catalog without changing the session order", 
   expect(pageErrors).toEqual([]);
 });
 
+test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.addInitScript(() => {
+    const dateKey = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const todayKey = dateKey(today);
+    const yesterdayKey = dateKey(yesterday);
+    localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
+      targetMinutes: 30,
+      todayDate: todayKey,
+      todaySeconds: 15 * 60,
+      current: 4,
+      best: 4,
+      lastCompletedDate: yesterdayKey,
+      days: { [yesterdayKey]: { seconds: 30 * 60, completed: true } },
+      freezesAvailable: 0,
+      freezeMilestonesClaimed: 0,
+      updatedAt: Date.now() - 1000,
+    }));
+  });
+  await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
+
+  await expect(page.locator("#streak-settings-summary")).toContainText(
+    "Today's 15 minute goal is complete. Current streak: 5 days.",
+  );
+  const migrated = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("improving-muslim:study-streak")),
+  );
+  expect(migrated.targetMinutes).toBe(15);
+  expect(migrated.todaySeconds).toBe(15 * 60);
+  expect(migrated.current).toBe(5);
+  expect(migrated.lastCompletedDate).toBe(migrated.todayDate);
+  expect(migrated.days[migrated.todayDate].completed).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
+
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test("has an accessible keyboard-operated menu without horizontal overflow", async ({ page }) => {
     const pageErrors = await preparePage(page);
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.locator("#series-grid .series-card")).toHaveCount(12);
     await expect(page.locator("#catalog-pagination-status")).toHaveText(/Showing 12 of \d+/);
