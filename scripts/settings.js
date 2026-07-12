@@ -1,6 +1,8 @@
 const {
   PROGRESS_PREFIX,
+  NOTES_PREFIX,
   SAVED_KEY,
+  STREAK_KEY,
   escapeHtml,
   readJsonStorage,
   readSavedItems,
@@ -112,10 +114,52 @@ resetSavedButton?.addEventListener("click", () => {
 
 renderSavedItems();
 
+const cloudResetSection = document.querySelector("#cloud-reset-section");
+const cloudResetButton = document.querySelector("#reset-cloud-data");
+
+function renderCloudResetVisibility() {
+  if (!cloudResetSection) return;
+  cloudResetSection.hidden = !window.IMAuth?.currentUser;
+}
+
+cloudResetButton?.addEventListener("click", () => {
+  if (!window.IMAuth?.currentUser) return;
+  const confirmed = confirm(
+    "This permanently erases your synced watch history, notes, saved items, streak, and leaderboard entry from your account and this device. This cannot be undone. Continue?",
+  );
+  if (!confirmed) return;
+
+  cloudResetButton.disabled = true;
+  if (status) status.textContent = "Resetting account data...";
+
+  window.IMAuth.resetCloudData()
+    .then(() => {
+      storageKeysWithPrefix(PROGRESS_PREFIX).forEach(removeStorageItem);
+      storageKeysWithPrefix(NOTES_PREFIX).forEach(removeStorageItem);
+      removeStorageItem(SAVED_KEY);
+      removeStorageItem(STREAK_KEY);
+
+      if (status) status.textContent = "Account data has been reset.";
+      renderSummary();
+      renderSavedItems();
+      renderStreakSettings();
+    })
+    .catch((err) => {
+      console.warn("[Settings] Cloud reset failed:", err.message);
+      if (status) status.textContent = "Could not reset account data. Please try again.";
+    })
+    .finally(() => {
+      cloudResetButton.disabled = false;
+    });
+});
+
+renderCloudResetVisibility();
+
 window.addEventListener("im-auth-state-changed", () => {
   renderSummary();
   renderSavedItems();
   renderStreakSettings();
+  renderCloudResetVisibility();
 });
 
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";

@@ -344,6 +344,19 @@
     },
 
     logSearch: logSearchEvent,
+
+    // Permanently deletes this account's synced data (progress, notes, saved
+    // items, streak, leaderboard entry) from Firestore. Does not touch
+    // localStorage -- callers are expected to clear local keys separately so
+    // the debounced push (which reads from localStorage) can't resurrect the
+    // deleted cloud doc afterward.
+    resetCloudData: function () {
+      if (!_user || !_db) return Promise.reject(new Error('Not signed in'));
+      clearTimeout(_pushTimer);
+      var tasks = [userDoc().delete()];
+      if (window.IMStreakUI) tasks.push(window.IMStreakUI.deleteLeaderboardEntry());
+      return Promise.all(tasks);
+    },
   };
 
   if (window.IMStreakUI) {

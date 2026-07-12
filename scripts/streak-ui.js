@@ -465,5 +465,6 @@
     updateButtons: updateButtons,
     openPanel: openPanel,
     pushLeaderboardEntry: pushLeaderboardEntry,
+    deleteLeaderboardEntry: deleteLeaderboardEntry,
   };
 })();
