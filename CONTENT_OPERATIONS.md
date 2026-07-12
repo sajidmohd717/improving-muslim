@@ -192,6 +192,8 @@ In `data/series-registry.js`:
 - Update the `?v=` cache-bust on the series `dataFile` entry.
 - Do not change `episodeCount` unless the source series itself changed.
 
+Explore uses `availableCount` to report currently watchable series episodes. An incorrect value therefore affects both the series card and public category counts; keep it equal to the number of episode records that currently have a real `videoSrc`.
+
 ### 4. Build and verify
 
 ```powershell

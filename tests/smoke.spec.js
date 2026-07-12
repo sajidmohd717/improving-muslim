@@ -85,6 +85,58 @@ test("Explore renders every public category from the shared taxonomy", async ({ 
   expect(pageErrors).toEqual([]);
 });
 
+test("Explore reports series, available episodes, and standalone lectures accurately", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.goto("/pages/explore.html");
+
+  const expected = await page.evaluate(() => {
+    const categoriesFor = (entry) =>
+      Array.isArray(entry.categories) ? entry.categories : [entry.category].filter(Boolean);
+    return window.IMCategoryTaxonomy.topics
+      .filter((topic) => topic.public)
+      .map((topic) => {
+        const series = window.seriesConfig.filter((entry) => categoriesFor(entry).includes(topic.value));
+        const seriesCount = series.length;
+        const episodeCount = series.reduce(
+          (total, entry) => total + Math.max(0, Number(entry.availableCount) || 0),
+          0,
+        );
+        const standaloneCount = window.standaloneLectures.filter(
+          (lecture) => lecture.videoSrc && categoriesFor(lecture).includes(topic.value),
+        ).length;
+        return {
+          category: topic.value,
+          seriesCount,
+          episodeCount,
+          standaloneCount,
+          totalWatchable: episodeCount + standaloneCount,
+        };
+      });
+  });
+  const rendered = await page.locator("#explore-topic-grid [data-category]").evaluateAll((cards) =>
+    cards.map((card) => ({
+      category: card.dataset.category,
+      seriesCount: Number(card.dataset.seriesCount),
+      episodeCount: Number(card.dataset.episodeCount),
+      standaloneCount: Number(card.dataset.standaloneCount),
+      totalWatchable: Number(card.dataset.totalWatchable),
+    })),
+  );
+
+  expect(rendered).toEqual(expected);
+  await expect(page.locator('[data-category="purification"] .explore-card-kicker')).toHaveText(
+    "2 series · 23 available episodes · 18 standalone lectures",
+  );
+  await expect(page.locator('[data-category="fiqh"] .explore-card-kicker')).toHaveText(
+    "1 standalone lecture",
+  );
+  await expect(page.getByRole("link", { name: "Request this topic: Sahaba" })).toBeVisible();
+  await expect(page.locator('[data-category="sahaba"] .explore-card-kicker')).toHaveText(
+    "1 series · 0 available episodes",
+  );
+  expect(pageErrors).toEqual([]);
+});
+
 test("standalone-only categories stay on the local catalog", async ({ page }) => {
   let fiqhFeedRequests = 0;
   page.on("request", (request) => {

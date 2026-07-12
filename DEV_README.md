@@ -56,6 +56,8 @@ For the short, repeatable checklist used whenever a video or series episode is a
 
 All pages in `pages/` include a `<base href="../" />` tag. Keep all project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links resolve correctly from both `index.html` and inner pages.
 
+Explore category counts have explicit meanings: registered series are counted from `seriesConfig`, currently watchable series episodes are the sum of matching registry `availableCount` values, standalone lectures are matching records with a real `videoSrc`, and total watchable content is available episodes plus standalone lectures. A category is browseable only when that total is greater than zero.
+
 ## Current Content State
 
 Snapshot as of 12 July 2026: the catalog has 11 series and 27 standalone lectures. Seventy series episodes and all 27 standalone lectures are currently watchable, for 97 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
