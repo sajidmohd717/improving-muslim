@@ -118,6 +118,9 @@
   function removeStorageItem(key) {
     try {
       localStorage.removeItem(key);
+      // A removal is a personal-data write too. Without syncing deletions,
+      // removed history can return from the cloud on the next page load.
+      if (window.IMAuth) window.IMAuth.onLocalWrite(key);
       return true;
     } catch {
       return false;

@@ -485,6 +485,27 @@ Move-Item "assets\captions\standalone\{speaker-slug}\{id}.en-orig.vtt" `
 
 Automatic captions are useful as an accessibility fallback, but they are not a reviewed transcript. Spot-check timing and wording, and prioritize human correction of Quran quotations, Arabic terms, names, and theological statements.
 
+### Generating captions when YouTube has none
+
+Some source videos have no YouTube caption track at all (not even an auto-generated one), so there's nothing for `yt-dlp --write-auto-subs` or `transcript-to-vtt.js` to pull from. For those, `scripts/generate-captions.js` transcribes the audio directly with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) and writes a WebVTT file in the same cue format as the rest of `assets/captions/`.
+
+Requires `ffmpeg` on `PATH` and `pip install faster-whisper` (CPU-only, no GPU/torch needed).
+
+```powershell
+node scripts/generate-captions.js `
+  "https://videos.improvingmuslim.com/{series-slug}/{series-slug}-ep-{n}.mp4" `
+  "assets/captions/{series-slug}/episode-{NN}.vtt" `
+  --model medium --language en --prompt "subhanahu wa ta'ala, insha'Allah, alhamdulillah, sahaba, hijrah, Makkah, Madinah"
+```
+
+The first argument accepts either the R2 `videoSrc` URL or a local file path — ffmpeg streams straight from a URL, so there's no separate download step. Pipeline: ffmpeg extracts a 16kHz mono WAV, `scripts/transcribe-whisper.py` runs faster-whisper over it, and the result is piped through `clean-vtt.js` automatically.
+
+Notes:
+- `--model`: `medium` is a reasonable speed/accuracy default on CPU. Use `large-v3` for higher accuracy on Arabic terms and names if you can tolerate a slower run.
+- `--prompt`: a comma-separated list of terms/names likely to appear — faster-whisper uses it to bias recognition, not as literal output text. Worth customizing per speaker/series.
+- Whisper output is properly capitalized and punctuated, unlike the lowercase, punctuation-light style of the YouTube-auto-caption-derived files elsewhere in `assets/captions/`. That's a cosmetic difference only (`generate-transcript-index.js` and `generate-catalog.js` strip all text formatting for search indexing anyway) — leave as-is unless you want visual consistency across caption files.
+- This is machine transcription same as YouTube's own auto-captions — same review guidance above applies: spot-check timing and prioritize human correction of Quran quotations, Arabic terms, names, and theological statements before treating it as a reviewed transcript.
+
 ## Episode Publishing Workflow
 
 When adding a new watchable episode from a YouTube source, steps 1-4 below are handled by `scripts/publish.ps1` (see the Uploading Large Videos To R2 section) — run that first, then pick up from step 5.
@@ -606,7 +627,7 @@ lecture-progress:standalone:${lecture.id}             // standalone lecture
 
 Progress is tied to the stable YouTube video ID, not the R2 file URL. An R2 file can be replaced without resetting progress.
 
-**Cloud sync (Firebase):** When a user is signed in, `scripts/firebase-auth.js` automatically syncs `localStorage` to Firestore in real time. Progress and saved items are merged across devices — the entry with the newest `updatedAt` timestamp wins per key. Signing in on a new device pulls all previous progress immediately. See the Firebase Authentication section below.
+**Cloud sync (Firebase):** When a user is signed in, `scripts/firebase-auth.js` uses that account's Firestore document as the authoritative initial state and then syncs new activity in real time. Guest browser data is isolated and is never merged into an account. Signing in on a new device pulls all previous account progress immediately. See the Firebase Authentication section below.
 
 Important implications for localStorage-only (guest) users:
 
@@ -627,7 +648,7 @@ lecture-notes:${series.playlistId}:${episode.id}  // series episode
 lecture-notes:standalone:${lecture.id}             // standalone lecture
 ```
 
-Built via `window.IMUtils.notesKey(series, episode)` / `standaloneNotesKey(lecture)`. Stored value: `{ text, updatedAt }`. Synced to Firestore the same way as progress (newest `updatedAt` wins per key) — see the Firestore data structure below.
+Built via `window.IMUtils.notesKey(series, episode)` / `standaloneNotesKey(lecture)`. Stored value: `{ text, updatedAt }`. For signed-in users it is part of the account snapshot synced to Firestore; guest notes remain isolated on the device — see the Firestore data structure below.
 
 **Editor model:** a plain `<textarea>` with a small formatting toolbar (H1/H2/H3/Bold/Italic buttons that insert lightweight markdown at the cursor) plus an Edit/Preview tab toggle, not a live rich-text/contenteditable editor. This keeps the implementation simple and safe (no HTML is ever stored, only markdown-lite text) and avoids the cross-browser fragility of building a WYSIWYG editor from scratch with no external libraries.
 
@@ -663,10 +684,10 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 
 1. Initialises the Firebase app using the project config.
 2. Listens for Google auth state changes.
-3. On sign-in: pulls the user's Firestore document, merges it with localStorage (newest `updatedAt` wins per progress/notes key; saved items are deduped by key; streak stats are merged), writes the merged result back to both localStorage and Firestore.
+3. On sign-in: isolates any guest data, clears any previous account cache, and replaces it with the signed-in user's Firestore document. Existing browser data is never pushed into the account during hydration.
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
 5. Hands Firebase user/database access to `scripts/streak-ui.js`, which writes only opt-in public display names and streak summaries to `leaderboard/{uid}`. Watch history and saved items are never public.
-6. On sign-out: stops syncing; localStorage continues to work as normal.
+6. On sign-out: stops account syncing, clears the account cache, and restores the isolated guest browser data.
 
 ### Firestore data structure
 

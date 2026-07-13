@@ -18,6 +18,58 @@ async function preparePage(page) {
   return pageErrors;
 }
 
+async function mockSignedInFirebase(page, cloudData = {}) {
+  await page.addInitScript((initialCloud) => {
+    window.__firebaseTest = { cloud: initialCloud, sets: [], deletes: 0 };
+    const syncDoc = {
+      get: async () => ({
+        exists: Object.keys(window.__firebaseTest.cloud).length > 0,
+        data: () => structuredClone(window.__firebaseTest.cloud),
+      }),
+      set: async (value) => {
+        window.__firebaseTest.cloud = structuredClone(value);
+        window.__firebaseTest.sets.push(structuredClone(value));
+      },
+      delete: async () => {
+        window.__firebaseTest.cloud = {};
+        window.__firebaseTest.deletes += 1;
+      },
+    };
+    const genericDoc = {
+      collection: () => ({ doc: () => syncDoc }),
+      delete: async () => {},
+      get: async () => ({ exists: false, data: () => ({}) }),
+      set: async () => {},
+    };
+    const db = {
+      collection: (name) => ({
+        doc: () => name === "users" ? genericDoc : genericDoc,
+        add: async () => {},
+      }),
+    };
+    const authInstance = {
+      onAuthStateChanged: (callback) => queueMicrotask(() => callback({
+        uid: "account-b",
+        displayName: "Account B",
+        email: "b@example.test",
+        photoURL: "",
+      })),
+      signOut: async () => {},
+      signInWithPopup: async () => {},
+    };
+    const auth = () => authInstance;
+    auth.GoogleAuthProvider = function GoogleAuthProvider() {};
+    const firestore = () => db;
+    firestore.FieldValue = { serverTimestamp: () => Date.now() };
+    window.firebase = {
+      apps: [{}],
+      initializeApp: () => {},
+      auth,
+      firestore,
+    };
+  }, cloudData);
+}
+
 async function expectCatalog(page) {
   await expect.poll(() => page.locator("#series-grid .series-card").count()).toBeGreaterThan(0);
 }
@@ -311,6 +363,57 @@ test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) 
   expect(migrated.current).toBe(5);
   expect(migrated.lastCompletedDate).toBe(migrated.todayDate);
   expect(migrated.days[migrated.todayDate].completed).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
+
+test("signed-in cloud data replaces local progress and reset cannot resurrect it", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const staleKey = "lecture-progress:stale-account:episode-1";
+  const cloudKey = "lecture-progress:cloud-account:episode-2";
+  await page.addInitScript(({ key }) => {
+    localStorage.setItem(key, JSON.stringify({ completed: true, updatedAt: Date.now() + 60_000 }));
+  }, { key: staleKey });
+  await mockSignedInFirebase(page, {
+    progress: {
+      [cloudKey]: { completed: true, currentTime: 600, duration: 600, updatedAt: 100 },
+    },
+    notes: {},
+    saved: [],
+    streak: {},
+  });
+
+  await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#cloud-reset-section")).toBeVisible();
+  await expect(page.locator("#local-progress-section")).toBeHidden();
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), staleKey)).toBeNull();
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), cloudKey)).not.toBeNull();
+  expect(await page.evaluate(() => window.__firebaseTest.sets.length)).toBe(0);
+
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#reset-cloud-data").click();
+  await expect(page.locator("#settings-status")).toHaveText("Account data has been reset.");
+  expect(await page.evaluate(() => ({
+    deletes: window.__firebaseTest.deletes,
+    progressKeys: Object.keys(localStorage).filter((key) => key.startsWith("lecture-progress:")),
+  }))).toEqual({ deletes: 1, progressKeys: [] });
+  await page.waitForTimeout(3200);
+  expect(await page.evaluate(() => window.__firebaseTest.sets.length)).toBe(0);
+  expect(pageErrors).toEqual([]);
+});
+
+test("mark as watched on a series syncs to the signed-in account", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await mockSignedInFirebase(page, {});
+  await page.goto("/series/change-of-heart/", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.authReady)).toBe(true);
+
+  const firstEpisode = page.locator(".episode-card").first();
+  await firstEpisode.locator(".ep-menu-btn").click();
+  await page.locator('.ep-menu-action[data-action="mark-watched"]:visible').click();
+
+  await expect.poll(() => page.evaluate(() => window.__firebaseTest.sets.length), { timeout: 5000 }).toBe(1);
+  const syncedProgress = await page.evaluate(() => window.__firebaseTest.sets[0].progress);
+  expect(Object.values(syncedProgress).some((item) => item.completed === true)).toBe(true);
   expect(pageErrors).toEqual([]);
 });
 

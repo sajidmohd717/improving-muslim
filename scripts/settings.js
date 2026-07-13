@@ -84,14 +84,16 @@ function renderSavedItems() {
     return;
   }
 
+  const location = window.IMAuth?.currentUser ? "in your account" : "on this device";
+
   if (!items.length) {
-    savedSummary.textContent = "No saved items on this device yet.";
+    savedSummary.textContent = `No saved items ${location} yet.`;
     savedList.innerHTML = "";
     resetSavedButton.disabled = true;
     return;
   }
 
-  savedSummary.textContent = `${items.length} saved ${items.length === 1 ? "item" : "items"} on this device.`;
+  savedSummary.textContent = `${items.length} saved ${items.length === 1 ? "item" : "items"} ${location}.`;
   resetSavedButton.disabled = false;
   savedList.innerHTML = items
     .map(
@@ -119,7 +121,10 @@ const cloudResetButton = document.querySelector("#reset-cloud-data");
 
 function renderCloudResetVisibility() {
   if (!cloudResetSection) return;
-  cloudResetSection.hidden = !window.IMAuth?.currentUser;
+  const signedIn = Boolean(window.IMAuth?.currentUser);
+  cloudResetSection.hidden = !signedIn;
+  const localProgressSection = document.querySelector("#local-progress-section");
+  if (localProgressSection) localProgressSection.hidden = signedIn;
 }
 
 cloudResetButton?.addEventListener("click", () => {
@@ -134,11 +139,6 @@ cloudResetButton?.addEventListener("click", () => {
 
   window.IMAuth.resetCloudData()
     .then(() => {
-      storageKeysWithPrefix(PROGRESS_PREFIX).forEach(removeStorageItem);
-      storageKeysWithPrefix(NOTES_PREFIX).forEach(removeStorageItem);
-      removeStorageItem(SAVED_KEY);
-      removeStorageItem(STREAK_KEY);
-
       if (status) status.textContent = "Account data has been reset.";
       renderSummary();
       renderSavedItems();

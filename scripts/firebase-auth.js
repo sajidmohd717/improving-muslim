@@ -3,9 +3,10 @@
  *
  * - Self-loads the Firebase compat SDK from Google CDN (no extra <script> tags needed).
  * - Injects a sign-in / avatar button into every .nav-shell automatically.
- * - On sign-in: merges Firestore data with localStorage (newest updatedAt wins per key).
+ * - On sign-in: the account's Firestore data replaces the personal-data cache.
+ *   Guest/browser data is kept separately and never merged into an account.
  * - On every localStorage write (via IMUtils.writeJsonStorage): debounces a push to Firestore.
- * - On sign-out: stops syncing; localStorage continues unchanged.
+ * - On sign-out: restores the isolated guest/browser data snapshot.
  *
  * Exposes window.IMAuth = { currentUser, signIn(), signOut(), onAuthStateChanged(fn), onLocalWrite(key) }
  */
@@ -19,7 +20,8 @@
   var NOTES_PREFIX     = utils.NOTES_PREFIX || 'lecture-notes:';
   var SAVED_KEY        = utils.SAVED_KEY || 'improving-muslim:saved-items';
   var STREAK_KEY       = utils.STREAK_KEY || 'improving-muslim:study-streak';
-  var STREAK_TARGET_MINUTES = utils.DEFAULT_STREAK_TARGET_MINUTES || 15;
+  var STORAGE_OWNER_KEY = 'improving-muslim:personal-data-owner';
+  var GUEST_DATA_KEY    = 'improving-muslim:guest-personal-data';
   var PUSH_DEBOUNCE_MS = 3000;
 
   var _user         = null;
@@ -28,60 +30,16 @@
   var _listeners    = [];
   var _initialized  = false;
   var _authReady    = false;
+  var _syncReady    = false;
+  var _pendingWrites = {};
+  var _resetting    = false;
+  var _authGeneration = 0;
 
   /* ── Firestore document reference ────────────────────────────────────── */
 
   function userDoc() {
     if (!_user || !_db) return null;
     return _db.collection('users').doc(_user.uid).collection('data').doc('sync');
-  }
-
-  /* ── Merge helpers ────────────────────────────────────────────────────── */
-
-  // Generic "newest updatedAt wins per key" merge -- also reused for notes,
-  // since both are maps of storageKey -> { ..., updatedAt }.
-  function mergeProgress(local, cloud) {
-    var merged = Object.assign({}, cloud || {});
-    Object.keys(local || {}).forEach(function (key) {
-      var lv = local[key], cv = merged[key];
-      if (!cv || (lv && (lv.updatedAt || 0) >= (cv.updatedAt || 0))) {
-        merged[key] = lv;
-      }
-    });
-    return merged;
-  }
-
-  function mergeSaved(local, cloud) {
-    var map = {};
-    var all = (cloud || []).concat(local || []);
-    all.forEach(function (item) {
-      var ex = map[item.key];
-      if (!ex || (item.savedAt || 0) >= (ex.savedAt || 0)) {
-        map[item.key] = item;
-      }
-    });
-    return Object.values(map).sort(function (a, b) {
-      return (b.savedAt || 0) - (a.savedAt || 0);
-    });
-  }
-
-  function mergeStreak(local, cloud) {
-    var l = local || {};
-    var c = cloud || {};
-    if (!Object.keys(l).length) return c;
-    if (!Object.keys(c).length) return l;
-
-    var sameToday = l.todayDate && l.todayDate === c.todayDate;
-    var newer = (l.updatedAt || 0) >= (c.updatedAt || 0) ? l : c;
-    return Object.assign({}, newer, {
-      targetMinutes: STREAK_TARGET_MINUTES,
-      targetUpdatedAt: Math.max(l.targetUpdatedAt || 0, c.targetUpdatedAt || 0),
-      todayDate: sameToday ? l.todayDate : newer.todayDate,
-      todaySeconds: sameToday ? Math.max(l.todaySeconds || 0, c.todaySeconds || 0) : (newer.todaySeconds || 0),
-      current: Math.max(l.current || 0, c.current || 0),
-      best: Math.max(l.best || 0, c.best || 0),
-      updatedAt: Math.max(l.updatedAt || 0, c.updatedAt || 0),
-    });
   }
 
   /* ── Read / write localStorage ────────────────────────────────────────── */
@@ -120,32 +78,92 @@
     } catch (_) {}
   }
 
-  /* ── Firestore pull + merge ───────────────────────────────────────────── */
+  function clearLocal() {
+    try {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) ||
+            key === SAVED_KEY || key === STREAK_KEY)) keys.push(key);
+      }
+      keys.forEach(function (key) { localStorage.removeItem(key); });
+    } catch (_) {}
+  }
 
-  function pullAndMerge() {
+  function replaceLocal(data) {
+    clearLocal();
+    writeLocal(data || {});
+  }
+
+  function saveGuestData() {
+    try { localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(readLocal())); } catch (_) {}
+  }
+
+  function restoreGuestData() {
+    var guest = {};
+    try { guest = JSON.parse(localStorage.getItem(GUEST_DATA_KEY) || '{}'); } catch (_) {}
+    replaceLocal(guest);
+  }
+
+  function prepareAccountStorage(user) {
+    var owner = '';
+    try { owner = localStorage.getItem(STORAGE_OWNER_KEY) || ''; } catch (_) {}
+
+    // Preserve only genuine guest data. A cache belonging to any account is
+    // discarded before the next account is hydrated.
+    if (!owner || owner === 'guest') saveGuestData();
+    clearLocal();
+    try { localStorage.setItem(STORAGE_OWNER_KEY, 'user:' + user.uid); } catch (_) {}
+  }
+
+  function activateGuestStorage() {
+    var owner = '';
+    try { owner = localStorage.getItem(STORAGE_OWNER_KEY) || ''; } catch (_) {}
+    if (owner.indexOf('user:') === 0) restoreGuestData();
+    try { localStorage.setItem(STORAGE_OWNER_KEY, 'guest'); } catch (_) {}
+  }
+
+  function capturePendingWrites() {
+    var captured = {};
+    Object.keys(_pendingWrites).forEach(function (key) {
+      try { captured[key] = localStorage.getItem(key); } catch (_) { captured[key] = null; }
+    });
+    return captured;
+  }
+
+  function applyPendingWrites(captured) {
+    Object.keys(captured).forEach(function (key) {
+      try {
+        if (captured[key] === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, captured[key]);
+      } catch (_) {}
+    });
+  }
+
+  /* ── Authoritative Firestore pull ─────────────────────────────────────── */
+
+  function pullAccountData(user, generation) {
     var doc = userDoc();
     if (!doc) return Promise.resolve();
     return doc.get().then(function (snap) {
-      var local = readLocal();
-      var payload;
-      if (snap.exists) {
-        var cloud = snap.data();
-        payload = {
-          progress: mergeProgress(local.progress, cloud.progress || {}),
-          notes:    mergeProgress(local.notes, cloud.notes || {}),
-          saved:    mergeSaved(local.saved, cloud.saved || []),
-          streak:   mergeStreak(local.streak, cloud.streak || {}),
-        };
-        writeLocal(payload);
-      } else {
-        payload = { progress: local.progress, notes: local.notes, saved: local.saved, streak: local.streak };
-      }
-      payload.lastSyncedAt = Date.now();
-      return doc.set(payload);
-    }).then(function () {
+      if (!_user || _user.uid !== user.uid || generation !== _authGeneration) return;
+      var pending = capturePendingWrites();
+      var cloud = snap.exists ? snap.data() : {};
+      replaceLocal({
+        progress: cloud.progress || {},
+        notes: cloud.notes || {},
+        saved: Array.isArray(cloud.saved) ? cloud.saved : [],
+        streak: cloud.streak || {},
+      });
+      applyPendingWrites(pending);
+      _syncReady = true;
+      if (Object.keys(pending).length) schedulePush();
+      if (window.IMStreakUI) window.IMStreakUI.updateButtons();
       notifyListeners();
     }).catch(function (err) {
-      console.warn('[IMAuth] Sync pull failed:', err.message);
+      // Never push an unknown local snapshot when the authoritative read
+      // failed. A later page load can safely retry hydration.
+      console.warn('[IMAuth] Account data pull failed:', err.message);
       notifyListeners();
     });
   }
@@ -153,7 +171,7 @@
   /* ── Debounced push ───────────────────────────────────────────────────── */
 
   function schedulePush() {
-    if (!_user) return;
+    if (!_user || !_syncReady || _resetting) return;
     clearTimeout(_pushTimer);
     _pushTimer = setTimeout(function () {
       var doc = userDoc();
@@ -285,6 +303,8 @@
     var signedOut = document.getElementById('auth-signed-out');
     var signedIn  = document.getElementById('auth-signed-in');
     if (!signedOut || !signedIn) return;
+    var localProgress = document.getElementById('local-progress-section');
+    if (localProgress) localProgress.hidden = Boolean(user);
 
     if (user) {
       signedOut.hidden = true;
@@ -336,7 +356,8 @@
 
     onLocalWrite: function (key) {
       if (_user && key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY)) {
-        schedulePush();
+        if (_syncReady) schedulePush();
+        else _pendingWrites[key] = true;
       }
       if (key === STREAK_KEY) {
         if (window.IMStreakUI) window.IMStreakUI.updateButtons();
@@ -345,17 +366,24 @@
 
     logSearch: logSearchEvent,
 
-    // Permanently deletes this account's synced data (progress, notes, saved
-    // items, streak, leaderboard entry) from Firestore. Does not touch
-    // localStorage -- callers are expected to clear local keys separately so
-    // the debounced push (which reads from localStorage) can't resurrect the
-    // deleted cloud doc afterward.
+    // Delete cloud data and its local cache as one operation, with pushes
+    // suspended so the deleted snapshot cannot be resurrected.
     resetCloudData: function () {
       if (!_user || !_db) return Promise.reject(new Error('Not signed in'));
       clearTimeout(_pushTimer);
-      var tasks = [userDoc().delete()];
+      _resetting = true;
+      ++_authGeneration; // invalidate any account pull already in flight
+      var accountDelete = userDoc().delete().then(function () {
+        clearLocal();
+        _pendingWrites = {};
+        _syncReady = true;
+        notifyListeners();
+      });
+      var tasks = [accountDelete];
       if (window.IMStreakUI) tasks.push(window.IMStreakUI.deleteLeaderboardEntry());
-      return Promise.all(tasks);
+      return Promise.all(tasks).finally(function () {
+        _resetting = false;
+      });
     },
   };
 
@@ -386,15 +414,21 @@
       _db = firebase.firestore();
 
       firebase.auth().onAuthStateChanged(function (user) {
+        var generation = ++_authGeneration;
+        clearTimeout(_pushTimer);
         _user = user;
         _authReady = true;
+        _syncReady = false;
+        _pendingWrites = {};
+        if (user) prepareAccountStorage(user);
+        else activateGuestStorage();
         if (window.IMStreakUI) window.IMStreakUI.injectButton();
         injectAuthButton();
-        if (window.IMStreakUI) window.IMStreakUI.updateButtons();
+        if (!user && window.IMStreakUI) window.IMStreakUI.updateButtons();
         updateAllAuthButtons();
         updateSettingsPanel(user);
         if (user) {
-          pullAndMerge();
+          pullAccountData(user, generation);
         } else {
           notifyListeners();
         }

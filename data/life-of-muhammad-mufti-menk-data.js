@@ -10,7 +10,7 @@
   description:
     "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) — from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
   episodes: [
-    { number: 1,  id: "VO22l6-Qkys", title: "Day 1",  published: "2012-07-22", views: 1300000, videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-1.mp4"  },
+    { number: 1,  id: "VO22l6-Qkys", title: "Introduction: Arabia Before Islam",  published: "2012-07-22", views: 1300000, videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-1.mp4", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-01.vtt"  },
     { number: 2,  id: "5iwZPhswyKI", title: "Day 2",  published: "2012-07-23", views: 822000,  videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-2.mp4"  },
     { number: 3,  id: "W2usJgjOSrQ", title: "Day 3",  published: "2012-07-24", views: 661000,  videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-3.mp4"  },
     { number: 4,  id: "B_S-eVQoWUc", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-4.mp4", title: "Day 4",  published: "2012-07-25", views: 555000  },
