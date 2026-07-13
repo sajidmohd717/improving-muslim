@@ -10,6 +10,7 @@
     "check:catalog": "node scripts/generate-catalog.js --check",
     "check:content": "node scripts/check-content.js",
     "check:js": "node scripts/check-js.js",
+    "check:workers": "node --test tests/popularity-worker.test.js",
     "check:seo-pages": "node scripts/generate-seo-pages.js --check",
     "check:sitemap": "node scripts/generate-sitemap.js --check",
     "check:transcript-index": "node scripts/generate-transcript-index.js --check",
@@ -22,7 +23,7 @@
     "sitemap": "node scripts/generate-sitemap.js",
     "transcript-index": "node scripts/generate-transcript-index.js",
     "clean-vtt": "node scripts/clean-vtt.js assets/captions",
-    "check": "npm run check:js && npm run check:content && npm run check:taxonomy && npm run check:a11y && npm run check:catalog && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
+    "check": "npm run check:js && npm run check:workers && npm run check:content && npm run check:taxonomy && npm run check:a11y && npm run check:catalog && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

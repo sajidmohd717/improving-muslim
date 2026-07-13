@@ -7,7 +7,8 @@
  *   POST /event    body {"key":"episode:{slug}:{id}"|"video:{id}","event":"play"|"complete"}
  *                  increments the counter, returns 204
  *   GET  /popular  returns {"items":{"<key>":{"p":<plays>,"c":<completes>}}}
- *                  edge-cached for 15 minutes
+ *                  with a 15-minute cache hint for custom-domain deployments
+ *   GET  /health   confirms the Worker and KV binding are reachable
  *
  * Required bindings / vars (see wrangler.popularity.jsonc):
  * - POPULARITY: KV namespace for the counters
@@ -44,15 +45,12 @@ export default {
 
     const url = new URL(request.url);
 
-    if (request.method === "GET" && url.pathname === "/popular") {
-      // Serve from the edge cache so a burst of homepage visits costs one KV list.
-      const cache = caches.default;
-      const cacheKey = new Request(`${url.origin}/popular`);
-      const cached = await cache.match(cacheKey);
-      if (cached) {
-        return withCors(cached, corsHeaders);
-      }
+    if (request.method === "GET" && url.pathname === "/health") {
+      await env.POPULARITY.list({ limit: 1 });
+      return json({ ok: true, service: "popularity" }, 200, corsHeaders);
+    }
 
+    if (request.method === "GET" && url.pathname === "/popular") {
       const items = {};
       let cursor;
       do {
@@ -70,7 +68,6 @@ export default {
           "Cache-Control": `public, max-age=${POPULAR_CACHE_SECONDS}`,
         },
       });
-      ctx.waitUntil(cache.put(cacheKey, response.clone()));
       return withCors(response, corsHeaders);
     }
 

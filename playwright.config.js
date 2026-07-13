@@ -4,6 +4,7 @@ const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "**/*.spec.js",
   timeout: 20_000,
   expect: { timeout: 7_000 },
   fullyParallel: true,

@@ -5,12 +5,11 @@
   "compatibility_date": "2026-07-06",
   "workers_dev": true,
   "preview_urls": false,
-  // Create the namespace first, then paste its id here:
-  //   npx wrangler kv namespace create POPULARITY
+  // Wrangler provisions and binds this namespace on first deploy. Keeping the
+  // binding declarative avoids committing an account-specific namespace ID.
   "kv_namespaces": [
     {
-      "binding": "POPULARITY",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "binding": "POPULARITY"
     }
   ],
   "vars": {

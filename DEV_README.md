@@ -253,28 +253,27 @@ Anonymous, aggregate-only play/completion counters per lecture — no user ids, 
 
 | Piece | Location |
 |---|---|
-| Worker (POST /event, GET /popular) | `workers/popularity-worker.js` |
+| Worker (POST /event, GET /popular, GET /health) | `workers/popularity-worker.js` |
 | Wrangler config | `wrangler.popularity.jsonc` |
 | Browser client (beacons + cached counts) | `scripts/popularity.js` |
 | Play/complete beacons | `scripts/watch-page.js` |
 | "Popular right now" shelf | `renderPopularShelf` in `scripts/script.js` |
 
-The frontend degrades silently until the Worker is deployed: no errors, no shelf, no ranking boost. To deploy:
+The frontend degrades silently until the Worker is deployed: no errors, no shelf, no ranking boost. Wrangler provisions the declared `POPULARITY` KV namespace automatically on the first deployment, so no account-specific namespace ID belongs in the repository. To deploy:
 
 ```powershell
-npx wrangler kv namespace create POPULARITY
-# paste the returned namespace id into wrangler.popularity.jsonc
 npx wrangler deploy -c wrangler.popularity.jsonc
 ```
 
 To test the live Worker:
 
 ```powershell
+curl.exe -sS "https://improving-muslim-popularity.improving-muslim.workers.dev/health" -H "Origin: https://improvingmuslim.com"
 '{"key":"video:qadr-and-sabr","event":"play"}' | curl.exe -sS -i -X POST "https://improving-muslim-popularity.improving-muslim.workers.dev/event" -H "Content-Type: application/json" -H "Origin: https://improvingmuslim.com" --data-binary "@-"
 curl.exe -sS "https://improving-muslim-popularity.improving-muslim.workers.dev/popular" -H "Origin: https://improvingmuslim.com"
 ```
 
-Behavioral notes: the browser sends at most one play and one complete per lecture per device per day (localStorage dedupe); `GET /popular` is edge-cached for 15 minutes and the browser caches it in localStorage for 30 minutes; the shelf only appears once at least four lectures have 2+ plays. KV increments are read-modify-write, so rare concurrent plays can lose a count — acceptable for a best-effort signal. The Worker endpoint URL is a constant at the top of `scripts/popularity.js`.
+Behavioral notes: the browser sends at most one play and one complete per lecture per device per day (localStorage dedupe); the browser caches `GET /popular` in localStorage for 30 minutes; the shelf only appears once at least four lectures have 2+ plays. The response includes a 15-minute cache hint for a future custom-domain deployment, but the Cache API is deliberately not used because it is unavailable on `*.workers.dev`. KV increments are read-modify-write, so rare concurrent plays can lose a count — acceptable for a best-effort signal. The Worker endpoint URL is a constant at the top of `scripts/popularity.js`.
 
 ## Video Hosting Pattern
 
