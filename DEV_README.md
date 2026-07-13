@@ -505,6 +505,16 @@ Notes:
 - Whisper output is properly capitalized and punctuated, unlike the lowercase, punctuation-light style of the YouTube-auto-caption-derived files elsewhere in `assets/captions/`. That's a cosmetic difference only (`generate-transcript-index.js` and `generate-catalog.js` strip all text formatting for search indexing anyway) — leave as-is unless you want visual consistency across caption files.
 - This is machine transcription same as YouTube's own auto-captions — same review guidance above applies: spot-check timing and prioritize human correction of Quran quotations, Arabic terms, names, and theological statements before treating it as a reviewed transcript.
 
+**Full workflow, step by step** (this is what was actually run to caption Life of Muhammad (Mufti Menk) Day 1 and Day 2, both of which only had generic "Day N" titles and no YouTube captions):
+
+1. Run `scripts/generate-captions.js` (command above) with the episode's `videoSrc` URL and a destination path following the existing `assets/captions/{series-slug}/episode-{NN}.vtt` convention.
+2. Read through the resulting transcript to understand what the episode actually covers — generic series titles like "Day 1"/"Day 2" say nothing about content, so this is also the moment to catch a better title. Look for named events, people, or themes (e.g. "the Year of the Elephant," "Arabia before Islam") rather than summarizing generically.
+3. Propose 1-3 title options in the site's plain, descriptive style (see existing titles like `"An introduction"`, `"Sincerity (Ikhlas)"` in `data/change-of-heart-data.js`) and get the title confirmed before changing it — renaming published content is worth a second pair of eyes.
+4. Add `captionsSrc` to the episode entry in the series' `data/*-data.js` file, and update `title` once confirmed.
+5. Regenerate derived data: `npm run catalog && npm run transcript-index`, and if the title changed, also `npm run seo-pages && npm run sitemap` (the title is baked into generated watch/series pages and sitemap entries).
+6. Run `npm run check` (or at least `check:vtt`, `check:catalog`, `check:transcript-index`, `check:seo-pages`, `check:sitemap`, `check:smoke`) to confirm nothing drifted.
+7. Spot-check in a browser: confirm the page `<title>` reflects the new episode title, and that the `<track>` element's cues load (`document.querySelector('video track').track.cues.length` should be non-zero once the track fires its `load` event).
+
 ## Episode Publishing Workflow
 
 When adding a new watchable episode from a YouTube source, steps 1-4 below are handled by `scripts/publish.ps1` (see the Uploading Large Videos To R2 section) — run that first, then pick up from step 5.
