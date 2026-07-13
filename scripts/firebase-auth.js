@@ -170,21 +170,40 @@
 
   /* ── Debounced push ───────────────────────────────────────────────────── */
 
+  function pushNow() {
+    clearTimeout(_pushTimer);
+    _pushTimer = null;
+    if (!_user || !_syncReady || _resetting) return;
+    var doc = userDoc();
+    if (!doc) return;
+    var local = readLocal();
+    local.lastSyncedAt = Date.now();
+    doc.set(local).catch(function (err) {
+      console.warn('[IMAuth] Sync push failed:', err.message);
+    }).then(function () {
+      if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
+    });
+  }
+
   function schedulePush() {
     if (!_user || !_syncReady || _resetting) return;
     clearTimeout(_pushTimer);
-    _pushTimer = setTimeout(function () {
-      var doc = userDoc();
-      if (!doc) return;
-      var local = readLocal();
-      local.lastSyncedAt = Date.now();
-      doc.set(local).catch(function (err) {
-        console.warn('[IMAuth] Sync push failed:', err.message);
-      }).then(function () {
-        if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
-      });
-    }, PUSH_DEBOUNCE_MS);
+    _pushTimer = setTimeout(pushNow, PUSH_DEBOUNCE_MS);
   }
+
+  // This is a plain multi-page site: every navigation is a full page load,
+  // so a pending debounced push (up to PUSH_DEBOUNCE_MS old) never fires --
+  // setTimeout does not survive navigation. The next page then wipes local
+  // storage and re-pulls the stale (pre-write) Firestore snapshot, silently
+  // discarding whatever was just saved (e.g. a save/progress/note made just
+  // before clicking to another page). "pagehide" fires reliably right as the
+  // browser commits to leaving this page (navigation, tab close, or bfcache
+  // eviction -- see error-handler.js's matching pageshow/persisted handling)
+  // without the false positives "visibilitychange" gets from ordinary tab
+  // switching/backgrounding, where the existing timer is still fine to wait out.
+  window.addEventListener('pagehide', function () {
+    if (_pushTimer) pushNow();
+  });
 
   /* ── Notify state listeners ───────────────────────────────────────────── */
 
