@@ -922,6 +922,10 @@ After any lecture, episode, caption, thumbnail reference, speaker, or series-reg
 
 ## Deployment Workflow
 
+### Main-branch-only policy
+
+All repository work is committed and pushed directly to `main`. Do not create local or remote feature branches, draft branches, or pull requests for this repository. Before starting work, switch to `main` and synchronize it with `origin/main`. Keep commits focused, preserve unrelated working-tree changes, run the relevant checks, and push the completed commit directly to `origin/main`. This policy applies to human contributors, automation, and coding agents.
+
 Prefer local iteration. Push only clean milestones to avoid noisy history.
 
 Before pushing:
