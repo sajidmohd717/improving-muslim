@@ -1,0 +1,46 @@
+﻿window.storiesOfTheProphetsSeries = {
+  title: "Stories of the Prophets",
+  slug: "stories-of-the-prophets",
+  seriesPageUrl: "./pages/series-detail.html?id=stories-of-the-prophets",
+  speaker: "Mufti Menk",
+  topic: "Prophets",
+  thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/series-card.jpg",
+  playlistId: "PL9821CA747E7E0674",
+  description:
+    "A chronological journey through the lives of Allah's prophets, from Adam to Isa (peace be upon them), taught by Mufti Menk with accessible storytelling and practical lessons.",
+  episodes: [
+    { number: 1, id: "IQjzErJlpJ0", videoSrc: "https://videos.improvingmuslim.com/stories-of-the-prophets/stories-of-the-prophets-ep-1.mp4", title: "Introduction to Stories of the Prophets", published: "2012-04-01", duration: 2416, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-01.jpg", captionsSrc: "./assets/captions/stories-of-the-prophets/episode-01.vtt" },
+    { number: 2, id: "mknf5MB1qDI", videoSrc: "https://videos.improvingmuslim.com/stories-of-the-prophets/stories-of-the-prophets-ep-2.mp4", title: "The Creation of Adam (AS)", published: "2012-04-01", duration: 2846, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-02.jpg", captionsSrc: "./assets/captions/stories-of-the-prophets/episode-02.vtt" },
+    { number: 3, id: "J9IDLOza_KM", videoSrc: "https://videos.improvingmuslim.com/stories-of-the-prophets/stories-of-the-prophets-ep-3.mp4", title: "Adam (AS) on Earth - Part 1", published: "2012-04-01", duration: 3121, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-03.jpg", captionsSrc: "./assets/captions/stories-of-the-prophets/episode-03.vtt" },
+    { number: 4, id: "WNPjOOwXOIk", videoSrc: "https://videos.improvingmuslim.com/stories-of-the-prophets/stories-of-the-prophets-ep-4.mp4", title: "Adam (AS) on Earth - Part 2", published: "2012-04-01", duration: 3115, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-04.jpg", captionsSrc: "./assets/captions/stories-of-the-prophets/episode-04.vtt" },
+    { number: 5, id: "OAHdqM72TvA", title: "Sheeth (AS)", published: "2012-04-01", duration: 2044, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-05.jpg" },
+    { number: 6, id: "eGgNrs9UyRU", title: "Idrees (AS)", published: "2012-04-03", duration: 3145, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-06.jpg" },
+    { number: 7, id: "AclAV0cY5a8", title: "Nuh (AS)", published: "2012-04-03", duration: 3453, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-07.jpg" },
+    { number: 8, id: "Ub2SsLvzdjA", title: "Hud (AS)", published: "2012-04-03", duration: 3181, thumbnailSrc: "./assets/thumbnail/stories-of-the-prophets/episodes/episode-08.jpg" },
+    { number: 9, id: "kHtxCfDNUSs", title: "Salih (AS)", published: "2012-04-03", duration: 3352 },
+    { number: 10, id: "ZzWI0EsWrh4", title: "Ibrahim (AS) - Part 1", published: "2012-04-03", duration: 2432 },
+    { number: 11, id: "IcKEwfygNS4", title: "Ibrahim (AS) - Part 2", published: "2012-04-03", duration: 2758 },
+    { number: 12, id: "vgBElb0j5tQ", title: "Ibrahim and Ismail (AS) - Part 3", published: "2012-04-03", duration: 2861 },
+    { number: 13, id: "fk9JJqui9r0", title: "Ibrahim and Ismail (AS) - Part 4", published: "2012-04-01", duration: 3288 },
+    { number: 14, id: "oYsNjZOBo-o", title: "Lut (AS)", published: "2012-04-13", duration: 2806 },
+    { number: 15, id: "9QhbwC94V4g", title: "Yaqub and Yusuf (AS) - Part 1", published: "2012-04-13", duration: 2843 },
+    { number: 16, id: "TwgOZTP_kvo", title: "Yusuf (AS) - Part 2", published: "2012-04-13", duration: 3328 },
+    { number: 17, id: "EoyRGktUows", title: "Yusuf (AS) - Part 3", published: "2012-04-14", duration: 2806 },
+    { number: 18, id: "etLBpjWmBtc", title: "Ayyub and Yunus (AS)", published: "2012-04-14", duration: 2877 },
+    { number: 19, id: "PFCTEIiMuww", title: "Musa and Harun (AS) - Part 1", published: "2012-04-14", duration: 3208 },
+    { number: 20, id: "vldKHcVG2xA", title: "Musa and Harun (AS) - Part 2", published: "2012-04-14", duration: 3174 },
+    { number: 21, id: "jdX_AfjWL04", title: "Musa and Harun (AS) - Part 3", published: "2012-04-18", duration: 3250 },
+    { number: 22, id: "7M4o6DWdbfc", title: "Musa (AS) and Bani Israel - Part 1", published: "2012-04-24", duration: 3149 },
+    { number: 23, id: "QdISexTuUCc", title: "Musa (AS) and Bani Israel - Part 2", published: "2012-04-24", duration: 3390 },
+    { number: 24, id: "_9voHb5ZPTc", title: "Shuayb (AS)", published: "2012-04-24", duration: 3084 },
+    { number: 25, id: "SJHEzAqwuoo", title: "Musa, Uzair, Hizqeel, Yusha and Dawud (AS) - Part 1", published: "2012-04-24", duration: 2975 },
+    { number: 26, id: "_ODguRpnXq0", title: "Dawud (AS) - Part 2", published: "2012-04-24", duration: 2534 },
+    { number: 27, id: "cxLPytuySn0", title: "Sulayman (AS) - Part 1", published: "2012-04-24", duration: 3194 },
+    { number: 28, id: "gP0kxuGP7_s", title: "Sulayman, Ilyas, Dhul-Kifl, Zakariya and Yahya (AS)", published: "2012-04-11", duration: 4096 },
+    { number: 29, id: "y0pc95YEloA", title: "Isa (AS)", published: "2012-04-26", duration: 4640 },
+  ],
+};
+
+
+
+

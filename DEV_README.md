@@ -60,7 +60,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 12 July 2026: the catalog has 11 series and 27 standalone lectures. Seventy series episodes and all 27 standalone lectures are currently watchable, for 97 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 16 July 2026: the catalog has 12 series and 27 standalone lectures. Seventy-four series episodes and all 27 standalone lectures are currently watchable, for 101 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -470,15 +470,35 @@ Invoke-WebRequest -Uri "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg" 
   -OutFile "assets\thumbnail\standalone\{speaker-slug}\{id}.jpg"
 ```
 
-Check whether the source offers captions with `yt-dlp --list-subs "{youtube-url}"`. When only YouTube's English automatic track is available, download it as WebVTT and rename the generated `.en-orig.vtt` file to the catalog path:
+Caption availability must be checked **per episode**, even within one playlist. A series may mix creator-provided subtitles, automatic captions, and videos with no caption track. Start every episode with:
+
+```powershell
+yt-dlp --list-subs --no-warnings "{youtube-url}"
+```
+
+Then use the first applicable path below. Do not assume that a failed caption download for one episode applies to the rest of the series, and avoid broad selectors such as `en.*`: YouTube can expose hundreds of auto-translated `*-en` tracks, causing a slow accidental batch download.
+
+**1. Creator-provided English subtitles:** if `Available subtitles` lists `en`, prefer that reviewed/source track:
+
+```powershell
+yt-dlp --skip-download --write-subs --sub-langs en --sub-format vtt `
+  -o "assets\captions\{series-slug}\episode-{NN}.%(ext)s" "{youtube-url}"
+
+Move-Item "assets\captions\{series-slug}\episode-{NN}.en.vtt" `
+  "assets\captions\{series-slug}\episode-{NN}.vtt"
+```
+
+**2. YouTube automatic English captions:** if there is no creator subtitle but `Available automatic captions` lists `en-orig`, download that track:
 
 ```powershell
 yt-dlp --skip-download --write-auto-subs --sub-langs en-orig --sub-format vtt `
-  -o "assets\captions\standalone\{speaker-slug}\{id}.%(ext)s" "{youtube-url}"
+  -o "assets\captions\{series-slug}\episode-{NN}.%(ext)s" "{youtube-url}"
 
-Move-Item "assets\captions\standalone\{speaker-slug}\{id}.en-orig.vtt" `
-  "assets\captions\standalone\{speaker-slug}\{id}.vtt"
+Move-Item "assets\captions\{series-slug}\episode-{NN}.en-orig.vtt" `
+  "assets\captions\{series-slug}\episode-{NN}.vtt"
 ```
+
+For standalone lectures, use the equivalent `assets\captions\standalone\{speaker-slug}\{id}.vtt` destination. `publish.ps1 -Standalone` attempts this mechanical caption scaffolding automatically; the series publishing path currently uploads the video only, so series captions still follow this per-episode decision flow.
 
 **Always run `npm run clean-vtt` after downloading any YouTube auto-captions.** YouTube's auto-caption VTTs pin every cue to the far left with settings like `align:start position:0%` on the timing line. The browser's native `<track>` renderer honours those settings, so the captions render hard against the left edge instead of bottom-centre — very visible on iPhone. `scripts/clean-vtt.js` strips those per-cue positioning settings (leaving the text untouched) so captions fall back to the default bottom-centre placement. It is idempotent and safe to run on the whole `assets/captions` tree. `npm run check` now includes `check:vtt`, which fails if any committed VTT still carries positioning settings — so this can't silently regress.
 
@@ -486,7 +506,7 @@ Automatic captions are useful as an accessibility fallback, but they are not a r
 
 ### Generating captions when YouTube has none
 
-Some source videos have no YouTube caption track at all (not even an auto-generated one), so there's nothing for `yt-dlp --write-auto-subs` or `transcript-to-vtt.js` to pull from. For those, `scripts/generate-captions.js` transcribes the audio directly with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) and writes a WebVTT file in the same cue format as the rest of `assets/captions/`.
+**3. Local transcription fallback:** when `--list-subs` reports neither subtitles nor automatic captions, `scripts/generate-captions.js` transcribes the audio directly with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) and writes a WebVTT file in the same cue format as the rest of `assets/captions/`. This is the repository's timed-caption fallback; it does not call the ChatGPT or OpenAI API. ChatGPT may help a maintainer review wording or summarize an already generated transcript, but it should not be confused with the tool that creates the timed VTT cues.
 
 Requires `ffmpeg` on `PATH` and `pip install faster-whisper` (CPU-only, no GPU/torch needed).
 
@@ -500,6 +520,7 @@ node scripts/generate-captions.js `
 The first argument accepts either the R2 `videoSrc` URL or a local file path — ffmpeg streams straight from a URL, so there's no separate download step. Pipeline: ffmpeg extracts a 16kHz mono WAV, `scripts/transcribe-whisper.py` runs faster-whisper over it, and the result is piped through `clean-vtt.js` automatically.
 
 Notes:
+- Process mixed playlists one episode at a time: use the source subtitle when present, then run faster-whisper only for the episodes whose `--list-subs` result is empty.
 - `--model`: `medium` is a reasonable speed/accuracy default on CPU. Use `large-v3` for higher accuracy on Arabic terms and names if you can tolerate a slower run.
 - `--prompt`: a comma-separated list of terms/names likely to appear — faster-whisper uses it to bias recognition, not as literal output text. Worth customizing per speaker/series.
 - Whisper output is properly capitalized and punctuated, unlike the lowercase, punctuation-light style of the YouTube-auto-caption-derived files elsewhere in `assets/captions/`. That's a cosmetic difference only (`generate-transcript-index.js` and `generate-catalog.js` strip all text formatting for search indexing anyway) — leave as-is unless you want visual consistency across caption files.
