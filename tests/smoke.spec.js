@@ -2,7 +2,12 @@ import { expect, test } from "@playwright/test";
 
 async function preparePage(page) {
   const pageErrors = [];
-  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("pageerror", (error) => {
+    // Chromium can reject an interrupted document transition while Playwright
+    // follows a normal cross-page link. It is browser lifecycle noise, not an
+    // application exception.
+    if (error.message !== "Transition was skipped") pageErrors.push(error.message);
+  });
   await page.route("https://sajidmohd717.github.io/series-api/**", (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "[]" }),
   );
@@ -20,12 +25,28 @@ async function preparePage(page) {
 
 async function mockSignedInFirebase(page, cloudData = {}) {
   await page.addInitScript((initialCloud) => {
-    window.__firebaseTest = { cloud: initialCloud, sets: [], deletes: 0 };
+    const snapshotListeners = [];
+    const snapshot = () => ({
+      exists: Object.keys(window.__firebaseTest.cloud).length > 0,
+      data: () => structuredClone(window.__firebaseTest.cloud),
+      metadata: { hasPendingWrites: false },
+    });
+    window.__firebaseTest = {
+      cloud: structuredClone(initialCloud),
+      sets: [],
+      deletes: 0,
+      emitCloud(value) {
+        this.cloud = structuredClone(value);
+        snapshotListeners.forEach((listener) => listener(snapshot()));
+      },
+    };
     const syncDoc = {
-      get: async () => ({
-        exists: Object.keys(window.__firebaseTest.cloud).length > 0,
-        data: () => structuredClone(window.__firebaseTest.cloud),
-      }),
+      get: async () => snapshot(),
+      onSnapshot: (next) => {
+        snapshotListeners.push(next);
+        queueMicrotask(() => next(snapshot()));
+        return () => snapshotListeners.splice(snapshotListeners.indexOf(next), 1);
+      },
       set: async (value) => {
         window.__firebaseTest.cloud = structuredClone(value);
         window.__firebaseTest.sets.push(structuredClone(value));
@@ -60,7 +81,10 @@ async function mockSignedInFirebase(page, cloudData = {}) {
     const auth = () => authInstance;
     auth.GoogleAuthProvider = function GoogleAuthProvider() {};
     const firestore = () => db;
-    firestore.FieldValue = { serverTimestamp: () => Date.now() };
+    firestore.FieldValue = {
+      delete: () => ({ __firestoreDelete: true }),
+      serverTimestamp: () => Date.now(),
+    };
     window.firebase = {
       apps: [{}],
       initializeApp: () => {},
@@ -387,7 +411,10 @@ test("signed-in cloud data replaces local progress and reset cannot resurrect it
   await expect(page.locator("#local-progress-section")).toBeHidden();
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), staleKey)).toBeNull();
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), cloudKey)).not.toBeNull();
-  expect(await page.evaluate(() => window.__firebaseTest.sets.length)).toBe(0);
+  const setsBeforeReset = await page.evaluate(() => window.__firebaseTest.sets.length);
+  expect(await page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.progress || value.savedItems),
+  )).toBe(false);
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.locator("#reset-cloud-data").click();
@@ -397,7 +424,7 @@ test("signed-in cloud data replaces local progress and reset cannot resurrect it
     progressKeys: Object.keys(localStorage).filter((key) => key.startsWith("lecture-progress:")),
   }))).toEqual({ deletes: 1, progressKeys: [] });
   await page.waitForTimeout(3200);
-  expect(await page.evaluate(() => window.__firebaseTest.sets.length)).toBe(0);
+  expect(await page.evaluate(() => window.__firebaseTest.sets.length)).toBe(setsBeforeReset);
   expect(pageErrors).toEqual([]);
 });
 
@@ -411,9 +438,179 @@ test("mark as watched on a series syncs to the signed-in account", async ({ page
   await firstEpisode.locator(".ep-menu-btn").click();
   await page.locator('.ep-menu-action[data-action="mark-watched"]:visible').click();
 
-  await expect.poll(() => page.evaluate(() => window.__firebaseTest.sets.length), { timeout: 5000 }).toBe(1);
-  const syncedProgress = await page.evaluate(() => window.__firebaseTest.sets[0].progress);
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.progress),
+  ), { timeout: 5000 }).toBe(true);
+  const syncedProgress = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.progress).progress,
+  );
   expect(Object.values(syncedProgress).some((item) => item.completed === true)).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
+
+test("saving a series writes the cloud saved-items map", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await mockSignedInFirebase(page, {});
+  await page.goto("/series/change-of-heart/", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.authReady)).toBe(true);
+
+  const saveButton = page.locator("#save-series-button");
+  await expect(saveButton).toHaveAttribute("aria-label", "Save series");
+  await saveButton.click();
+  await expect(saveButton).toHaveAttribute("aria-label", "Remove from saved");
+
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.savedItems),
+  ), { timeout: 5000 }).toBe(true);
+  const synced = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.savedItems),
+  );
+  const savedItems = Object.values(synced.savedItems);
+  expect(savedItems).toHaveLength(1);
+  expect(savedItems[0]).toMatchObject({
+    type: "series",
+    title: "Change of Heart",
+  });
+  expect(synced.saved).toEqual({ __firestoreDelete: true });
+  expect(pageErrors).toEqual([]);
+});
+
+test("a cloud history clear removes history live on another signed-in device", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const progressKey = "lecture-progress:standalone:purpose-of-creation";
+  await mockSignedInFirebase(page, {
+    progress: {
+      [progressKey]: {
+        currentTime: 180,
+        duration: 900,
+        updatedAt: Date.now(),
+        _card: {
+          thumbnail: "./assets/thumbnail/standalone/purpose-of-creation.jpg",
+          url: "./watch/standalone/purpose-of-creation/",
+          eyebrow: "Test speaker",
+          title: "Purpose of Creation",
+        },
+      },
+    },
+    notes: {},
+    savedItems: {},
+    streak: {},
+  });
+  await page.goto("/pages/history.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".history-item")).toHaveCount(1);
+
+  await page.evaluate(() => window.__firebaseTest.emitCloud({
+    progress: {},
+    notes: {},
+    savedItems: {},
+    streak: {},
+  }));
+
+  await expect(page.locator(".history-item")).toHaveCount(0);
+  await expect(page.locator("#history-empty")).toBeVisible();
+  expect(await page.evaluate((key) => localStorage.getItem(key), progressKey)).toBeNull();
+  expect(pageErrors).toEqual([]);
+});
+
+test("a cloud saved-items clear updates the saved page live", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const item = {
+    key: "series:./series/change-of-heart/",
+    type: "series",
+    title: "Change of Heart",
+    subtitle: "Ali Hammuda - 30 episodes",
+    url: "./series/change-of-heart/",
+    savedAt: Date.now(),
+  };
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: { [item.key]: item },
+    streak: {},
+  });
+  await page.goto("/pages/saved.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
+
+  await page.evaluate(() => window.__firebaseTest.emitCloud({
+    progress: {},
+    notes: {},
+    savedItems: {},
+    streak: {},
+  }));
+
+  await expect(page.locator(".saved-series-card")).toHaveCount(0);
+  await expect(page.locator("#saved-empty")).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("improving-muslim:saved-items"))).toBe("[]");
+  expect(pageErrors).toEqual([]);
+});
+
+test("clearing history sends deletions to the signed-in account", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const progressKey = "lecture-progress:standalone:purpose-of-creation";
+  await mockSignedInFirebase(page, {
+    progress: {
+      [progressKey]: {
+        currentTime: 180,
+        duration: 900,
+        updatedAt: Date.now(),
+        _card: {
+          thumbnail: "./assets/thumbnail/standalone/purpose-of-creation.jpg",
+          url: "./watch/standalone/purpose-of-creation/",
+          eyebrow: "Test speaker",
+          title: "Purpose of Creation",
+        },
+      },
+    },
+    notes: {},
+    savedItems: {},
+    streak: {},
+  });
+  await page.goto("/pages/history.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".history-item")).toHaveCount(1);
+
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#clear-history-btn").click();
+
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.progress),
+  ), { timeout: 5000 }).toBe(true);
+  const syncedProgress = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.progress).progress,
+  );
+  expect(syncedProgress[progressKey]).toEqual({ __firestoreDelete: true });
+  expect(pageErrors).toEqual([]);
+});
+
+test("clearing saved items sends deletions to the signed-in account", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const item = {
+    key: "series:./series/change-of-heart/",
+    type: "series",
+    title: "Change of Heart",
+    subtitle: "Ali Hammuda - 30 episodes",
+    url: "./series/change-of-heart/",
+    savedAt: Date.now(),
+  };
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: { [item.key]: item },
+    streak: {},
+  });
+  await page.goto("/pages/saved.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
+
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#clear-saved-btn").click();
+
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.savedItems),
+  ), { timeout: 5000 }).toBe(true);
+  const synced = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.savedItems),
+  );
+  expect(synced.savedItems[item.key]).toEqual({ __firestoreDelete: true });
+  expect(synced.saved).toEqual({ __firestoreDelete: true });
   expect(pageErrors).toEqual([]);
 });
 

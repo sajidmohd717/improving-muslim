@@ -162,7 +162,8 @@ document.getElementById("history-list")?.addEventListener("click", (e) => {
 });
 
 document.getElementById("clear-history-btn")?.addEventListener("click", () => {
-  if (!confirm("Remove all watch history on this device?")) return;
+  const destination = window.IMAuth?.currentUser ? "your account and synced devices" : "this device";
+  if (!confirm(`Remove all watch history from ${destination}?`)) return;
   storageKeysWithPrefix(PROGRESS_PREFIX).forEach(removeStorageItem);
   renderHistory();
 });

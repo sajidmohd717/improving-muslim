@@ -110,7 +110,11 @@ function renderSavedItems() {
 
 resetSavedButton?.addEventListener("click", () => {
   removeStorageItem(SAVED_KEY);
-  if (status) status.textContent = "Saved items have been cleared on this device.";
+  if (status) {
+    status.textContent = window.IMAuth?.currentUser
+      ? "Saved items have been cleared from your account."
+      : "Saved items have been cleared on this device.";
+  }
   renderSavedItems();
 });
 

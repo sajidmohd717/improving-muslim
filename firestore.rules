@@ -21,6 +21,7 @@ service cloud.firestore {
       return (!('progress' in request.resource.data) || request.resource.data.progress is map)
         && (!('notes' in request.resource.data) || request.resource.data.notes is map)
         && (!('saved' in request.resource.data) || request.resource.data.saved is list)
+        && (!('savedItems' in request.resource.data) || request.resource.data.savedItems is map)
         && (!('streak' in request.resource.data) || request.resource.data.streak is map)
         && (!('lastSyncedAt' in request.resource.data) || request.resource.data.lastSyncedAt is int);
     }
@@ -30,6 +31,7 @@ service cloud.firestore {
         'progress',
         'notes',
         'saved',
+        'savedItems',
         'streak',
         'lastSyncedAt'
       ]) && optionalSyncFieldsAreSafe();

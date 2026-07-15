@@ -31,6 +31,7 @@
   var _initialized  = false;
   var _authReady    = false;
   var _syncReady    = false;
+  var _unsubscribeSync = null;
   var _pendingWrites = {};
   var _resetting    = false;
   var _authGeneration = 0;
@@ -139,6 +140,17 @@
     return captured;
   }
 
+  function captureUnsyncedWrites() {
+    var keys = {};
+    Object.keys(_pendingWrites).forEach(function (key) { keys[key] = true; });
+    Object.keys(_dirty).forEach(function (key) { keys[key] = true; });
+    var captured = {};
+    Object.keys(keys).forEach(function (key) {
+      try { captured[key] = localStorage.getItem(key); } catch (_) { captured[key] = null; }
+    });
+    return captured;
+  }
+
   function applyPendingWrites(captured) {
     Object.keys(captured).forEach(function (key) {
       try {
@@ -150,6 +162,49 @@
 
   /* ── Authoritative Firestore pull ─────────────────────────────────────── */
 
+  function savedArrayFromCloud(cloud) {
+    if (cloud.savedItems && typeof cloud.savedItems === 'object') {
+      return Object.keys(cloud.savedItems)
+        .map(function (k) { return cloud.savedItems[k]; })
+        .filter(Boolean)
+        .sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); });
+    }
+    return Array.isArray(cloud.saved) ? cloud.saved : [];
+  }
+
+  function applyAccountSnapshot(cloud, captured) {
+    var savedArr = savedArrayFromCloud(cloud);
+    replaceLocal({
+      progress: cloud.progress || {},
+      notes: cloud.notes || {},
+      saved: savedArr,
+      streak: cloud.streak || {},
+    });
+    _lastSavedKeys = {};
+    savedArr.forEach(function (it) { if (it && it.key) _lastSavedKeys[it.key] = true; });
+    applyPendingWrites(captured || {});
+    if (window.IMStreakUI) window.IMStreakUI.updateButtons();
+    notifyListeners();
+  }
+
+  function subscribeToAccountData(user, generation) {
+    var doc = userDoc();
+    if (!doc || typeof doc.onSnapshot !== 'function') return;
+    if (_unsubscribeSync) _unsubscribeSync();
+    _unsubscribeSync = doc.onSnapshot(function (snap) {
+      if (!_user || _user.uid !== user.uid || generation !== _authGeneration || _resetting) return;
+      // Local Firestore writes are already represented in localStorage. Wait
+      // for the acknowledged snapshot so an intermediate cache event cannot
+      // roll the UI backward.
+      if (snap.metadata && snap.metadata.hasPendingWrites) return;
+      var captured = captureUnsyncedWrites();
+      applyAccountSnapshot(snap.exists ? snap.data() : {}, captured);
+      if (Object.keys(captured).length) schedulePush();
+    }, function (err) {
+      console.warn('[IMAuth] Live account sync failed:', err.message);
+    });
+  }
+
   function pullAccountData(user, generation) {
     var doc = userDoc();
     if (!doc) return Promise.resolve();
@@ -157,31 +212,10 @@
       if (!_user || _user.uid !== user.uid || generation !== _authGeneration) return;
       var pending = capturePendingWrites();
       var cloud = snap.exists ? snap.data() : {};
-      // Prefer the per-item `savedItems` map; fall back to the legacy `saved`
-      // array for accounts written before field-level merges existed.
-      var savedArr;
-      if (cloud.savedItems && typeof cloud.savedItems === 'object') {
-        savedArr = Object.keys(cloud.savedItems)
-          .map(function (k) { return cloud.savedItems[k]; })
-          .filter(Boolean)
-          .sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); });
-      } else {
-        savedArr = Array.isArray(cloud.saved) ? cloud.saved : [];
-      }
-      replaceLocal({
-        progress: cloud.progress || {},
-        notes: cloud.notes || {},
-        saved: savedArr,
-        streak: cloud.streak || {},
-      });
-      // Baseline for the saved-item deletion diff: what the cloud holds now.
-      _lastSavedKeys = {};
-      savedArr.forEach(function (it) { if (it && it.key) _lastSavedKeys[it.key] = true; });
-      applyPendingWrites(pending);
+      applyAccountSnapshot(cloud, pending);
       _syncReady = true;
       if (Object.keys(pending).length) schedulePush();
-      if (window.IMStreakUI) window.IMStreakUI.updateButtons();
-      notifyListeners();
+      subscribeToAccountData(user, generation);
     }).catch(function (err) {
       // Never push an unknown local snapshot when the authoritative read
       // failed. A later page load can safely retry hydration.
@@ -269,6 +303,9 @@
     built.payload.lastSyncedAt = Date.now();
     doc.set(built.payload, { merge: true }).then(function () {
       if (built.committedSavedKeys) _lastSavedKeys = built.committedSavedKeys;
+      keys.forEach(function (key) {
+        if (!_dirty[key]) delete _pendingWrites[key];
+      });
       if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
     }).catch(function (err) {
       keys.forEach(function (k) { _dirty[k] = true; });
@@ -551,6 +588,10 @@
       firebase.auth().onAuthStateChanged(function (user) {
         var generation = ++_authGeneration;
         clearTimeout(_pushTimer);
+        if (_unsubscribeSync) {
+          _unsubscribeSync();
+          _unsubscribeSync = null;
+        }
         _user = user;
         _authReady = true;
         _syncReady = false;

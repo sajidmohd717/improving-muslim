@@ -161,7 +161,8 @@ list?.addEventListener("click", (e) => {
 });
 
 clearBtn?.addEventListener("click", () => {
-  if (!confirm("Remove all saved items on this device?")) return;
+  const destination = window.IMAuth?.currentUser ? "your account and synced devices" : "this device";
+  if (!confirm(`Remove all saved items from ${destination}?`)) return;
   writeSavedItems([]);
   renderSaved();
 });
