@@ -564,11 +564,15 @@
         if (!user && window.IMStreakUI) window.IMStreakUI.updateButtons();
         updateAllAuthButtons();
         updateSettingsPanel(user);
-        if (user) {
-          pullAccountData(user, generation);
-        } else {
-          notifyListeners();
-        }
+        // Announce the auth state immediately so UI that only depends on
+        // signed-in-vs-guest (e.g. the "Synced across your devices" storage
+        // note on History/Saved) updates right away, instead of waiting on --
+        // or being stranded by -- the Firestore data pull, which can be slow
+        // on a cold SDK/network and can even skip its own notify on a rapid
+        // second auth callback. The pull then fires a second notification once
+        // the cloud data lands so lists re-render with it.
+        notifyListeners();
+        if (user) pullAccountData(user, generation);
       });
     } catch (err) {
       console.warn('[IMAuth] Firebase init error:', err.message);
