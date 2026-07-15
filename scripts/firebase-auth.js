@@ -300,6 +300,7 @@
       if (snap.metadata && snap.metadata.fromCache) return;
       var captured = captureUnsyncedWrites();
       applyAccountSnapshot(snap.exists ? snap.data() : {}, captured);
+      _syncReady = true;
       if (Object.keys(captured).length) schedulePush();
     }, function (err) {
       console.warn('[IMAuth] Live account sync failed:', err.message);
@@ -309,14 +310,16 @@
   function pullAccountData(user, generation) {
     var doc = userDoc();
     if (!doc) return Promise.resolve();
-    return doc.get().then(function (snap) {
+    // Require the server snapshot here. The default read may be fulfilled by
+    // a device's IndexedDB cache, leaving two online devices on different
+    // saved lists even though Firestore itself is correct.
+    return doc.get({ source: 'server' }).then(function (snap) {
       if (!_user || _user.uid !== user.uid || generation !== _authGeneration) return;
       var pending = capturePendingWrites();
       var cloud = snap.exists ? snap.data() : {};
       applyAccountSnapshot(cloud, pending);
       _syncReady = true;
       if (Object.keys(pending).length) schedulePush();
-      subscribeToAccountData(user, generation);
     }).catch(function (err) {
       // Never push an unknown local snapshot when the authoritative read
       // failed. A later page load can safely retry hydration.
@@ -434,6 +437,7 @@
       keys.forEach(function (k) { _dirty[k] = true; });
       if (built.savedChanges) _savedChanges = Object.assign({}, built.savedChanges, _savedChanges);
       console.warn('[IMAuth] Sync push failed:', err.message);
+      schedulePush();
     });
   }
 
@@ -638,7 +642,8 @@
       if (personalKey && (!_authReady || _user)) rememberPendingAccountWrite(key, previousRaw);
       if (_user && personalKey) {
         _dirty[key] = true;
-        if (_syncReady) schedulePush();
+        if (_syncReady && key === SAVED_KEY) pushNow();
+        else if (_syncReady) schedulePush();
         else _pendingWrites[key] = true;
       }
       if (key === STREAK_KEY) {
@@ -762,7 +767,10 @@
         // second auth callback. The pull then fires a second notification once
         // the cloud data lands so lists re-render with it.
         notifyListeners();
-        if (user) pullAccountData(user, generation);
+        if (user) {
+          subscribeToAccountData(user, generation);
+          pullAccountData(user, generation);
+        }
       });
     } catch (err) {
       console.warn('[IMAuth] Firebase init error:', err.message);

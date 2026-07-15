@@ -42,6 +42,7 @@ async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
     window.__firebaseTest = {
       cloud: readCloud(),
       sets: [],
+      getSources: [],
       deletes: 0,
       resolveAuth: () => {},
       resolveCloudGet: () => resolveCloudGet(snapshot()),
@@ -55,7 +56,10 @@ async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
       },
     };
     const syncDoc = {
-      get: () => deferCloudGet ? deferredCloudGet : Promise.resolve(snapshot()),
+      get: (getOptions = {}) => {
+        window.__firebaseTest.getSources.push(getOptions.source || "default");
+        return deferCloudGet ? deferredCloudGet : Promise.resolve(snapshot());
+      },
       onSnapshot: (next) => {
         snapshotListeners.push(next);
         queueMicrotask(() => next(snapshot()));
@@ -569,6 +573,7 @@ test("same-account saved cache stays visible during cloud hydration", async ({ p
   await expect(page.locator(".saved-series-card")).toHaveCount(1);
   await page.evaluate(() => window.__firebaseTest.resolveCloudGet());
   await expect(page.locator(".saved-series-card")).toHaveCount(1);
+  expect(await page.evaluate(() => window.__firebaseTest.getSources)).toContain("server");
 
   // A stale cache-only listener event must not replace the hydrated account.
   await page.evaluate(() => window.__firebaseTest.emitCacheSnapshot({}));
