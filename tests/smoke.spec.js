@@ -23,25 +23,39 @@ async function preparePage(page) {
   return pageErrors;
 }
 
-async function mockSignedInFirebase(page, cloudData = {}) {
-  await page.addInitScript((initialCloud) => {
+async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
+  await page.addInitScript(({ initialCloud, deferAuth, deferCloudGet }) => {
+    const cloudStorageKey = "__firebase-test-cloud";
+    if (!sessionStorage.getItem(cloudStorageKey)) {
+      sessionStorage.setItem(cloudStorageKey, JSON.stringify(initialCloud));
+    }
+    const readCloud = () => JSON.parse(sessionStorage.getItem(cloudStorageKey) || "{}");
+    const persistCloud = (value) => sessionStorage.setItem(cloudStorageKey, JSON.stringify(value));
     const snapshotListeners = [];
-    const snapshot = () => ({
-      exists: Object.keys(window.__firebaseTest.cloud).length > 0,
-      data: () => structuredClone(window.__firebaseTest.cloud),
-      metadata: { hasPendingWrites: false },
+    const snapshot = (value = window.__firebaseTest.cloud, metadata = {}) => ({
+      exists: Object.keys(value).length > 0,
+      data: () => structuredClone(value),
+      metadata: { hasPendingWrites: false, fromCache: false, ...metadata },
     });
+    let resolveCloudGet;
+    const deferredCloudGet = new Promise((resolve) => { resolveCloudGet = resolve; });
     window.__firebaseTest = {
-      cloud: structuredClone(initialCloud),
+      cloud: readCloud(),
       sets: [],
       deletes: 0,
+      resolveAuth: () => {},
+      resolveCloudGet: () => resolveCloudGet(snapshot()),
+      emitCacheSnapshot(value) {
+        snapshotListeners.forEach((listener) => listener(snapshot(value, { fromCache: true })));
+      },
       emitCloud(value) {
         this.cloud = structuredClone(value);
+        persistCloud(this.cloud);
         snapshotListeners.forEach((listener) => listener(snapshot()));
       },
     };
     const syncDoc = {
-      get: async () => snapshot(),
+      get: () => deferCloudGet ? deferredCloudGet : Promise.resolve(snapshot()),
       onSnapshot: (next) => {
         snapshotListeners.push(next);
         queueMicrotask(() => next(snapshot()));
@@ -49,10 +63,12 @@ async function mockSignedInFirebase(page, cloudData = {}) {
       },
       set: async (value) => {
         window.__firebaseTest.cloud = structuredClone(value);
+        persistCloud(window.__firebaseTest.cloud);
         window.__firebaseTest.sets.push(structuredClone(value));
       },
       delete: async () => {
         window.__firebaseTest.cloud = {};
+        persistCloud({});
         window.__firebaseTest.deletes += 1;
       },
     };
@@ -68,13 +84,17 @@ async function mockSignedInFirebase(page, cloudData = {}) {
         add: async () => {},
       }),
     };
-    const authInstance = {
-      onAuthStateChanged: (callback) => queueMicrotask(() => callback({
+    const signedInUser = {
         uid: "account-b",
         displayName: "Account B",
         email: "b@example.test",
         photoURL: "",
-      })),
+    };
+    const authInstance = {
+      onAuthStateChanged: (callback) => {
+        window.__firebaseTest.resolveAuth = () => callback(signedInUser);
+        if (!deferAuth) queueMicrotask(window.__firebaseTest.resolveAuth);
+      },
       signOut: async () => {},
       signInWithPopup: async () => {},
     };
@@ -91,7 +111,11 @@ async function mockSignedInFirebase(page, cloudData = {}) {
       auth,
       firestore,
     };
-  }, cloudData);
+  }, {
+    initialCloud: cloudData,
+    deferAuth: Boolean(options.deferAuth),
+    deferCloudGet: Boolean(options.deferCloudGet),
+  });
 }
 
 async function expectCatalog(page) {
@@ -472,6 +496,83 @@ test("saving a series writes the cloud saved-items map", async ({ page }) => {
     title: "Change of Heart",
   });
   expect(synced.saved).toEqual({ __firestoreDelete: true });
+  expect(pageErrors).toEqual([]);
+});
+
+test("a homepage save survives navigation before auth finishes", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const phoneItem = {
+    key: "series:./series/change-of-heart/",
+    type: "series",
+    title: "Change of Heart",
+    subtitle: "Ali Hammuda - 10 of 16 available",
+    url: "./series/change-of-heart/",
+    savedAt: Date.now() - 1000,
+  };
+  await page.addInitScript(() => {
+    localStorage.setItem("improving-muslim:personal-data-owner", "user:account-b");
+  });
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: { [phoneItem.key]: phoneItem },
+    streak: {},
+  }, { deferAuth: true });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expectCatalog(page);
+
+  const card = page.locator(".series-card").filter({ hasText: "Madina Arabic Books" });
+  await expect(card).toHaveCount(1);
+  await card.getByRole("button", { name: "More options" }).click();
+  await card.getByRole("button", { name: "Save series" }).click();
+
+  await page.goto("/pages/saved.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
+  await page.evaluate(() => window.__firebaseTest.resolveAuth());
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.authReady)).toBe(true);
+  await expect(page.locator(".saved-series-card")).toHaveCount(2);
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.savedItems),
+  ), { timeout: 5000 }).toBe(true);
+  const savedPayload = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.savedItems).savedItems,
+  );
+  expect(savedPayload["series:./series/madina-arabic/"]).toMatchObject({ title: "Madina Arabic Books" });
+  expect(savedPayload["series:./series/change-of-heart/"]).toBeUndefined();
+  expect(pageErrors).toEqual([]);
+});
+
+test("same-account saved cache stays visible during cloud hydration", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const item = {
+    key: "series:./series/madina-arabic/",
+    type: "series",
+    title: "Madina Arabic Books",
+    subtitle: "Asif Meherali - 3 of 123 available",
+    url: "./series/madina-arabic/",
+    savedAt: Date.now(),
+  };
+  await page.addInitScript((savedItem) => {
+    localStorage.setItem("improving-muslim:personal-data-owner", "user:account-b");
+    localStorage.setItem("improving-muslim:saved-items", JSON.stringify([savedItem]));
+  }, item);
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: { [item.key]: item },
+    streak: {},
+  }, { deferCloudGet: true });
+  await page.goto("/pages/saved.html", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.authReady)).toBe(true);
+
+  // The existing account cache remains on screen while the network read is pending.
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
+  await page.evaluate(() => window.__firebaseTest.resolveCloudGet());
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
+
+  // A stale cache-only listener event must not replace the hydrated account.
+  await page.evaluate(() => window.__firebaseTest.emitCacheSnapshot({}));
+  await expect(page.locator(".saved-series-card")).toHaveCount(1);
   expect(pageErrors).toEqual([]);
 });
 

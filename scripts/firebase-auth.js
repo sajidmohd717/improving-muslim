@@ -22,6 +22,7 @@
   var STREAK_KEY       = utils.STREAK_KEY || 'improving-muslim:study-streak';
   var STORAGE_OWNER_KEY = 'improving-muslim:personal-data-owner';
   var GUEST_DATA_KEY    = 'improving-muslim:guest-personal-data';
+  var PENDING_ACCOUNT_WRITES_KEY = 'improving-muslim:pending-account-writes';
   var PUSH_DEBOUNCE_MS = 3000;
 
   var _user         = null;
@@ -43,6 +44,9 @@
   // saved items the user *removed* locally so we can delete exactly those in
   // the cloud without touching items added on another device.
   var _lastSavedKeys = {};
+  // Per-item saved changes made on this device since its last acknowledged
+  // write. This is the user's intent, unlike the possibly stale whole array.
+  var _savedChanges = {};
 
   /* ── Firestore document reference ────────────────────────────────────── */
 
@@ -108,6 +112,83 @@
     try { localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(readLocal())); } catch (_) {}
   }
 
+  // A signed-in user's click can happen before Firebase finishes restoring
+  // auth/account state, or immediately before a full-page navigation. Keep a
+  // small write-ahead journal so those personal-data changes survive the gap.
+  function accountOwner() {
+    try { return localStorage.getItem(STORAGE_OWNER_KEY) || ''; } catch (_) { return ''; }
+  }
+
+  function readPendingAccountJournal(user) {
+    var journal = {};
+    try { journal = JSON.parse(localStorage.getItem(PENDING_ACCOUNT_WRITES_KEY) || '{}'); } catch (_) {}
+    if (!user || journal.owner !== 'user:' + user.uid || !journal.writes || typeof journal.writes !== 'object') {
+      return { writes: {}, savedChanges: {} };
+    }
+    return {
+      writes: journal.writes,
+      savedChanges: journal.savedChanges && typeof journal.savedChanges === 'object' ? journal.savedChanges : {},
+    };
+  }
+
+  function savedItemsByKey(raw) {
+    var items;
+    try { items = JSON.parse(raw || '[]'); } catch (_) { items = []; }
+    var result = {};
+    if (!Array.isArray(items)) return result;
+    items.forEach(function (item) { if (item && item.key) result[item.key] = item; });
+    return result;
+  }
+
+  function savedChangesBetween(previousRaw, currentRaw) {
+    var previous = savedItemsByKey(previousRaw);
+    var current = savedItemsByKey(currentRaw);
+    var changes = {};
+    Object.keys(previous).forEach(function (key) {
+      if (!current[key]) changes[key] = null;
+    });
+    Object.keys(current).forEach(function (key) {
+      if (!previous[key] || JSON.stringify(previous[key]) !== JSON.stringify(current[key])) changes[key] = current[key];
+    });
+    return changes;
+  }
+
+  function rememberPendingAccountWrite(key, previousRaw) {
+    var owner = accountOwner();
+    if (owner.indexOf('user:') !== 0) return;
+    var journal = {};
+    try { journal = JSON.parse(localStorage.getItem(PENDING_ACCOUNT_WRITES_KEY) || '{}'); } catch (_) {}
+    if (journal.owner !== owner || !journal.writes || typeof journal.writes !== 'object') {
+      journal = { owner: owner, writes: {} };
+    }
+    var currentRaw = null;
+    try { currentRaw = localStorage.getItem(key); } catch (_) {}
+    journal.writes[key] = currentRaw;
+    if (key === SAVED_KEY) {
+      if (!journal.savedChanges || typeof journal.savedChanges !== 'object') journal.savedChanges = {};
+      Object.assign(journal.savedChanges, savedChangesBetween(previousRaw, currentRaw));
+    }
+    try { localStorage.setItem(PENDING_ACCOUNT_WRITES_KEY, JSON.stringify(journal)); } catch (_) {}
+  }
+
+  function forgetPendingAccountWrites(user, keys) {
+    var journal = {};
+    try { journal = JSON.parse(localStorage.getItem(PENDING_ACCOUNT_WRITES_KEY) || '{}'); } catch (_) {}
+    if (!user || journal.owner !== 'user:' + user.uid || !journal.writes || typeof journal.writes !== 'object') return;
+    keys.forEach(function (key) {
+      delete journal.writes[key];
+      if (key === SAVED_KEY) journal.savedChanges = {};
+    });
+    try {
+      if (Object.keys(journal.writes).length) localStorage.setItem(PENDING_ACCOUNT_WRITES_KEY, JSON.stringify(journal));
+      else localStorage.removeItem(PENDING_ACCOUNT_WRITES_KEY);
+    } catch (_) {}
+  }
+
+  function clearPendingAccountWrites() {
+    try { localStorage.removeItem(PENDING_ACCOUNT_WRITES_KEY); } catch (_) {}
+  }
+
   function restoreGuestData() {
     var guest = {};
     try { guest = JSON.parse(localStorage.getItem(GUEST_DATA_KEY) || '{}'); } catch (_) {}
@@ -118,8 +199,11 @@
     var owner = '';
     try { owner = localStorage.getItem(STORAGE_OWNER_KEY) || ''; } catch (_) {}
 
-    // Preserve only genuine guest data. A cache belonging to any account is
-    // discarded before the next account is hydrated.
+    // Keep the current account's cache visible while Firestore hydrates. This
+    // avoids a Saved/History flash-to-empty on every page load and leaves the
+    // last known account data usable if the network pull fails. A guest cache
+    // or a different account's cache must still be isolated and cleared.
+    if (owner === 'user:' + user.uid) return;
     if (!owner || owner === 'guest') saveGuestData();
     clearLocal();
     try { localStorage.setItem(STORAGE_OWNER_KEY, 'user:' + user.uid); } catch (_) {}
@@ -183,6 +267,19 @@
     _lastSavedKeys = {};
     savedArr.forEach(function (it) { if (it && it.key) _lastSavedKeys[it.key] = true; });
     applyPendingWrites(captured || {});
+    if (captured && Object.prototype.hasOwnProperty.call(captured, SAVED_KEY) && Object.keys(_savedChanges).length) {
+      var mergedSaved = {};
+      savedArr.forEach(function (item) { if (item && item.key) mergedSaved[item.key] = item; });
+      Object.keys(_savedChanges).forEach(function (key) {
+        if (_savedChanges[key]) mergedSaved[key] = _savedChanges[key];
+        else delete mergedSaved[key];
+      });
+      try {
+        localStorage.setItem(SAVED_KEY, JSON.stringify(Object.keys(mergedSaved)
+          .map(function (key) { return mergedSaved[key]; })
+          .sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); })));
+      } catch (_) {}
+    }
     if (window.IMStreakUI) window.IMStreakUI.updateButtons();
     notifyListeners();
   }
@@ -197,6 +294,10 @@
       // for the acknowledged snapshot so an intermediate cache event cannot
       // roll the UI backward.
       if (snap.metadata && snap.metadata.hasPendingWrites) return;
+      // Firestore can first emit an empty/stale IndexedDB snapshot and then the
+      // server result. The initial doc.get() already hydrated the best known
+      // account state, so cache-only listener events must not erase it.
+      if (snap.metadata && snap.metadata.fromCache) return;
       var captured = captureUnsyncedWrites();
       applyAccountSnapshot(snap.exists ? snap.data() : {}, captured);
       if (Object.keys(captured).length) schedulePush();
@@ -262,19 +363,35 @@
     if (touchedNotes && Object.keys(notes).length) payload.notes = notes;
 
     var committedSavedKeys = null;
+    var pushedSavedChanges = null;
     if (touchedSaved) {
-      var items = [];
-      try { items = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
       var savedItems = {};
-      committedSavedKeys = {};
-      items.forEach(function (item) {
-        if (item && item.key) { savedItems[item.key] = item; committedSavedKeys[item.key] = true; }
-      });
-      // Delete only items we previously synced that are now gone locally --
-      // never items another device may have added.
-      Object.keys(_lastSavedKeys).forEach(function (k) {
-        if (!committedSavedKeys[k]) savedItems[k] = del;
-      });
+      committedSavedKeys = Object.assign({}, _lastSavedKeys);
+      pushedSavedChanges = Object.assign({}, _savedChanges);
+      if (Object.keys(pushedSavedChanges).length) {
+        Object.keys(pushedSavedChanges).forEach(function (key) {
+          var item = pushedSavedChanges[key];
+          if (item) {
+            savedItems[key] = item;
+            committedSavedKeys[key] = true;
+          } else {
+            savedItems[key] = del;
+            delete committedSavedKeys[key];
+          }
+        });
+      } else {
+        // Compatibility fallback for callers that did not provide the prior
+        // saved array: reconcile from the current local array and baseline.
+        var items = [];
+        try { items = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
+        committedSavedKeys = {};
+        items.forEach(function (item) {
+          if (item && item.key) { savedItems[item.key] = item; committedSavedKeys[item.key] = true; }
+        });
+        Object.keys(_lastSavedKeys).forEach(function (k) {
+          if (!committedSavedKeys[k]) savedItems[k] = del;
+        });
+      }
       payload.savedItems = savedItems;
       // Retire the legacy whole-array field so it can't shadow the map later.
       payload.saved = del;
@@ -286,7 +403,7 @@
     }
 
     if (!Object.keys(payload).length) return null;
-    return { payload: payload, committedSavedKeys: committedSavedKeys };
+    return { payload: payload, committedSavedKeys: committedSavedKeys, savedChanges: pushedSavedChanges };
   }
 
   function pushNow() {
@@ -300,15 +417,22 @@
     _dirty = {}; // cleared up front; re-added on failure so the retry is exact
     var built = buildPushPayload(keys);
     if (!built) return;
+    if (built.savedChanges) _savedChanges = {};
     built.payload.lastSyncedAt = Date.now();
     doc.set(built.payload, { merge: true }).then(function () {
       if (built.committedSavedKeys) _lastSavedKeys = built.committedSavedKeys;
+      var committedKeys = [];
       keys.forEach(function (key) {
-        if (!_dirty[key]) delete _pendingWrites[key];
+        if (!_dirty[key]) {
+          delete _pendingWrites[key];
+          committedKeys.push(key);
+        }
       });
+      forgetPendingAccountWrites(_user, committedKeys);
       if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
     }).catch(function (err) {
       keys.forEach(function (k) { _dirty[k] = true; });
+      if (built.savedChanges) _savedChanges = Object.assign({}, built.savedChanges, _savedChanges);
       console.warn('[IMAuth] Sync push failed:', err.message);
     });
   }
@@ -501,8 +625,18 @@
       return _db;
     },
 
-    onLocalWrite: function (key) {
-      if (_user && key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY)) {
+    onLocalWrite: function (key, previousRaw) {
+      var personalKey = key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY);
+      // IMAuth is available before the Firebase SDK/auth callback completes.
+      // Journal writes made in that startup window when this browser cache is
+      // already owned by an account, as well as normal signed-in writes.
+      if (key === SAVED_KEY && personalKey) {
+        var currentRaw = null;
+        try { currentRaw = localStorage.getItem(key); } catch (_) {}
+        Object.assign(_savedChanges, savedChangesBetween(previousRaw, currentRaw));
+      }
+      if (personalKey && (!_authReady || _user)) rememberPendingAccountWrite(key, previousRaw);
+      if (_user && personalKey) {
         _dirty[key] = true;
         if (_syncReady) schedulePush();
         else _pendingWrites[key] = true;
@@ -526,6 +660,8 @@
         _pendingWrites = {};
         _dirty = {};
         _lastSavedKeys = {};
+        _savedChanges = {};
+        clearPendingAccountWrites();
         _syncReady = true;
         notifyListeners();
       });
@@ -587,6 +723,8 @@
 
       firebase.auth().onAuthStateChanged(function (user) {
         var generation = ++_authGeneration;
+        var journal = user ? readPendingAccountJournal(user) : { writes: {}, savedChanges: {} };
+        var journalWrites = journal.writes;
         clearTimeout(_pushTimer);
         if (_unsubscribeSync) {
           _unsubscribeSync();
@@ -598,8 +736,19 @@
         _pendingWrites = {};
         _dirty = {};
         _lastSavedKeys = {};
+        _savedChanges = Object.assign({}, journal.savedChanges);
         if (user) prepareAccountStorage(user);
-        else activateGuestStorage();
+        else {
+          clearPendingAccountWrites();
+          activateGuestStorage();
+        }
+        if (user && Object.keys(journalWrites).length) {
+          applyPendingWrites(journalWrites);
+          Object.keys(journalWrites).forEach(function (key) {
+            _pendingWrites[key] = true;
+            _dirty[key] = true;
+          });
+        }
         if (window.IMStreakUI) window.IMStreakUI.injectButton();
         injectAuthButton();
         if (!user && window.IMStreakUI) window.IMStreakUI.updateButtons();

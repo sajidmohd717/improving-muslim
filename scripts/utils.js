@@ -106,9 +106,10 @@
 
   function writeJsonStorage(key, value) {
     try {
+      const previousRaw = localStorage.getItem(key);
       localStorage.setItem(key, JSON.stringify(value));
       // Notify cloud sync if a user is signed in
-      if (window.IMAuth) window.IMAuth.onLocalWrite(key);
+      if (window.IMAuth) window.IMAuth.onLocalWrite(key, previousRaw);
       return true;
     } catch {
       return false;
@@ -117,10 +118,11 @@
 
   function removeStorageItem(key) {
     try {
+      const previousRaw = localStorage.getItem(key);
       localStorage.removeItem(key);
       // A removal is a personal-data write too. Without syncing deletions,
       // removed history can return from the cloud on the next page load.
-      if (window.IMAuth) window.IMAuth.onLocalWrite(key);
+      if (window.IMAuth) window.IMAuth.onLocalWrite(key, previousRaw);
       return true;
     } catch {
       return false;
