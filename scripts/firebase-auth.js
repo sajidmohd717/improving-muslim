@@ -34,6 +34,14 @@
   var _pendingWrites = {};
   var _resetting    = false;
   var _authGeneration = 0;
+  // Keys changed locally since the last successful push. Only these are sent,
+  // as a field-level merge, so a device never overwrites unrelated data another
+  // device changed (no more whole-document last-write-wins).
+  var _dirty        = {};
+  // Saved-item keys known to exist in the cloud copy. Used to compute which
+  // saved items the user *removed* locally so we can delete exactly those in
+  // the cloud without touching items added on another device.
+  var _lastSavedKeys = {};
 
   /* ── Firestore document reference ────────────────────────────────────── */
 
@@ -149,12 +157,26 @@
       if (!_user || _user.uid !== user.uid || generation !== _authGeneration) return;
       var pending = capturePendingWrites();
       var cloud = snap.exists ? snap.data() : {};
+      // Prefer the per-item `savedItems` map; fall back to the legacy `saved`
+      // array for accounts written before field-level merges existed.
+      var savedArr;
+      if (cloud.savedItems && typeof cloud.savedItems === 'object') {
+        savedArr = Object.keys(cloud.savedItems)
+          .map(function (k) { return cloud.savedItems[k]; })
+          .filter(Boolean)
+          .sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); });
+      } else {
+        savedArr = Array.isArray(cloud.saved) ? cloud.saved : [];
+      }
       replaceLocal({
         progress: cloud.progress || {},
         notes: cloud.notes || {},
-        saved: Array.isArray(cloud.saved) ? cloud.saved : [],
+        saved: savedArr,
         streak: cloud.streak || {},
       });
+      // Baseline for the saved-item deletion diff: what the cloud holds now.
+      _lastSavedKeys = {};
+      savedArr.forEach(function (it) { if (it && it.key) _lastSavedKeys[it.key] = true; });
       applyPendingWrites(pending);
       _syncReady = true;
       if (Object.keys(pending).length) schedulePush();
@@ -170,18 +192,87 @@
 
   /* ── Debounced push ───────────────────────────────────────────────────── */
 
+  function safeParse(raw) {
+    try { return JSON.parse(raw); } catch (_) { return undefined; }
+  }
+
+  // Build a merge payload containing only the keys that changed locally.
+  // Progress/notes are written per-key (added/updated keys carry their value;
+  // removed keys carry FieldValue.delete()), so a merge never clobbers keys
+  // this device didn't touch. Saved items move to a `savedItems` map keyed by
+  // item.key for the same reason -- arrays can't be field-merged. Returns
+  // { payload, committedSavedKeys } or null if nothing to send.
+  function buildPushPayload(keys) {
+    var del = firebase.firestore.FieldValue.delete();
+    var payload = {};
+    var progress = {}, notes = {};
+    var touchedProgress = false, touchedNotes = false, touchedSaved = false, touchedStreak = false;
+
+    keys.forEach(function (key) {
+      if (key === SAVED_KEY) { touchedSaved = true; return; }
+      if (key === STREAK_KEY) { touchedStreak = true; return; }
+      var raw = null;
+      try { raw = localStorage.getItem(key); } catch (_) {}
+      if (key.indexOf(PROGRESS_PREFIX) === 0) {
+        touchedProgress = true;
+        if (raw === null) { progress[key] = del; }
+        else { var pv = safeParse(raw); if (pv !== undefined) progress[key] = pv; }
+      } else if (key.indexOf(NOTES_PREFIX) === 0) {
+        touchedNotes = true;
+        if (raw === null) { notes[key] = del; }
+        else { var nv = safeParse(raw); if (nv !== undefined) notes[key] = nv; }
+      }
+    });
+
+    if (touchedProgress && Object.keys(progress).length) payload.progress = progress;
+    if (touchedNotes && Object.keys(notes).length) payload.notes = notes;
+
+    var committedSavedKeys = null;
+    if (touchedSaved) {
+      var items = [];
+      try { items = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
+      var savedItems = {};
+      committedSavedKeys = {};
+      items.forEach(function (item) {
+        if (item && item.key) { savedItems[item.key] = item; committedSavedKeys[item.key] = true; }
+      });
+      // Delete only items we previously synced that are now gone locally --
+      // never items another device may have added.
+      Object.keys(_lastSavedKeys).forEach(function (k) {
+        if (!committedSavedKeys[k]) savedItems[k] = del;
+      });
+      payload.savedItems = savedItems;
+      // Retire the legacy whole-array field so it can't shadow the map later.
+      payload.saved = del;
+    }
+
+    if (touchedStreak) {
+      var streak = safeParse(localStorage.getItem(STREAK_KEY) || '{}');
+      if (streak && typeof streak === 'object') payload.streak = streak;
+    }
+
+    if (!Object.keys(payload).length) return null;
+    return { payload: payload, committedSavedKeys: committedSavedKeys };
+  }
+
   function pushNow() {
     clearTimeout(_pushTimer);
     _pushTimer = null;
     if (!_user || !_syncReady || _resetting) return;
     var doc = userDoc();
     if (!doc) return;
-    var local = readLocal();
-    local.lastSyncedAt = Date.now();
-    doc.set(local).catch(function (err) {
-      console.warn('[IMAuth] Sync push failed:', err.message);
-    }).then(function () {
+    var keys = Object.keys(_dirty);
+    if (!keys.length) return;
+    _dirty = {}; // cleared up front; re-added on failure so the retry is exact
+    var built = buildPushPayload(keys);
+    if (!built) return;
+    built.payload.lastSyncedAt = Date.now();
+    doc.set(built.payload, { merge: true }).then(function () {
+      if (built.committedSavedKeys) _lastSavedKeys = built.committedSavedKeys;
       if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
+    }).catch(function (err) {
+      keys.forEach(function (k) { _dirty[k] = true; });
+      console.warn('[IMAuth] Sync push failed:', err.message);
     });
   }
 
@@ -375,6 +466,7 @@
 
     onLocalWrite: function (key) {
       if (_user && key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY)) {
+        _dirty[key] = true;
         if (_syncReady) schedulePush();
         else _pendingWrites[key] = true;
       }
@@ -395,6 +487,8 @@
       var accountDelete = userDoc().delete().then(function () {
         clearLocal();
         _pendingWrites = {};
+        _dirty = {};
+        _lastSavedKeys = {};
         _syncReady = true;
         notifyListeners();
       });
@@ -432,6 +526,28 @@
       if (!firebase.apps.length) firebase.initializeApp(config);
       _db = firebase.firestore();
 
+      // Enable IndexedDB offline persistence. This is essential for a
+      // multi-page site: every navigation is a full reload, so a debounced
+      // push (or a pagehide-flushed doc.set) that hasn't finished its network
+      // round-trip would otherwise be discarded when the page tears down --
+      // and the next page's authoritative doc.get() would overwrite local with
+      // the stale pre-write snapshot, silently dropping a just-made save,
+      // progress update, note, or history clear. With persistence, the pending
+      // mutation is durable across reloads (re-sent on the next load) and the
+      // authoritative pull's doc.get() returns the local view with that pending
+      // write already overlaid, so cloud authority no longer clobbers unsynced
+      // local changes. Must be called before any other Firestore use.
+      // synchronizeTabs lets multiple open tabs share one persistence layer;
+      // if it can't be enabled (old browser, private mode), we fall back to the
+      // previous in-memory behaviour.
+      try {
+        _db.enablePersistence({ synchronizeTabs: true }).catch(function (err) {
+          console.warn('[IMAuth] Offline persistence unavailable:', err.code || err.message);
+        });
+      } catch (err) {
+        console.warn('[IMAuth] Offline persistence not supported:', err.message);
+      }
+
       firebase.auth().onAuthStateChanged(function (user) {
         var generation = ++_authGeneration;
         clearTimeout(_pushTimer);
@@ -439,6 +555,8 @@
         _authReady = true;
         _syncReady = false;
         _pendingWrites = {};
+        _dirty = {};
+        _lastSavedKeys = {};
         if (user) prepareAccountStorage(user);
         else activateGuestStorage();
         if (window.IMStreakUI) window.IMStreakUI.injectButton();
