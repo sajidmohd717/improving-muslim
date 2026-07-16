@@ -15,6 +15,27 @@ const list = document.getElementById("saved-list");
 const emptyState = document.getElementById("saved-empty");
 const clearBtn = document.getElementById("clear-saved-btn");
 
+// The save keys carry the ids directly (`video:<lectureId>`,
+// `episode:<slug>:<episodeId>`), while the saved `url` is a path route
+// (./watch/standalone/<id>/, ./watch/<slug>/<id>/) with no query string.
+// Derive ids from the key; fall back to the legacy `?lecture=`/`?series=&video=`
+// query form for items saved by much older builds.
+function standaloneIdFromItem(item) {
+  if (item.key && item.key.startsWith("video:")) return item.key.slice("video:".length);
+  const params = new URLSearchParams(item.url.split("?")[1] || "");
+  return params.get("lecture") || "";
+}
+
+function episodeRefFromItem(item) {
+  if (item.key && item.key.startsWith("episode:")) {
+    const rest = item.key.slice("episode:".length);
+    const sep = rest.indexOf(":");
+    if (sep !== -1) return { slug: rest.slice(0, sep), videoId: rest.slice(sep + 1) };
+  }
+  const params = new URLSearchParams(item.url.split("?")[1] || "");
+  return { slug: params.get("series") || "", videoId: params.get("video") || "" };
+}
+
 function getThumbnail(item) {
   try {
     const registry = getSeriesRegistry();
@@ -23,8 +44,7 @@ function getThumbnail(item) {
       return series?.thumbnailSrc || null;
     }
     if (item.type === "video") {
-      const params = new URLSearchParams(item.url.split("?")[1] || "");
-      const lectureId = params.get("lecture");
+      const lectureId = standaloneIdFromItem(item);
       if (lectureId) {
         const lecture = getStandaloneLectureRegistry()[lectureId];
         if (lecture) return standaloneLectureThumbnailUrl(lecture);
@@ -32,9 +52,7 @@ function getThumbnail(item) {
       return null;
     }
     if (item.type === "episode") {
-      const params = new URLSearchParams(item.url.split("?")[1] || "");
-      const slug = params.get("series");
-      const videoId = params.get("video");
+      const { slug, videoId } = episodeRefFromItem(item);
       const series = registry[slug];
       if (series && videoId) {
         const episode = series.episodes.find((e) => String(e.id) === videoId);
@@ -49,9 +67,7 @@ function getThumbnail(item) {
 function getResumeTime(item) {
   if (item.type !== "episode") return null;
   try {
-    const params = new URLSearchParams(item.url.split("?")[1] || "");
-    const slug = params.get("series");
-    const videoId = params.get("video");
+    const { slug, videoId } = episodeRefFromItem(item);
     const registry = getSeriesRegistry();
     const series = registry[slug];
     if (!series || !videoId) return null;
