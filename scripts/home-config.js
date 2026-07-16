@@ -3,7 +3,7 @@ window.IMHomeConfig = {
   // Bump this value whenever the remote catalog JSON changes. The homepage
   // can then reuse cached data between releases while still reshuffling cards
   // on every page load.
-  catalogVersion: "20260711",
+  catalogVersion: "20260716-ep9-12",
   // Optional server-side AI reranking endpoint. Keep empty until a Cloudflare
   // Worker or other backend is deployed with a private API key.
   aiSearchEndpoint: "https://improving-muslim-ai-search.improving-muslim.workers.dev",
