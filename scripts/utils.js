@@ -251,13 +251,18 @@
     };
   }
 
+  // Pure read: never persists. normalizeStreak is deterministic given the raw
+  // value and today's date, so it is recomputed on every read and writing it
+  // back gains nothing -- but it costs correctness. A normalize-on-read write
+  // is indistinguishable from a genuine user action, so it gets journalled as
+  // a pending account write and then beats the authoritative cloud pull. That
+  // wiped real streaks: a device whose cached streak was from an earlier day
+  // normalizes todaySeconds to 0, writes it, and on the next sync overwrites
+  // (and pushes) 0 over another device's real minutes -- and repeats it on
+  // every page load, so the two devices never converge. Only genuine actions
+  // (recordStudySeconds, writeStudyStreak) may persist the streak.
   function readStudyStreak() {
-    const raw = readJsonStorage(STREAK_KEY, {});
-    const normalized = normalizeStreak(raw);
-    if (JSON.stringify(raw) !== JSON.stringify(normalized)) {
-      writeJsonStorage(STREAK_KEY, normalized);
-    }
-    return normalized;
+    return normalizeStreak(readJsonStorage(STREAK_KEY, {}));
   }
 
   function writeStudyStreak(streak) {
