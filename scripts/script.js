@@ -405,6 +405,44 @@ function highlightSnippet(snippet, matchedWords) {
   return escaped.replace(pattern, "<mark>$1</mark>");
 }
 
+// ── Episode search results ───────────────────────────────────────────────────
+// "Matching episodes": IMEpisodeSearch surfaces the specific series episodes
+// whose own title or transcript matches the query, so "year of the elephant"
+// deep-links to that episode instead of only showing the whole series card.
+// Rendered between the catalogue results and the transcript moments.
+function runEpisodeSearch(query) {
+  const section = document.querySelector("#episode-section");
+  const list = document.querySelector("#episode-results");
+  if (!section || !list) return;
+  if (!query || !window.IMEpisodeSearch || !window.catalogIndex) {
+    section.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+
+  const results = window.IMEpisodeSearch.search({
+    items: window.catalogIndex.items,
+    query,
+    categoryNameMap,
+  });
+
+  section.hidden = !results.length;
+  list.innerHTML = results
+    .map(({ item }) => {
+      const duration = item.duration ? formatDuration(item.duration) : "";
+      return `
+        <a class="episode-result-card" href="${escapeHtml(item.url)}">
+          <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
+          <span>
+            <small>${escapeHtml(item.seriesTitle)} · Ep ${item.number}${duration ? ` · ${escapeHtml(duration)}` : ""}</small>
+            <strong>${escapeHtml(item.title)}</strong>
+            <span class="episode-result-speaker">${escapeHtml(item.speaker || "")}</span>
+          </span>
+        </a>`;
+    })
+    .join("");
+}
+
 function runTranscriptSearch(query) {
   const section = document.querySelector("#transcript-section");
   const list = document.querySelector("#transcript-results");
@@ -467,6 +505,7 @@ const homeSearch = window.IMHomeSearch.create({
     state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
     resetCatalogPagination();
     renderSeries();
+    runEpisodeSearch(query);
     runTranscriptSearch(query);
     if (query) {
       scrollToSeriesResults();
@@ -1360,6 +1399,7 @@ async function loadCategory(category) {
   resetCatalogPagination();
   state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
   homeSearch.reset();
+  runEpisodeSearch("");
   runTranscriptSearch("");
   renderCategories();
   showSkeletons(6);

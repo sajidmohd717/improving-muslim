@@ -425,5 +425,6 @@
     normalizeQuery: normalizeQuery,
     queryTokens: queryTokens,
     tokenVariants: tokenVariants,
+    withinOneEdit: withinOneEdit,
   };
 })();
