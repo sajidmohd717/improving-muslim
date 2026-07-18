@@ -111,7 +111,7 @@ const localCategoryFallbacks = (() => {
 const localFirstCategories = new Set(Object.keys(localCategoryFallbacks));
 
 const descriptions = homeConfig.descriptions || {};
-const catalogBatchSize = window.matchMedia?.("(max-width: 600px)").matches ? 12 : 24;
+const catalogBatchSize = window.matchMedia?.("(max-width: 600px)").matches ? 18 : 36;
 
 const state = {
   activeCategory: initialCategoryFromUrl(),

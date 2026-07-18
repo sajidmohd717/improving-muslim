@@ -345,33 +345,33 @@ test("homepage batches a 500-video catalog without changing the session order", 
 
   const cards = page.locator("#series-grid .series-card");
   const status = page.locator("#catalog-pagination-status");
-  const loadMore = page.getByRole("button", { name: "Load 24 more results" });
-  await expect(cards).toHaveCount(24);
+  const loadMore = page.getByRole("button", { name: "Load 36 more results" });
+  await expect(cards).toHaveCount(36);
   const resultCount = await page.locator("#result-count").textContent();
   const seriesCount = Number(resultCount.match(/^(\d+) series/)?.[1]);
   expect(seriesCount).toBeGreaterThan(0);
   const totalResults = seriesCount + lectures.length;
-  await expect(status).toHaveText(`Showing 24 of ${totalResults}`);
+  await expect(status).toHaveText(`Showing 36 of ${totalResults}`);
   const firstBatch = await cards.locator(".series-title").evaluateAll((titles) =>
     titles.map((title) => ({ href: title.getAttribute("href"), text: title.textContent.trim() })),
   );
 
   await loadMore.click();
-  await expect(cards).toHaveCount(48);
-  await expect(status).toHaveText(`Showing 48 of ${totalResults}`);
+  await expect(cards).toHaveCount(72);
+  await expect(status).toHaveText(`Showing 72 of ${totalResults}`);
   const retainedBatch = await cards.locator(".series-title").evaluateAll((titles) =>
-    titles.slice(0, 24).map((title) => ({ href: title.getAttribute("href"), text: title.textContent.trim() })),
+    titles.slice(0, 36).map((title) => ({ href: title.getAttribute("href"), text: title.textContent.trim() })),
   );
   expect(retainedBatch).toEqual(firstBatch);
-  await expect(cards.nth(24).locator(".series-title")).toBeFocused();
+  await expect(cards.nth(36).locator(".series-title")).toBeFocused();
 
   await page.locator('[data-content-type="videos"]').dispatchEvent("click");
-  await expect(cards).toHaveCount(24);
-  await expect(status).toHaveText("Showing 24 of 500");
+  await expect(cards).toHaveCount(36);
+  await expect(status).toHaveText("Showing 36 of 500");
 
   await page.getByRole("button", { name: "Purification", exact: true }).click();
-  await expect(cards).toHaveCount(24);
-  await expect(status).toHaveText("Showing 24 of 250");
+  await expect(cards).toHaveCount(36);
+  await expect(status).toHaveText("Showing 36 of 250");
   expect(pageErrors).toEqual([]);
 });
 
@@ -783,8 +783,8 @@ test.describe("mobile navigation", () => {
     const pageErrors = await preparePage(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#series-grid .series-card")).toHaveCount(12);
-    await expect(page.locator("#catalog-pagination-status")).toHaveText(/Showing 12 of \d+/);
+    await expect(page.locator("#series-grid .series-card")).toHaveCount(18);
+    await expect(page.locator("#catalog-pagination-status")).toHaveText(/Showing 18 of \d+/);
     await expect(page.getByRole("button", { name: /Load \d+ more results/ })).toBeVisible();
 
     const menuButton = page.getByRole("button", { name: "More menu" });
