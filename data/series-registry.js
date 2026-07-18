@@ -135,7 +135,7 @@ window.seriesConfig = [
   {
     globalKey: "tenPromisedJannahSeries",
     slug: "ten-promised-jannah",
-    dataFile: "./data/ten-promised-jannah-data.js",
+    dataFile: "./data/ten-promised-jannah-data.js?v=20260718-ep1-5",
     categories: ["sahaba"],
     sectionTitle: "Sahaba",
     title: "10 Promised Jannah",
@@ -146,7 +146,7 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/ten-promised-jannah/episodes",
     playlistId: "PL2dRQaGGWZOBj6GqrVQzWaf8uYJpKNZFs",
     episodeCount: 10,
-    availableCount: 0,
+    availableCount: 5,
     searchKeywords: "ashara mubashara companions abu bakr umar uthman ali talha zubayr abdulrahman awf sad waqqas said zaid",
   },
   {

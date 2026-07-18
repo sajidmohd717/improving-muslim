@@ -1,4 +1,4 @@
-window.tenPromisedJannahSeries = {
+﻿window.tenPromisedJannahSeries = {
   title: "10 Promised Jannah",
   slug: "ten-promised-jannah",
   seriesPageUrl: "./pages/series-detail.html?id=ten-promised-jannah",
@@ -13,6 +13,7 @@ window.tenPromisedJannahSeries = {
     {
       number: 1,
       id: "zRzcXWU0VLo",
+      videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-1.mp4",
       title: "Abu Bakr As-Siddeeq",
       published: "2021-06-01",
       views: 49146,
@@ -20,6 +21,7 @@ window.tenPromisedJannahSeries = {
     {
       number: 2,
       id: "zrRSP4feVmY",
+      videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-2.mp4",
       title: "Umar Bin Al-Khattab",
       published: "2021-06-03",
       views: 27322,
@@ -27,6 +29,8 @@ window.tenPromisedJannahSeries = {
     {
       number: 3,
       id: "KyvurEQBiZU",
+      videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-3.mp4",
+      captionsSrc: "./assets/captions/ten-promised-jannah/episode-03.vtt",
       title: "Uthman Bin Affan",
       published: "2021-06-05",
       views: 19988,
@@ -34,6 +38,8 @@ window.tenPromisedJannahSeries = {
     {
       number: 4,
       id: "5W5Mpg3BAO8",
+      videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-4.mp4",
+      captionsSrc: "./assets/captions/ten-promised-jannah/episode-04.vtt",
       title: "Ali ibn Abi Talib",
       published: "2021-06-08",
       views: 16261,
@@ -41,6 +47,7 @@ window.tenPromisedJannahSeries = {
     {
       number: 5,
       id: "4cT7BoQPLm8",
+      videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-5.mp4",
       title: "Abu Ubaidah ibn Al-Jarrah",
       published: "2021-06-14",
       views: 16710,
@@ -82,3 +89,8 @@ window.tenPromisedJannahSeries = {
     },
   ],
 };
+
+
+
+
+

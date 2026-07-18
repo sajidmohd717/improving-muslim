@@ -265,8 +265,12 @@ test("Explore reports series, available episodes, and standalone lectures accura
   await expect(page.locator('[data-category="fiqh"] .explore-card-kicker')).toHaveText(
     "1 lecture",
   );
-  await expect(page.getByRole("link", { name: "Request topic: Sahaba" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open topic: Sahaba" })).toBeVisible();
   await expect(page.locator('[data-category="sahaba"] .explore-card-kicker')).toHaveText(
+    "5 lectures",
+  );
+  await expect(page.getByRole("link", { name: "Request topic: Hereafter" })).toBeVisible();
+  await expect(page.locator('[data-category="hereafter"] .explore-card-kicker')).toHaveText(
     "Coming soon",
   );
   expect(pageErrors).toEqual([]);

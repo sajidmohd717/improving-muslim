@@ -1328,10 +1328,18 @@ function renderSeries() {
           : `No exact matches for "${escapeHtml(state.searchTerm)}" — but these touch on it`
       }</div>`
     : "";
+  // A re-render can land while the user is keyboard-navigating the grid (late
+  // remote feed merge, popularity refresh). Rebuilding innerHTML would drop
+  // their focus to <body>, so restore it to the same link in the new DOM.
+  const focused = els.seriesGrid.contains(document.activeElement) ? document.activeElement : null;
+  const focusedHref = focused?.closest("a")?.getAttribute("href") || null;
   els.seriesGrid.innerHTML =
     visibleSeries.map(seriesCardHtml).join("") +
     relatedDivider +
     visibleRelated.map((item, i) => seriesCardHtml(item, series.length + i)).join("");
+  if (focusedHref) {
+    els.seriesGrid.querySelector(`a[href="${CSS.escape(focusedHref)}"]`)?.focus();
+  }
   updateCatalogPagination(totalResults, shown);
 }
 
@@ -1564,9 +1572,13 @@ function bindEvents() {
     const previouslyShown = els.seriesGrid.querySelectorAll(".series-card").length;
     state.visibleCount += catalogBatchSize;
     renderSeries();
-    const cards = els.seriesGrid.querySelectorAll(".series-card");
-    const firstNewCard = cards[previouslyShown];
-    window.requestAnimationFrame(() => firstNewCard?.querySelector(".series-title")?.focus());
+    // Query inside the frame callback: a re-render landing between click and
+    // rAF (remote feed merge, popularity refresh) replaces the card nodes, and
+    // focusing a captured-but-detached node silently does nothing.
+    window.requestAnimationFrame(() => {
+      const cards = els.seriesGrid.querySelectorAll(".series-card");
+      cards[previouslyShown]?.querySelector(".series-title")?.focus();
+    });
   });
 
   document.addEventListener("click", (event) => {
