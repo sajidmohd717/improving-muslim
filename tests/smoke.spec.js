@@ -407,14 +407,19 @@ test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) 
   await expect(page.locator("#streak-settings-summary")).toContainText(
     "Today's 15 minute goal is complete. Current streak: 5 days.",
   );
-  const migrated = await page.evaluate(() =>
-    JSON.parse(localStorage.getItem("improving-muslim:study-streak")),
-  );
+  // readStudyStreak is a pure read: it applies the migration on every read but
+  // never persists it (a normalize-on-read write is journalled like a genuine
+  // user action and can clobber another device's real streak during sync).
+  const migrated = await page.evaluate(() => window.IMUtils.readStudyStreak());
   expect(migrated.targetMinutes).toBe(15);
   expect(migrated.todaySeconds).toBe(15 * 60);
   expect(migrated.current).toBe(5);
   expect(migrated.lastCompletedDate).toBe(migrated.todayDate);
   expect(migrated.days[migrated.todayDate].completed).toBe(true);
+  const stored = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("improving-muslim:study-streak")),
+  );
+  expect(stored.targetMinutes).toBe(30); // untouched until a genuine action writes
   expect(pageErrors).toEqual([]);
 });
 
