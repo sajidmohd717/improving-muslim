@@ -135,7 +135,7 @@ window.seriesConfig = [
   {
     globalKey: "tenPromisedJannahSeries",
     slug: "ten-promised-jannah",
-    dataFile: "./data/ten-promised-jannah-data.js?v=20260718-ep1-5",
+    dataFile: "./data/ten-promised-jannah-data.js?v=20260718-captions",
     categories: ["sahaba"],
     sectionTitle: "Sahaba",
     title: "10 Promised Jannah",
