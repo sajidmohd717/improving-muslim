@@ -188,7 +188,7 @@ window.seriesConfig = [
   {
     globalKey: "lifeOfMuhammadMuftiMenkSeries",
     slug: "life-of-muhammad-mufti-menk",
-    dataFile: "./data/life-of-muhammad-mufti-menk-data.js?v=20260716-ep9-12",
+    dataFile: "./data/life-of-muhammad-mufti-menk-data.js?v=20260718-ep3-5-transcripts",
     categories: ["seerah", "prophets"],
     label: "Complete series",
     sectionTitle: "Seerah",
