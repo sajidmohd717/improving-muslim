@@ -119,6 +119,10 @@ statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah
 
 The homepage feed defaults to a fresh discovery shuffle for new visitors. Once someone meaningfully watches a lecture, the same grid becomes a personalized **For you** blend driven by semantic similarity, category and speaker affinity, recency, popularity, completion state, and diversity caps. It deliberately interleaves two relevant cards with one discovery card so no topic or speaker can trap the learner in a narrow loop. The order stays stable for that page session so loading another batch never moves cards already seen. The catalog renders 36 cards initially on desktop and 18 at mobile widths, then exposes an accessible `Load more` control in equal-sized batches. Search, category, content-type, sort, and hide-watched changes reset to the first batch. New series and standalone lectures join automatically after the normal content generation step. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
+## Git Workflow
+
+Work directly on `main`. Do not create feature branches or pull requests for normal development or content publishing in this repository unless the repository owner explicitly requests one. After reviewing the intended diff and running the required checks, commit the changes on `main`, fetch `origin`, confirm the push will be a fast-forward, and push directly with `git push origin main`.
+
 ## CI / Automated Checks
 
 Every push and pull request to `main` triggers `.github/workflows/check.yml`, which runs on a clean Ubuntu environment:
