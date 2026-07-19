@@ -478,36 +478,29 @@
     font-size: clamp(1.3rem, 3vw, 2.3rem);
   }
 
+  /* YouTube-style stacked cards: full-width thumbnail, text underneath. */
   .series-grid {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 24px;
   }
 
   .series-card {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
     border: none;
-    border-bottom: 1px solid var(--line);
     border-radius: 0;
     box-shadow: none;
     background: transparent;
-    padding: 12px 0;
-  }
-
-  .series-card:last-child {
-    border-bottom: none;
+    padding: 0;
   }
 
   .series-link {
-    width: 144px;
-    flex-shrink: 0;
+    width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 6px;
+    border-radius: 12px;
   }
 
   .series-body {
-    padding: 2px 0 0;
+    padding: 10px 2px 0;
   }
 
   .series-card .details-toggle {
@@ -525,11 +518,6 @@
     width: 40px;
     height: 40px;
     padding: 0;
-  }
-
-  .series-progress-track {
-    display: block;
-    margin-top: 6px;
   }
 
   .series-browse-grid .series-body .primary-link {
@@ -551,14 +539,20 @@
     display: block;
   }
 
+  .series-title {
+    margin: 5px 0 6px;
+    font-size: 0.94rem;
+    line-height: 1.35;
+  }
+
   .series-meta {
-    gap: 5px;
-    margin-top: 3px;
-    font-size: 0.62rem;
+    gap: 6px;
+    margin-top: 2px;
+    font-size: 0.78rem;
   }
 
   .series-meta span {
-    gap: 5px;
+    gap: 6px;
   }
 
   .series-meta span:not(:last-child)::after {
@@ -567,7 +561,7 @@
   }
 
   .series-topic {
-    font-size: 0.6rem;
+    font-size: 0.66rem;
   }
 
   .episode-list {

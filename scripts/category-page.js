@@ -41,18 +41,19 @@ function setCategoryMetadata(topic) {
   document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description);
 }
 
-function contentCard({ title, speaker, label, meta, thumbnail, href }) {
+function contentCard({ title, speaker, label, meta, thumbnail, href, durationSeconds }) {
   return `
     <article class="series-card category-content-card">
       <a class="series-link" href="${href}">
         <img src="${thumbnail}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
+        ${durationSeconds ? `<span class="thumb-duration">${formatDuration(durationSeconds)}</span>` : ""}
       </a>
       <div class="series-body">
         <span class="series-topic">${escapeHtml(label)}</span>
         <a class="series-title" href="${href}">${escapeHtml(title)}</a>
         <div class="series-meta">
           <span>${escapeHtml(speaker)}</span>
-          <span>${escapeHtml(meta)}</span>
+          ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
         </div>
       </div>
     </article>
@@ -106,7 +107,8 @@ function renderCategoryPage() {
       title: lecture.title,
       speaker: lecture.speaker,
       label: "Lecture",
-      meta: formatDuration(lecture.duration),
+      meta: "",
+      durationSeconds: lecture.duration,
       thumbnail: standaloneLectureThumbnailUrl(lecture),
       href: standaloneLectureUrl(lecture),
     })).join("");

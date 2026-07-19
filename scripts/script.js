@@ -1273,15 +1273,20 @@ function renderSeries() {
       const seriesProgress = isVideo ? null : seriesProgressSummary(item.title);
       const videoProgress = isVideo ? standaloneVideoProgress(item.sourceId) : null;
       const saved = isSeriesSaved(seriesUrl);
+      const durationChip = isVideo && item.duration
+        ? `<span class="thumb-duration">${formatDuration(item.duration)}</span>`
+        : "";
       const progressBarHtml = seriesProgress
-        ? `<div class="series-progress-track" aria-label="${seriesProgress.completed} of ${seriesProgress.total} episodes watched"><div class="series-progress-fill" style="width:${Math.round(seriesProgress.completed / seriesProgress.total * 100)}%"></div></div>`
+        ? `<div class="thumb-progress-track" aria-label="${seriesProgress.completed} of ${seriesProgress.total} episodes watched"><div class="thumb-progress-fill" style="width:${Math.round(seriesProgress.completed / seriesProgress.total * 100)}%"></div></div>`
         : videoProgress !== null
-        ? `<div class="series-progress-track" aria-label="${Math.round(videoProgress * 100)}% watched"><div class="series-progress-fill" style="width:${Math.round(videoProgress * 100)}%"></div></div>`
+        ? `<div class="thumb-progress-track" aria-label="${Math.round(videoProgress * 100)}% watched"><div class="thumb-progress-fill" style="width:${Math.round(videoProgress * 100)}%"></div></div>`
         : "";
       return `
         <article class="series-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 50}ms">
           <a class="series-link" href="${seriesUrl}">
             <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
+            ${durationChip}
+            ${progressBarHtml}
           </a>
           <div class="series-body">
             <span class="series-topic">${escapeHtml(item.topic || "Series")}</span>
@@ -1298,7 +1303,6 @@ function renderSeries() {
               ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
               : item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
             }
-            ${progressBarHtml}
             <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>
             </button>

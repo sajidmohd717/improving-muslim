@@ -212,11 +212,38 @@
 }
 
 .series-link {
+  position: relative;
   display: block;
   aspect-ratio: 16 / 9;
   background: #e5ded0;
   overflow: hidden;
   border-radius: 8px 8px 0 0;
+}
+
+.thumb-duration {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+.thumb-progress-track {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.thumb-progress-fill {
+  height: 100%;
+  background: var(--accent);
 }
 
 .series-link img {
@@ -538,20 +565,6 @@
   background: rgba(108, 196, 173, 0.12);
   color: var(--accent-strong);
   border-color: rgba(108, 196, 173, 0.28);
-}
-
-.series-progress-track {
-  height: 3px;
-  margin-top: 12px;
-  border-radius: 2px;
-  background: rgba(23, 107, 91, 0.12);
-  overflow: hidden;
-}
-
-.series-progress-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
 }
 
 /* ─── Browse grid variant ────────────────────────────────────────────────── */
