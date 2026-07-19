@@ -22,12 +22,12 @@
     { number: 10, id: "DgxeLiDDchs", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-10.mp4", title: "Al-Isra wal-Mi‘raj and the Gift of Salah", published: "2012-07-31", views: 346000, captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-10.vtt"  },
     { number: 11, id: "Li3FwpFDePg", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-11.mp4", title: "Mus‘ab ibn Umayr and the Pledges of Aqabah", published: "2012-08-01", views: 337000, captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-11.vtt"  },
     { number: 12, id: "wMJPAH1s4BA", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-12.mp4", title: "The Hijrah to Madinah: The Cave of Thawr and Arrival at Quba", published: "2012-08-02", views: 302000, captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-12.vtt"  },
-    { number: 13, id: "pSj_iJ8_1cE", title: "Day 13", published: "2012-08-03", thumbnailSrc: "https://i.ytimg.com/vi/pSj_iJ8_1cE/hqdefault.jpg"  },
-    { number: 14, id: "YudEqpMmjVY", title: "Day 14", published: "2012-08-04", thumbnailSrc: "https://i.ytimg.com/vi/YudEqpMmjVY/hqdefault.jpg"  },
-    { number: 15, id: "6LOE8bLQVyM", title: "Day 15", published: "2012-08-05", thumbnailSrc: "https://i.ytimg.com/vi/6LOE8bLQVyM/hqdefault.jpg"  },
-    { number: 16, id: "NPxGHFNK31I", title: "Day 16", published: "2012-08-06", thumbnailSrc: "https://i.ytimg.com/vi/NPxGHFNK31I/hqdefault.jpg"  },
-    { number: 17, id: "lom-day-17",  title: "Day 17", published: "2012-08-07", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg" },
-    { number: 18, id: "DvnHP73yUPc", title: "Day 18", published: "2012-08-08", thumbnailSrc: "https://i.ytimg.com/vi/DvnHP73yUPc/hqdefault.jpg"  },
+    { number: 13, id: "pSj_iJ8_1cE", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-13.mp4", title: "Arrival in Madinah: Building Al-Masjid an-Nabawi and the First Adhan", published: "2012-08-03", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-13.vtt"  },
+    { number: 14, id: "YudEqpMmjVY", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-14.mp4", title: "Building the Madinan Community: Brotherhood and the Constitution of Madinah", published: "2012-08-04", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-14.vtt"  },
+    { number: 15, id: "6LOE8bLQVyM", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-15.mp4", title: "Permission to Fight: Early Expeditions and the Road to Badr", published: "2012-08-05", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-15.vtt"  },
+    { number: 16, id: "NPxGHFNK31I", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-16.mp4", title: "The Battle of Badr: From the Caravan to the Battlefield", published: "2012-08-06", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-16.vtt"  },
+    { number: 17, id: "CPXhZDmLuuw", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-17.mp4", title: "Victory at Badr: The Fall of Abu Jahl and the Treatment of Captives", published: "2012-08-07", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-17.vtt"  },
+    { number: 18, id: "DvnHP73yUPc", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-18.mp4", title: "The Battle of Uhud: The Archers’ Test and the Martyrdom of Hamza", published: "2012-08-08", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-18.vtt"  },
     { number: 19, id: "wrp0Mrf9Kf0", title: "Day 19", published: "2012-08-09", thumbnailSrc: "https://i.ytimg.com/vi/wrp0Mrf9Kf0/hqdefault.jpg"  },
     { number: 20, id: "Dcri8c0j7Jw", title: "Day 20", published: "2012-08-10", thumbnailSrc: "https://i.ytimg.com/vi/Dcri8c0j7Jw/hqdefault.jpg"  },
     { number: 21, id: "GC2Rsk2xNWo", title: "Day 21", published: "2012-08-11", thumbnailSrc: "https://i.ytimg.com/vi/GC2Rsk2xNWo/hqdefault.jpg"  },
@@ -42,5 +42,3 @@
     { number: 30, id: "lom-day-30",  title: "Day 30", published: "2012-08-20", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg" },
   ],
 };
-
-
