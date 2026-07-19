@@ -13,7 +13,7 @@
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */
 @import "./feedback.css";      /* Feedback page & form                               */
 @import "./explore.css?v=20260720-desktop-polish"; /* Explore and focused category discovery       */
-@import "./series-detail.css?v=20260720-desktop-polish";        /* Series/speaker hero, episode list & cards   */
+@import "./series-detail.css?v=20260720-episode-4col";        /* Series/speaker hero, episode list & cards   */
 @import "./watch.css?v=20260720-desktop-polish";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
