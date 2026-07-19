@@ -148,7 +148,11 @@
     var completeToday = streak.todaySeconds >= targetSeconds || streak.lastCompletedDate === streak.todayDate;
     btn.classList.toggle('is-active', streak.current > 0);
     btn.classList.toggle('is-complete', completeToday);
-    btn.innerHTML = buildFlameSvg() + '<span>' + streak.current + '</span>';
+    // A bare "0" next to a flame means nothing to new visitors — label the
+    // feature by name until they have an actual streak to show off.
+    btn.innerHTML = streak.current > 0
+      ? buildFlameSvg() + '<span>' + streak.current + '</span>'
+      : buildFlameSvg() + '<span class="streak-label">Streak</span>';
     btn.setAttribute('aria-label', streak.current > 0
       ? 'Open learning streak. Current streak ' + streak.current + ' days.'
       : 'Start your daily learning streak.');
