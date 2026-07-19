@@ -1,5 +1,5 @@
 .hero {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: clamp(42px, 8vw, 92px) 0 26px;
 }
@@ -197,13 +197,13 @@ body.search-mode #active-category-label {
 }
 
 .content-section {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0;
 }
 
 .continue-section {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: 16px 0 26px;
 }

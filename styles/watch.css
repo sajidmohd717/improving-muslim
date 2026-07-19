@@ -157,7 +157,7 @@
 }
 
 .watch-info h1 {
-  font-size: clamp(2rem, 4vw, 3.8rem);
+  font-size: clamp(1.9rem, 1.2vw + 1.45rem, 2.6rem);
 }
 
 .watch-info p:not(.eyebrow) {
@@ -341,6 +341,16 @@
   transition: transform 0.18s ease, border-color 0.15s, box-shadow 0.18s ease;
 }
 
+/* Keep "Up next" visible while the episode list scrolls beneath it.
+   Negative top offsets the sidebar's 16px padding so the card sits flush. */
+@media (min-width: 901px) {
+  .up-next-card {
+    position: sticky;
+    top: -16px;
+    z-index: 2;
+  }
+}
+
 .up-next-card:hover,
 .up-next-card:focus-visible {
   border-color: var(--accent);
@@ -411,6 +421,8 @@
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 8px;
+  /* Clear the sticky up-next card when auto-scrolled into view */
+  scroll-margin-top: 116px;
 }
 
 .compact-episode:hover,

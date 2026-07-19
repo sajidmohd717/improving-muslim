@@ -11,6 +11,16 @@
   mask-image: linear-gradient(to right, black 0%, black calc(100% - 52px), transparent 100%);
 }
 
+/* Desktop has room to show every topic — wrap instead of scroll */
+@media (min-width: 901px) {
+  .category-strip {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 .speaker-card {
   display: grid;
   flex: 0 0 112px;
@@ -138,6 +148,27 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+}
+
+/* Wide desktops fit a fourth column comfortably */
+@media (min-width: 1200px) {
+  .series-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Topic section headings inside the desktop home grid */
+.grid-group-heading {
+  grid-column: 1 / -1;
+  margin: 22px 0 -4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  font-family: "Inria Serif", Georgia, serif;
+  font-size: 1.45rem;
+}
+
+.grid-group-heading:first-child {
+  margin-top: 4px;
 }
 
 .catalog-pagination {

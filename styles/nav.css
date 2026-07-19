@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   min-height: 64px;
   margin: 0 auto;
 }

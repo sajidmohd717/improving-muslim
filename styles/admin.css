@@ -1,7 +1,7 @@
 .admin-hero,
 .admin-auth,
 .admin-dashboard {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
 }
 

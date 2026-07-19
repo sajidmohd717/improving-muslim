@@ -3,7 +3,7 @@
   grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
   gap: 34px;
   align-items: center;
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: clamp(34px, 7vw, 76px) 0 24px;
 }
@@ -99,7 +99,7 @@
   grid-template-columns: 180px minmax(0, 1fr);
   gap: 28px;
   align-items: center;
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   padding: clamp(32px, 6vw, 68px) 0 22px;
 }

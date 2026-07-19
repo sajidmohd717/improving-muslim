@@ -1335,10 +1335,44 @@ function renderSeries() {
   // A re-render can land while the user is keyboard-navigating the grid (late
   // remote feed merge, popularity refresh). Rebuilding innerHTML would drop
   // their focus to <body>, so restore it to the same link in the new DOM.
+  // Default desktop browse: break the flat feed into labelled topic sections.
+  // Search, category chips, speaker, sort, and type filters each impose their
+  // own ordering, so any of them active falls back to the flat grid.
+  const groupedHome =
+    window.matchMedia("(min-width: 901px)").matches &&
+    !isSearching &&
+    state.activeCategory === "foryou" &&
+    !state.activeSpeaker &&
+    state.sortBy === "random" &&
+    state.contentType === "all";
+  let mainCardsHtml;
+  if (groupedHome) {
+    const topicOrder = categories
+      .map((category) => category.value)
+      .filter((value) => value !== "foryou" && value !== "available");
+    const groups = new Map();
+    for (const item of visibleSeries) {
+      const slug = item._cats?.[0];
+      const key = topicOrder.includes(slug) ? slug : "_more";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    }
+    let cardIndex = 0;
+    mainCardsHtml = [...topicOrder, "_more"]
+      .filter((key) => groups.has(key))
+      .map((key) => {
+        const heading = key === "_more" ? "More to explore" : categoryNameMap[key] || key;
+        const cards = groups.get(key).map((item) => seriesCardHtml(item, cardIndex++)).join("");
+        return `<h3 class="grid-group-heading">${escapeHtml(heading)}</h3>${cards}`;
+      })
+      .join("");
+  } else {
+    mainCardsHtml = visibleSeries.map(seriesCardHtml).join("");
+  }
   const focused = els.seriesGrid.contains(document.activeElement) ? document.activeElement : null;
   const focusedHref = focused?.closest("a")?.getAttribute("href") || null;
   els.seriesGrid.innerHTML =
-    visibleSeries.map(seriesCardHtml).join("") +
+    mainCardsHtml +
     relatedDivider +
     visibleRelated.map((item, i) => seriesCardHtml(item, series.length + i)).join("");
   if (focusedHref) {
@@ -1617,6 +1651,10 @@ window.addEventListener("im-auth-state-changed", () => {
   renderStudyStreak();
   renderSeries();
 });
+
+// Grouped topic sections only exist on desktop — re-render when the
+// viewport crosses the breakpoint so the layout matches.
+window.matchMedia("(min-width: 901px)").addEventListener("change", () => renderSeries());
 
 const sectionObserver = new IntersectionObserver(
   (entries) => {
