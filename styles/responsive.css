@@ -647,11 +647,19 @@
     padding: 0 0 20px;
   }
 
+  /* Pin the player just below the sticky site header so the video stays
+     visible while scrolling notes, takeaways, and the recap. It cannot pin
+     over the header: main's view-transition-name creates a stacking context,
+     so nothing inside main can out-stack the header (z 20) — and raising
+     main above it would put the open nav menu behind page content. */
   .video-frame {
+    position: sticky;
+    top: 59px;
+    z-index: 30;
     border-left: none;
     border-right: none;
     border-radius: 0;
-    box-shadow: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
   }
 
   .watch-info {
