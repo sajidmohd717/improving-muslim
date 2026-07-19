@@ -116,6 +116,31 @@
     max-width: 100%;
   }
 
+  /* Keep the brand on one line beside the back button: slightly smaller
+     type and trimmed neighbours make room, ellipsis is the safety net */
+  .brand {
+    min-width: 0;
+    flex-shrink: 1;
+    gap: 5px;
+    font-size: 0.84rem;
+  }
+
+  .back-button {
+    width: 34px;
+  }
+
+  .nav-shell .auth-btn {
+    gap: 4px;
+    padding: 0 8px;
+  }
+
+  .brand span {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   .nav-streak-btn {
     min-width: 44px;
     width: 44px;
