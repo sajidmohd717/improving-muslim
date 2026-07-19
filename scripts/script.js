@@ -1181,6 +1181,17 @@ function renderSeries() {
     .filter(seriesMatchesContentType)
     .filter((item) => !state.hideWatched || !isItemWatched(item))
     .map(enrichSeries);
+  // Default desktop browse renders labelled topic sections (see below).
+  // Those keep the curated registry order so sections don't reshuffle
+  // between visits; the discovery shuffle/personalized blend only applies
+  // to the flat feed.
+  const groupedHome =
+    window.matchMedia("(min-width: 901px)").matches &&
+    !isSearching &&
+    state.activeCategory === "foryou" &&
+    !state.activeSpeaker &&
+    state.sortBy === "random" &&
+    state.contentType === "all";
   if (aiIds) {
     series = series.sort((a, b) => {
         const rankA = aiOrder.has(searchItemId(a)) ? aiOrder.get(searchItemId(a)) : Infinity;
@@ -1192,6 +1203,8 @@ function renderSeries() {
     series = [...series].sort(
       (a, b) => (searchScores.get(searchItemId(b)) || 0) - (searchScores.get(searchItemId(a)) || 0),
     );
+  } else if (groupedHome) {
+    // Keep registry order — stable topic sections beat a fresh shuffle.
   } else if (state.sortBy === "random" && state.activeCategory === "foryou" && !state.activeSpeaker) {
     const feed = getPersonalizedHomeOrder(series);
     series = feed.items;
@@ -1338,16 +1351,6 @@ function renderSeries() {
   // A re-render can land while the user is keyboard-navigating the grid (late
   // remote feed merge, popularity refresh). Rebuilding innerHTML would drop
   // their focus to <body>, so restore it to the same link in the new DOM.
-  // Default desktop browse: break the flat feed into labelled topic sections.
-  // Search, category chips, speaker, sort, and type filters each impose their
-  // own ordering, so any of them active falls back to the flat grid.
-  const groupedHome =
-    window.matchMedia("(min-width: 901px)").matches &&
-    !isSearching &&
-    state.activeCategory === "foryou" &&
-    !state.activeSpeaker &&
-    state.sortBy === "random" &&
-    state.contentType === "all";
   let mainCardsHtml;
   if (groupedHome) {
     const topicOrder = categories
