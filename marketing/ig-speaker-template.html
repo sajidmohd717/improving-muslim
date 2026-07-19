@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inria+Serif:wght@700&family=Inter:wght@400;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #f2ece0;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+    }
+
+    .bg { position: absolute; inset: 0; background: #f2ece0; }
+    .blob-tl { position: absolute; top: -90px; left: -90px; width: 360px; height: 360px; background: #cdddd6; border-radius: 50%; opacity: 0.8; }
+    .blob-br { position: absolute; bottom: -90px; right: -90px; width: 360px; height: 360px; background: #e0d4be; border-radius: 50%; opacity: 0.85; }
+    .blob-tr { position: absolute; top: 120px; right: -60px; width: 180px; height: 180px; background: #d6c9b0; border-radius: 50%; opacity: 0.5; }
+    .blob-bl { position: absolute; bottom: 220px; left: -70px; width: 190px; height: 190px; background: #cdddd6; border-radius: 50%; opacity: 0.5; }
+
+    .stage {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 56px 80px 52px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+    .brand svg { width: 56px; height: 56px; }
+    .wordmark {
+      font-family: 'Inria Serif', Georgia, serif;
+      font-size: 38px; font-weight: 700; color: #0f4f43; letter-spacing: -0.5px;
+    }
+
+    .kicker {
+      font-size: 24px; font-weight: 800; color: #c89b3c;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .avatar {
+      width: 230px; height: 230px; border-radius: 50%;
+      object-fit: cover;
+      border: 8px solid #fffdf8;
+      outline: 5px solid #176b5b;
+      box-shadow: 0 22px 55px rgba(24, 32, 27, 0.22);
+      margin-bottom: 30px;
+    }
+
+    .speaker-name {
+      font-family: 'Inria Serif', Georgia, serif;
+      font-size: 88px; font-weight: 700; color: #18201b;
+      letter-spacing: -1px; line-height: 1; text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .subline {
+      font-size: 30px; font-weight: 600; color: #4d5c55;
+      text-align: center; margin-bottom: 48px;
+    }
+    .subline strong { color: #176b5b; font-weight: 800; }
+
+    .cards { display: flex; gap: 32px; margin-bottom: 52px; }
+    .card { width: 434px; }
+    .thumb {
+      position: relative; border-radius: 20px; overflow: hidden;
+      aspect-ratio: 16 / 9; background: #e5ded0;
+      box-shadow: 0 16px 40px rgba(24, 32, 27, 0.18);
+    }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .count {
+      position: absolute; right: 12px; bottom: 12px;
+      background: rgba(0, 0, 0, 0.8); color: #fff;
+      font-size: 19px; font-weight: 700; padding: 5px 13px; border-radius: 8px;
+    }
+    .card-title {
+      margin-top: 16px; font-size: 30px; font-weight: 800; color: #18201b; line-height: 1.25;
+      text-align: center;
+    }
+    .card-sub { margin-top: 5px; font-size: 21px; font-weight: 600; color: #7a857e; text-align: center; }
+
+    .footer-note {
+      font-size: 26px; font-weight: 700; color: #4d5c55; margin-bottom: 18px;
+    }
+    .footer-note span { color: #176b5b; }
+    .url { font-size: 38px; font-weight: 800; color: #c89b3c; letter-spacing: 0.01em; }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="blob-tl"></div>
+    <div class="blob-tr"></div>
+    <div class="blob-br"></div>
+    <div class="blob-bl"></div>
+  </div>
+
+  <div class="stage">
+    <div class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+        <rect width="512" height="512" rx="108" fill="#fffdf8"/>
+        <path d="M256 76c54 38 102 91 102 168v104H154V244c0-77 48-130 102-168Z" fill="#f7f3ec" stroke="#176b5b" stroke-width="24" stroke-linejoin="round"/>
+        <path d="M256 145c32 25 58 59 58 107v96H198v-96c0-48 26-82 58-107Z" fill="#176b5b"/>
+        <path d="M256 191c17 16 31 38 31 68v89h-62v-89c0-30 14-52 31-68Z" fill="#fffdf8"/>
+        <path d="M96 368c58-16 112-7 160 26 48-33 102-42 160-26v38c-58-14-112-5-160 28-48-33-102-42-160-28v-38Z" fill="#fffdf8" stroke="#176b5b" stroke-width="22" stroke-linejoin="round"/>
+        <path d="M256 394v40" stroke="#c89b3c" stroke-width="18" stroke-linecap="round"/>
+        <circle cx="256" cy="57" r="15" fill="#c89b3c"/>
+        <circle cx="128" cy="150" r="12" fill="#c89b3c"/>
+        <circle cx="384" cy="150" r="12" fill="#c89b3c"/>
+      </svg>
+      <span class="wordmark">Improving Muslim</span>
+    </div>
+
+    <div class="kicker">Featured Speaker</div>
+    <img class="avatar" src="{{PHOTO}}" alt="" />
+    <div class="speaker-name">{{NAME}}</div>
+    <div class="subline">{{SUBLINE}}</div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="thumb">
+          <img src="{{THUMB1}}" alt="" />
+          <span class="count">{{COUNT1}}</span>
+        </div>
+        <div class="card-title">{{TITLE1}}</div>
+        <div class="card-sub">{{SUB1}}</div>
+      </div>
+      <div class="card">
+        <div class="thumb">
+          <img src="{{THUMB2}}" alt="" />
+          <span class="count">{{COUNT2}}</span>
+        </div>
+        <div class="card-title">{{TITLE2}}</div>
+        <div class="card-sub">{{SUB2}}</div>
+      </div>
+    </div>
+
+    <div class="footer-note">Watch free · <span>No ads</span> · Track your progress</div>
+    <div class="url">improvingmuslim.com</div>
+  </div>
+</body>
+</html>

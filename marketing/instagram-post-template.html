@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inria+Serif:wght@700&family=Inter:wght@400;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: #f2ece0;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+    }
+
+    .bg { position: absolute; inset: 0; background: #f2ece0; }
+    .blob-tl { position: absolute; top: -90px; left: -90px; width: 380px; height: 380px; background: #e0d4be; border-radius: 50%; opacity: 0.85; }
+    .blob-br { position: absolute; bottom: -80px; right: -80px; width: 340px; height: 340px; background: #cdddd6; border-radius: 50%; opacity: 0.8; }
+    .blob-tr { position: absolute; top: -50px; right: 90px; width: 170px; height: 170px; background: #d6c9b0; border-radius: 50%; opacity: 0.5; }
+    .blob-bl { position: absolute; bottom: 140px; left: -70px; width: 200px; height: 200px; background: #cdddd6; border-radius: 50%; opacity: 0.5; }
+
+    .stage {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 52px 72px 48px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
+    .brand svg { width: 64px; height: 64px; }
+    .wordmark {
+      font-family: 'Inria Serif', Georgia, serif;
+      font-size: 44px; font-weight: 700; color: #0f4f43; letter-spacing: -0.5px;
+    }
+
+    .headline {
+      font-family: 'Inria Serif', Georgia, serif;
+      font-weight: 700; text-align: center; line-height: 1.06;
+      font-size: 84px; color: #18201b; letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .headline em { font-style: normal; color: #176b5b; }
+
+    .subline {
+      font-size: 28px; font-weight: 600; color: #4d5c55;
+      text-align: center; margin-bottom: 34px;
+    }
+
+    /* â”€â”€ Phone mockup â”€â”€ */
+    .phone {
+      width: 420px;
+      background: #18201b;
+      border-radius: 52px;
+      padding: 16px;
+      box-shadow: 0 40px 90px rgba(24, 32, 27, 0.30);
+      transform: rotate(-2deg);
+      margin-bottom: 38px;
+    }
+    .screen {
+      background: #f7f3ec;
+      border-radius: 38px;
+      overflow: hidden;
+      padding: 22px 18px 26px;
+    }
+
+    .search {
+      display: flex; align-items: center; gap: 10px;
+      background: #fffdf8; border: 2px solid #ded6c8;
+      border-radius: 999px; padding: 12px 18px; margin-bottom: 16px;
+      color: #7a857e; font-size: 17px; font-weight: 600;
+    }
+    .search svg { width: 18px; height: 18px; stroke: #7a857e; }
+
+    .chips { display: flex; gap: 8px; margin-bottom: 18px; }
+    .chip {
+      border: 2px solid #ded6c8; border-radius: 999px;
+      padding: 7px 16px; font-size: 15px; font-weight: 700; color: #4d5c55;
+      white-space: nowrap;
+    }
+    .chip.active { background: #176b5b; border-color: #176b5b; color: #fffdf8; }
+
+    .mini-card { margin-bottom: 20px; }
+    .mini-thumb {
+      position: relative; border-radius: 16px; overflow: hidden;
+      aspect-ratio: 16 / 9; background: #e5ded0;
+      box-shadow: 0 8px 24px rgba(24, 32, 27, 0.14);
+    }
+    .mini-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .dur {
+      position: absolute; right: 10px; bottom: 10px;
+      background: rgba(0, 0, 0, 0.8); color: #fff;
+      font-size: 14px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    }
+    .prog { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255, 255, 255, 0.45); }
+    .prog i { display: block; height: 100%; width: 42%; background: #176b5b; }
+    .mini-title { margin-top: 10px; font-size: 19px; font-weight: 800; color: #18201b; line-height: 1.3; }
+    .mini-meta { margin-top: 3px; font-size: 15px; font-weight: 600; color: #7a857e; }
+    .mini-card:last-child { margin-bottom: 2px; }
+
+    /* â”€â”€ Pills + URL â”€â”€ */
+    .pills { display: flex; gap: 14px; margin-bottom: 24px; }
+    .pill {
+      border: 3px solid #176b5b; border-radius: 999px;
+      padding: 11px 28px; font-size: 24px; font-weight: 700; color: #176b5b;
+    }
+    .url {
+      font-size: 34px; font-weight: 800; color: #c89b3c; letter-spacing: 0.01em;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="blob-tl"></div>
+    <div class="blob-tr"></div>
+    <div class="blob-br"></div>
+    <div class="blob-bl"></div>
+  </div>
+
+  <div class="stage">
+    <div class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+        <rect width="512" height="512" rx="108" fill="#fffdf8"/>
+        <path d="M256 76c54 38 102 91 102 168v104H154V244c0-77 48-130 102-168Z" fill="#f7f3ec" stroke="#176b5b" stroke-width="24" stroke-linejoin="round"/>
+        <path d="M256 145c32 25 58 59 58 107v96H198v-96c0-48 26-82 58-107Z" fill="#176b5b"/>
+        <path d="M256 191c17 16 31 38 31 68v89h-62v-89c0-30 14-52 31-68Z" fill="#fffdf8"/>
+        <path d="M96 368c58-16 112-7 160 26 48-33 102-42 160-26v38c-58-14-112-5-160 28-48-33-102-42-160-28v-38Z" fill="#fffdf8" stroke="#176b5b" stroke-width="22" stroke-linejoin="round"/>
+        <path d="M256 394v40" stroke="#c89b3c" stroke-width="18" stroke-linecap="round"/>
+        <circle cx="256" cy="57" r="15" fill="#c89b3c"/>
+        <circle cx="128" cy="150" r="12" fill="#c89b3c"/>
+        <circle cx="384" cy="150" r="12" fill="#c89b3c"/>
+      </svg>
+      <span class="wordmark">Improving Muslim</span>
+    </div>
+
+    <div class="headline">Islamic lectures.<br /><em>Without the noise.</em></div>
+    <div class="subline">100+ free lectures &amp; series â€” no ads, no comments, no endless scroll.</div>
+
+    <div class="phone">
+      <div class="screen">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          Search lectures &amp; topicsâ€¦
+        </div>
+        <div class="chips">
+          <span class="chip active">For you</span>
+          <span class="chip">Seerah</span>
+          <span class="chip">Quran</span>
+          <span class="chip">Prayer</span>
+        </div>
+
+        <div class="mini-card">
+          <div class="mini-thumb">
+            <img src="../assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg" alt="" />
+            <span class="dur">28:41</span>
+            <div class="prog"><i></i></div>
+          </div>
+          <div class="mini-title">Life of Muhammad (PBUH)</div>
+          <div class="mini-meta">Mufti Menk Â· Seerah</div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mini-thumb">
+            <img src="../assets/thumbnail/heart-softeners/changeofheart-card.jpg" alt="" />
+            <span class="dur">21:36</span>
+          </div>
+          <div class="mini-title">Change of Heart</div>
+          <div class="mini-meta">Ali Hammuda Â· Purification</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pills">
+      <span class="pill">Free</span>
+      <span class="pill">Track progress</span>
+      <span class="pill">Take notes</span>
+    </div>
+    <div class="url">improvingmuslim.com</div>
+  </div>
+</body>
+</html>
