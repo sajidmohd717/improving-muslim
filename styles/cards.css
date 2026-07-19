@@ -156,21 +156,6 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-
-/* Topic section headings inside the desktop home grid */
-.grid-group-heading {
-  grid-column: 1 / -1;
-  margin: 22px 0 -4px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--line);
-  font-family: "Inria Serif", Georgia, serif;
-  font-size: 1.45rem;
-}
-
-.grid-group-heading:first-child {
-  margin-top: 4px;
-}
-
 .catalog-pagination {
   display: flex;
   flex-direction: column;
