@@ -56,6 +56,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 2. **Main ad post** created and posted to the official Instagram account, then **boosted as a paid ad** targeting Singapore, UK, United States, France, and Spain (English-speaking Muslim audiences).
 3. **Three speaker spotlight posts** created (Mufti Menk, Omar Suleiman, Ali Hammuda) to fill the account grid so paid-traffic visitors don't land on a one-post account. Intended cadence: post 1–2 days apart, not all at once.
 4. **Speaker/partner outreach via Instagram DM** began — see the table below.
+5. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
 
 ### Outreach status
 
@@ -64,7 +65,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 | Hisham Abu Yusuf | DM sent | His lecture "Why Am I Here?" is featured; feedback + consent + collaboration |
 | Ali Dawah | DM sent | General platform pitch; feedback + collaboration |
 | OnePath Network | Drafted, not yet sent | **Forward-looking permission** — no OnePath content is on the platform yet; asking before featuring any |
-| Navaid Aziz | Drafted, not yet sent | His 40 Hadith of Imam Nawawi series is featured; consent + feedback |
+| Navaid Aziz | Permission granted; collaboration open | His 40 Hadith of Imam Nawawi series is featured; direct consent received; no immediate commitment requested |
 | Majed Mahmoud | Drafted, not yet sent | His Prophet-stories lectures + du'aa lecture are featured; consent + feedback |
 
 **Outreach principles — keep these:**
@@ -73,6 +74,30 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 - Tone: personal, specific (name their actual content on the platform), no mass-blast feel. Not "please promote us" — feedback and collaboration.
 - **Save written permission.** Any reply that says yes is effectively a consent record — screenshot it and keep it somewhere durable. It will matter as the platform grows.
 - Be ready for "why is only part of my series up?" — answer: series are uploaded progressively; the roadmap page shows targets.
+
+### Early-user outreach via Instagram
+
+This is separate from speaker and partner outreach. The aim is to invite ordinary Muslims who already show an interest in Islamic lectures — for example, people who engage with a speaker's Instagram posts — to try the website and give honest feedback. Do not ask them to promote, share, or publicly support the project.
+
+Copy, paste, and personalize this message where appropriate:
+
+> Assalamu alaikum, sorry for the random message! I came across your profile through an Islamic lecture post and thought this might interest you.
+>
+> I'm building Improving Muslim, a free website for watching Islamic lectures without ads, comments, endless scrolling, or unrelated recommendations.
+>
+> I'm looking for a few early users to try it and give honest feedback. There's no need to share or promote anything — I'd just appreciate hearing whether you find it useful and what could be improved.
+>
+> improvingmuslim.com
+>
+> No worries at all if not. JazakAllahu khayran!
+
+When it feels natural, make the opening more specific: `I came across your profile through a Mufti Menk lecture post...` Contact genuine-looking accounts in small batches, avoid pretending to know the person, and treat no response as a no. Send at most one polite follow-up.
+
+If someone agrees to test the website, ask these three questions:
+
+1. Was it easy to find something you wanted to watch?
+2. Did anything feel confusing, broken, or unnecessary?
+3. What would make you return to the website?
 
 ### Caption bank (reuse/adapt)
 
@@ -92,7 +117,7 @@ Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar
 
 Ideas queued, in rough priority order:
 
-1. Send the three drafted DMs (OnePath, Navaid Aziz, Majed Mahmoud); log replies in the table above.
+1. Reply to Navaid Aziz with thanks and keep the collaboration open-ended; send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
 2. Post the speaker spotlights on the planned staggered cadence.
 3. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
 4. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.

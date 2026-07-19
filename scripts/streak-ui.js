@@ -48,6 +48,35 @@
       String(date.getDate()).padStart(2, '0');
   }
 
+  function addDaysToDateKey(dateKey, days) {
+    var parts = String(dateKey || '').split('-').map(Number);
+    if (!parts[0] || !parts[1] || !parts[2]) return '';
+    var date = new Date(parts[0], parts[1] - 1, parts[2]);
+    date.setDate(date.getDate() + (Number(days) || 0));
+    return localDateKey(date);
+  }
+
+  // A public row needs a date at which its copied streak number stops being
+  // valid. This lets every browser expire abandoned rows without publishing
+  // how many streak freezes a learner has banked.
+  function activeThroughForStreak(streak) {
+    var current = Math.max(0, Number(streak && streak.current) || 0);
+    var lastCompletedDate = streak && streak.lastCompletedDate || '';
+    if (!current || !lastCompletedDate) return '';
+    var maxFreezes = Number(utils.MAX_BANKED_FREEZES) || 2;
+    var freezes = Math.max(0, Math.min(maxFreezes, Number(streak.freezesAvailable) || 0));
+    return addDaysToDateKey(lastCompletedDate, freezes + 1);
+  }
+
+  function effectiveLeaderboardCurrent(row) {
+    var current = Math.max(0, Number(row && row.current) || 0);
+    if (!current) return 0;
+    // Legacy rows do not have activeThrough. They remain valid through the day
+    // after completion, matching an ordinary streak with no banked freeze.
+    var activeThrough = row.activeThrough || addDaysToDateKey(row.lastCompletedDate, 1);
+    return activeThrough && localDateKey() <= activeThrough ? current : 0;
+  }
+
   function readStreak() {
     if (utils.readStudyStreak) return utils.readStudyStreak();
     try {
@@ -342,6 +371,7 @@
       best: Number(streak.best) || 0,
       targetMinutes: Number(streak.targetMinutes) || DEFAULT_STREAK_TARGET_MINUTES,
       lastCompletedDate: streak.lastCompletedDate || '',
+      activeThrough: activeThroughForStreak(streak),
       updatedAt: Date.now(),
     }, { merge: true }).catch(function (err) {
       console.warn('[IMStreakUI] Leaderboard update failed:', err.message);
@@ -384,16 +414,30 @@
       return;
     }
 
-    if (streak.publicOptIn) pushLeaderboardEntry(streak);
-    db.collection('leaderboard')
-      .orderBy('current', 'desc')
-      .limit(25)
-      .get()
+    // Refresh the signed-in learner first. Previously the read raced this
+    // write, which could immediately redisplay their stale public number.
+    var ownRefresh = streak.publicOptIn ? pushLeaderboardEntry(streak) : Promise.resolve();
+    ownRefresh.then(function () {
+      return db.collection('leaderboard')
+        .orderBy('current', 'desc')
+        .limit(100)
+        .get();
+    })
       .then(function (snap) {
         var rows = [];
         snap.forEach(function (doc) {
           rows.push(Object.assign({ id: doc.id }, doc.data()));
         });
+        rows.forEach(function (row) {
+          row.effectiveCurrent = effectiveLeaderboardCurrent(row);
+        });
+        rows.sort(function (a, b) {
+          return b.effectiveCurrent - a.effectiveCurrent ||
+            (Number(b.best) || 0) - (Number(a.best) || 0) ||
+            (Number(b.updatedAt) || 0) - (Number(a.updatedAt) || 0) ||
+            String(a.displayName || '').localeCompare(String(b.displayName || ''));
+        });
+        rows = rows.slice(0, 25);
         var list = document.getElementById('leaderboard-list');
         if (!list) return;
         if (!rows.length) {
@@ -408,7 +452,8 @@
                 '<button type="button" class="leaderboard-edit-btn" data-edit-name aria-label="Edit your display name">' + buildEditIconSvg() + '</button>' +
               '</span>'
             : '<span class="leaderboard-name">' + escapeHtml(row.displayName || 'Learner') + '</span>';
-          var rowRank = getStreakRank(Number(row.current) || 0);
+          var dayCount = row.effectiveCurrent;
+          var rowRank = getStreakRank(dayCount);
           var rowRankHtml = rowRank
             ? '<span class="streak-rank-badge rank-' + rowRank.name.toLowerCase() + '">' + rowRank.name + '</span>'
             : '';
@@ -416,7 +461,7 @@
             '<span class="leaderboard-rank">' + (index + 1) + '</span>' +
             nameHtml +
             rowRankHtml +
-            '<strong>' + (Number(row.current) || 0) + ' days</strong>' +
+            '<strong>' + dayCount + (dayCount === 1 ? ' day' : ' days') + '</strong>' +
           '</div>';
         }).join('');
       })

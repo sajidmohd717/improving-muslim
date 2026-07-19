@@ -753,6 +753,7 @@ leaderboard/{uid}  (public, opt-in only)
   best: number
   targetMinutes: 15
   lastCompletedDate: "YYYY-MM-DD"
+  activeThrough: "YYYY-MM-DD"  // public validity boundary; includes banked freeze coverage without exposing freeze count
   updatedAt: timestamp in milliseconds
 
 searchEvents/{eventId}  (private analytics, signed-in submissions only)
@@ -773,7 +774,7 @@ They enforce:
 
 - `users/{uid}/data/sync` can only be read and written by that signed-in user.
 - `leaderboard/{uid}` can be read publicly, but only written or deleted by that same signed-in user.
-- Leaderboard rows may only contain safe public fields: `displayName`, `current`, `best`, `targetMinutes`, `lastCompletedDate`, and `updatedAt`.
+- Leaderboard rows may only contain safe public fields: `displayName`, `current`, `best`, `targetMinutes`, `lastCompletedDate`, `activeThrough`, and `updatedAt`.
 - Emails, watch history, saved items, and detailed daily heatmap data are not allowed in public leaderboard rows.
 - `searchEvents/{eventId}` is create-only for signed-in users and cannot be read, updated, or deleted by clients.
 - Admin dashboard reads are limited in Firestore rules to the allowlisted admin email in `isAdmin()`.

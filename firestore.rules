@@ -44,6 +44,7 @@ service cloud.firestore {
         'best',
         'targetMinutes',
         'lastCompletedDate',
+        'activeThrough',
         'updatedAt'
       ])
       && request.resource.data.keys().hasAll([
@@ -65,6 +66,9 @@ service cloud.firestore {
       && request.resource.data.targetMinutes == 15
       && request.resource.data.lastCompletedDate is string
       && request.resource.data.lastCompletedDate.matches('^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+      && (!('activeThrough' in request.resource.data)
+        || (request.resource.data.activeThrough is string
+          && request.resource.data.activeThrough.matches('^$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$')))
       && request.resource.data.updatedAt is int
       && request.resource.data.updatedAt > 0;
     }

@@ -24,13 +24,19 @@ async function preparePage(page) {
 }
 
 async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
-  await page.addInitScript(({ initialCloud, deferAuth, deferCloudGet }) => {
+  await page.addInitScript(({ initialCloud, initialLeaderboard, deferAuth, deferCloudGet, leaderboardSetDelay }) => {
     const cloudStorageKey = "__firebase-test-cloud";
+    const leaderboardStorageKey = "__firebase-test-leaderboard";
     if (!sessionStorage.getItem(cloudStorageKey)) {
       sessionStorage.setItem(cloudStorageKey, JSON.stringify(initialCloud));
     }
+    if (!sessionStorage.getItem(leaderboardStorageKey)) {
+      sessionStorage.setItem(leaderboardStorageKey, JSON.stringify(initialLeaderboard));
+    }
     const readCloud = () => JSON.parse(sessionStorage.getItem(cloudStorageKey) || "{}");
     const persistCloud = (value) => sessionStorage.setItem(cloudStorageKey, JSON.stringify(value));
+    const readLeaderboard = () => JSON.parse(sessionStorage.getItem(leaderboardStorageKey) || "{}");
+    const persistLeaderboard = (value) => sessionStorage.setItem(leaderboardStorageKey, JSON.stringify(value));
     const snapshotListeners = [];
     const snapshot = (value = window.__firebaseTest.cloud, metadata = {}) => ({
       exists: Object.keys(value).length > 0,
@@ -41,7 +47,10 @@ async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
     const deferredCloudGet = new Promise((resolve) => { resolveCloudGet = resolve; });
     window.__firebaseTest = {
       cloud: readCloud(),
+      leaderboard: readLeaderboard(),
       sets: [],
+      leaderboardSets: [],
+      leaderboardGets: 0,
       getSources: [],
       deletes: 0,
       resolveAuth: () => {},
@@ -82,11 +91,47 @@ async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
       get: async () => ({ exists: false, data: () => ({}) }),
       set: async () => {},
     };
+    const leaderboardDoc = (userId) => ({
+      set: async (value) => {
+        if (leaderboardSetDelay) {
+          await new Promise((resolve) => setTimeout(resolve, leaderboardSetDelay));
+        }
+        window.__firebaseTest.leaderboard[userId] = {
+          ...(window.__firebaseTest.leaderboard[userId] || {}),
+          ...structuredClone(value),
+        };
+        persistLeaderboard(window.__firebaseTest.leaderboard);
+        window.__firebaseTest.leaderboardSets.push({ userId, value: structuredClone(value) });
+      },
+      delete: async () => {
+        delete window.__firebaseTest.leaderboard[userId];
+        persistLeaderboard(window.__firebaseTest.leaderboard);
+      },
+    });
+    const leaderboardQuery = {
+      requestedLimit: Infinity,
+      orderBy() { return this; },
+      limit(value) { this.requestedLimit = value; return this; },
+      async get() {
+        window.__firebaseTest.leaderboardGets += 1;
+        const docs = Object.entries(window.__firebaseTest.leaderboard)
+          .sort(([, a], [, b]) => (Number(b.current) || 0) - (Number(a.current) || 0))
+          .slice(0, this.requestedLimit)
+          .map(([id, value]) => ({ id, data: () => structuredClone(value) }));
+        return { forEach: (callback) => docs.forEach(callback) };
+      },
+    };
     const db = {
-      collection: (name) => ({
-        doc: () => name === "users" ? genericDoc : genericDoc,
-        add: async () => {},
-      }),
+      collection: (name) => {
+        if (name === "users") return { doc: () => genericDoc };
+        if (name === "leaderboard") {
+          return {
+            doc: (userId) => leaderboardDoc(userId),
+            orderBy: (...args) => leaderboardQuery.orderBy(...args),
+          };
+        }
+        return { doc: () => genericDoc, add: async () => {} };
+      },
     };
     const signedInUser = {
         uid: "account-b",
@@ -117,8 +162,10 @@ async function mockSignedInFirebase(page, cloudData = {}, options = {}) {
     };
   }, {
     initialCloud: cloudData,
+    initialLeaderboard: options.leaderboardRows || {},
     deferAuth: Boolean(options.deferAuth),
     deferCloudGet: Boolean(options.deferCloudGet),
+    leaderboardSetDelay: Number(options.leaderboardSetDelay) || 0,
   });
 }
 
@@ -424,6 +471,81 @@ test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) 
     JSON.parse(localStorage.getItem("improving-muslim:study-streak")),
   );
   expect(stored.targetMinutes).toBe(30); // untouched until a genuine action writes
+  expect(pageErrors).toEqual([]);
+});
+
+test("leaderboard expires stale rows and awaits the signed-in learner refresh", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const dateKey = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const daysAgo = (count) => {
+    const date = new Date();
+    date.setDate(date.getDate() - count);
+    return dateKey(date);
+  };
+  const todayKey = dateKey(new Date());
+  const staleDate = daysAgo(5);
+  const freezeCoveredDate = daysAgo(2);
+  const publicRow = (displayName, current, lastCompletedDate, extra = {}) => ({
+    displayName,
+    current,
+    best: current,
+    targetMinutes: 15,
+    lastCompletedDate,
+    updatedAt: Date.now() - 1000,
+    ...extra,
+  });
+
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: {},
+    streak: {
+      targetMinutes: 15,
+      todayDate: staleDate,
+      todaySeconds: 900,
+      current: 1,
+      best: 1,
+      lastCompletedDate: staleDate,
+      days: { [staleDate]: { seconds: 900, completed: true } },
+      freezesAvailable: 0,
+      freezeMilestonesClaimed: 0,
+      publicOptIn: true,
+      publicName: "Account B",
+      updatedAt: Date.now() - 1000,
+    },
+  }, {
+    leaderboardSetDelay: 100,
+    leaderboardRows: {
+      "account-b": publicRow("Account B", 1, staleDate),
+      "freeze-covered": publicRow("Freeze Learner", 7, freezeCoveredDate, { activeThrough: todayKey }),
+      "expired-other": publicRow("Expired Learner", 4, staleDate),
+    },
+  });
+
+  await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.authReady)).toBe(true);
+  await expect.poll(() => page.evaluate(() => window.IMUtils.readStudyStreak().current)).toBe(0);
+
+  await page.evaluate(() => window.IMStreakUI.openPanel());
+  await page.locator('[data-streak-tab="leaderboard"]').click();
+
+  const ownRow = page.locator(".leaderboard-row").filter({ hasText: "Account B" });
+  const freezeRow = page.locator(".leaderboard-row").filter({ hasText: "Freeze Learner" });
+  const expiredRow = page.locator(".leaderboard-row").filter({ hasText: "Expired Learner" });
+  await expect(ownRow.locator("strong")).toHaveText("0 days");
+  await expect(freezeRow.locator("strong")).toHaveText("7 days");
+  await expect(expiredRow.locator("strong")).toHaveText("0 days");
+  await expect(page.locator(".leaderboard-row").first()).toContainText("Freeze Learner");
+
+  const ownPublicWrite = await page.evaluate(() =>
+    window.__firebaseTest.leaderboardSets.find((entry) => entry.userId === "account-b")?.value,
+  );
+  expect(ownPublicWrite).toMatchObject({ current: 0, best: 1, activeThrough: "" });
   expect(pageErrors).toEqual([]);
 });
 
