@@ -865,6 +865,9 @@ function renderContinueWatching() {
     return;
   }
 
+  // Returning visitors get a compact hero so resuming is closer to the fold.
+  document.body.classList.toggle("has-watch-history", items.length > 0);
+
   // New visitors see the catalogue first; the section only appears once
   // there is something to resume.
   if (!items.length) {
