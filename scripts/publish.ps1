@@ -202,7 +202,7 @@ function Get-R2PathTemplate {
 
   # Find any existing videoSrc to extract the naming pattern
   $escapedCdn = [regex]::Escape($CDN_BASE)
-  $pattern = "videoSrc:\s*`"$escapedCdn/([^`"]+)`""
+  $pattern = "`"?videoSrc`"?\s*:\s*`"$escapedCdn/([^`"]+)`""
 
   if ($content -match $pattern) {
     $existingPath = $matches[1]
@@ -246,7 +246,8 @@ function Add-VideoSrc {
   $videoSrcUrl = "$CDN_BASE/$R2Path"
 
   # Quick check: does the episode number exist at all?
-  if ($content -notmatch "number:\s*$EpNum\b") {
+  $numberPattern = "`"?number`"?\s*:\s*$EpNum\b"
+  if ($content -notmatch $numberPattern) {
     throw "Episode number $EpNum not found in $DataFile"
   }
 
@@ -257,7 +258,7 @@ function Add-VideoSrc {
   # Locate the episode object boundaries
   for ($i = 0; $i -lt $lines.Count; $i++) {
     $line = $lines[$i]
-    if ($line -match "number:\s*$EpNum\b") {
+    if ($line -match $numberPattern) {
       # Walk backwards to find the opening brace
       for ($j = $i; $j -ge 0; $j--) {
         if ($lines[$j] -match '\{') {
@@ -288,10 +289,13 @@ function Add-VideoSrc {
 
   $episodeBlock = ($lines[$episodeStart..$episodeEnd] -join "`n")
 
-  if ($episodeBlock -match "videoSrc:") {
+  $quotedKeys = $episodeBlock -match '"number"\s*:'
+  $videoSrcKey = if ($quotedKeys) { '`"videoSrc`"' } else { 'videoSrc' }
+
+  if ($episodeBlock -match '"?videoSrc"?\s*:') {
     # Replace existing videoSrc (works for both single- and multi-line objects)
     Write-Warn "Episode $EpNum already has a videoSrc, it will be replaced"
-    $updatedBlock = [regex]::Replace($episodeBlock, 'videoSrc:\s*"[^"]*"', "videoSrc: `"$videoSrcUrl`"")
+    $updatedBlock = [regex]::Replace($episodeBlock, '"?videoSrc"?\s*:\s*"[^"]*"', "$videoSrcKey`: `"$videoSrcUrl`"")
     $newLines = $updatedBlock -split "`n"
     for ($k = 0; $k -lt $newLines.Count; $k++) {
       $lines[$episodeStart + $k] = $newLines[$k]
@@ -302,12 +306,12 @@ function Add-VideoSrc {
     # Single-line object (e.g. life-of-muhammad): insert videoSrc INLINE, right
     # after the id: "..." token, so it stays inside the object's braces.
     $line = $lines[$episodeStart]
-    if ($line -match 'id:\s*"[^"]+",?') {
-      $line = [regex]::Replace($line, '(id:\s*"[^"]+",?)', "`$1 videoSrc: `"$videoSrcUrl`",", 1)
+    if ($line -match '"?id"?\s*:\s*"[^"]+",?') {
+      $line = [regex]::Replace($line, '("?id"?\s*:\s*"[^"]+",?)', "`$1 $videoSrcKey`: `"$videoSrcUrl`",", 1)
     }
     else {
       # Fallback: insert right after the opening brace
-      $line = [regex]::Replace($line, '\{', "{ videoSrc: `"$videoSrcUrl`",", 1)
+      $line = [regex]::Replace($line, '\{', "{ $videoSrcKey`: `"$videoSrcUrl`",", 1)
     }
     $lines[$episodeStart] = $line
     Write-Ok "Inserted inline videoSrc for episode $EpNum"
@@ -317,13 +321,13 @@ function Add-VideoSrc {
     # (or the number line as a fallback), matching the surrounding indentation.
     $insertAfter = -1
     for ($k = $episodeStart; $k -le $episodeEnd; $k++) {
-      if ($lines[$k] -match 'id:\s*"[^"]+"') {
+      if ($lines[$k] -match '"?id"?\s*:\s*"[^"]+"') {
         $insertAfter = $k
       }
     }
     if ($insertAfter -lt 0) {
       for ($k = $episodeStart; $k -le $episodeEnd; $k++) {
-        if ($lines[$k] -match "number:\s*$EpNum\b") {
+        if ($lines[$k] -match $numberPattern) {
           $insertAfter = $k
         }
       }
@@ -336,7 +340,7 @@ function Add-VideoSrc {
       }
     }
 
-    $newLine = "${indent}videoSrc: `"$videoSrcUrl`","
+    $newLine = "${indent}$videoSrcKey`: `"$videoSrcUrl`","
 
     $before = $lines[0..$insertAfter]
     $after  = $lines[($insertAfter + 1)..($lines.Count - 1)]

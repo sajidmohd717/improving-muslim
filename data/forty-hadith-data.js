@@ -47,7 +47,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part I)",
       "published": "2013-05-19",
       "views": 21386,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-5.mp4",
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-05.vtt"
     },
     {
       "number": 6,
@@ -55,7 +56,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part II)",
       "published": "2013-05-30",
       "views": 9316,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-6.mp4",
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-06.vtt"
     },
     {
       "number": 7,
@@ -63,7 +65,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part III)",
       "published": "2013-06-03",
       "views": 6948,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-7.mp4",
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-07.vtt"
     },
     {
       "number": 8,
@@ -71,7 +74,8 @@
       "title": "Hadith No. 3 - Pillars of Islam",
       "published": "2013-06-10",
       "views": 11411,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-8.mp4",
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-08.vtt"
     },
     {
       "number": 9,
