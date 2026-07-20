@@ -3,9 +3,9 @@
  *
  * Diagnoses why a video failed and shows a user-facing message with a retry
  * button. Cause precedence: real MediaError > slow connection > unknown
- * stall. Stalls and errors auto-retry up to MAX_AUTO_RETRIES before
- * surfacing; non-connection causes are reported to the contact inbox so
- * broken files get investigated.
+ * stall. Stalls and errors surface a user-controlled retry; non-connection
+ * causes are reported to the contact inbox so broken files get investigated.
+ * A silent player.load() must never interrupt a play request or resume seek.
  *
  * watch-page.js calls IMWatchStall.init({ player, videoSrc }) BEFORE setting
  * the source and calling player.load(), so the loadstart listener is armed
@@ -24,9 +24,9 @@
   }
 
   const STALL_TIMEOUT_MS = 20_000;
-  const MAX_AUTO_RETRIES = 2;
   let stallTimer = null;
-  let autoRetries = 0;
+  let manualRetries = 0;
+  let hasLoadedMetadata = false;
 
   function clearStallTimer() {
     if (stallTimer !== null) {
@@ -62,6 +62,8 @@
 
   function init({ player, videoSrc }) {
     function retryVideoLoad() {
+      manualRetries += 1;
+      hasLoadedMetadata = false;
       unavailable.classList.add("is-hidden");
       setVideoLoading(true);
       // load() fires loadstart (re-arming the stall timer) and loadedmetadata
@@ -76,7 +78,7 @@
       payload.set('_template', 'box');
       payload.set('page', location.href);
       payload.set('cause', cause);
-      payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}, autoRetries: ${autoRetries}`);
+      payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}, manualRetries: ${manualRetries}`);
       payload.set('videoSrc', src || '(unknown)');
       payload.set('browser', navigator.userAgent);
       fetch('https://formsubmit.co/ajax/contact@improvingmuslim.com', {
@@ -90,7 +92,6 @@
       const { cause, heading, body } = diagnoseVideoFailure(videoEl);
       unavailable.innerHTML = `<strong>${heading}</strong><span>${body}</span><button type="button" class="video-retry-btn">Try again</button>`;
       unavailable.querySelector(".video-retry-btn").addEventListener("click", () => {
-        autoRetries = 0;
         retryVideoLoad();
       });
       unavailable.classList.remove("is-hidden");
@@ -103,16 +104,12 @@
     player.addEventListener("loadstart", () => {
       unavailable.classList.add("is-hidden");
       setVideoLoading(Boolean(videoSrc));
+      hasLoadedMetadata = false;
 
       if (videoSrc) {
         clearStallTimer();
         stallTimer = setTimeout(() => {
           if (player.readyState < 2) {
-            if (!player.error && autoRetries < MAX_AUTO_RETRIES) {
-              autoRetries += 1;
-              retryVideoLoad();
-              return;
-            }
             setVideoLoading(false);
             showVideoError(player, videoSrc);
           }
@@ -120,29 +117,30 @@
       }
     });
 
+    player.addEventListener("loadedmetadata", () => {
+      hasLoadedMetadata = true;
+      // Once native controls know the duration and the watch page has started
+      // restoring the saved position, let the browser own any buffering UI.
+      setVideoLoading(false);
+    });
+
     player.addEventListener("waiting", () => {
-      setVideoLoading(Boolean(videoSrc));
+      // Resume seeks and mid-playback buffering already have native feedback.
+      setVideoLoading(Boolean(videoSrc) && !hasLoadedMetadata);
     });
 
     player.addEventListener("canplay", () => {
       clearStallTimer();
-      autoRetries = 0;
       setVideoLoading(false);
     });
 
     player.addEventListener("playing", () => {
       clearStallTimer();
-      autoRetries = 0;
       setVideoLoading(false);
     });
 
     player.addEventListener("error", () => {
       clearStallTimer();
-      if (player.error?.code === MediaError.MEDIA_ERR_NETWORK && autoRetries < MAX_AUTO_RETRIES) {
-        autoRetries += 1;
-        retryVideoLoad();
-        return;
-      }
       setVideoLoading(false);
       if (player.currentSrc) {
         showVideoError(player, player.currentSrc);

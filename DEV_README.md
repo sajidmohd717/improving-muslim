@@ -172,7 +172,7 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 - Filters out non-crash rejections: `AbortError` (fetch cancelled on navigation), network `TypeError`s (Safari "Load failed", Chrome "Failed to fetch"), and any rejection that fires while `document.hidden` is true (bfcache artifacts).
 - Resets its state on `pageshow` with `persisted: true` so Safari's back-forward cache restoration never incorrectly triggers the fallback UI.
 
-**Video stall detection** is built into `scripts/watch-page.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message and silently fires the same FormSubmit report with the subject `Video stall: /pages/watch.html` and the exact `videoSrc` URL. This catches structural file issues (e.g. moov atom at end of file) without the user needing to report it manually.
+**Video stall detection** lives in `scripts/watch-stall.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message with a user-controlled Retry button and silently fires the same FormSubmit report with the exact `videoSrc` URL. Never silently call `player.load()` to recover: doing so can cancel a play request or saved-position seek. The custom loading pill is only for the initial metadata request; resume-seek and mid-playback buffering use the browser's native player feedback.
 
 **FormSubmit note:** The first email from a new endpoint requires a one-time confirmation click from `contact@improvingmuslim.com`. If error reports stop arriving, check the inbox for a re-confirmation request.
 
