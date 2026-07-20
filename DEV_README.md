@@ -19,7 +19,11 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
 - `data/category-taxonomy.js` is the single source of truth for public topic names, descriptions, aliases, ordering, and homepage system filters. Both the homepage and Explore derive their category UI from it.
 - `scripts/home-config.js` holds homepage service endpoints, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
-- `scripts/script.js` loads, merges, sorts, and renders homepage series and standalone lecture cards. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
+- `scripts/script.js` is the homepage controller: page state, the main results grid, search result rendering, and event wiring. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
+- `scripts/home-data.js` (`window.IMHomeData`) assembles homepage catalogue data: the category name map, local series/standalone card sections, remote-feed normalization and merging, the remote-card allow-list filter, and the offline fallback sections. No DOM.
+- `scripts/home-feed.js` (`window.IMHomeFeed`) owns grid ordering: the stable per-session shuffle, the explicit sort modes, the balanced discovery mix, and the watch-history-seeded personalized blend built on the catalog + `IMRelated` ranking. No DOM.
+- `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning, Popular right now, the daily streak card, and the speaker rail.
+- `scripts/home-card-actions.js` (`window.IMCardActions`) implements the grid cards' save/share actions and card-menu open/close bookkeeping; `script.js` owns the event delegation.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
