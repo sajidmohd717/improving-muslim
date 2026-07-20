@@ -1,3 +1,11 @@
+// Watch-page controller: resolves the requested series/episode or standalone
+// lecture, wires the native player (progress saving, resume, study-time
+// tracking, media session, autoplay-next, keyboard seeking), and renders the
+// header, meta line, and study panels. The heavy lifting lives in focused
+// modules loaded before this file:
+//   - watch-notes.js (IMWatchNotes): the per-episode "My Notes" panel
+//   - watch-stall.js (IMWatchStall): stall/error diagnosis, retry, reporting
+//   - watch-sidebar.js (IMWatchSidebar): up-next, episode list, related
 const {
   escapeHtml,
   getSeriesRegistry,
@@ -10,6 +18,8 @@ const {
   readSavedItems,
   writeSavedItems,
 } = window.IMUtils;
+
+const { setVideoLoading } = window.IMWatchStall;
 
 function renderGrammarNotes(notes) {
   return notes.map(({ term, arabic, definition }) =>
@@ -92,34 +102,18 @@ const player = document.querySelector("#video-player");
 const source = document.querySelector("#video-source");
 const captionTrack = document.querySelector("#caption-track");
 const unavailable = document.querySelector("#video-unavailable");
-const loadingIndicator = document.querySelector("#video-loading");
 const title = document.querySelector("#watch-title");
 const kicker = document.querySelector("#watch-kicker");
 const meta = document.querySelector("#watch-meta");
 const previousLink = document.querySelector("#previous-link");
 const nextLink = document.querySelector("#next-link");
-const episodeList = document.querySelector("#watch-episode-list");
 const recapPanel = document.querySelector("#recap-panel");
 const recapBody = document.querySelector("#watch-recap");
 const grammarNotesPanel = document.querySelector("#grammar-notes-panel");
 const grammarNotesBody = document.querySelector("#watch-grammar-notes");
 const takeawaysPanel = document.querySelector("#takeaways-panel");
 const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
-const notesPanel = document.querySelector(".notes-panel");
-const notesPanelToggle = document.querySelector("#notes-panel-toggle");
-const notesTextarea = document.querySelector("#notes-textarea");
-const notesEditView = document.querySelector("#notes-edit-view");
-const notesPreviewView = document.querySelector("#notes-preview-view");
-const notesPreviewBody = document.querySelector("#notes-preview-body");
-const notesStatus = document.querySelector("#notes-status");
-const notesToolbar = document.querySelector("#notes-toolbar");
-const notesTabs = document.querySelectorAll("[data-notes-tab]");
-const notesInsertTimestampBtn = document.querySelector("#notes-insert-timestamp");
-const notesCurrentTimeLabel = document.querySelector("#notes-current-time-label");
-const notesClearBtn = document.querySelector("#notes-clear-btn");
-const playlistTitle = document.querySelector("#playlist-title");
 const bottomNavSeriesLink = document.querySelector("#bottom-nav-series-link");
-const episodeSidebar = document.querySelector(".episode-sidebar");
 
 const saveEpisodeButton = document.querySelector("#save-episode-button");
 const shareEpisodeButton = document.querySelector("#share-episode-button");
@@ -156,10 +150,6 @@ const currentTypeLabel = isStandalone ? "Standalone Video" : `Episode ${currentE
 
 function setPlayerPoster(episode) {
   player.poster = episodeThumbnailUrl(episode);
-}
-
-function setVideoLoading(isLoading) {
-  loadingIndicator?.classList.toggle("is-hidden", !isLoading);
 }
 
 function savedItem() {
@@ -437,17 +427,7 @@ if (isStandalone) {
 }
 setPlayerPoster(currentEpisode);
 
-if (playlistTitle) playlistTitle.textContent = isStandalone ? "More lectures" : series.title;
 if (bottomNavSeriesLink) bottomNavSeriesLink.href = seriesPageUrl;
-// Standalone lectures have no episode list, but the sidebar still hosts the
-// catalog-wide related lectures rendered below — hide only the "Playing from"
-// heading and the empty list. If no related lectures can be ranked (e.g. the
-// catalog index failed to load), the related block hides the whole sidebar.
-if (episodeSidebar && isStandalone) {
-  episodeSidebar.querySelector(".section-heading")?.setAttribute("hidden", "");
-  episodeList.hidden = true;
-  episodeSidebar.setAttribute("aria-labelledby", "related-title");
-}
 
 try {
   localStorage.setItem("improving-muslim:last-series-url", seriesPageUrl);
@@ -475,347 +455,10 @@ if (currentEpisode.recap) {
   recapPanel.hidden = false;
 }
 
-// ── My Notes ─────────────────────────────────────────────────────────────────
-// Personal, per-episode notes. Stored the same way as watch progress (local
-// first, synced to Firestore when signed in), keyed by the same series/
-// standalone id scheme so notes survive an R2 videoSrc swap.
-if (notesTextarea) {
-  const notesStorageKey = notesKey(currentEpisode);
+window.IMWatchNotes.init({ player, storageKey: notesKey(currentEpisode) });
 
-  function readNote() {
-    return readJsonStorage(notesStorageKey, { text: "", updatedAt: 0 });
-  }
-
-  function writeNote(text) {
-    writeJsonStorage(notesStorageKey, { text, updatedAt: Date.now() });
-  }
-
-  function formatNoteTimestamp(totalSeconds) {
-    const seconds = Math.max(0, Math.floor(totalSeconds || 0));
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-    return `${m}:${String(s).padStart(2, "0")}`;
-  }
-
-  // Markdown-lite + clickable-timestamp renderer for the Preview tab. Mirrors
-  // renderRecap's escape-then-format approach, extended with h2/h3, italics,
-  // and turning any MM:SS / H:MM:SS token into a button that seeks the player.
-  function linkifyNoteTimestamps(escapedHtml) {
-    return escapedHtml.replace(/\b(\d{1,2}):([0-5]\d)(?::([0-5]\d))?\b/g, (match, a, b, c) => {
-      const seconds = c !== undefined ? Number(a) * 3600 + Number(b) * 60 + Number(c) : Number(a) * 60 + Number(b);
-      return `<button type="button" class="note-timestamp" data-seek="${seconds}">${match}</button>`;
-    });
-  }
-
-  function applyNoteInline(escapedText) {
-    let html = escapedText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    return linkifyNoteTimestamps(html);
-  }
-
-  function renderNoteMarkdown(text) {
-    return text
-      .trim()
-      .split(/\n\n+/)
-      .map((block) => {
-        const trimmed = block.trim();
-        if (!trimmed) return "";
-        const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/s);
-        if (headingMatch) {
-          const level = headingMatch[1].length;
-          const escaped = escapeHtml(headingMatch[2].trim());
-          return `<p class="note-heading note-h${level}">${applyNoteInline(escaped)}</p>`;
-        }
-        const escaped = escapeHtml(trimmed).replace(/\n/g, "<br>");
-        return `<p class="note-line">${applyNoteInline(escaped)}</p>`;
-      })
-      .join("");
-  }
-
-  function renderNotesPreview() {
-    const text = notesTextarea.value.trim();
-    notesPreviewBody.innerHTML = text
-      ? renderNoteMarkdown(text)
-      : '<p class="notes-empty">Nothing written yet. Switch to Edit to add notes.</p>';
-  }
-
-  function insertAtCursor(textarea, text) {
-    const start = textarea.selectionStart ?? textarea.value.length;
-    const end = textarea.selectionEnd ?? textarea.value.length;
-    const before = textarea.value.slice(0, start);
-    const after = textarea.value.slice(end);
-    const prefix = before.length > 0 && !before.endsWith("\n") ? "\n" : "";
-    textarea.value = before + prefix + text + after;
-    const cursorPos = (before + prefix + text).length;
-    textarea.setSelectionRange(cursorPos, cursorPos);
-    textarea.focus();
-  }
-
-  function wrapSelection(textarea, before, after) {
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selected = textarea.value.slice(start, end) || "text";
-    textarea.value = textarea.value.slice(0, start) + before + selected + after + textarea.value.slice(end);
-    textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
-    textarea.focus();
-  }
-
-  function prefixLine(textarea, prefix) {
-    const start = textarea.selectionStart;
-    const value = textarea.value;
-    const lineStart = value.lastIndexOf("\n", start - 1) + 1;
-    const lineEndIdx = value.indexOf("\n", lineStart);
-    const lineEnd = lineEndIdx === -1 ? value.length : lineEndIdx;
-    const stripped = value.slice(lineStart, lineEnd).replace(/^#{1,3}\s*/, "");
-    const newLine = prefix + stripped;
-    textarea.value = value.slice(0, lineStart) + newLine + value.slice(lineEnd);
-    const newCursor = lineStart + newLine.length;
-    textarea.setSelectionRange(newCursor, newCursor);
-    textarea.focus();
-  }
-
-  // Load saved note and keep it saved shortly after the user stops typing.
-  notesTextarea.value = readNote().text || "";
-
-  function setNotesPanelCollapsed(collapsed) {
-    if (!notesPanel || !notesPanelToggle) return;
-    notesPanel.classList.toggle("is-collapsed", collapsed);
-    notesPanelToggle.setAttribute("aria-expanded", String(!collapsed));
-    notesPanelToggle.setAttribute("aria-label", collapsed ? "Open notes editor" : "Collapse notes editor");
-  }
-
-  // Empty editors start compact on phones so takeaways, recaps, and the next
-  // lecture remain close to the player. Existing notes always open in full.
-  setNotesPanelCollapsed(
-    window.matchMedia?.("(max-width: 600px)").matches && !notesTextarea.value.trim(),
-  );
-
-  notesPanelToggle?.addEventListener("click", () => {
-    const shouldCollapse = !notesPanel.classList.contains("is-collapsed");
-    setNotesPanelCollapsed(shouldCollapse);
-    if (!shouldCollapse) notesTextarea.focus();
-  });
-
-  let notesSaveTimer = null;
-  let notesStatusClearTimer = null;
-  function scheduleNotesSave() {
-    if (notesStatus) notesStatus.textContent = "Saving…";
-    clearTimeout(notesSaveTimer);
-    notesSaveTimer = setTimeout(() => {
-      writeNote(notesTextarea.value);
-      if (notesStatus) {
-        notesStatus.textContent = "Saved";
-        clearTimeout(notesStatusClearTimer);
-        notesStatusClearTimer = setTimeout(() => { notesStatus.textContent = ""; }, 2000);
-      }
-    }, 600);
-  }
-
-  notesTextarea.addEventListener("input", scheduleNotesSave);
-
-  // Flush immediately if the user navigates away mid-debounce.
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && notesSaveTimer) {
-      clearTimeout(notesSaveTimer);
-      writeNote(notesTextarea.value);
-    }
-  });
-
-  if (notesToolbar) {
-    notesToolbar.addEventListener("click", (event) => {
-      const btn = event.target.closest("[data-note-format]");
-      if (!btn) return;
-      const format = btn.dataset.noteFormat;
-      if (format === "h1") prefixLine(notesTextarea, "# ");
-      else if (format === "h2") prefixLine(notesTextarea, "## ");
-      else if (format === "h3") prefixLine(notesTextarea, "### ");
-      else if (format === "bold") wrapSelection(notesTextarea, "**", "**");
-      else if (format === "italic") wrapSelection(notesTextarea, "*", "*");
-      scheduleNotesSave();
-    });
-  }
-
-  if (notesInsertTimestampBtn) {
-    notesInsertTimestampBtn.addEventListener("click", () => {
-      insertAtCursor(notesTextarea, `${formatNoteTimestamp(player.currentTime)} `);
-      scheduleNotesSave();
-    });
-  }
-
-  if (notesCurrentTimeLabel) {
-    player.addEventListener("timeupdate", () => {
-      notesCurrentTimeLabel.textContent = formatNoteTimestamp(player.currentTime);
-    });
-  }
-
-  notesTabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      notesTabs.forEach((t) => {
-        const active = t === tab;
-        t.classList.toggle("is-active", active);
-        t.setAttribute("aria-selected", String(active));
-      });
-      const showPreview = tab.dataset.notesTab === "preview";
-      notesEditView.hidden = showPreview;
-      notesPreviewView.hidden = !showPreview;
-      if (showPreview) renderNotesPreview();
-    });
-  });
-
-  if (notesPreviewBody) {
-    notesPreviewBody.addEventListener("click", (event) => {
-      const btn = event.target.closest(".note-timestamp");
-      if (!btn) return;
-      const seconds = Number(btn.dataset.seek);
-      if (!Number.isFinite(seconds)) return;
-      player.currentTime = Math.min(seconds, player.duration || seconds);
-      player.play().catch(() => {});
-      player.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  }
-
-  if (notesClearBtn) {
-    notesClearBtn.addEventListener("click", () => {
-      if (!notesTextarea.value.trim()) return;
-      if (!window.confirm("Clear all notes for this episode? This cannot be undone.")) return;
-      notesTextarea.value = "";
-      writeNote("");
-      renderNotesPreview();
-      if (notesStatus) notesStatus.textContent = "Cleared";
-    });
-  }
-}
-
-// ── Stall / error detection ─────────────────────────────────────────────────
-// Diagnoses why a video failed and returns a user-facing message + cause tag.
-// Cause precedence: real MediaError > slow connection > unknown stall.
-const STALL_TIMEOUT_MS = 20_000;
-const MAX_AUTO_RETRIES = 2;
-let stallTimer = null;
-let autoRetries = 0;
-
-function retryVideoLoad() {
-  unavailable.classList.add("is-hidden");
-  setVideoLoading(true);
-  // load() fires loadstart (re-arming the stall timer) and loadedmetadata
-  // (restoring the saved resume position), so no extra bookkeeping needed.
-  player.load();
-}
-
-function clearStallTimer() {
-  if (stallTimer !== null) {
-    clearTimeout(stallTimer);
-    stallTimer = null;
-  }
-}
-
-function diagnoseVideoFailure(videoEl) {
-  const err = videoEl.error;
-  if (err) {
-    if (err.code === MediaError.MEDIA_ERR_DECODE) {
-      return { cause: 'decode', heading: 'Playback error', body: 'This video has a decode error — it may be corrupted. We\'ve been notified and will look into it.' };
-    }
-    if (err.code === MediaError.MEDIA_ERR_NETWORK) {
-      return { cause: 'network', heading: 'Network error', body: 'Couldn\'t reach this video — check your internet connection and try refreshing.' };
-    }
-    if (err.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-      return { cause: 'unsupported', heading: 'Format not supported', body: 'Your browser can\'t play this video format. Try a different browser.' };
-    }
-    return { cause: 'error', heading: 'Playback error', body: 'An error occurred playing this video. Please try refreshing the page.' };
-  }
-  const conn = navigator.connection;
-  const slowConn = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g');
-  const hasData = videoEl.buffered.length > 0;
-  // Safari and Firefox never expose navigator.connection, so a stall there is
-  // most likely a connection hiccup, not a broken file.
-  if (slowConn || hasData || !conn) {
-    return { cause: 'slow', heading: 'Connection trouble', body: 'This is usually a connection hiccup. Check your internet and try again.' };
-  }
-  return { cause: 'stall', heading: 'Video couldn\'t load', body: 'This is usually a connection hiccup — try again in a moment. We\'ve also been notified in case it\'s a problem on our side.' };
-}
-
-function reportVideoIssue(videoSrc, cause, readyState) {
-  const conn = navigator.connection;
-  const payload = new FormData();
-  payload.set('_subject', `Video ${cause}: ` + location.pathname);
-  payload.set('_template', 'box');
-  payload.set('page', location.href);
-  payload.set('cause', cause);
-  payload.set('error', `readyState: ${readyState}, buffered: ${player.buffered.length}, errorCode: ${player.error?.code ?? 'none'}, connection: ${conn?.effectiveType ?? 'unknown'}, autoRetries: ${autoRetries}`);
-  payload.set('videoSrc', videoSrc || '(unknown)');
-  payload.set('browser', navigator.userAgent);
-  fetch('https://formsubmit.co/ajax/contact@improvingmuslim.com', {
-    method: 'POST',
-    body: payload,
-    headers: { Accept: 'application/json' },
-  }).catch(() => { /* silent */ });
-}
-
-function showVideoError(videoEl, videoSrc) {
-  const { cause, heading, body } = diagnoseVideoFailure(videoEl);
-  unavailable.innerHTML = `<strong>${heading}</strong><span>${body}</span><button type="button" class="video-retry-btn">Try again</button>`;
-  unavailable.querySelector(".video-retry-btn").addEventListener("click", () => {
-    autoRetries = 0;
-    retryVideoLoad();
-  });
-  unavailable.classList.remove("is-hidden");
-  // Only report issues we need to investigate; slow connections are expected
-  if (cause !== 'slow') {
-    reportVideoIssue(videoSrc, cause, videoEl.readyState);
-  }
-}
-// ────────────────────────────────────────────────────────────────────────────
-
-player.addEventListener("loadstart", () => {
-  unavailable.classList.add("is-hidden");
-  setVideoLoading(Boolean(currentEpisode.videoSrc));
-
-  if (currentEpisode.videoSrc) {
-    clearStallTimer();
-    stallTimer = setTimeout(() => {
-      if (player.readyState < 2) {
-        if (!player.error && autoRetries < MAX_AUTO_RETRIES) {
-          autoRetries += 1;
-          retryVideoLoad();
-          return;
-        }
-        setVideoLoading(false);
-        showVideoError(player, currentEpisode.videoSrc);
-      }
-    }, STALL_TIMEOUT_MS);
-  }
-});
-
-player.addEventListener("waiting", () => {
-  setVideoLoading(Boolean(currentEpisode.videoSrc));
-});
-
-player.addEventListener("canplay", () => {
-  clearStallTimer();
-  autoRetries = 0;
-  setVideoLoading(false);
-});
-
-player.addEventListener("playing", () => {
-  clearStallTimer();
-  autoRetries = 0;
-  setVideoLoading(false);
-});
-
-player.addEventListener("error", () => {
-  clearStallTimer();
-  if (player.error?.code === MediaError.MEDIA_ERR_NETWORK && autoRetries < MAX_AUTO_RETRIES) {
-    autoRetries += 1;
-    retryVideoLoad();
-    return;
-  }
-  setVideoLoading(false);
-  if (player.currentSrc) {
-    showVideoError(player, player.currentSrc);
-  }
-});
+// Stall/error listeners must be armed before the first player.load() below.
+window.IMWatchStall.init({ player, videoSrc: currentEpisode.videoSrc });
 
 player.addEventListener("loadedmetadata", () => {
   unavailable.classList.add("is-hidden");
@@ -901,17 +544,7 @@ player.addEventListener("ended", () => {
       completed: true,
     })
   ) {
-    const currentCompactEpisode = episodeList.querySelector(".compact-episode.is-current");
-    if (currentCompactEpisode) {
-      currentCompactEpisode.classList.add("is-watched");
-      const details = currentCompactEpisode.querySelector("span");
-      const existingProgress = details?.querySelector("em");
-      if (existingProgress) {
-        existingProgress.textContent = "Watched";
-      } else if (details) {
-        details.insertAdjacentHTML("beforeend", "<em>Watched</em>");
-      }
-    }
+    window.IMWatchSidebar.markCurrentWatched();
   }
   updateMediaSessionState("none");
 });
@@ -931,6 +564,28 @@ if (window.IMPopularity) {
 
 player.addEventListener("seeking", handleSeeking);
 
+if (previousLink) {
+  previousLink.href = previousEpisode ? episodeUrl(previousEpisode) : seriesPageUrl;
+  previousLink.textContent = previousEpisode ? "Previous episode" : isStandalone ? "Back to lectures" : "Back to series";
+}
+
+if (nextLink) {
+  nextLink.href = nextEpisode ? episodeUrl(nextEpisode) : seriesPageUrl;
+  nextLink.textContent = nextEpisode ? "Next episode" : isStandalone ? "Browse lectures" : "Series overview";
+}
+
+const { relatedUpNextUrl } = window.IMWatchSidebar.init({
+  series,
+  currentEpisode,
+  nextEpisode,
+  isStandalone,
+  catalogKey,
+  episodeUrl,
+  episodeThumbnailUrl,
+  formatProgress,
+  currentTypeLabel,
+});
+
 const AUTOPLAY_KEY = "improving-muslim:autoplay-next";
 const autoplayToast       = document.querySelector("#autoplay-toast");
 const autoplayCountdown   = document.querySelector("#autoplay-countdown");
@@ -938,8 +593,8 @@ const autoplayToastLink   = document.querySelector("#autoplay-toast-link");
 const autoplayToastCancel = document.querySelector("#autoplay-toast-cancel");
 let autoplayTimer = null;
 // Series episodes autoplay into the next episode; standalone lectures autoplay
-// into the top related lecture (assigned by the related block further down).
-let autoplayNextUrl = nextEpisode ? episodeUrl(nextEpisode) : null;
+// into the top related lecture picked by the sidebar module.
+const autoplayNextUrl = nextEpisode ? episodeUrl(nextEpisode) : relatedUpNextUrl;
 
 function cancelAutoplay() {
   clearInterval(autoplayTimer);
@@ -963,184 +618,6 @@ player.addEventListener("ended", () => {
 
 autoplayToastCancel?.addEventListener("click", cancelAutoplay);
 autoplayToastLink?.addEventListener("click", () => clearInterval(autoplayTimer));
-
-if (previousLink) {
-  previousLink.href = previousEpisode ? episodeUrl(previousEpisode) : seriesPageUrl;
-  previousLink.textContent = previousEpisode ? "Previous episode" : isStandalone ? "Back to lectures" : "Back to series";
-}
-
-if (nextLink) {
-  nextLink.href = nextEpisode ? episodeUrl(nextEpisode) : seriesPageUrl;
-  nextLink.textContent = nextEpisode ? "Next episode" : isStandalone ? "Browse lectures" : "Series overview";
-}
-
-// Real next-episode card at the top of the sidebar — thumbnail, title, and
-// duration make continuing one obvious tap instead of a text label.
-if (!isStandalone && nextEpisode && episodeSidebar) {
-  const nextMins = nextEpisode.duration ? `${Math.round(nextEpisode.duration / 60)} min` : "";
-  const nextRecap = nextEpisode.recap ? "Recap available" : "";
-  const nextMeta = [nextMins, nextRecap].filter(Boolean).join(" · ");
-  const upNextCard = document.createElement("a");
-  upNextCard.className = "up-next-card";
-  upNextCard.href = episodeUrl(nextEpisode);
-  upNextCard.innerHTML = `
-    <img src="${episodeThumbnailUrl(nextEpisode)}" alt="" loading="lazy" />
-    <span class="up-next-body">
-      <small>Up next</small>
-      <strong>Ep ${nextEpisode.number} — ${nextEpisode.title}</strong>
-      ${nextMeta ? `<em>${nextMeta}</em>` : ""}
-    </span>
-    <span class="up-next-play" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-    </span>
-  `;
-  episodeSidebar.insertBefore(upNextCard, episodeList);
-}
-
-episodeList.innerHTML = isStandalone ? "" : series.episodes
-  .map(
-    (episode) => {
-      const progressLabel = formatProgress(episode);
-      const isWatched = progressLabel === "Watched";
-      const available = isEpisodeAvailable(episode);
-      const tagName = available ? "a" : "div";
-      const href = available ? ` href="${episodeUrl(episode)}"` : "";
-      return `
-        <${tagName} class="compact-episode ${episode.id === currentEpisode.id ? "is-current" : ""} ${available ? "" : "is-unavailable"} ${isWatched ? "is-watched" : ""}"${href}>
-          <img src="${episodeThumbnailUrl(episode)}" alt="" loading="lazy" />
-          <span>
-            <small>Episode ${episode.number}</small>
-            <strong>${episode.title}</strong>
-            ${progressLabel ? `<em>${progressLabel}</em>` : ""}
-            ${available ? "" : "<em>Uploading soon</em>"}
-          </span>
-        </${tagName}>
-      `;
-    },
-  )
-  .join("");
-
-const currentCompact = episodeList.querySelector(".compact-episode.is-current");
-if (currentCompact) {
-  if (window.matchMedia("(max-width: 900px)").matches) {
-    const chip = document.createElement("div");
-    chip.className = "now-playing-chip";
-    chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Now playing: ${currentTypeLabel}`;
-    episodeList.insertBefore(chip, episodeList.firstChild);
-  } else {
-    currentCompact.scrollIntoView({ block: "nearest", behavior: "instant" });
-  }
-}
-
-// Mobile: collapsible episode list for long series
-if (window.matchMedia("(max-width: 900px)").matches) {
-  const episodeCount = episodeList.querySelectorAll(".compact-episode").length;
-  if (episodeCount > 5) {
-    episodeList.classList.add("is-collapsed");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "episode-list-toggle";
-    btn.setAttribute("aria-expanded", "false");
-    btn.setAttribute("aria-controls", "watch-episode-list");
-    btn.innerHTML = `<span>Show all episodes</span><span class="episode-list-toggle-count">${episodeCount}</span>`;
-    btn.addEventListener("click", () => {
-      const expanded = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-expanded", String(!expanded));
-      episodeList.classList.toggle("is-collapsed", expanded);
-      btn.querySelector("span").textContent = expanded ? "Show all episodes" : "Hide episodes";
-      if (expanded) {
-        const current = episodeList.querySelector(".compact-episode.is-current");
-        if (current) current.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    });
-    episodeSidebar.insertBefore(btn, episodeList);
-  }
-}
-
-// ── Related lectures ─────────────────────────────────────────────────────────
-// Catalog-wide "more like this", ranked by IMRelated over the generated
-// catalog index (data/catalog-data.js). Series pages show it below the episode
-// list; standalone pages use the top result as their "Up next" card and
-// autoplay target.
-(function renderRelatedLectures() {
-  const relatedSection = document.querySelector("#related-section");
-  const relatedList = document.querySelector("#related-list");
-  const catalogItems = window.catalogIndex?.items || [];
-
-  function hideStandaloneSidebar() {
-    if (isStandalone && episodeSidebar) episodeSidebar.hidden = true;
-  }
-
-  if (!relatedSection || !relatedList || !window.IMRelated || !catalogItems.length) {
-    hideStandaloneSidebar();
-    return;
-  }
-
-  const isWatched = (item) =>
-    Boolean(readJsonStorage(`${window.IMUtils.PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {}).completed);
-
-  // Popularity prior comes from the local cache (instant); refreshCounts()
-  // updates that cache in the background for the next page view.
-  const popularity = window.IMPopularity ? window.IMPopularity.cachedCounts() : {};
-  if (window.IMPopularity) window.IMPopularity.refreshCounts();
-
-  const related = window.IMRelated.rankRelated({
-    items: catalogItems,
-    currentKey: catalogKey,
-    excludeSeries: isStandalone ? null : series.slug,
-    isWatched,
-    popularity,
-    limit: isStandalone ? 9 : 6,
-  });
-
-  if (!related.length) {
-    hideStandaloneSidebar();
-    return;
-  }
-
-  let listItems = related;
-  if (isStandalone) {
-    const upNext = related[0];
-    listItems = related.slice(1);
-    autoplayNextUrl = autoplayNextUrl || upNext.url;
-    const mins = upNext.duration ? `${Math.round(upNext.duration / 60)} min` : "";
-    const meta = [upNext.speaker, mins].filter(Boolean).join(" · ");
-    const upNextCard = document.createElement("a");
-    upNextCard.className = "up-next-card";
-    upNextCard.href = upNext.url;
-    upNextCard.innerHTML = `
-      <img src="${escapeHtml(upNext.thumb)}" alt="" loading="lazy" />
-      <span class="up-next-body">
-        <small>Up next</small>
-        <strong>${escapeHtml(upNext.title)}</strong>
-        ${meta ? `<em>${escapeHtml(meta)}</em>` : ""}
-      </span>
-      <span class="up-next-play" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-      </span>
-    `;
-    episodeSidebar.insertBefore(upNextCard, relatedSection);
-  }
-
-  relatedList.innerHTML = listItems
-    .map((item) => {
-      const context = item.kind === "episode" ? `${item.seriesTitle} · Ep ${item.number}` : item.speaker;
-      const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
-      const meta = [item.kind === "episode" ? item.speaker : "", mins].filter(Boolean).join(" · ");
-      const watched = isWatched(item);
-      return `
-        <a class="compact-episode related-item ${watched ? "is-watched" : ""}" href="${escapeHtml(item.url)}">
-          <img src="${escapeHtml(item.thumb)}" alt="" loading="lazy" />
-          <span>
-            <small>${escapeHtml(context)}</small>
-            <strong>${escapeHtml(item.title)}</strong>
-            ${watched ? "<em>Watched</em>" : meta ? `<em>${escapeHtml(meta)}</em>` : ""}
-          </span>
-        </a>`;
-    })
-    .join("");
-  relatedSection.hidden = false;
-})();
 
 // ── Keyboard shortcuts ───────────────────────────────────────────────────────
 // Override the browser's native arrow-key seek (varies: 5s Chrome, 15s Firefox)

@@ -28,7 +28,10 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
-- `scripts/watch-page.js` loads the selected episode or standalone lecture, handles native playback, progress saving, completion state, stall detection, media-session controls, and the per-episode "My Notes" panel. See the My Notes section below.
+- `scripts/watch-page.js` is the watch-page controller: it resolves the selected episode or standalone lecture and wires native playback, progress saving, resume, completion state, study-time tracking, media-session controls, autoplay-next, and keyboard seeking.
+- `scripts/watch-notes.js` (`window.IMWatchNotes`) is the per-episode "My Notes" panel — markdown-lite editing, preview with clickable timestamps, debounced autosave. See the My Notes section below.
+- `scripts/watch-stall.js` (`window.IMWatchStall`) diagnoses video stalls and errors, auto-retries, shows the user-facing failure message, and reports investigable causes to the contact inbox.
+- `scripts/watch-sidebar.js` (`window.IMWatchSidebar`) renders the watch sidebar: the "Up next" card, the compact episode list, the mobile collapse behavior, and the related lectures ranked by `IMRelated`.
 - `data/series-registry.js` is the central series registry — the single source of truth for all series slugs, categories, and global keys.
 - `data/*-data.js` files are the series data sources.
 - `data/standalone-lectures-data.js` holds all standalone (non-series) lecture objects in a single `window.standaloneLectures` array.
