@@ -178,7 +178,7 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Find meaningful lecture series without the noise.",
+    "Find meaningful Islamic lectures without the noise.",
   );
   await expect(page.getByRole("searchbox", { name: "Search lectures" })).toBeVisible();
   await expectCatalog(page);
@@ -863,6 +863,28 @@ test("clearing saved items sends deletions to the signed-in account", async ({ p
 
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
+
+  test("explains the product before asking a new visitor to browse", async ({ page }) => {
+    const pageErrors = await preparePage(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const heading = page.getByRole("heading", {
+      level: 1,
+      name: "Find meaningful Islamic lectures without the noise.",
+    });
+    await expect(heading).toBeVisible();
+    await expect(page.getByText(
+      "Watch ad-free, organized learning from trusted speakers and resume anytime.",
+    )).toBeVisible();
+    await expect(page.getByRole("searchbox", { name: "Search lectures" })).toBeVisible();
+
+    const heroFitsViewport = await page.locator(".hero").evaluate((hero) => {
+      const rect = hero.getBoundingClientRect();
+      return rect.left >= 0 && rect.right <= document.documentElement.clientWidth;
+    });
+    expect(heroFitsViewport).toBe(true);
+    expect(pageErrors).toEqual([]);
+  });
 
   test("keeps streak and continue-learning summaries compact and ordered", async ({ page }) => {
     const pageErrors = await preparePage(page);
