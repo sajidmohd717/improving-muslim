@@ -18,7 +18,20 @@ const els = {
   count: document.querySelector("#speaker-series-count"),
   grid: document.querySelector("#speaker-series-grid"),
   status: document.querySelector("#speaker-status"),
+  bioToggle: document.querySelector("#speaker-bio-toggle"),
 };
+
+function setupBioToggle() {
+  els.bio.classList.add("is-clamped");
+  els.bioToggle.textContent = "Show more";
+  const overflows = els.bio.scrollHeight > els.bio.clientHeight + 1;
+  els.bioToggle.hidden = !overflows;
+}
+
+els.bioToggle.addEventListener("click", () => {
+  const expanded = els.bio.classList.toggle("is-clamped") === false;
+  els.bioToggle.textContent = expanded ? "Show less" : "Show more";
+});
 
 function localThumbnail(series) {
   return series.thumbnailSrc || "./public/icon.png";
@@ -99,6 +112,7 @@ function renderSpeakerPage() {
   els.photo.alt = speaker.name;
   els.name.textContent = speaker.name;
   els.bio.textContent = speaker.bio;
+  setupBioToggle();
   els.count.textContent = `${series.length} ${series.length === 1 ? "item" : "items"}`;
 
   if (!series.length) {
