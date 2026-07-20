@@ -174,8 +174,15 @@ function updateStorageNote() {
   if (!note) return;
   const user = window.IMAuth?.currentUser;
   if (user) {
-    note.textContent = "Synced across your devices.";
-    if (eyebrow) eyebrow.textContent = "Cloud synced";
+    const status = window.IMAuth?.syncStatus || "connecting";
+    const copy = {
+      connecting: ["Connecting", "Connecting to your account…"],
+      syncing: ["Syncing", "Saving your latest changes…"],
+      offline: ["Saved offline", "Saved on this device. It will sync when your connection returns."],
+      synced: ["Cloud synced", "Synced across your devices."],
+    }[status] || ["Cloud synced", "Synced across your devices."];
+    if (eyebrow) eyebrow.textContent = copy[0];
+    note.textContent = copy[1];
   } else {
     note.textContent = "Stored locally — only visible on this device.";
     if (eyebrow) eyebrow.textContent = "On this device";

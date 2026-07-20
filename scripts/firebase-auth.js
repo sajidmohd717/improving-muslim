@@ -3,8 +3,8 @@
  *
  * - Self-loads the Firebase compat SDK from Google CDN (no extra <script> tags needed).
  * - Injects a sign-in / avatar button into every .nav-shell automatically.
- * - On sign-in: the account's Firestore data replaces the personal-data cache.
- *   Guest/browser data is kept separately and never merged into an account.
+ * - On first sign-in from guest mode: local progress is merged into the account.
+ *   Newer progress wins, completed lectures stay completed, and saved items are unioned.
  * - On every localStorage write (via IMUtils.writeJsonStorage): debounces a push to Firestore.
  * - On sign-out: restores the isolated guest/browser data snapshot.
  *
@@ -22,6 +22,7 @@
   var STREAK_KEY       = utils.STREAK_KEY || 'improving-muslim:study-streak';
   var STORAGE_OWNER_KEY = 'improving-muslim:personal-data-owner';
   var GUEST_DATA_KEY    = 'improving-muslim:guest-personal-data';
+  var GUEST_IMPORT_KEY  = 'improving-muslim:pending-guest-import';
   var PENDING_ACCOUNT_WRITES_KEY = 'improving-muslim:pending-account-writes';
   var PUSH_DEBOUNCE_MS = 3000;
 
@@ -36,6 +37,9 @@
   var _pendingWrites = {};
   var _resetting    = false;
   var _authGeneration = 0;
+  var _syncStatus   = 'local';
+  var _lastSyncedAt = 0;
+  var _syncError    = '';
   // Keys changed locally since the last successful push. Only these are sent,
   // as a field-level merge, so a device never overwrites unrelated data another
   // device changed (no more whole-document last-write-wins).
@@ -110,6 +114,117 @@
 
   function saveGuestData() {
     try { localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(readLocal())); } catch (_) {}
+  }
+
+  function hasPersonalData(data) {
+    return Boolean(
+      data && (
+        Object.keys(data.progress || {}).length ||
+        Object.keys(data.notes || {}).length ||
+        (Array.isArray(data.saved) && data.saved.length) ||
+        Object.keys(data.streak || {}).length
+      )
+    );
+  }
+
+  function saveGuestImport(user, data) {
+    if (!user || !hasPersonalData(data)) return;
+    try {
+      localStorage.setItem(GUEST_IMPORT_KEY, JSON.stringify({
+        owner: 'user:' + user.uid,
+        data: data,
+      }));
+    } catch (_) {}
+  }
+
+  function readGuestImport(user) {
+    var pending = {};
+    try { pending = JSON.parse(localStorage.getItem(GUEST_IMPORT_KEY) || '{}'); } catch (_) {}
+    if (!user || pending.owner !== 'user:' + user.uid || !hasPersonalData(pending.data)) return null;
+    return pending.data;
+  }
+
+  function clearGuestImport(user) {
+    var pending = {};
+    try { pending = JSON.parse(localStorage.getItem(GUEST_IMPORT_KEY) || '{}'); } catch (_) {}
+    if (!user || pending.owner === 'user:' + user.uid) {
+      try { localStorage.removeItem(GUEST_IMPORT_KEY); } catch (_) {}
+    }
+  }
+
+  function newerValue(cloudValue, guestValue) {
+    if (!cloudValue) return guestValue;
+    if (!guestValue) return cloudValue;
+    return (Number(guestValue.updatedAt) || 0) > (Number(cloudValue.updatedAt) || 0)
+      ? guestValue
+      : cloudValue;
+  }
+
+  function mergeProgressValue(cloudValue, guestValue) {
+    var latest = Object.assign({}, newerValue(cloudValue, guestValue) || {});
+    if ((cloudValue && cloudValue.completed) || (guestValue && guestValue.completed)) {
+      latest.completed = true;
+      latest.currentTime = Math.max(Number(cloudValue && cloudValue.currentTime) || 0, Number(guestValue && guestValue.currentTime) || 0);
+      latest.duration = Math.max(Number(cloudValue && cloudValue.duration) || 0, Number(guestValue && guestValue.duration) || 0);
+      latest.updatedAt = Math.max(Number(cloudValue && cloudValue.updatedAt) || 0, Number(guestValue && guestValue.updatedAt) || 0);
+    }
+    return latest;
+  }
+
+  function mergeStreak(cloudStreak, guestStreak) {
+    cloudStreak = cloudStreak || {};
+    guestStreak = guestStreak || {};
+    var latest = Object.assign({}, newerValue(cloudStreak, guestStreak) || {});
+    var days = Object.assign({}, cloudStreak.days || {});
+    Object.keys(guestStreak.days || {}).forEach(function (date) {
+      var cloudDay = days[date] || {};
+      var guestDay = guestStreak.days[date] || {};
+      days[date] = {
+        seconds: Math.max(Number(cloudDay.seconds) || 0, Number(guestDay.seconds) || 0),
+        completed: Boolean(cloudDay.completed || guestDay.completed),
+      };
+    });
+    latest.days = days;
+    latest.current = Math.max(Number(cloudStreak.current) || 0, Number(guestStreak.current) || 0);
+    latest.best = Math.max(Number(cloudStreak.best) || 0, Number(guestStreak.best) || 0);
+    latest.freezesAvailable = Math.max(Number(cloudStreak.freezesAvailable) || 0, Number(guestStreak.freezesAvailable) || 0);
+    latest.lastCompletedDate = [cloudStreak.lastCompletedDate || '', guestStreak.lastCompletedDate || ''].sort().pop();
+    if (cloudStreak.todayDate && cloudStreak.todayDate === guestStreak.todayDate) {
+      latest.todayDate = cloudStreak.todayDate;
+      latest.todaySeconds = Math.max(Number(cloudStreak.todaySeconds) || 0, Number(guestStreak.todaySeconds) || 0);
+    }
+    // Public leaderboard choices belong to the signed-in account, never to a guest import.
+    ['publicOptIn', 'publicName'].forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(cloudStreak, key)) latest[key] = cloudStreak[key];
+      else delete latest[key];
+    });
+    latest.updatedAt = Math.max(Number(cloudStreak.updatedAt) || 0, Number(guestStreak.updatedAt) || 0);
+    return latest;
+  }
+
+  function mergePersonalData(cloud, guest) {
+    cloud = cloud || {};
+    guest = guest || {};
+    var progress = Object.assign({}, cloud.progress || {});
+    Object.keys(guest.progress || {}).forEach(function (key) {
+      progress[key] = mergeProgressValue(progress[key], guest.progress[key]);
+    });
+    var notes = Object.assign({}, cloud.notes || {});
+    Object.keys(guest.notes || {}).forEach(function (key) {
+      notes[key] = newerValue(notes[key], guest.notes[key]);
+    });
+    var savedMap = {};
+    savedArrayFromCloud(cloud).concat(Array.isArray(guest.saved) ? guest.saved : []).forEach(function (item) {
+      if (!item || !item.key) return;
+      var existing = savedMap[item.key];
+      if (!existing || (Number(item.savedAt) || 0) > (Number(existing.savedAt) || 0)) savedMap[item.key] = item;
+    });
+    return {
+      progress: progress,
+      notes: notes,
+      saved: Object.keys(savedMap).map(function (key) { return savedMap[key]; }).sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); }),
+      streak: mergeStreak(cloud.streak || {}, guest.streak || {}),
+    };
   }
 
   // A signed-in user's click can happen before Firebase finishes restoring
@@ -204,8 +319,15 @@
     // last known account data usable if the network pull fails. A guest cache
     // or a different account's cache must still be isolated and cleared.
     if (owner === 'user:' + user.uid) return;
-    if (!owner || owner === 'guest') saveGuestData();
-    clearLocal();
+    if (!owner || owner === 'guest') {
+      var guest = readLocal();
+      saveGuestData();
+      saveGuestImport(user, guest);
+      // Keep the guest copy visible until the account pull has merged it. This
+      // avoids a frightening flash-to-empty and leaves the data usable offline.
+    } else {
+      clearLocal();
+    }
     try { localStorage.setItem(STORAGE_OWNER_KEY, 'user:' + user.uid); } catch (_) {}
   }
 
@@ -290,6 +412,9 @@
     if (_unsubscribeSync) _unsubscribeSync();
     _unsubscribeSync = doc.onSnapshot(function (snap) {
       if (!_user || _user.uid !== user.uid || generation !== _authGeneration || _resetting) return;
+      // The initial server pull owns the first guest import. Applying a listener
+      // snapshot before that merge could briefly hide the local learning data.
+      if (readGuestImport(user)) return;
       // Local Firestore writes are already represented in localStorage. Wait
       // for the acknowledged snapshot so an intermediate cache event cannot
       // roll the UI backward.
@@ -299,11 +424,39 @@
       // account state, so cache-only listener events must not erase it.
       if (snap.metadata && snap.metadata.fromCache) return;
       var captured = captureUnsyncedWrites();
-      applyAccountSnapshot(snap.exists ? snap.data() : {}, captured);
+      var cloud = snap.exists ? snap.data() : {};
+      applyAccountSnapshot(cloud, captured);
       _syncReady = true;
+      _lastSyncedAt = Number(cloud.lastSyncedAt) || Date.now();
+      setSyncStatus(Object.keys(captured).length ? 'syncing' : 'synced');
       if (Object.keys(captured).length) schedulePush();
     }, function (err) {
       console.warn('[IMAuth] Live account sync failed:', err.message);
+      setSyncStatus('offline', err.message);
+    });
+  }
+
+  function importGuestData(user, merged) {
+    var doc = userDoc();
+    if (!doc) return Promise.resolve();
+    var savedItems = {};
+    (merged.saved || []).forEach(function (item) {
+      if (item && item.key) savedItems[item.key] = item;
+    });
+    var payload = {
+      progress: merged.progress || {},
+      notes: merged.notes || {},
+      savedItems: savedItems,
+      saved: firebase.firestore.FieldValue.delete(),
+      streak: merged.streak || {},
+      lastSyncedAt: Date.now(),
+    };
+    setSyncStatus('syncing');
+    return doc.set(payload, { merge: true }).then(function () {
+      if (!_user || _user.uid !== user.uid) return;
+      clearGuestImport(user);
+      _lastSyncedAt = payload.lastSyncedAt;
+      setSyncStatus('synced');
     });
   }
 
@@ -317,14 +470,26 @@
       if (!_user || _user.uid !== user.uid || generation !== _authGeneration) return;
       var pending = capturePendingWrites();
       var cloud = snap.exists ? snap.data() : {};
-      applyAccountSnapshot(cloud, pending);
+      var guest = readGuestImport(user);
+      var accountData = guest ? mergePersonalData(cloud, guest) : cloud;
+      applyAccountSnapshot(accountData, pending);
       _syncReady = true;
+      _lastSyncedAt = Number(cloud.lastSyncedAt) || 0;
+      if (guest) {
+        return importGuestData(user, accountData).then(function () {
+          if (Object.keys(pending).length) {
+            setSyncStatus('syncing');
+            schedulePush();
+          }
+        });
+      }
+      setSyncStatus(Object.keys(pending).length ? 'syncing' : 'synced');
       if (Object.keys(pending).length) schedulePush();
     }).catch(function (err) {
       // Never push an unknown local snapshot when the authoritative read
       // failed. A later page load can safely retry hydration.
       console.warn('[IMAuth] Account data pull failed:', err.message);
-      notifyListeners();
+      setSyncStatus('offline', err.message);
     });
   }
 
@@ -420,6 +585,7 @@
     _dirty = {}; // cleared up front; re-added on failure so the retry is exact
     var built = buildPushPayload(keys);
     if (!built) return;
+    setSyncStatus('syncing');
     if (built.savedChanges) _savedChanges = {};
     built.payload.lastSyncedAt = Date.now();
     doc.set(built.payload, { merge: true }).then(function () {
@@ -432,11 +598,14 @@
         }
       });
       forgetPendingAccountWrites(_user, committedKeys);
+      _lastSyncedAt = built.payload.lastSyncedAt;
+      setSyncStatus(Object.keys(_dirty).length ? 'syncing' : 'synced');
       if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
     }).catch(function (err) {
       keys.forEach(function (k) { _dirty[k] = true; });
       if (built.savedChanges) _savedChanges = Object.assign({}, built.savedChanges, _savedChanges);
       console.warn('[IMAuth] Sync push failed:', err.message);
+      setSyncStatus('offline', err.message);
       schedulePush();
     });
   }
@@ -464,12 +633,19 @@
   /* ── Notify state listeners ───────────────────────────────────────────── */
 
   function notifyListeners() {
+    updateSyncIndicator();
     _listeners.forEach(function (fn) {
       try { fn(_user); } catch (_) {}
     });
     window.dispatchEvent(new CustomEvent('im-auth-state-changed', {
       detail: { user: _user },
     }));
+  }
+
+  function setSyncStatus(status, error) {
+    _syncStatus = status;
+    _syncError = error || '';
+    notifyListeners();
   }
 
   function pageUrl(path) {
@@ -597,10 +773,24 @@
       }
       if (nameEl)  nameEl.textContent  = user.displayName || '';
       if (emailEl) emailEl.textContent = user.email || '';
+      updateSyncIndicator();
     } else {
       signedOut.hidden = false;
       signedIn.hidden  = true;
     }
+  }
+
+  function updateSyncIndicator() {
+    var status = document.getElementById('auth-sync-status');
+    if (!status || !_user) return;
+    var copy = {
+      connecting: 'Connecting to your synced learning data…',
+      syncing: 'Saving your latest changes…',
+      offline: 'Saved on this device. Your changes will sync when the connection returns.',
+      synced: 'Your learning progress is synced across devices.',
+    };
+    status.textContent = copy[_syncStatus] || copy.connecting;
+    status.dataset.syncStatus = _syncStatus;
   }
 
   /* ── Public API ───────────────────────────────────────────────────────── */
@@ -608,6 +798,9 @@
   window.IMAuth = {
     get currentUser() { return _user; },
     get authReady() { return _authReady; },
+    get syncStatus() { return _user ? _syncStatus : 'local'; },
+    get lastSyncedAt() { return _lastSyncedAt; },
+    get syncError() { return _syncError; },
 
     signIn: function () {
       if (!window.firebase) return Promise.reject(new Error('Firebase not loaded'));
@@ -667,8 +860,10 @@
         _lastSavedKeys = {};
         _savedChanges = {};
         clearPendingAccountWrites();
+        clearGuestImport(_user);
         _syncReady = true;
-        notifyListeners();
+        _lastSyncedAt = 0;
+        setSyncStatus('synced');
       });
       var tasks = [accountDelete];
       if (window.IMStreakUI) tasks.push(window.IMStreakUI.deleteLeaderboardEntry());
@@ -677,6 +872,12 @@
       });
     },
   };
+
+  if (window.__IM_TEST__) {
+    window.IMAuthTestHooks = {
+      mergePersonalData: mergePersonalData,
+    };
+  }
 
   if (window.IMStreakUI) {
     window.IMStreakUI.configure({
@@ -738,6 +939,9 @@
         _user = user;
         _authReady = true;
         _syncReady = false;
+        _syncStatus = user ? 'connecting' : 'local';
+        _syncError = '';
+        if (!user) _lastSyncedAt = 0;
         _pendingWrites = {};
         _dirty = {};
         _lastSavedKeys = {};

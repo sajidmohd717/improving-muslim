@@ -10,7 +10,7 @@
     "check:catalog": "node scripts/generate-catalog.js --check",
     "check:content": "node scripts/check-content.js",
     "check:js": "node scripts/check-js.js",
-    "check:workers": "node --test tests/popularity-worker.test.js",
+    "check:workers": "node --test tests/*.test.js",
     "check:seo-pages": "node scripts/generate-seo-pages.js --check",
     "check:sitemap": "node scripts/generate-sitemap.js --check",
     "check:transcript-index": "node scripts/generate-transcript-index.js --check",

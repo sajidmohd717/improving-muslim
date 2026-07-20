@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260720-episode-4col" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260720-ux-flow-2" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <title>Settings | Improving Muslim</title>
   </head>
@@ -134,8 +134,8 @@
               <p class="auth-profile-email" id="auth-profile-email"></p>
             </div>
           </div>
+          <p class="auth-sync-note" id="auth-sync-status">Connecting to your synced learning data…</p>
           <p class="auth-sync-note">
-            Your progress, saved items, and streaks are synced to this account across all your devices.
             We sync private learning data to your Firebase account ID, not your email address. Public leaderboard sharing stays optional.
           </p>
           <button class="quiet-link" id="settings-sign-out-btn" type="button">Sign out</button>
@@ -258,8 +258,8 @@
     </footer>
     <script src="./scripts/utils.js?v=20260717-streak-pure-read"></script>
     <script src="./scripts/streak-ui.js?v=20260720-streak-label" defer></script>
-    <script src="./scripts/settings.js?v=20260716-cloud-clear" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260716-server-authority" defer></script>
+    <script src="./scripts/settings.js?v=20260720-sync-status" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260720-guest-merge" defer></script>
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <a class="bottom-nav-item" href="./index.html">
@@ -284,6 +284,6 @@
       </a>
     </nav>
     <script src="./scripts/nav-more.js" defer></script>
-    <script src="./scripts/nav-state.js?v=20260706-seo-routes" defer></script>
+    <script src="./scripts/nav-state.js?v=20260720-available-first" defer></script>
   </body>
 </html>

@@ -33,7 +33,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260720-episode-4col" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260720-ux-flow-2" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <title>Sign In or Create Account | Improving Muslim</title>
   </head>
@@ -75,19 +75,45 @@
     <main>
       <section class="settings-hero">
         <p class="eyebrow">Private by default</p>
-        <h1>Sign in or create an account</h1>
+        <h1>Take your learning with you.</h1>
         <p>
-          An account is optional. You can use Improving Muslim normally with progress stored only
-          on this device. To keep your progress, saved lectures, and learning streak synced across
-          devices, you will need to sign in.
+          Sign in to keep your progress, saved lectures, notes, and streak available across devices.
+          Anything already saved on this device will be brought with you.
         </p>
+
+        <div class="auth-hero-actions" id="auth-signed-out">
+          <ul class="auth-benefits" aria-label="Account benefits">
+            <li>Resume on another phone or computer</li>
+            <li>Keep saved items and notes together</li>
+            <li>Continue privately unless you join the leaderboard</li>
+          </ul>
+          <button class="primary-link auth-primary-action" id="settings-sign-in-btn" type="button">
+            Continue with Google
+          </button>
+          <a class="quiet-link auth-secondary-link" href="./index.html">Continue on this device only</a>
+        </div>
+
+        <div class="auth-hero-actions" id="auth-signed-in" hidden>
+          <div class="auth-profile">
+            <img id="auth-profile-photo" src="" alt="" class="auth-profile-photo" referrerpolicy="no-referrer" />
+            <div>
+              <p class="auth-profile-name" id="auth-profile-name"></p>
+              <p class="auth-profile-email" id="auth-profile-email"></p>
+            </div>
+          </div>
+          <p class="auth-sync-note" id="auth-sync-status">
+            Connecting to your synced learning data…
+          </p>
+          <a class="primary-link" href="./pages/settings.html">Manage account settings</a>
+          <button class="quiet-link" id="settings-sign-out-btn" type="button">Sign out</button>
+        </div>
       </section>
 
       <section class="settings-section auth-account-section" aria-labelledby="sign-in-heading">
         <div class="settings-panel">
           <div>
             <p class="eyebrow">Sync progress</p>
-            <h2 id="sign-in-heading">Use Google for cross-device sync</h2>
+            <h2 id="sign-in-heading">How cross-device sync works</h2>
             <p>
               Google handles authentication. Improving Muslim does not store your email, name, or
               profile photo in the learning-data database. Your watch history, saved items, and
@@ -96,32 +122,11 @@
           </div>
         </div>
 
-        <div id="auth-signed-out">
-          <p class="auth-sign-in-prompt">
-            The same Google button signs you in or creates your account when you use it for the
-            first time. Your local progress will be merged with any progress already synced to that
-            account. Joining the public leaderboard is a separate choice inside the streak panel.
-          </p>
-          <button class="primary-link" id="settings-sign-in-btn" type="button">
-            Continue with Google
-          </button>
-          <a class="quiet-link auth-secondary-link" href="./index.html">Continue without an account</a>
-        </div>
-
-        <div id="auth-signed-in" hidden>
-          <div class="auth-profile">
-            <img id="auth-profile-photo" src="" alt="" class="auth-profile-photo" referrerpolicy="no-referrer" />
-            <div>
-              <p class="auth-profile-name" id="auth-profile-name"></p>
-              <p class="auth-profile-email" id="auth-profile-email"></p>
-            </div>
-          </div>
-          <p class="auth-sync-note">
-            You are signed in. Your learning progress, saved items, and streak can now sync across devices.
-          </p>
-          <a class="primary-link" href="./pages/settings.html">Manage account settings</a>
-          <button class="quiet-link" id="settings-sign-out-btn" type="button">Sign out</button>
-        </div>
+        <p class="auth-sign-in-prompt">
+          Google handles authentication. On first sign-in, learning data from this device is merged
+          with the account. Newer progress wins, completed lectures stay completed, and saved items
+          from both places are kept.
+        </p>
       </section>
 
       <section class="settings-section" aria-labelledby="privacy-heading">
@@ -176,7 +181,7 @@
     <script src="./scripts/utils.js?v=20260717-streak-pure-read"></script>
     <script src="./scripts/streak-ui.js?v=20260720-streak-label" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
-    <script src="./scripts/nav-state.js?v=20260706-seo-routes" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260716-server-authority" defer></script>
+    <script src="./scripts/nav-state.js?v=20260720-available-first" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260720-guest-merge" defer></script>
   </body>
 </html>

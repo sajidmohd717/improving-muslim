@@ -554,7 +554,7 @@ test("leaderboard expires stale rows and awaits the signed-in learner refresh", 
   expect(pageErrors).toEqual([]);
 });
 
-test("signed-in cloud data replaces local progress and reset cannot resurrect it", async ({ page }) => {
+test("first sign-in merges local progress and reset cannot resurrect it", async ({ page }) => {
   const pageErrors = await preparePage(page);
   const staleKey = "lecture-progress:stale-account:episode-1";
   const cloudKey = "lecture-progress:cloud-account:episode-2";
@@ -573,12 +573,17 @@ test("signed-in cloud data replaces local progress and reset cannot resurrect it
   await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#cloud-reset-section")).toBeVisible();
   await expect(page.locator("#local-progress-section")).toBeHidden();
-  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), staleKey)).toBeNull();
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), staleKey)).not.toBeNull();
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), cloudKey)).not.toBeNull();
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.progress),
+  ), { timeout: 5000 }).toBe(true);
   const setsBeforeReset = await page.evaluate(() => window.__firebaseTest.sets.length);
-  expect(await page.evaluate(() =>
-    window.__firebaseTest.sets.some((value) => value.progress || value.savedItems),
-  )).toBe(false);
+  const importedProgress = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.progress)?.progress,
+  );
+  expect(importedProgress[staleKey]).toMatchObject({ completed: true });
+  expect(importedProgress[cloudKey]).toMatchObject({ completed: true });
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.locator("#reset-cloud-data").click();

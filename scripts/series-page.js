@@ -37,7 +37,9 @@
     const hasUnavailable = availableEpisodes.length < totalEpisodes;
     const showFilters = totalEpisodes >= 10 || hasUnavailable;
 
-    let activeFilter = "all";
+    // Partially uploaded series should open on what the learner can watch now.
+    // The full roadmap remains one tap away in the All filter.
+    let activeFilter = hasUnavailable ? "available" : "all";
 
     function renderHero() {
       heroContent?.querySelectorAll(".series-cta-row, .series-progress-summary, .series-avail-note, .card-actions").forEach((node) => node.remove());
@@ -199,6 +201,8 @@
       const saved = isSeriesSaved();
       button.setAttribute("aria-pressed", String(saved));
       button.setAttribute("aria-label", saved ? "Remove from saved" : "Save series");
+      const label = button.querySelector("span");
+      if (label) label.textContent = saved ? "Saved" : "Save";
     }
 
     function toggleSavedSeries(button, status) {
@@ -206,7 +210,9 @@
         key: `series:${currentSeriesUrl()}`,
         type: "series",
         title: series.title,
-        subtitle: `${series.speaker} - ${series.episodes.length} episodes`,
+        subtitle: hasUnavailable
+          ? `${series.speaker} - ${availableEpisodes.length} available · ${totalEpisodes} total`
+          : `${series.speaker} - ${totalEpisodes} episodes`,
         url: currentSeriesUrl(),
         savedAt: Date.now(),
       };
@@ -256,7 +262,7 @@
       const actions = document.createElement("div");
       actions.className = "card-actions";
       actions.innerHTML = `
-        <button class="mini-action icon-btn" id="save-series-button" type="button" aria-pressed="false" aria-label="Save series">${saveIcon}</button>
+        <button class="mini-action labeled-action" id="save-series-button" type="button" aria-pressed="false" aria-label="Save series">${saveIcon}<span>Save</span></button>
         <button class="mini-action icon-btn" id="share-series-button" type="button" aria-label="Share series">${shareIcon}</button>
         <p class="action-status" id="series-action-status" role="status"></p>
       `;

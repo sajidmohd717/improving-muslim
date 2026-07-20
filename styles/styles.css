@@ -8,7 +8,7 @@
 @import "./layout.css?v=20260720-mobile-ux";        /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260718-episode-results";          /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260720-mobile-ux";   /* Series cards, speaker cards, category filters      */
-@import "./components.css?v=20260702-dark-1"; /* Shared UI: buttons, panels, sort, footer, errors  */
+@import "./components.css?v=20260720-labeled-save"; /* Shared UI: buttons, panels, sort, footer, errors  */
 @import "./about.css";         /* About page                                         */
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */
 @import "./feedback.css";      /* Feedback page & form                               */
@@ -24,4 +24,4 @@
 @import "./copyright.css";     /* Copyright / permissions page                       */
 @import "./admin.css?v=20260720-desktop-polish"; /* Private admin analytics dashboard          */
 @import "./transitions.css";   /* View Transitions API rules                         */
-@import "./auth.css?v=20260705-dark-muted"; /* Google sign-in button, avatar, settings account panel */
+@import "./auth.css?v=20260720-mobile-sync"; /* Google sign-in button, avatar, settings account panel */

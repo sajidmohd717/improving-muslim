@@ -116,6 +116,37 @@
   line-height: 1.6;
 }
 
+.auth-hero-actions {
+  margin-top: 22px;
+}
+
+.auth-benefits {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.auth-benefits li {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+
+.auth-benefits li::before {
+  content: "✓";
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.auth-primary-action {
+  min-width: 220px;
+}
+
 .auth-secondary-link {
   display: inline-flex;
   margin-left: 12px;
@@ -139,6 +170,14 @@
     display: flex;
     width: fit-content;
     margin: 14px 0 0;
+  }
+
+  .auth-account-section {
+    margin-top: 0.5rem;
+  }
+
+  .auth-primary-action {
+    width: 100%;
   }
 }
 

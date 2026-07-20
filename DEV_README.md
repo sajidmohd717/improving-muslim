@@ -673,7 +673,7 @@ lecture-progress:standalone:${lecture.id}             // standalone lecture
 
 Progress is tied to the stable YouTube video ID, not the R2 file URL. An R2 file can be replaced without resetting progress.
 
-**Cloud sync (Firebase):** When a user is signed in, `scripts/firebase-auth.js` uses that account's Firestore document as the authoritative initial state and then syncs new activity in real time. Guest browser data is isolated and is never merged into an account. Signing in on a new device pulls all previous account progress immediately. See the Firebase Authentication section below.
+**Cloud sync (Firebase):** When a user signs in from guest mode, `scripts/firebase-auth.js` merges the device's learning data into the account before continuing real-time sync. Newer progress and notes win, completed lectures stay completed, saved items are unioned, and the account's public-leaderboard choice remains authoritative. Signing in on a new device with no guest activity pulls the previous account progress immediately. See the Firebase Authentication section below.
 
 Important implications for localStorage-only (guest) users:
 
@@ -730,7 +730,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 
 1. Initialises the Firebase app using the project config.
 2. Listens for Google auth state changes.
-3. On sign-in: isolates any guest data, clears any previous account cache, and replaces it with the signed-in user's Firestore document. Existing browser data is never pushed into the account during hydration.
+3. On first sign-in from guest mode: snapshots the guest cache for sign-out restoration, keeps it visible during hydration, merges it with the signed-in user's Firestore document, and persists the merged result. Switching directly between different accounts still clears the previous account cache before hydration.
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
 5. Hands Firebase user/database access to `scripts/streak-ui.js`, which writes only opt-in public display names and streak summaries to `leaderboard/{uid}`. Watch history and saved items are never public.
 6. On sign-out: stops account syncing, clears the account cache, and restores the isolated guest browser data.

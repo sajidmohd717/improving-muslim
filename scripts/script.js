@@ -50,12 +50,16 @@ function initialCategoryFromUrl() {
   return categories.some((category) => category.value === requestedCategory) ? requestedCategory : "foryou";
 }
 
+function searchFromUrl() {
+  return String(new URLSearchParams(window.location.search).get("q") || "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
 const catalogBatchSize = window.matchMedia?.("(max-width: 600px)").matches ? 18 : 36;
 
 const state = {
   activeCategory: initialCategoryFromUrl(),
   sections: [],
-  searchTerm: "",
+  searchTerm: searchFromUrl(),
   sortBy: "random",
   activeSpeaker: null,
   contentType: "all",
@@ -261,6 +265,10 @@ const homeSearch = window.IMHomeSearch.create({
   categoryNameMap,
   catalog: searchCatalog,
   onSubmit(query) {
+    const url = new URL(window.location.href);
+    if (query) url.searchParams.set("q", query);
+    else url.searchParams.delete("q");
+    window.history.pushState({}, "", url);
     state.searchTerm = query;
     state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
     resetCatalogPagination();
@@ -274,6 +282,8 @@ const homeSearch = window.IMHomeSearch.create({
     }
   },
 });
+
+if (els.searchInput && state.searchTerm) els.searchInput.value = state.searchTerm;
 
 function setStatus(message, isVisible = true) {
   els.statusMessage.innerHTML = message;
@@ -518,7 +528,7 @@ function renderSeries() {
             ${progressBarHtml}
           </a>
           <div class="series-body">
-            <span class="series-topic">${escapeHtml(item.topic || "Series")}</span>
+            <span class="series-topic">${isVideo ? "Lecture" : "Series"} · ${escapeHtml(item.topic || "General")}</span>
             <a class="series-title" href="${seriesUrl}">
               ${escapeHtml(item.title)}
             </a>
@@ -650,14 +660,25 @@ function renderCategories() {
     .join("");
 }
 
-async function loadCategory(category) {
+async function loadCategory(category, { preserveSearch = false } = {}) {
   state.activeCategory = category;
-  state.searchTerm = "";
+  if (!preserveSearch) {
+    state.searchTerm = "";
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("q")) {
+      url.searchParams.delete("q");
+      window.history.pushState({}, "", url);
+    }
+  }
   resetCatalogPagination();
-  state.aiSearch = { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
-  homeSearch.reset();
-  runEpisodeSearch("");
-  runTranscriptSearch("");
+  state.aiSearch = preserveSearch
+    ? { query: state.searchTerm, pending: Boolean(state.searchTerm && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" }
+    : { query: "", pending: false, results: null, reasonById: {}, scoreById: {}, message: "" };
+  if (!preserveSearch) {
+    homeSearch.reset();
+    runEpisodeSearch("");
+    runTranscriptSearch("");
+  }
   renderCategories();
   showSkeletons(6);
 
@@ -844,7 +865,24 @@ renderContinueWatching();
 renderPopularShelf();
 renderStudyStreak();
 bindEvents();
-loadCategory(state.activeCategory);
+loadCategory(state.activeCategory, { preserveSearch: Boolean(state.searchTerm) }).then(() => {
+  if (!state.searchTerm) return;
+  runEpisodeSearch(state.searchTerm);
+  runTranscriptSearch(state.searchTerm);
+  runAiSearch(state.searchTerm);
+});
+
+window.addEventListener("popstate", () => {
+  const query = searchFromUrl();
+  state.searchTerm = query;
+  state.aiSearch = { query, pending: Boolean(query && AI_SEARCH_ENDPOINT), results: null, reasonById: {}, scoreById: {}, message: "" };
+  resetCatalogPagination();
+  if (els.searchInput) els.searchInput.value = query;
+  renderSeries();
+  runEpisodeSearch(query);
+  runTranscriptSearch(query);
+  if (query) runAiSearch(query);
+});
 
 els.continueList?.addEventListener("click", (e) => {
   const btn = e.target.closest(".continue-remove");

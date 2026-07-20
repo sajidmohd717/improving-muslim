@@ -210,16 +210,15 @@
     const minutesLeft = Math.max(0, Math.ceil((targetSeconds - todaySeconds) / 60));
     const hasStarted = streak.current > 0 || streak.best > 0 || streak.todaySeconds > 0;
 
-    if (!hasStarted) {
-      streakSection.hidden = true;
-      streakCard.innerHTML = "";
-      return;
-    }
-
     const isComplete = todaySeconds >= targetSeconds;
     const streakLabel = `${streak.current} day${streak.current === 1 ? "" : "s"}`;
     const progressText = isComplete ? "Daily goal complete" : `${minutesLeft} min left today`;
     const continueHref = document.querySelector(".continue-card-link")?.getAttribute("href") || "./index.html#series";
+    const title = !hasStarted
+      ? `${streak.targetMinutes}-minute daily goal`
+      : isComplete
+        ? `${streakLabel} strong`
+        : `${streakLabel} in progress`;
 
     streakSection.hidden = false;
     streakCard.innerHTML = `
@@ -232,15 +231,15 @@
       </div>
       <div class="streak-copy">
         <small>Daily learning streak</small>
-        <h2 id="streak-title">${isComplete ? `${streakLabel} strong` : `${streakLabel} in progress`}</h2>
+        <h2 id="streak-title">${title}</h2>
         <p>${watchedMinutes} of ${streak.targetMinutes} minutes watched today. ${escapeHtml(progressText)}.</p>
         <div class="streak-track" aria-label="${percent}% of today's learning goal complete">
           <span style="width:${percent}%"></span>
         </div>
       </div>
       <div class="streak-stats">
-        <span><strong>${streak.best}</strong><small>Best</small></span>
-        <a class="streak-action" href="${continueHref}">${isComplete ? "Keep learning" : "Continue"}</a>
+        <span><strong>${hasStarted ? streak.best : streak.targetMinutes}</strong><small>${hasStarted ? "Best" : "Min goal"}</small></span>
+        <a class="streak-action" href="${continueHref}">${!hasStarted ? "Find a lecture" : isComplete ? "Keep learning" : "Continue"}</a>
       </div>
     `;
   }
