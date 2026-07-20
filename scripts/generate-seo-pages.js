@@ -10,6 +10,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
+import { renderHeadAssets } from "./page-shell.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ORIGIN = "https://improvingmuslim.com";
@@ -181,14 +182,7 @@ ${videoUrl ? `    <meta property="og:video" content="${escapeAttr(videoUrl)}" />
     <meta name="twitter:title" content="${safeTitle}" />
     <meta name="twitter:description" content="${safeDescription}" />
     <meta name="twitter:image" content="${escapeAttr(imageUrl)}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260720-ux-flow-2" />
-    <script src="./scripts/theme.js?v=20260705-system-theme"></script>
+${renderHeadAssets()}
     <script type="application/ld+json">
 ${renderJsonLd(jsonLd).split("\n").map((line) => `      ${line}`).join("\n")}
     </script>

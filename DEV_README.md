@@ -13,6 +13,8 @@ For the short, repeatable checklist used whenever a video or series episode is a
 
 - `index.html` stays at the repository root because GitHub Pages serves it as the entry point.
 - `pages/` contains maintained secondary page templates and query-string compatibility routes such as series detail, watch, speaker profiles, settings, and about.
+- `scripts/page-shell.js` is the single source of truth for shared head assets, public/admin headers, footers, mobile bottom navigation, common script order, and their cache versions. Edit the shell there, then run `npm run page-shell`; do not hand-edit the generated regions between `page-shell:*` comments.
+- `scripts/generate-page-shell.js` writes those regions into `index.html` and the maintained files in `pages/`. Its `--check` mode is part of CI. `404.html` intentionally remains a minimal standalone emergency page.
 - `series/` and `watch/` contain canonical, crawlable pages generated from the maintained templates and catalog data by `scripts/generate-seo-pages.js`. Never edit generated pages by hand.
 - `scripts/` contains browser logic and utility scripts.
 - `data/` contains series and speaker data files.
@@ -52,7 +54,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/transcript-to-vtt.js` converts pasted YouTube-style transcripts into WebVTT cues.
 - `scripts/publish.ps1` is the YouTube-to-R2 publisher (download, faststart fix, upload, and series data patching; standalone metadata remains editorial). See the Uploading Large Videos To R2 section below.
 - `scripts/check-a11y.js` scans every static HTML page for common accessibility issues.
-- `scripts/generate-seo-pages.js` and `scripts/generate-sitemap.js` generate canonical content routes and `sitemap.xml`; their `--check` modes keep committed output current.
+- `scripts/generate-seo-pages.js` and `scripts/generate-sitemap.js` generate canonical content routes and `sitemap.xml`; their `--check` modes keep committed output current. Canonical pages inherit the shared shell from `pages/series-detail.html` and `pages/watch.html`, while their generated heads reuse the asset source from `scripts/page-shell.js`.
 - `scripts/error-handler.js` catches unhandled JS errors and promise rejections, shows a friendly fallback UI, and silently reports crashes to `contact@improvingmuslim.com` via FormSubmit. It is currently loaded on the heavy interactive pages (index, history, saved, watch) — load it first, before all other scripts, on any page that includes it.
 - `scripts/nav-state.js` tracks the last visited series URL for the "Series" nav link, and injects the mobile back button on all inner pages.
 - `pages/explore.html` is the compact topic directory. Its cards link to focused category routes instead of filtering the personalized homepage.
@@ -964,9 +966,9 @@ Run checks before pushing:
 npm run check
 ```
 
-`npm run check` runs the JavaScript, accessibility, generated SEO page, sitemap, and Playwright browser smoke checks. The smoke suite uses `playwright.config.js`, `tests/smoke.spec.js`, and the dependency-free local server in `scripts/test-server.js`.
+`npm run check` runs the JavaScript, accessibility, generated page-shell and SEO-page checks, sitemap checks, and Playwright browser smoke checks. The smoke suite uses `playwright.config.js`, `tests/smoke.spec.js`, and the dependency-free local server in `scripts/test-server.js`.
 
-After any lecture, episode, caption, thumbnail reference, speaker, or series-registry change, first run `npm run generate:content`, then run `npm run check`. The generation command deliberately updates all four derived outputs together so search, recommendations, canonical routes, and the sitemap cannot drift independently.
+After a shell change, edit `scripts/page-shell.js` and run `npm run generate:content`; never edit marked shell regions in HTML directly. After any lecture, episode, caption, thumbnail reference, speaker, or series-registry change, also run `npm run generate:content`, then `npm run check`. The generation command deliberately updates the page shell and all content-derived outputs together so navigation, search, recommendations, canonical routes, and the sitemap cannot drift independently.
 
 ## Deployment Workflow
 

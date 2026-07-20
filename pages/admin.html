@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
     <link rel="manifest" href="./public/site.webmanifest" />
     <meta name="theme-color" content="#176b5b" />
+    <!-- page-shell:head-assets:start -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,22 +21,26 @@
     />
     <link rel="stylesheet" href="./styles/styles.css?v=20260720-ux-flow-2" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
+    <!-- page-shell:head-assets:end -->
     <title>Admin Dashboard | Improving Muslim</title>
   </head>
   <body>
+    <!-- page-shell:header:start -->
     <header class="site-header">
       <nav class="nav-shell" aria-label="Primary navigation">
         <a class="brand" href="./index.html" aria-label="Improving Muslim home">
           <img src="./public/icon.png" alt="" />
           <span>Improving Muslim</span>
         </a>
-        <div class="site-menu page-menu">
+
+        <div class="site-menu page-menu" id="site-menu">
           <a href="./index.html">Home</a>
           <a href="./pages/explore.html">Explore</a>
           <a href="./pages/speakers.html">Speakers</a>
           <a href="./pages/history.html">History</a>
           <a href="./pages/saved.html">Saved</a>
         </div>
+
         <div class="nav-more" id="nav-more">
           <button class="nav-more-trigger" id="nav-more-trigger" type="button" aria-label="More menu" aria-expanded="false" aria-controls="nav-more-menu" aria-haspopup="true">
             <svg class="nav-more-icon-menu" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -43,14 +48,23 @@
             <svg class="nav-more-icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="nav-more-menu" id="nav-more-menu" role="menu" hidden>
-            <a href="./pages/settings.html" role="menuitem">Settings</a>
-            <a href="./pages/roadmap.html" role="menuitem">Roadmap</a>
-            <a href="./pages/feedback.html" role="menuitem">Feedback</a>
-            <a href="./pages/privacy.html" role="menuitem">Privacy</a>
+            <a href="./pages/settings.html" role="menuitem">
+              Settings
+            </a>
+            <a href="./pages/roadmap.html" role="menuitem">
+              Roadmap
+            </a>
+            <a href="./pages/feedback.html" role="menuitem">
+              Feedback
+            </a>
+            <a href="./pages/privacy.html" role="menuitem">
+              Privacy
+            </a>
           </div>
         </div>
       </nav>
     </header>
+    <!-- page-shell:header:end -->
 
     <main>
       <section class="admin-hero">
@@ -128,17 +142,24 @@
       </section>
     </main>
 
+    <!-- page-shell:footer:start -->
     <footer class="site-footer">
       <p>Private product dashboard.</p>
       <a href="./index.html">Home</a>
       <a href="./pages/settings.html">Settings</a>
     </footer>
-
+    <!-- page-shell:footer:end -->
+    <!-- page-shell:runtime:start -->
     <script src="./scripts/utils.js?v=20260717-streak-pure-read" defer></script>
     <script src="./scripts/streak-ui.js?v=20260720-streak-label" defer></script>
     <script src="./scripts/firebase-auth.js?v=20260720-guest-merge" defer></script>
-    <script src="./scripts/admin-dashboard.js?v=20260706-admin-auth-fix" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
     <script src="./scripts/nav-state.js?v=20260720-available-first" defer></script>
+    <!-- page-shell:runtime:end -->
+    <!-- page-shell:bottom-nav:start -->
+
+    <!-- page-shell:bottom-nav:end -->
+
+    <script src="./scripts/admin-dashboard.js?v=20260706-admin-auth-fix" defer></script>
   </body>
 </html>

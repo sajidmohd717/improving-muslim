@@ -18,8 +18,9 @@ plugin, or agent workflows.
   client framework or application bundler unless the project direction changes.
 - Treat `DEV_README.md` as the detailed architecture and operations reference.
 - Do not edit generated files under `series/` or `watch/` by hand. Update their
-  maintained templates or data, then run `npm run generate:seo-pages`.
-- Update affected asset cache-version query strings when changing browser-loaded
-  scripts or styles, then regenerate canonical pages when templates change.
+  maintained templates or data, then run `npm run generate:content`.
+- Do not edit HTML regions between `page-shell:*` comments. Update
+  `scripts/page-shell.js`, including common asset cache versions, then run
+  `npm run generate:content`.
 - Run the relevant validation commands described in `DEV_README.md` before
   committing and pushing.

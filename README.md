@@ -43,7 +43,7 @@ npx playwright install chromium
 npm run check
 ```
 
-The check covers JavaScript syntax, static accessibility rules, generated SEO routes, the sitemap, and Playwright smoke tests. GitHub Actions runs the same suite for pushes and pull requests to `main`.
+The check covers JavaScript syntax, static accessibility rules, the generated page shell and SEO routes, the sitemap, and Playwright smoke tests. GitHub Actions runs the same suite for pushes to `main`.
 
 Useful individual commands:
 
@@ -51,8 +51,10 @@ Useful individual commands:
 |---|---|
 | `npm run check:js` | Validate browser and data JavaScript syntax |
 | `npm run check:a11y` | Audit maintained HTML templates |
+| `npm run page-shell` | Refresh shared headers, footers, mobile navigation, assets, and common runtime scripts |
+| `npm run check:page-shell` | Fail when a maintained page has stale shared shell markup |
 | `npm run check:taxonomy` | Validate category definitions and every category used by maintained content |
-| `npm run generate:content` | Regenerate the catalog, transcript index, canonical pages, and sitemap after content changes |
+| `npm run generate:content` | Regenerate the page shell, catalog, transcript index, canonical pages, and sitemap |
 | `npm run seo-pages` | Regenerate canonical `/series/` and `/watch/` pages |
 | `npm run sitemap` | Regenerate `sitemap.xml` from the catalog |
 | `npm run clean-vtt` | Normalize YouTube captions to bottom-center placement |
