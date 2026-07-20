@@ -38,6 +38,7 @@ Product imagery (thumbnails, speaker photos) comes straight from the repo: `asse
 | `ig-speaker-template.html` | Speaker spotlight source with `{{TOKENS}}` — one template, any speaker |
 | `render-instagram-posts.cjs` | Regenerates **all** post PNGs from the templates (see below) |
 | `instagram/first-post/` | 5-slide intro carousel (SVG sources + PNGs + generator) |
+| `instagram/youtube-comparison/` | "You came for one lecture" comparison post (4:5 feed) — left panel mocks a YouTube-style feed (parody clickbait/gaming/Shorts, no real channels or IP), right panel shows real lecture cards. `distractions-collage.png` holds the AI-generated distraction imagery; the deliberately immodest crop from it is unused. Rendered by `render-instagram-posts.cjs`. |
 | `ads/` | Display banner set (leaderboard 728×90, rectangle 300×250, IG feed 1080×1080, landscape 1280×720, story 1080×1920) as SVG + generator |
 
 ### Regenerating the Instagram posts
@@ -56,7 +57,8 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 2. **Main ad post** created and posted to the official Instagram account, then **boosted as a paid ad** targeting Singapore, UK, United States, France, and Spain (English-speaking Muslim audiences).
 3. **Three speaker spotlight posts** created (Mufti Menk, Omar Suleiman, Ali Hammuda) to fill the account grid so paid-traffic visitors don't land on a one-post account. Intended cadence: post 1–2 days apart, not all at once.
 4. **Speaker/partner outreach via Instagram DM** began — see the table below.
-5. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
+5. **YouTube-comparison post** (`instagram/youtube-comparison/`) created — planned as the account's **5th post**, with a boost intended after posting. Left panel mocks a YouTube feed (parody clickbait/gaming/Shorts — no real channels or third-party IP, deliberately, so Meta doesn't reject the boost); right panel mirrors the real website cards with episode-count/duration badges. Note: the Change of Heart badge says **16 episodes** because that's the site's registry total (`data/series-registry.js`), even though the older advertised-counts list below says 20 — reconcile that list if the registry is right.
+6. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
 
 ### Outreach status
 
@@ -127,6 +129,8 @@ Contact genuine, relevant creators in small batches and keep a record of message
 
 ### Caption bank (reuse/adapt)
 
+YouTube-comparison post caption: *"You open YouTube for one lecture. An hour later you've watched everything except that lecture. Improving Muslim is a free website with one job: Islamic lectures, and nothing pulling you away from them. No ads, no comments, no algorithm. Browse by topic, follow series, keep your progress. improvingmuslim.com — link in bio."*
+
 Main ad caption hook: *"Tired of opening YouTube for one lecture and closing it an hour later, having watched everything except that lecture?"* — then the pitch, feature bullets (browse by topic / follow series / notes / streak), "No ads. No comments. No algorithm pulling you somewhere else.", CTA link in bio.
 
 Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar Suleiman — *"'Why me?' — the question every one of us has asked in hardship."* Two to three sentences, then `improvingmuslim.com — link in bio.`
@@ -134,7 +138,7 @@ Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar
 ## Content guidelines & known cautions
 
 - **Episode counts on ads are full-series counts** (Life of Muhammad 30, Why Me? 30, Angels in Your Presence 31, Change of Heart 20, Enjoy Your Prayer 21) on the commitment that the remaining episodes are uploaded promptly. The currently-watchable counts live in `data/series-registry.js` (`availableCount`). **Before running new paid traffic, make sure the advertised series are fully uploaded** — paid visitors hitting "Uploading soon" is wasted spend.
-- The Omar Suleiman post inherits quirks from the source thumbnails: both say "Trailer" and one carries the Yaqeen Institute logo. Acceptable for organic posts; reconsider before using that specific image in *paid* placements.
+- The Omar Suleiman post's source-thumbnail quirks have been cleaned up (July 2026): the "Trailer" text was inpainted out of `assets/thumbnail/heart-softeners/whyme.jpg` (this also updates the website card), and the Angels in Your Presence card now uses the clean episode-01 thumbnail instead of the "TRAILER"/Yaqeen-logo one. The small "Q" watermark in the whyme.jpg top-right corner was deliberately left — it's source attribution.
 - Ads and posts name real speakers whose consent is still being gathered. That is factually accurate (their content is on the platform) — but if a speaker declines or asks for removal, pull the related posts/ads the same day, no argument.
 - Always link `improvingmuslim.com`. Put it in the account bio (organic captions aren't clickable); use the real destination URL on boosted posts.
 - Instagram bio, boosts: choose interests like Islam, Quran, and the featured speakers' audiences; ages ~18–40; small daily budget over a week beats one large burst.
@@ -143,9 +147,10 @@ Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar
 
 Ideas queued, in rough priority order:
 
-1. Reply to Navaid Aziz with thanks and keep the collaboration open-ended; send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
-2. Post the speaker spotlights on the planned staggered cadence.
-3. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
-4. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
-5. Story/Reel variants (1080×1920) — the `ads/story-1080x1920.svg` banner is a starting point.
-6. Track boost results (reach, link clicks, cost per click) and note what worked here.
+1. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
+2. Reply to Navaid Aziz with thanks and keep the collaboration open-ended; send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
+3. Post the speaker spotlights on the planned staggered cadence.
+4. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
+5. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
+6. Story/Reel variants (1080×1920) — the `ads/story-1080x1920.svg` banner is a starting point.
+7. Track boost results (reach, link clicks, cost per click) and note what worked here.

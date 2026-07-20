@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inria+Serif:wght@700&family=Inter:wght@500;600;700;800;900&display=swap");
+
+      * { box-sizing: border-box; }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1350px;
+        margin: 0;
+        overflow: hidden;
+        background: #f2ece0;
+        color: #18201b;
+        font-family: "Inter", Arial, sans-serif;
+      }
+
+      body::before,
+      body::after {
+        position: absolute;
+        z-index: 0;
+        border-radius: 50%;
+        content: "";
+      }
+
+      body::before {
+        top: -150px;
+        left: -170px;
+        width: 470px;
+        height: 470px;
+        background: #e0d4be;
+      }
+
+      body::after {
+        right: -125px;
+        bottom: -135px;
+        width: 370px;
+        height: 370px;
+        background: #cdddd6;
+      }
+
+      .stage {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        padding: 40px 56px 36px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        margin-bottom: 14px;
+        color: #0f4f43;
+        font-family: "Inria Serif", Georgia, serif;
+        font-size: 34px;
+        font-weight: 700;
+      }
+
+      .brand img {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+      }
+
+      .headline {
+        margin: 0;
+        text-align: center;
+        font-family: "Inria Serif", Georgia, serif;
+        font-size: 66px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1;
+      }
+
+      .headline span { color: #176b5b; }
+
+      .subline {
+        margin: 12px 0 22px;
+        color: #4d5c55;
+        text-align: center;
+        font-size: 25px;
+        font-weight: 700;
+      }
+
+      .comparison {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+      }
+
+      .panel {
+        overflow: hidden;
+        border: 3px solid;
+        border-radius: 26px;
+        height: 826px;
+        box-shadow: 0 24px 48px rgba(24, 32, 27, 0.16);
+      }
+
+      .panel-chaos {
+        border-color: #3a3a3a;
+        background: #0f0f0f;
+      }
+
+      .panel-focus {
+        border-color: #176b5b;
+        background: #fffdf8;
+      }
+
+      .panel-title {
+        display: flex;
+        height: 56px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 25px;
+        font-weight: 900;
+        letter-spacing: 1.1px;
+      }
+
+      .panel-chaos .panel-title {
+        background: #1c1c1c;
+        color: #f1f1f1;
+      }
+
+      .panel-focus .panel-title {
+        background: #176b5b;
+        color: #fffdf8;
+      }
+
+      /* ---------- Left: YouTube-style feed ---------- */
+
+      .yt-feed { padding: 16px 16px 0; }
+
+      .yt-card { margin-bottom: 15px; }
+
+      .yt-thumb {
+        position: relative;
+        height: 150px;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #111;
+      }
+
+      .yt-thumb .crop {
+        width: 100%;
+        height: 100%;
+        background-image: url("./distractions-collage.png");
+        background-repeat: no-repeat;
+        background-size: 300% auto;
+      }
+
+      .crop-mystery { background-position: 0% 30%; }
+      .crop-gaming { background-position: 50% 22%; }
+
+      .yt-duration {
+        position: absolute;
+        right: 9px;
+        bottom: 9px;
+        padding: 3px 7px;
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .yt-live {
+        position: absolute;
+        left: 9px;
+        bottom: 9px;
+        padding: 3px 8px;
+        border-radius: 5px;
+        background: #c00;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      .yt-info {
+        display: flex;
+        gap: 11px;
+        padding: 10px 2px 0;
+      }
+
+      .yt-avatar {
+        flex: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-top: 2px;
+      }
+
+      .av-mystery { background: linear-gradient(135deg, #8ec5ff, #2f6fed); }
+      .av-gaming { background: linear-gradient(135deg, #ffd66b, #e2543a); }
+
+      .yt-title {
+        margin: 0;
+        color: #f1f1f1;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .yt-meta {
+        margin-top: 4px;
+        color: #9b9b9b;
+        font-size: 15.5px;
+        font-weight: 600;
+      }
+
+      .yt-shorts-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 2px 2px 10px;
+        color: #f1f1f1;
+        font-size: 19px;
+        font-weight: 800;
+      }
+
+      .shorts-bolt {
+        width: 20px;
+        height: 24px;
+        background: #f00;
+        clip-path: polygon(50% 0, 100% 25%, 68% 42%, 100% 60%, 50% 100%, 0 75%, 32% 58%, 0 40%);
+      }
+
+      .yt-shorts {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 11px;
+      }
+
+      .short {
+        position: relative;
+        height: 178px;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #111;
+      }
+
+      .short .crop {
+        width: 100%;
+        height: 100%;
+        background-image: url("./distractions-collage.png");
+        background-repeat: no-repeat;
+        background-size: 1000% auto;
+      }
+
+      .crop-burger { background-position: 74.5% 16%; }
+      .crop-sundae { background-position: 74.5% 83%; }
+      .crop-dog { background-position: 100% 83%; }
+
+      .short::after {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+        content: "";
+      }
+
+      .short-views {
+        position: absolute;
+        z-index: 2;
+        left: 10px;
+        bottom: 9px;
+        color: #fff;
+        font-size: 14.5px;
+        font-weight: 700;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      }
+
+      /* ---------- Right: Improving Muslim feed ---------- */
+
+      .im-feed { padding: 16px 16px 0; }
+
+      .im-card {
+        margin-bottom: 12px;
+        overflow: hidden;
+        border: 1px solid #e3dccb;
+        border-radius: 16px;
+        background: #fffdf8;
+        box-shadow: 0 6px 16px rgba(24, 32, 27, 0.07);
+      }
+
+      .im-thumb {
+        position: relative;
+        height: 130px;
+        overflow: hidden;
+        background: #111;
+      }
+
+      .im-thumb img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .im-progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.35);
+      }
+
+      .im-progress i {
+        display: block;
+        width: 62%;
+        height: 100%;
+        background: #c89b3c;
+      }
+
+      .im-badge {
+        position: absolute;
+        right: 9px;
+        bottom: 11px;
+        padding: 4px 10px 5px;
+        border-radius: 999px;
+        background: rgba(17, 22, 19, 0.82);
+        color: #fffdf8;
+        font-size: 14.5px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+
+      .im-info { padding: 9px 14px 11px; }
+
+      .im-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: #18201b;
+      }
+
+      .im-meta {
+        margin-top: 3px;
+        color: #7a857e;
+        font-size: 15.5px;
+        font-weight: 600;
+      }
+
+      .im-tag {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 3px 10px 4px;
+        border-radius: 999px;
+        background: #e9f1ed;
+        color: #176b5b;
+        font-size: 13.5px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+
+      .im-tag.gold {
+        background: #f7efdc;
+        color: #9a7526;
+      }
+
+      .vs {
+        position: absolute;
+        z-index: 5;
+        top: 382px;
+        left: 50%;
+        display: grid;
+        width: 62px;
+        height: 62px;
+        transform: translateX(-50%);
+        place-items: center;
+        border: 5px solid #f2ece0;
+        border-radius: 50%;
+        background: #c89b3c;
+        color: #18201b;
+        box-shadow: 0 9px 20px rgba(24, 32, 27, 0.24);
+        font-size: 20px;
+        font-weight: 900;
+      }
+
+      .closing {
+        margin-top: 24px;
+        text-align: center;
+      }
+
+      .closing strong {
+        display: block;
+        font-family: "Inria Serif", Georgia, serif;
+        font-size: 48px;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .closing strong span { color: #176b5b; }
+
+      .url {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 12px 30px 13px;
+        border-radius: 999px;
+        background: #176b5b;
+        color: #fffdf8;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: 0.3px;
+      }
+
+      .promise {
+        margin-top: 10px;
+        color: #4d5c55;
+        font-size: 18px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage">
+      <div class="brand">
+        <img src="../../../public/icon.png" alt="" />
+        <span>Improving Muslim</span>
+      </div>
+
+      <h1 class="headline">You came for <span>one lecture.</span></h1>
+      <p class="subline">The algorithm has other plans.</p>
+
+      <section class="comparison" aria-label="YouTube distractions compared with focused Islamic learning">
+        <article class="panel panel-chaos">
+          <div class="panel-title">WHERE YOU END UP</div>
+          <div class="yt-feed">
+            <div class="yt-card">
+              <div class="yt-thumb">
+                <div class="crop crop-mystery"></div>
+                <span class="yt-duration">24:31</span>
+              </div>
+              <div class="yt-info">
+                <span class="yt-avatar av-mystery"></span>
+                <div>
+                  <p class="yt-title">I Opened 100 Mystery Boxes!! ($500,000)</p>
+                  <p class="yt-meta">87M views &middot; 2 days ago</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="yt-card">
+              <div class="yt-thumb">
+                <div class="crop crop-gaming"></div>
+                <span class="yt-live">LIVE</span>
+              </div>
+              <div class="yt-info">
+                <span class="yt-avatar av-gaming"></span>
+                <div>
+                  <p class="yt-title">This Deck is UNSTOPPABLE &#x1F3C6; Ladder Push</p>
+                  <p class="yt-meta">12M views &middot; Streaming now</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="yt-shorts-label"><span class="shorts-bolt"></span> Shorts</div>
+            <div class="yt-shorts">
+              <div class="short">
+                <div class="crop crop-burger"></div>
+                <span class="short-views">21M views</span>
+              </div>
+              <div class="short">
+                <div class="crop crop-sundae"></div>
+                <span class="short-views">9.4M views</span>
+              </div>
+              <div class="short">
+                <div class="crop crop-dog"></div>
+                <span class="short-views">36M views</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel panel-focus">
+          <div class="panel-title">WHAT YOU CAME FOR</div>
+          <div class="im-feed">
+            <div class="im-card">
+              <div class="im-thumb">
+                <img src="../../../assets/thumbnail/why-me/episodes/episode-01.jpg" style="object-position: 50% 62%" alt="" />
+                <span class="im-badge">30 episodes</span>
+                <span class="im-progress"><i></i></span>
+              </div>
+              <div class="im-info">
+                <p class="im-title">Why Me?</p>
+                <p class="im-meta">Omar Suleiman</p>
+                <span class="im-tag gold">Continue watching &middot; 12 min left</span>
+              </div>
+            </div>
+
+            <div class="im-card">
+              <div class="im-thumb">
+                <img src="../../../assets/thumbnail/change-of-heart/episodes/episode-01.jpg" alt="" />
+                <span class="im-badge">16 episodes</span>
+              </div>
+              <div class="im-info">
+                <p class="im-title">Change of Heart</p>
+                <p class="im-meta">Ali Hammuda</p>
+                <span class="im-tag">Heart Softeners</span>
+              </div>
+            </div>
+
+            <div class="im-card">
+              <div class="im-thumb">
+                <img src="../../../assets/thumbnail/standalone/mufti-menk/purpose-of-creation.jpg" alt="" />
+                <span class="im-badge">1:01:43</span>
+              </div>
+              <div class="im-info">
+                <p class="im-title">Purpose of Creation</p>
+                <p class="im-meta">Mufti Menk</p>
+                <span class="im-tag">Guidance</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div class="vs">VS</div>
+      </section>
+
+      <footer class="closing">
+        <strong>Choose <span>what you came for.</span></strong>
+        <div class="url">improvingmuslim.com</div>
+        <div class="promise">No ads &middot; No comments &middot; No algorithm</div>
+      </footer>
+    </main>
+  </body>
+</html>

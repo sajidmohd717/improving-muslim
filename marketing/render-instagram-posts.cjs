@@ -35,7 +35,7 @@ const speakers = [
     COUNT1: "30 episodes",
     TITLE1: "Why Me?",
     SUB1: "Purification series",
-    THUMB2: "../assets/thumbnail/heart-softeners/angels1.jpg",
+    THUMB2: "../assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
     COUNT2: "31 episodes",
     TITLE2: "Angels in Your Presence",
     SUB2: "Short episodes · perfect for daily habit",
@@ -82,6 +82,12 @@ const speakers = [
     await shoot(".ig-speaker-tmp.html", s.out);
   }
   fs.unlinkSync(tmp);
+
+  // 3. YouTube-distractions comparison post
+  await shoot(
+    "instagram/youtube-comparison/template.html",
+    "instagram/youtube-comparison/instagram-feed-1080x1350.png",
+  );
 
   await browser.close();
 })();
