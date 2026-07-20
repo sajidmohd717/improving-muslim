@@ -2,7 +2,7 @@
 
 This folder holds everything publicity-related for Improving Muslim: finished social assets, the templates and scripts that generate them, and this guide. It documents what has been done so far and how to continue, so anyone joining can pick up without re-deriving decisions.
 
-Status snapshot as of **20 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
+Status snapshot as of **21 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
 
 ## The pitch (use this framing everywhere)
 
@@ -59,6 +59,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 4. **Speaker/partner outreach via Instagram DM** began — see the table below.
 5. **YouTube-comparison post** (`instagram/youtube-comparison/`) created — planned as the account's **5th post**, with a boost intended after posting. Left panel mocks a YouTube feed (parody clickbait/gaming/Shorts — no real channels or third-party IP, deliberately, so Meta doesn't reject the boost); right panel mirrors the real website cards with episode-count/duration badges. Note: the Change of Heart badge says **16 episodes** because that's the site's registry total (`data/series-registry.js`), even though the older advertised-counts list below says 20 — reconcile that list if the registry is right.
 6. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
+7. **First paid speaker-promotion proposal sent:** Navaid Aziz was offered **USD $75–$100** for a short Instagram Reel introducing Improving Muslim, with permission for Improving Muslim to repost the same video organically on its own YouTube Shorts and TikTok accounts with credit. The proposal is awaiting his response; paid-ad usage was not requested or included.
 
 ### Outreach status
 
@@ -67,7 +68,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 | Hisham Abu Yusuf | DM sent | His lecture "Why Am I Here?" is featured; feedback + consent + collaboration |
 | Ali Dawah | DM sent | General platform pitch; feedback + collaboration |
 | OnePath Network | Drafted, not yet sent | **Forward-looking permission** — no OnePath content is on the platform yet; asking before featuring any |
-| Navaid Aziz | Permission granted; collaboration open | His 40 Hadith of Imam Nawawi series is featured; direct consent received; no immediate commitment requested |
+| Navaid Aziz | Permission granted; nine additional playlists supplied; paid Reel proposal sent, awaiting response | His 40 Hadith of Imam Nawawi series is featured; proposed USD $75–$100 Instagram Reel with credited organic reposting on Improving Muslim's YouTube Shorts and TikTok accounts |
 | Majed Mahmoud | Drafted, not yet sent | His Prophet-stories lectures + du'aa lecture are featured; consent + feedback |
 
 **Outreach principles — keep these:**
@@ -171,7 +172,7 @@ Every dollar spent on publicity goes here, so total spend is always known at a g
 Ideas queued, in rough priority order:
 
 1. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
-2. Reply to Navaid Aziz with thanks and keep the collaboration open-ended; send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
+2. Await Navaid Aziz's response to the paid Reel proposal while continuing to add the playlists he supplied. If he is interested, agree in writing on the Reel length and content, posting account and timing, sponsorship disclosure, revisions, payment timing, and credited organic reposting rights for Improving Muslim's YouTube Shorts and TikTok accounts. Any paid-ad usage must be negotiated separately. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
 3. Post the speaker spotlights on the planned staggered cadence.
 4. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
 5. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
