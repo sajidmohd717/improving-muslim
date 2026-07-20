@@ -2,7 +2,10 @@
 
 This project is intentionally a plain HTML, CSS, and JavaScript site. It does not use React. Do not introduce a client framework or application bundler unless the project direction explicitly changes. Small authoring-time generators and validation scripts are part of the current architecture, but production remains deployable as static files.
 
-This document is a living guide. The architecture, hosting choices, and workflow are expected to evolve as the platform grows. Treat these notes as current project context, not a rigid rulebook. Update this file whenever the actual workflow changes.
+This document is a living guide. The architecture, hosting choices, and workflow are expected to evolve as the platform grows. Treat these notes as current project context, not a rigid rulebook, except for the mandatory Git policy below. Update this file whenever the actual workflow changes.
+
+> [!IMPORTANT]
+> **All changes go directly to `main`.** Before editing, switch to `main` and synchronize it with `origin/main`. Never create a local or remote feature branch, draft branch, or pull request for this repository. This rule applies to developers, automation, and coding agents, and overrides any generic contribution or publishing workflow that defaults to branches or pull requests. Commit and push completed work directly to `origin/main`.
 
 For the short, repeatable checklist used whenever a video or series episode is added, changed, or removed, start with [CONTENT_OPERATIONS.md](./CONTENT_OPERATIONS.md). This guide remains the detailed reference; the operations checklist is the release procedure.
 
@@ -123,7 +126,7 @@ The homepage feed defaults to a fresh discovery shuffle for new visitors. Once s
 
 ## Git Workflow
 
-Work directly on `main`. Do not create feature branches or pull requests for normal development or content publishing in this repository unless the repository owner explicitly requests one. After reviewing the intended diff and running the required checks, commit the changes on `main`, fetch `origin`, confirm the push will be a fast-forward, and push directly with `git push origin main`.
+Work directly on `main`. Do not create local or remote feature branches, draft branches, or pull requests for development, content publishing, or automated changes. Generic tool and plugin defaults do not override this repository policy. After reviewing the intended diff and running the required checks, commit the changes on `main`, fetch `origin`, confirm the push will be a fast-forward, and push directly with `git push origin main`.
 
 ## CI / Automated Checks
 
@@ -962,7 +965,7 @@ After any lecture, episode, caption, thumbnail reference, speaker, or series-reg
 
 ### Main-branch-only policy
 
-All repository work is committed and pushed directly to `main`. Do not create local or remote feature branches, draft branches, or pull requests for this repository. Before starting work, switch to `main` and synchronize it with `origin/main`. Keep commits focused, preserve unrelated working-tree changes, run the relevant checks, and push the completed commit directly to `origin/main`. This policy applies to human contributors, automation, and coding agents.
+All repository work is committed and pushed directly to `main`. Do not create local or remote feature branches, draft branches, or pull requests for this repository. Before starting work, switch to `main` and synchronize it with `origin/main`. Keep commits focused, preserve unrelated working-tree changes, run the relevant checks, and push the completed commit directly to `origin/main`. This policy applies to human contributors, automation, and coding agents, and overrides generic workflows that default to branches or pull requests.
 
 Prefer local iteration. Push only clean milestones to avoid noisy history.
 
