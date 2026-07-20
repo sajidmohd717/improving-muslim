@@ -131,7 +131,20 @@ Contact genuine, relevant creators in small batches and keep a record of message
 
 YouTube-comparison post caption: *"You open YouTube for one lecture. An hour later you've watched everything except that lecture. Improving Muslim is a free website with one job: Islamic lectures, and nothing pulling you away from them. No ads, no comments, no algorithm. Browse by topic, follow series, keep your progress. improvingmuslim.com — link in bio."*
 
-Main ad caption hook: *"Tired of opening YouTube for one lecture and closing it an hour later, having watched everything except that lecture?"* — then the pitch, feature bullets (browse by topic / follow series / notes / streak), "No ads. No comments. No algorithm pulling you somewhere else.", CTA link in bio.
+Main ad post — caption as actually posted (and boosted):
+
+> Tired of opening YouTube for one lecture and closing it an hour later, having watched everything except that lecture?
+>
+> We built Improving Muslim for exactly that problem — a free platform with 100+ Islamic lectures and series in one quiet place:
+>
+> 🕌 Browse by topic — Seerah, Quran, Prayer, Purification & more
+> 📿 Follow full series from Mufti Menk, Omar Suleiman, Ali Hammuda & others
+> ✍️ Take timestamped notes while you watch
+> 🔥 Build a daily learning streak
+>
+> No ads. No comments. No algorithm pulling you somewhere else.
+>
+> Start watching free — link in bio 👉 improvingmuslim.com
 
 Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar Suleiman — *"'Why me?' — the question every one of us has asked in hardship."* Two to three sentences, then `improvingmuslim.com — link in bio.`
 
@@ -142,6 +155,16 @@ Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar
 - Ads and posts name real speakers whose consent is still being gathered. That is factually accurate (their content is on the platform) — but if a speaker declines or asks for removal, pull the related posts/ads the same day, no argument.
 - Always link `improvingmuslim.com`. Put it in the account bio (organic captions aren't clickable); use the real destination URL on boosted posts.
 - Instagram bio, boosts: choose interests like Islam, Quran, and the featured speakers' audiences; ages ~18–40; small daily budget over a week beats one large burst.
+
+## Spending log
+
+Every dollar spent on publicity goes here, so total spend is always known at a glance. Log new boosts/ads as soon as they run; add results (reach, link clicks, cost per click) when the campaign finishes.
+
+| Date | What | Amount | Results |
+|---|---|---|---|
+| July 2026 | Boost of the main ad post ("Tired of opening YouTube for one lecture…" — `instagram-post-1080x1350.png`), targeting Singapore, UK, US, France, Spain | $20.00 | Not yet recorded — pull reach/clicks from Meta Ads Manager and note here |
+
+**Total spent to date: $20.00**
 
 ## Where to pick up
 
