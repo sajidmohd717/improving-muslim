@@ -193,10 +193,31 @@ function homeCardIdentity(item) {
   return item.contentType === "video" ? `video:${item.sourceId}` : `series:${item._seriesSlug}`;
 }
 
+function getDiscoveryHomeOrder(list) {
+  const shuffledSeries = list
+    .filter((item) => item.contentType !== "video")
+    .sort((a, b) => stableRandomKey(a.title) - stableRandomKey(b.title));
+  const shuffledVideos = list
+    .filter((item) => item.contentType === "video")
+    .sort((a, b) => stableRandomKey(a.title) - stableRandomKey(b.title));
+  const mixed = [];
+
+  // Keep the first impression balanced: series are the platform's strongest
+  // differentiator, while standalone lectures still appear throughout the
+  // feed. Starting with a series also gives mobile visitors the clearest cue
+  // that this is more than a conventional video feed.
+  while (shuffledSeries.length || shuffledVideos.length) {
+    if (shuffledSeries.length) mixed.push(shuffledSeries.shift());
+    if (shuffledVideos.length) mixed.push(shuffledVideos.shift());
+  }
+
+  return mixed;
+}
+
 function getPersonalizedHomeOrder(list) {
   const catalogItems = window.catalogIndex?.items || [];
   if (!window.IMRelated || !catalogItems.length) {
-    return { items: getSortedSeries(list), personalized: false };
+    return { items: getDiscoveryHomeOrder(list), personalized: false };
   }
 
   const itemByProgressKey = new Map(
@@ -216,7 +237,7 @@ function getPersonalizedHomeOrder(list) {
     .slice(0, 3);
 
   if (!seeds.length) {
-    return { items: getSortedSeries(list), personalized: false };
+    return { items: getDiscoveryHomeOrder(list), personalized: false };
   }
 
   const popularity = window.IMPopularity ? window.IMPopularity.cachedCounts() : {};
@@ -255,7 +276,7 @@ function getPersonalizedHomeOrder(list) {
       return difference || stableRandomKey(a.title) - stableRandomKey(b.title);
     });
   if (!relevant.length) {
-    return { items: getSortedSeries(list), personalized: false };
+    return { items: getDiscoveryHomeOrder(list), personalized: false };
   }
 
   // Cap the recommendation pool and interleave one discovery card after every
@@ -1229,7 +1250,7 @@ function renderSeries() {
     els.seriesTitle.textContent = isSearching
       ? `Search results for "${state.searchTerm}"`
       : state.activeCategory === "foryou"
-      ? "For you"
+      ? personalizedHome ? "For you" : "Discover"
       : "Lectures and series";
   }
   els.seriesGrid.dataset.feedMode = personalizedHome ? "personalized" : "discovery";
@@ -1304,7 +1325,7 @@ function renderSeries() {
             ${state.aiSearch.reasonById[searchItemId(item)] ? `<span class="label-badge label-ai">AI match</span>` : ""}
             ${item._badge
               ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
-              : item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
+              : !isVideo && item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
             }
             <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>

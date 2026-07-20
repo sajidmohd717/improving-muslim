@@ -105,6 +105,8 @@ const grammarNotesPanel = document.querySelector("#grammar-notes-panel");
 const grammarNotesBody = document.querySelector("#watch-grammar-notes");
 const takeawaysPanel = document.querySelector("#takeaways-panel");
 const takeawaysList = document.querySelector("#watch-takeaways .takeaway-list");
+const notesPanel = document.querySelector(".notes-panel");
+const notesPanelToggle = document.querySelector("#notes-panel-toggle");
 const notesTextarea = document.querySelector("#notes-textarea");
 const notesEditView = document.querySelector("#notes-edit-view");
 const notesPreviewView = document.querySelector("#notes-preview-view");
@@ -576,6 +578,25 @@ if (notesTextarea) {
 
   // Load saved note and keep it saved shortly after the user stops typing.
   notesTextarea.value = readNote().text || "";
+
+  function setNotesPanelCollapsed(collapsed) {
+    if (!notesPanel || !notesPanelToggle) return;
+    notesPanel.classList.toggle("is-collapsed", collapsed);
+    notesPanelToggle.setAttribute("aria-expanded", String(!collapsed));
+    notesPanelToggle.setAttribute("aria-label", collapsed ? "Open notes editor" : "Collapse notes editor");
+  }
+
+  // Empty editors start compact on phones so takeaways, recaps, and the next
+  // lecture remain close to the player. Existing notes always open in full.
+  setNotesPanelCollapsed(
+    window.matchMedia?.("(max-width: 600px)").matches && !notesTextarea.value.trim(),
+  );
+
+  notesPanelToggle?.addEventListener("click", () => {
+    const shouldCollapse = !notesPanel.classList.contains("is-collapsed");
+    setNotesPanelCollapsed(shouldCollapse);
+    if (!shouldCollapse) notesTextarea.focus();
+  });
 
   let notesSaveTimer = null;
   let notesStatusClearTimer = null;

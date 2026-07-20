@@ -522,6 +522,15 @@
   color: var(--ink);
 }
 
+.notes-panel-title {
+  min-width: 0;
+}
+
+.notes-panel-summary,
+.notes-panel-toggle {
+  display: none;
+}
+
 .notes-tabs {
   display: flex;
   flex-shrink: 0;
@@ -719,6 +728,75 @@
 .notes-clear-btn:focus-visible {
   color: var(--rose);
   outline: none;
+}
+
+@media (max-width: 600px) {
+  .notes-panel-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .notes-panel-title {
+    flex: 1 1 auto;
+  }
+
+  .notes-panel-summary {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .notes-panel-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: -8px -8px -8px 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .notes-panel-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -3px;
+  }
+
+  .notes-panel-toggle svg {
+    transition: transform 160ms ease;
+  }
+
+  .notes-tabs {
+    order: 3;
+    margin-left: auto;
+  }
+
+  .notes-panel.is-collapsed {
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
+  .notes-panel.is-collapsed .notes-panel-head {
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .notes-panel.is-collapsed .notes-panel-summary {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .notes-panel.is-collapsed .notes-panel-toggle svg {
+    transform: rotate(-90deg);
+  }
+
+  .notes-panel.is-collapsed .notes-tabs,
+  .notes-panel.is-collapsed .notes-panel-body {
+    display: none;
+  }
 }
 
 /* ─── Related lectures (sidebar) ────────────────────────────────────────── */

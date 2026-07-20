@@ -790,6 +790,9 @@
 
   .result-count {
     margin-top: 8px;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .catalog-pagination {

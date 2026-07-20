@@ -60,6 +60,27 @@
   margin-bottom: 20px;
 }
 
+@media (max-width: 600px) {
+  .ep-filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-right: -16px;
+    padding: 0 16px 4px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
+    mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
+  }
+
+  .ep-filter-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ep-filter-btn {
+    flex: 0 0 auto;
+  }
+}
+
 .ep-filter-btn {
   padding: 6px 14px;
   border-radius: 999px;

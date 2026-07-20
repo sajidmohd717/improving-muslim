@@ -6,9 +6,21 @@
   gap: 8px;
   overflow-x: auto;
   padding: 4px 0 12px;
-  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
   -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 52px), transparent 100%);
   mask-image: linear-gradient(to right, black 0%, black calc(100% - 52px), transparent 100%);
+}
+
+.speaker-strip {
+  scrollbar-width: thin;
+}
+
+.category-strip {
+  scrollbar-width: none;
+}
+
+.category-strip::-webkit-scrollbar {
+  display: none;
 }
 
 /* Desktop has room to show every topic — wrap instead of scroll */

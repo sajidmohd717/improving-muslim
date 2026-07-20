@@ -182,8 +182,13 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   );
   await expect(page.getByRole("searchbox", { name: "Search lectures" })).toBeVisible();
   await expectCatalog(page);
-  await expect(page.getByRole("heading", { level: 2, name: "For you" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "Discover" })).toBeVisible();
   await expect(page.locator("#series-grid")).toHaveAttribute("data-feed-mode", "discovery");
+  const discoveryTypes = await page.locator("#series-grid .series-title").evaluateAll((links) =>
+    links.slice(0, 4).map((link) => link.getAttribute("href").includes("/series/") ? "series" : "video"),
+  );
+  expect(discoveryTypes).toEqual(["series", "video", "series", "video"]);
+  await expect(page.locator("#series-grid").getByText("Standalone Video", { exact: true })).toHaveCount(0);
 
   const prayerFilter = page.getByRole("button", { name: "Prayer", exact: true });
   await prayerFilter.click();
@@ -933,6 +938,37 @@ test.describe("mobile navigation", () => {
     );
     expect(hasHorizontalOverflow).toBe(false);
     await expect(page.locator(".bottom-nav")).toBeVisible();
+    expect(pageErrors).toEqual([]);
+  });
+
+  test("keeps mobile search, notes, and episode filters compact", async ({ page }) => {
+    const pageErrors = await preparePage(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const search = page.getByRole("searchbox", { name: "Search lectures" });
+    await search.fill("sabr");
+    await search.press("Enter");
+    await expect(page.getByRole("heading", { level: 2, name: 'Search results for "sabr"' })).toBeVisible();
+    await expect.poll(() => page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    )).toBe(true);
+
+    await page.goto("/watch/change-of-heart/vLb4YF-0F5M/", { waitUntil: "domcontentloaded" });
+    const notesPanel = page.locator(".notes-panel");
+    const notesToggle = page.getByRole("button", { name: "Open notes editor" });
+    await expect(notesPanel).toHaveClass(/\bis-collapsed\b/);
+    await expect(page.locator("#notes-panel-body")).toBeHidden();
+    await notesToggle.click();
+    await expect(page.locator("#notes-panel-body")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Collapse notes editor" })).toHaveAttribute("aria-expanded", "true");
+
+    await page.goto("/series/change-of-heart/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#episode-filters-row .ep-filter-btn")).toHaveCount(4);
+    const filterLayout = await page.locator("#episode-filters-row").evaluate((row) => ({
+      flexWrap: getComputedStyle(row).flexWrap,
+      withinViewport: document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    }));
+    expect(filterLayout).toEqual({ flexWrap: "nowrap", withinViewport: true });
     expect(pageErrors).toEqual([]);
   });
 });
