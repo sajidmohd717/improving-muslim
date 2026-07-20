@@ -16,7 +16,7 @@ The application is intentionally built with plain HTML, CSS, and JavaScript; it 
 - Light, dark, and system themes, reduced-motion support, responsive navigation, and generated crawlable series/watch pages
 - Local keyword search that works independently, with optional AI reranking through a Cloudflare Worker
 
-As of 18 July 2026, the catalog contains 12 series and 27 standalone lectures, with 110 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
+As of 21 July 2026, the catalog contains 13 series and 27 standalone lectures, with 126 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
 
 ## Run locally
 

@@ -72,7 +72,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 12 series and 27 standalone lectures. Ninety-three series episodes and all 27 standalone lectures are currently watchable, for 120 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 21 July 2026: the catalog has 13 series and 27 standalone lectures. Ninety-nine series episodes and all 27 standalone lectures are currently watchable, for 126 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -82,6 +82,7 @@ Snapshot as of 21 July 2026: the catalog has 12 series and 27 standalone lecture
 | Fortress of the Muslim | Assim Al-Hakeem | Dhikr | 5 / 13 |
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | 8 / 46 |
+| Tafsir Surah al-Kahf | Navaid Aziz | Quran, Tafsir | 6 / 12 |
 | Change of Heart | Ali Hammuda | Purification | 10 / 16 |
 | Why Me? | Omar Suleiman | Purification | 13 / 30 |
 | Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
@@ -385,7 +386,9 @@ Requires `yt-dlp`, `ffmpeg`, and the AWS CLI with the `r2` profile (see above) o
 
 For standalone lectures the script now auto-scaffolds the mechanical metadata after upload: it fetches the duration and upload date, downloads the thumbnail (maxresdefault, falling back to hqdefault), downloads and cleans the English captions, and prints a metadata object with `id`, `speakerSlug`, `published`, `duration`, `sourceUrl`, `thumbnailSrc`, `videoSrc`, and `captionsSrc` pre-filled. Only the editorial fields (`speaker`, `categories`, `topic`, `description`, and optional `takeaways`/`recap`) are left as `TODO` for you to complete before pasting the object into `data/standalone-lectures-data.js`. Pass `-NoScaffold` to upload without scaffolding.
 
-**Video quality:** the script downloads the best available **H.264 (avc1)** stream, capped at 1080p — this is a deliberate ceiling, not a limitation of the tool. YouTube serves 1440p/4K only as AV1 (even inside an `.mp4` container), and AV1 playback is unreliable on older iOS/Safari and some Android WebViews. Since this site plays video natively with no transcoding step, 1080p H.264 is the highest resolution that's guaranteed to play across every target device. Before publishing a series you want in higher quality, check what's actually available with `yt-dlp -F "<url>"` — older/re-encoded YouTube uploads may only offer 144p-480p regardless of the codec cap.
+**Video quality:** the script downloads the best available **H.264 (avc1)** stream using a duration-based ceiling: videos longer than 20 minutes use 720p, while videos up to and including 20 minutes use 1080p. Long lectures therefore use substantially less R2 storage and viewer bandwidth, while short videos retain the extra detail of 1080p. Pass `-MaxHeight 720` or `-MaxHeight 1080` to override the automatic choice when small on-screen text or another source-specific reason warrants it.
+
+H.264 remains mandatory for broad playback compatibility. YouTube commonly serves 1440p/4K as AV1 even inside an `.mp4` container, and AV1 playback is unreliable on older iOS/Safari and some Android WebViews. Since this site plays video natively with no transcoding step, the publisher deliberately avoids those higher-resolution AV1 streams. Check the available source formats with `yt-dlp -F "<url>"` when quality is uncertain; older or re-encoded uploads may only offer 144p–480p regardless of the selected ceiling.
 
 **Local disk:** downloaded files live under `tmp/yt-dlp/` (gitignored) and are deleted automatically once the R2 upload is confirmed, so the cache doesn't grow unbounded. Pass `-KeepLocal` to keep the file for spot-checking.
 

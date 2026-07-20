@@ -125,6 +125,7 @@ The `speaker` and `speakerSlug` values in the lecture must exactly match this re
 - Confirm the R2 URL returns `200 OK` and `Content-Type: video/mp4`.
 - Confirm the server advertises `Accept-Ranges: bytes` so seeking works.
 - Confirm the MP4 is H.264 video with AAC audio.
+- Confirm the publisher selected 720p for videos longer than 20 minutes or 1080p for videos up to 20 minutes, unless a documented `-MaxHeight` override was intentional.
 - Confirm the remote duration matches the metadata duration.
 - Confirm the thumbnail exists locally and is preferably 1280x720.
 - Confirm the caption file begins with `WEBVTT` and covers the expected runtime.

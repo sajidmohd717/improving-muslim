@@ -61,6 +61,11 @@
   By default the local copy is deleted once R2 confirms the upload, so
   the download cache doesn't quietly grow on disk.
 
+.PARAMETER MaxHeight
+  Override the automatic video-resolution policy. Accepted values are 720
+  and 1080. By default, videos longer than 20 minutes use 720p and videos
+  up to 20 minutes use 1080p.
+
 .PARAMETER NoScaffold
   Standalone mode only. Skip the post-upload metadata scaffolding (thumbnail
   download, caption download/clean, and metadata stub). Upload only.
@@ -88,6 +93,8 @@ param(
   [switch]$Interactive,
   [switch]$SkipFix,
   [switch]$KeepLocal,
+  [ValidateSet(720, 1080)]
+  [int]$MaxHeight,
   [switch]$NoScaffold,
   [switch]$ScaffoldOnly,
   [switch]$DryRun
@@ -110,9 +117,8 @@ $CLEAN_VTT      = Join-Path $PSScriptRoot "clean-vtt.js"
 # inside an mp4 container too, and ext=mp4 would happily grab that. AV1
 # playback is unreliable on older iOS/Safari and some Android WebViews, and
 # this site plays video natively with no transcoding step, so we explicitly
-# require the avc1 (H.264) codec, which caps out at 1080p on YouTube. You
-# still only get whatever resolution YouTube actually stored for the source.
-$YTDLP_FORMAT   = "bestvideo[vcodec^=avc1][ext=mp4]+bestaudio[ext=m4a]/best[vcodec^=avc1][ext=mp4]/best[ext=mp4]/best"
+# require the avc1 (H.264) codec. Get-LocalVideo adds the resolution ceiling
+# selected from the source duration (or the explicit -MaxHeight override).
 
 # ---- helpers ----
 
@@ -364,12 +370,42 @@ function Add-VideoSrc {
 
 # ---- download + fix + upload building blocks ----
 
+function Get-SelectedVideoHeight {
+  param([string]$Url)
+
+  if ($MaxHeight) {
+    Write-Ok "Video quality override: ${MaxHeight}p"
+    return $MaxHeight
+  }
+
+  $meta = Get-VideoMeta -Url $Url
+  if (-not $meta -or -not $meta.duration) {
+    Write-Warn "Could not determine video duration; using the bandwidth-conscious 720p default"
+    return 720
+  }
+
+  $durationSeconds = [double]$meta.duration
+  $height = if ($durationSeconds -gt 1200) { 720 } else { 1080 }
+  $durationMinutes = [math]::Round($durationSeconds / 60, 1)
+  Write-Ok "Automatic video quality: ${height}p (${durationMinutes} minutes)"
+  return $height
+}
+
+function Get-YtDlpFormat {
+  param([int]$Height)
+
+  return "bestvideo[vcodec^=avc1][ext=mp4][height<=$Height]+bestaudio[ext=m4a]/best[vcodec^=avc1][ext=mp4][height<=$Height]/best[ext=mp4][height<=$Height]/best[height<=$Height]"
+}
+
 # Download from YouTube and (unless -SkipFix) remux with faststart. Writes the
 # ready-to-upload file to "$DownloadDir\$BaseName.mp4". Does NOT return a value:
 # the external tools' stdout would pollute the return, so callers compute the
 # resulting path themselves from $DownloadDir + $BaseName.
 function Get-LocalVideo {
   param([string]$Url, [string]$DownloadDir, [string]$BaseName)
+
+  $selectedHeight = Get-SelectedVideoHeight -Url $Url
+  $ytDlpFormat = Get-YtDlpFormat -Height $selectedHeight
 
   if (-not $DryRun) {
     New-Item -ItemType Directory -Force -Path $DownloadDir | Out-Null
@@ -381,14 +417,33 @@ function Get-LocalVideo {
   Write-Step "Downloading from YouTube"
   $dlArgs = @(
     'yt-dlp',
-    '-f', $YTDLP_FORMAT,
+    '-f', $ytDlpFormat,
     '--merge-output-format', 'mp4',
     '--no-playlist',
     '--no-progress',
     '-o', $rawFile,
     $Url
   )
-  Run-Command -CommandArgs $dlArgs -Desc "yt-dlp -> $rawFile"
+  try {
+    Run-Command -CommandArgs $dlArgs -Desc "yt-dlp -> $rawFile"
+  }
+  catch {
+    # Some otherwise-public YouTube DASH streams intermittently reject a
+    # single full-file request with HTTP 403. Retrying in bounded HTTP ranges
+    # uses the same selected H.264/AAC formats and resumes any valid fragments.
+    Write-Warn "Initial YouTube download failed; retrying with 10 MB HTTP chunks"
+    $chunkedArgs = @(
+      'yt-dlp',
+      '-f', $ytDlpFormat,
+      '--http-chunk-size', '10M',
+      '--merge-output-format', 'mp4',
+      '--no-playlist',
+      '--no-progress',
+      '-o', $rawFile,
+      $Url
+    )
+    Run-Command -CommandArgs $chunkedArgs -Desc "yt-dlp chunked retry -> $rawFile"
+  }
 
   if ($SkipFix) {
     Write-Step "Skipping moov fix (--SkipFix)"
@@ -925,6 +980,9 @@ Usage:
 
   Dry run:
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -DryRun
+
+  Override automatic video quality:
+    .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -MaxHeight 1080
 
   Skip ffmpeg fix:
     .\scripts\publish.ps1 -Series <slug> -Episode <num> -Url <url> -SkipFix
