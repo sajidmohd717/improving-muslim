@@ -8,7 +8,18 @@
   }
 
   .speaker-hero {
-    justify-items: start;
+    grid-template-columns: 120px minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+  }
+
+  .speaker-hero img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .speaker-hero .eyebrow {
+    display: none;
   }
 
   .episode-list {
@@ -218,18 +229,23 @@
   }
 
   .speaker-hero {
-    gap: 16px;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
     padding-top: 22px;
     padding-bottom: 10px;
   }
 
   .speaker-hero img {
-    width: 104px;
-    height: 104px;
+    width: 88px;
+    height: 88px;
+  }
+
+  .speaker-hero h1 {
+    font-size: clamp(1.4rem, 7vw, 2rem);
   }
 
   .speaker-hero .hero-copy {
-    margin: 10px 0 0;
+    margin: 8px 0 0;
     font-size: 0.94rem;
     line-height: 1.55;
   }

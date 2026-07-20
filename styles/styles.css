@@ -17,7 +17,7 @@
 @import "./watch.css?v=20260720-mobile-ux";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260720-mobile-intro"; /* Breakpoint overrides (≤900px, ≤600px)   */
+@import "./responsive.css?v=20260721-speaker-hero-mobile"; /* Breakpoint overrides (≤900px, ≤600px)   */
 @import "./history.css?v=20260627-relative-time";    /* Watch history page                            */
 @import "./saved.css?v=20260627-grouped-saved";      /* Saved items page                              */
 @import "./roadmap.css";       /* Roadmap page                                       */
