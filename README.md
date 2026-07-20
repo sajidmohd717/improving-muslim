@@ -75,3 +75,5 @@ Only upload or distribute material when the project has permission to do so. The
 The core experience works without an account and stores learning data on the device. Google sign-in is optional. See the live [privacy page](https://improvingmuslim.com/pages/privacy.html) for the data model and sync behavior.
 
 Feedback is available through the site's [feedback page](https://improvingmuslim.com/pages/feedback.html).
+
+Planning for a future Singapore legal entity, company operations, privacy responsibilities, fundraising, trademarks, and Meta business verification is recorded in [BUSINESS_AND_LEGAL.md](./BUSINESS_AND_LEGAL.md).
