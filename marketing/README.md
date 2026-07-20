@@ -2,7 +2,7 @@
 
 This folder holds everything publicity-related for Improving Muslim: finished social assets, the templates and scripts that generate them, and this guide. It documents what has been done so far and how to continue, so anyone joining can pick up without re-deriving decisions.
 
-Status snapshot as of **19 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
+Status snapshot as of **20 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
 
 ## The pitch (use this framing everywhere)
 
@@ -98,6 +98,32 @@ If someone agrees to test the website, ask these three questions:
 1. Was it easy to find something you wanted to watch?
 2. Did anything feel confusing, broken, or unnecessary?
 3. What would make you return to the website?
+
+### Small content-creator outreach via Instagram
+
+This is for Islamic content creators who have an established audience but are still small enough for a friendly, general collaboration message. The invitation is deliberately open: they may help with a short promotional video, offer feedback as a user and creator, or suggest another form of collaboration they are comfortable with. Do not imply that they have endorsed the platform before they explicitly agree.
+
+Use this as the base message, personalizing the opening when there is something genuine and specific to mention:
+
+> Assalamu alaikum! I came across your Islamic content and really appreciated your work.
+>
+> I’m a developer building Improving Muslim—a free platform for watching Islamic lectures without ads, comments, endless scrolling, or unrelated recommendations.
+>
+> I’d love for you to check it out: improvingmuslim.com
+>
+> If you like the project and feel it aligns with your values, I’d be interested in working together—perhaps on a short promotional video, or simply hearing your honest feedback as a user and content creator.
+>
+> No pressure at all. If you’re interested, please feel free to reply and we can discuss whatever you’d be comfortable with.
+>
+> JazakAllahu khayran!
+
+Contact genuine, relevant creators in small batches and keep a record of messages and replies. If someone is interested in producing promotional content, agree on the format, wording, usage rights, posting account, timing, and whether the work is paid before production begins. Send at most one polite follow-up if there is no response.
+
+#### Creator outreach log
+
+| Date | Contact | Audience snapshot | Status | Notes |
+|---|---|---|---|---|
+| 20 July 2026 | Creator 01 (handle not recorded) | 53 posts; 8,142 followers; 182 following | Initial DM sent | First use of the general small-creator collaboration message |
 
 ### Caption bank (reuse/adapt)
 
