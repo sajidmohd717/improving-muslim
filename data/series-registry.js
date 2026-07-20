@@ -206,7 +206,7 @@ window.seriesConfig = [
   {
     globalKey: "lifeOfMuhammadMuftiMenkSeries",
     slug: "life-of-muhammad-mufti-menk",
-    dataFile: "./data/life-of-muhammad-mufti-menk-data.js?v=20260720-ep13-18-transcripts",
+    dataFile: "./data/life-of-muhammad-mufti-menk-data.js?v=20260721-ep19-23-transcripts",
     categories: ["seerah", "prophets"],
     label: "Complete series",
     sectionTitle: "Seerah",
@@ -219,7 +219,7 @@ window.seriesConfig = [
     description: "A complete Ramadan 2012 series by Mufti Menk tracing the life of Prophet Muhammad (PBUH) — from pre-Islamic Arabia and his early years, through prophethood, migration, and the establishment of Islam, across 30 detailed lectures.",
     playlistId: "PL91FA0E3B7837B214",
     episodeCount: 30,
-    availableCount: 18,
+    availableCount: 23,
     searchKeywords: "seerah biography prophet muhammad ramadan makkah madinah revelation hijrah",
   },
   {

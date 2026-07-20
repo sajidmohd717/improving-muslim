@@ -28,11 +28,11 @@
     { number: 16, id: "NPxGHFNK31I", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-16.mp4", title: "The Battle of Badr: From the Caravan to the Battlefield", published: "2012-08-06", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-16.vtt"  },
     { number: 17, id: "CPXhZDmLuuw", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-17.mp4", title: "Victory at Badr: The Fall of Abu Jahl and the Treatment of Captives", published: "2012-08-07", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-17.vtt"  },
     { number: 18, id: "DvnHP73yUPc", videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-18.mp4", title: "The Battle of Uhud: The Archers’ Test and the Martyrdom of Hamza", published: "2012-08-08", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-18.vtt"  },
-    { number: 19, id: "wrp0Mrf9Kf0", title: "Day 19", published: "2012-08-09", thumbnailSrc: "https://i.ytimg.com/vi/wrp0Mrf9Kf0/hqdefault.jpg"  },
-    { number: 20, id: "Dcri8c0j7Jw", title: "Day 20", published: "2012-08-10", thumbnailSrc: "https://i.ytimg.com/vi/Dcri8c0j7Jw/hqdefault.jpg"  },
-    { number: 21, id: "GC2Rsk2xNWo", title: "Day 21", published: "2012-08-11", thumbnailSrc: "https://i.ytimg.com/vi/GC2Rsk2xNWo/hqdefault.jpg"  },
-    { number: 22, id: "mdzZXBwMkgE", title: "Day 22", published: "2012-08-12", thumbnailSrc: "https://i.ytimg.com/vi/mdzZXBwMkgE/hqdefault.jpg"  },
-    { number: 23, id: "RVHj9OQDZkI", title: "Day 23", published: "2012-08-13", thumbnailSrc: "https://i.ytimg.com/vi/RVHj9OQDZkI/hqdefault.jpg"  },
+    { videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-19.mp4", number: 19, id: "wrp0Mrf9Kf0", title: "The Aftermath of Uhud: Burying the Martyrs and the March to Hamra al-Asad", published: "2012-08-09", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-19.jpg", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-19.vtt"  },
+    { videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-20.mp4", number: 20, id: "Dcri8c0j7Jw", title: "The Massacre of the Reciters and the Expulsion of Banu al-Nadir", published: "2012-08-10", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-20.jpg", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-20.vtt"  },
+    { videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-21.mp4", number: 21, id: "GC2Rsk2xNWo", title: "The Incident of Ifk: The Slander Against Aisha (RA) and Her Vindication", published: "2012-08-11", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-21.jpg", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-21.vtt"  },
+    { videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-22.mp4", number: 22, id: "mdzZXBwMkgE", title: "The Battle of the Trench (Al-Ahzab) and the Judgment of Banu Quraidah", published: "2012-08-12", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-22.jpg", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-22.vtt"  },
+    { videoSrc: "https://videos.improvingmuslim.com/Life-of-Muhammad-PBUH/Life-of-Muhammad-PBUH-ep-23.mp4", number: 23, id: "RVHj9OQDZkI", title: "The Treaty of Hudaybiyyah and Heraclius's Inquiry About the Prophet ﷺ", published: "2012-08-13", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-23.jpg", captionsSrc: "./assets/captions/life-of-muhammad-mufti-menk/episode-23.vtt"  },
     { number: 24, id: "9ZKyYzSGhW0", title: "Day 24", published: "2012-08-14", thumbnailSrc: "https://i.ytimg.com/vi/9ZKyYzSGhW0/hqdefault.jpg"  },
     { number: 25, id: "zWH75GbloxA", title: "Day 25", published: "2012-08-15", thumbnailSrc: "https://i.ytimg.com/vi/zWH75GbloxA/hqdefault.jpg"  },
     { number: 26, id: "eLh1jO9EA9M", title: "Day 26", published: "2012-08-16", thumbnailSrc: "https://i.ytimg.com/vi/eLh1jO9EA9M/hqdefault.jpg"  },
@@ -42,3 +42,8 @@
     { number: 30, id: "lom-day-30",  title: "Day 30", published: "2012-08-20", thumbnailSrc: "./assets/thumbnail/life-of-muhammad-mufti-menk/series-card.jpg" },
   ],
 };
+
+
+
+
+
