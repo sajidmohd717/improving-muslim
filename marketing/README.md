@@ -63,7 +63,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 6. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
 7. **First paid speaker-promotion proposal sent:** Navaid Aziz was offered **USD $75–$100** for a short Instagram Reel introducing Improving Muslim, with permission for Improving Muslim to repost the same video organically on its own YouTube Shorts and TikTok accounts with credit. Paid-ad usage was not requested or included.
 8. **Navaid Aziz countered with a free arrangement, accepted:** instead of the paid Reel, Improving Muslim tags him (**@navaid_aziz**) in an Instagram story whenever his content goes live, and he reshares it — free of charge. This makes every release of his content a distribution moment; publish his episodes in regular batches rather than one big drop. First promoted releases: **40 Hadith of Imam Nawawi** and **The Four Imams: Their Lives and Fiqh Principles**. The release-story asset is `ig-story-navaid-aziz.png` (from `ig-story-speaker-template.html`, rendered by `render-instagram-posts.cjs`).
-9. **Reddit community outreach began:** a text post was published in **r/MuslimNoFap**, using the "YouTube without the haram distractions" framing. The post disclosed that Improving Muslim is the author's own free project, connected the platform directly to the community's struggle with triggering recommendations and social-media rabbit holes, and asked for honest feedback rather than promotion. Reddit is now the second publicity channel used after Instagram.
+9. **Reddit community outreach began:** a text post was published in a relevant Muslim community, presenting Improving Muslim as a distraction-free alternative for watching Islamic lectures. The post disclosed that Improving Muslim is the author's own free project and asked for honest feedback rather than promotion. Reddit is now the second publicity channel used after Instagram.
 
 ### Outreach status
 
@@ -134,7 +134,7 @@ Contact genuine, relevant creators in small batches and keep a record of message
 
 ### Reddit community outreach
 
-Reddit outreach began on **22 July 2026** with a post to **r/MuslimNoFap**. The audience fit is specific: members commonly discuss leaving or limiting YouTube and social media because recommendations, ads, and endless feeds can expose them to triggering material. The post presented Improving Muslim as a practical response to that problem and kept the tone personal rather than promotional.
+Reddit outreach began on **22 July 2026** with a post in a relevant Muslim community. The post presented Improving Muslim as a practical alternative to the ads, unrelated recommendations, and endless feeds surrounding Islamic content on mainstream platforms. It kept the tone personal rather than promotional.
 
 For this and future community posts:
 
