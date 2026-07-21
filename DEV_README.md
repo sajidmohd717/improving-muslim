@@ -72,7 +72,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 13 series and 27 standalone lectures. Ninety-nine series episodes and all 27 standalone lectures are currently watchable, for 126 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and four series episodes and all 27 standalone lectures are currently watchable, for 131 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -83,10 +83,13 @@ Snapshot as of 21 July 2026: the catalog has 13 series and 27 standalone lecture
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | 8 / 46 |
 | Tafsir Surah al-Kahf | Navaid Aziz | Quran, Tafsir | 6 / 12 |
+| The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh | 0 / 9 |
+| Fiqh of Social Media | Navaid Aziz | Fiqh | 0 / 7 |
 | Change of Heart | Ali Hammuda | Purification | 10 / 16 |
 | Why Me? | Omar Suleiman | Purification | 13 / 30 |
 | Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
-| Life of Muhammad (PBUH) | Mufti Menk | Seerah | 12 / 30 |
+| Life of Muhammad (PBUH) | Mufti Menk | Seerah | 23 / 30 |
+| Stories of the Prophets | Mufti Menk | Prophets | 4 / 29 |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | 5 / 10 |
 | Madina Arabic Books | Asif Meherali | Arabic | 3 / 123 |
 | Page by Page Tafseer | Ahsan Hanif | Quran | 3 / 604 |
