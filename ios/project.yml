@@ -1,0 +1,56 @@
+name: ImprovingMuslim
+
+options:
+  bundleIdPrefix: com.improvingmuslim
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  ImprovingMuslim:
+    type: application
+    platform: iOS
+    sources:
+      - path: ImprovingMuslim
+        excludes:
+          - Resources
+    resources:
+      - path: ImprovingMuslim/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.improvingmuslim.app
+        PRODUCT_NAME: Improving Muslim
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: false
+    info:
+      path: ImprovingMuslim/Info.plist
+      properties:
+        CFBundleDisplayName: Improving Muslim
+        UILaunchScreen: {}
+        UIBackgroundModes:
+          - audio
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+schemes:
+  ImprovingMuslim:
+    build:
+      targets:
+        ImprovingMuslim: all
+    run:
+      config: Debug
+    archive:
+      config: Release

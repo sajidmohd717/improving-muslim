@@ -9,6 +9,7 @@
     "check:a11y": "node scripts/check-a11y.js",
     "check:page-shell": "node scripts/generate-page-shell.js --check",
     "check:catalog": "node scripts/generate-catalog.js --check",
+    "check:mobile-api": "node scripts/generate-mobile-api.js --check",
     "check:content": "node scripts/check-content.js",
     "check:js": "node scripts/check-js.js",
     "check:workers": "node --test tests/*.test.js",
@@ -18,14 +19,15 @@
     "check:vtt": "node scripts/clean-vtt.js --check assets/captions",
     "check:smoke": "playwright test",
     "check:taxonomy": "node scripts/check-taxonomy.js",
-    "generate:content": "npm run page-shell && npm run catalog && npm run transcript-index && npm run seo-pages && npm run sitemap",
+    "generate:content": "npm run page-shell && npm run catalog && npm run mobile-api && npm run transcript-index && npm run seo-pages && npm run sitemap",
     "catalog": "node scripts/generate-catalog.js",
+    "mobile-api": "node scripts/generate-mobile-api.js",
     "page-shell": "node scripts/generate-page-shell.js",
     "seo-pages": "node scripts/generate-seo-pages.js",
     "sitemap": "node scripts/generate-sitemap.js",
     "transcript-index": "node scripts/generate-transcript-index.js",
     "clean-vtt": "node scripts/clean-vtt.js assets/captions",
-    "check": "npm run check:js && npm run check:workers && npm run check:content && npm run check:taxonomy && npm run check:a11y && npm run check:page-shell && npm run check:catalog && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
+    "check": "npm run check:js && npm run check:workers && npm run check:content && npm run check:taxonomy && npm run check:a11y && npm run check:page-shell && npm run check:catalog && npm run check:mobile-api && npm run check:transcript-index && npm run check:seo-pages && npm run check:sitemap && npm run check:vtt && npm run check:smoke"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"

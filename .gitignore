@@ -34,3 +34,7 @@ episodes.txt
 *.njsproj
 *.sln
 *.sw?
+
+# Native iOS project files generated locally by XcodeGen.
+ios/*.xcodeproj/
+ios/ImprovingMuslim/Info.plist

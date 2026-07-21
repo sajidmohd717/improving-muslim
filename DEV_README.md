@@ -40,6 +40,8 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
 - `data/catalog-data.js` is a generated flat index of every watchable episode and standalone lecture, each with normalized metadata and a TF-IDF term vector (built from titles, descriptions, keywords, takeaways, recaps, and caption transcripts). Never edit by hand — regenerate with `npm run catalog` after any content change, and CI verifies it with `npm run check:catalog`.
 - `scripts/generate-catalog.js` builds `data/catalog-data.js` from the registry, series data files, standalone lectures, and `assets/captions/`.
+- `scripts/generate-mobile-api.js` publishes the maintained catalog as the platform-neutral `api/v1/catalog.json` contract and refreshes the iOS app's bundled offline copy. Both outputs are generated; run `npm run mobile-api` rather than editing either file.
+- `ios/` contains the native SwiftUI client, its product specification, and an XcodeGen project definition. It consumes the public v1 catalog at runtime and falls back to the generated bundled catalog when the network is unavailable.
 - `scripts/related-videos.js` is the pure ranking module (`window.IMRelated.rankRelated`) behind the watch page's "Related lectures" sidebar: term-vector cosine similarity, category overlap, same-speaker and recency boosts, watched demotion, and per-series/per-speaker diversity caps. Loaded on the watch template before `watch-page.js`, which renders the results (and, for standalone lectures, uses the top result as the "Up next" card and autoplay-next target).
 - The homepage's main **For you** grid reuses the catalog + `IMRelated` ranking. Up to three recent meaningfully-watched lectures (completed, or 2+ minutes in) seed a blended order: two relevant cards followed by one discovery card. Started-but-unfinished standalone lectures stay in Continue learning instead of being duplicated in the recommendation pool. New visitors retain the fresh discovery shuffle, while Featured order, category, search, and explicit sort choices remain deterministic overrides. There is intentionally no separate "Because you watched" shelf.
 - `data/transcript-index-data.js` is a generated token → lecture index over every caption transcript. Never edit by hand — regenerate with `npm run transcript-index` whenever captions or lecture data change; CI verifies it with `npm run check:transcript-index`. Transcript text is never duplicated into the index.
@@ -153,6 +155,8 @@ Every push and pull request to `main` triggers `.github/workflows/check.yml`, wh
 6. `npm run check:sitemap` — fails if sitemap.xml is out of date with the series registry (fix with `npm run sitemap`).
 7. `npm run check:vtt` — fails if any committed WebVTT caption still carries left-pinning positioning cue settings (fix with `npm run clean-vtt`).
 8. `npm run check:smoke` — Playwright coverage for homepage rendering, search/filtering, a synthetic 500-video catalog, shared Explore taxonomy, generated series-to-watch navigation, streak-target migration, runtime errors, and the 390px keyboard-accessible menu and catalog batch.
+
+`npm run check:mobile-api` verifies that the public native-app catalog and the iOS offline fallback match the maintained web content. It is included in `npm run check` and must pass after any catalog, taxonomy, or speaker change.
 
 If any step fails, GitHub marks the run red. Check the repository's Actions tab after each push to confirm it is green.
 

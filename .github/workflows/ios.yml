@@ -1,0 +1,52 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ios/**"
+      - "api/v1/catalog.json"
+      - "scripts/generate-mobile-api.js"
+      - "data/**"
+      - "package.json"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "ios/**"
+      - "api/v1/catalog.json"
+      - "scripts/generate-mobile-api.js"
+      - "data/**"
+      - "package.json"
+      - ".github/workflows/ios.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build SwiftUI app
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build for iOS Simulator
+        working-directory: ios
+        run: >-
+          xcodebuild
+          -project ImprovingMuslim.xcodeproj
+          -scheme ImprovingMuslim
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
