@@ -81,16 +81,16 @@ Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lecture
 | Enjoy Your Prayer | Ali Hammuda | Prayer | 8 / 21 |
 | Fortress of the Muslim | Assim Al-Hakeem | Dhikr | 5 / 13 |
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
-| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | 8 / 46 |
+| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith, Righteous Predecessors | 8 / 46 |
 | Tafsir Surah al-Kahf | Navaid Aziz | Quran, Tafsir | 6 / 12 |
-| The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh | 3 / 9 |
+| The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh, Righteous Predecessors | 3 / 9 |
 | Fiqh of Social Media | Navaid Aziz | Fiqh | 3 / 7 |
 | Change of Heart | Ali Hammuda | Purification | 10 / 16 |
 | Why Me? | Omar Suleiman | Purification | 13 / 30 |
 | Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
 | Life of Muhammad (PBUH) | Mufti Menk | Seerah | 24 / 30 |
 | Stories of the Prophets | Mufti Menk | Prophets | 4 / 29 |
-| 10 Promised Jannah | AbdulRahman Hassan | Sahaba | 5 / 10 |
+| 10 Promised Jannah | AbdulRahman Hassan | Sahaba, Righteous Predecessors | 5 / 10 |
 | Madina Arabic Books | Asif Meherali | Arabic | 3 / 123 |
 | Page by Page Tafseer | Ahsan Hanif | Quran | 3 / 604 |
 

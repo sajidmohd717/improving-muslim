@@ -62,11 +62,11 @@ const speakers = [
     THUMB1: "../assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
     COUNT1: "46 episodes",
     TITLE1: "40 Hadith of Imam Nawawi",
-    SUB1: "Hadith series",
+    SUB1: "Hadith · Righteous Predecessors",
     THUMB2: "../assets/thumbnail/four-imams/episodes/episode-01.jpg",
     COUNT2: "9 episodes",
     TITLE2: "The Four Imams: Their Lives & Fiqh Principles",
-    SUB2: "Fiqh series",
+    SUB2: "Fiqh · Righteous Predecessors",
   },
 ];
 
@@ -82,11 +82,11 @@ const stories = [
     THUMB1: "../assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
     COUNT1: "46 episodes",
     TITLE1: "40 Hadith of Imam Nawawi",
-    SUB1: "Hadith series",
+    SUB1: "Hadith · Righteous Predecessors",
     THUMB2: "../assets/thumbnail/four-imams/episodes/episode-01.jpg",
     COUNT2: "9 episodes",
     TITLE2: "The Four Imams: Their Lives & Fiqh Principles",
-    SUB2: "Fiqh series",
+    SUB2: "Fiqh · Righteous Predecessors",
   },
 ];
 

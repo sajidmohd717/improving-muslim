@@ -57,7 +57,7 @@ window.seriesConfig = [
     globalKey: "fortyHadithSeries",
     slug: "forty-hadith-nawawi",
     dataFile: "./data/forty-hadith-data.js?v=20260721-episodes-5-8",
-    categories: ["hadith"],
+    categories: ["hadith", "righteous-predecessors"],
     label: "Deep study",
     sectionTitle: "Hadith",
     title: "40 Hadith of Imam Nawawi",

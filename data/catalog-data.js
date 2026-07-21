@@ -831,7 +831,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-03-24",
@@ -876,7 +877,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-04-13",
@@ -921,7 +923,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-04-22",
@@ -966,7 +969,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-04-28",
@@ -1011,7 +1015,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-05-19",
@@ -1056,7 +1061,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-05-30",
@@ -1101,7 +1107,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-06-03",
@@ -1146,7 +1153,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "hadith"
+        "hadith",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2013-06-10",
