@@ -231,7 +231,7 @@ function renderSeriesEpisodeCards(series) {
               ${meta ? `<span class="episode-date">${escapeHtml(meta)}</span>` : ""}
               ${episode.views ? `<span class="episode-views">${escapeHtml(formatViewCount(episode.views))}</span>` : ""}
               ${available ? "" : `<span class="episode-status">${escapeHtml(episode.statusNote || "Video not added yet. It will be uploaded in the future.")}</span>`}
-            </div>`;
+            </div>`.replace(/^[ \t]+$/gm, "");
       return `          <article class="episode-card ${available ? "" : "is-unavailable"}" data-episode-index="${index}">
             ${available ? `<a class="episode-card-link"${href}${targetAttr}>${content}</a>` : content}
           </article>`;
@@ -334,7 +334,7 @@ function renderCompactEpisodeList(series, currentEpisode) {
               <strong>${escapeHtml(episode.title)}</strong>
               ${available ? "" : "<em>Uploading soon</em>"}
             </span>
-          </${tagName}>`;
+          </${tagName}>`.replace(/^[ \t]+$/gm, "");
     })
     .join("\n");
 }

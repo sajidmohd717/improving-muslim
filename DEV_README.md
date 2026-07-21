@@ -72,7 +72,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and four series episodes and all 27 standalone lectures are currently watchable, for 131 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and ten series episodes and all 27 standalone lectures are currently watchable, for 137 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -83,8 +83,8 @@ Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lecture
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
 | 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith | 8 / 46 |
 | Tafsir Surah al-Kahf | Navaid Aziz | Quran, Tafsir | 6 / 12 |
-| The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh | 0 / 9 |
-| Fiqh of Social Media | Navaid Aziz | Fiqh | 0 / 7 |
+| The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh | 3 / 9 |
+| Fiqh of Social Media | Navaid Aziz | Fiqh | 3 / 7 |
 | Change of Heart | Ali Hammuda | Purification | 10 / 16 |
 | Why Me? | Omar Suleiman | Purification | 13 / 30 |
 | Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
@@ -392,6 +392,70 @@ For standalone lectures the script now auto-scaffolds the mechanical metadata af
 **Video quality:** the script downloads the best available **H.264 (avc1)** stream using a duration-based ceiling: videos longer than 20 minutes use 720p, while videos up to and including 20 minutes use 1080p. Long lectures therefore use substantially less R2 storage and viewer bandwidth, while short videos retain the extra detail of 1080p. Pass `-MaxHeight 720` or `-MaxHeight 1080` to override the automatic choice when small on-screen text or another source-specific reason warrants it.
 
 H.264 remains mandatory for broad playback compatibility. YouTube commonly serves 1440p/4K as AV1 even inside an `.mp4` container, and AV1 playback is unreliable on older iOS/Safari and some Android WebViews. Since this site plays video natively with no transcoding step, the publisher deliberately avoids those higher-resolution AV1 streams. Check the available source formats with `yt-dlp -F "<url>"` when quality is uncertain; older or re-encoded uploads may only offer 144p–480p regardless of the selected ceiling.
+
+#### Troubleshooting slow YouTube downloads without lowering quality
+
+At 720p and 1080p, YouTube normally exposes separate DASH video-only and
+audio-only streams. This is expected: `yt-dlp` downloads both and ffmpeg merges
+them into one ordinary MP4 before upload. A combined audio/video format is often
+available only at 360p, so do not select that format merely to avoid the merge.
+Keep the normal 720p ceiling for long lectures, or 1080p for eligible short
+videos, unless the source itself has no compatible stream at that resolution.
+
+On an unusually slow or constrained local connection, YouTube's CDN can
+throttle one DASH track while the other remains reasonably fast. This is a
+recovery path for that occasional environment-specific problem, not part of the
+normal publishing workflow. Downloads under `tmp/yt-dlp/` are resumable, so
+preserve the `.part` files and try these remedies in order:
+
+1. Stop and rerun the same `publish.ps1` command. `yt-dlp` resumes the saved
+   bytes and obtains a fresh signed CDN URL; this frequently clears a throttled
+   long-lived connection without starting over.
+2. Try `curl` as the external downloader. It still retrieves the exact formats
+   selected by `yt-dlp` and keeps the same resumable output names:
+
+   ```powershell
+   yt-dlp -f "bestvideo[vcodec^=avc1][ext=mp4][height<=720]+bestaudio[ext=m4a]" `
+     --downloader curl `
+     --downloader-args "curl:-L --retry 20 --retry-all-errors --connect-timeout 20" `
+     --merge-output-format mp4 --no-playlist -o "tmp/yt-dlp/example-raw.mp4" `
+     "https://www.youtube.com/watch?v=VIDEO_ID"
+   ```
+3. If `aria2c` is installed, use it for parallel ranged requests. This is most
+   useful when one audio stream settles at a very low single-connection rate:
+
+   ```powershell
+   yt-dlp -f "bestvideo[vcodec^=avc1][ext=mp4][height<=720]+bestaudio[ext=m4a]" `
+     --downloader aria2c `
+     --downloader-args "aria2c:-x 16 -s 16 -k 1M --file-allocation=none" `
+     --merge-output-format mp4 --no-playlist -o "tmp/yt-dlp/example-raw.mp4" `
+     "https://www.youtube.com/watch?v=VIDEO_ID"
+   ```
+
+   Once aria2 has created a matching `.aria2` control file, keep resuming that
+   component with aria2 until it completes. Its ranged download can make the
+   `.part` file appear full-sized while gaps are still pending; switching that
+   incomplete file back to curl or the native downloader can produce a corrupt
+   MP4. If downloader provenance is uncertain, isolate the partial component
+   and download that component cleanly from byte zero.
+4. If the route remains slow, resume over a trusted VPN, Cloudflare WARP, or a
+   different connection. For a large batch, a temporary VM can run the same
+   publisher and upload directly to R2, but use a short-lived bucket-scoped R2
+   credential and remove it afterward. Some datacenter IPs are blocked by
+   YouTube, so test one episode before moving a whole batch.
+
+After changing downloaders or recovering interrupted ranged downloads, decode
+the merged file once before publishing. A successful run produces no output and
+exits with code 0:
+
+```powershell
+ffmpeg -v error -xerror -i "tmp/yt-dlp/example-raw.mp4" `
+  -map 0:v:0 -map 0:a:0 -f null NUL
+```
+
+Do not commit temporary downloads, signed Googlevideo URLs, cookies, or R2
+credentials. Avoid 360p progressive formats as a speed workaround when the
+source provides the required 720p or 1080p H.264 stream.
 
 **Local disk:** downloaded files live under `tmp/yt-dlp/` (gitignored) and are deleted automatically once the R2 upload is confirmed, so the cache doesn't grow unbounded. Pass `-KeepLocal` to keep the file for spot-checking.
 

@@ -92,7 +92,7 @@ window.seriesConfig = [
   {
     globalKey: "fourImamsSeries",
     slug: "four-imams",
-    dataFile: "./data/four-imams-data.js?v=20260721-launch",
+    dataFile: "./data/four-imams-data.js?v=20260721-episodes-1-3",
     categories: ["fiqh"],
     label: "Deep study",
     sectionTitle: "Fiqh",
@@ -104,13 +104,13 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/four-imams/episodes",
     playlistId: "PLEcUc6n1p_6m5DfAAw5uORMQlI_xad8wR",
     episodeCount: 9,
-    availableCount: 0,
+    availableCount: 3,
     searchKeywords: "four imams abu hanifah hanafi malik maliki shafii shafi madhhab ahmad ibn hanbal hanbali usul biography fiqh",
   },
   {
     globalKey: "fiqhOfSocialMediaSeries",
     slug: "fiqh-of-social-media",
-    dataFile: "./data/fiqh-of-social-media-data.js?v=20260721-launch",
+    dataFile: "./data/fiqh-of-social-media-data.js?v=20260721-episodes-1-3",
     categories: ["fiqh"],
     label: "Practical guidance",
     sectionTitle: "Fiqh",
@@ -122,7 +122,7 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/fiqh-of-social-media/episodes",
     playlistId: "PLEcUc6n1p_6lSWit-q8sM4-4yeP7KHgxO",
     episodeCount: 7,
-    availableCount: 0,
+    availableCount: 3,
     searchKeywords: "social media phone internet intentions friendships sins privacy envy activism echo chambers naseehah advice spirituality community optimism",
   },
   {

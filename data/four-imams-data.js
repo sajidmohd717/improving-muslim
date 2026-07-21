@@ -1,4 +1,4 @@
-window.fourImamsSeries = {
+﻿window.fourImamsSeries = {
   title: "The Four Imams: Their Lives and Fiqh Principles",
   slug: "four-imams",
   seriesPageUrl: "./pages/series-detail.html?id=four-imams",
@@ -13,29 +13,32 @@ window.fourImamsSeries = {
     {
       number: 1,
       id: "bIrZJH0LPwU",
+      videoSrc: "https://videos.improvingmuslim.com/four-imams/four-imams-ep-1.mp4",
+      captionsSrc: "./assets/captions/four-imams/episode-01.vtt",
       title: "Introduction to the Four Imams",
       published: "2023-03-01",
       duration: 3989,
       views: 123,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 2,
       id: "1Rj0_3F5UX0",
+      videoSrc: "https://videos.improvingmuslim.com/four-imams/four-imams-ep-2.mp4",
+      captionsSrc: "./assets/captions/four-imams/episode-02.vtt",
       title: "Biography of Imam Abu Hanifah",
       published: "2023-03-01",
       duration: 3791,
       views: 91,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 3,
       id: "fGNiGl3C5Is",
+      videoSrc: "https://videos.improvingmuslim.com/four-imams/four-imams-ep-3.mp4",
+      captionsSrc: "./assets/captions/four-imams/episode-03.vtt",
       title: "Biography of Imam Malik",
       published: "2023-03-01",
       duration: 3531,
       views: 69,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 4,

@@ -1,4 +1,4 @@
-window.fiqhOfSocialMediaSeries = {
+﻿window.fiqhOfSocialMediaSeries = {
   title: "Fiqh of Social Media",
   slug: "fiqh-of-social-media",
   seriesPageUrl: "./pages/series-detail.html?id=fiqh-of-social-media",
@@ -13,29 +13,32 @@ window.fiqhOfSocialMediaSeries = {
     {
       number: 1,
       id: "ltzByj7LFGw",
+      videoSrc: "https://videos.improvingmuslim.com/fiqh-of-social-media/fiqh-of-social-media-ep-1.mp4",
+      captionsSrc: "./assets/captions/fiqh-of-social-media/episode-01.vtt",
       title: "Intentions and Friendships",
       published: "2022-12-26",
       duration: 4858,
       views: 186,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 2,
       id: "34sn7Nd6pX0",
+      videoSrc: "https://videos.improvingmuslim.com/fiqh-of-social-media/fiqh-of-social-media-ep-2.mp4",
+      captionsSrc: "./assets/captions/fiqh-of-social-media/episode-02.vtt",
       title: "The Phone, Reflection, and At-Takathur",
       published: "2022-12-26",
       duration: 4754,
       views: 80,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 3,
       id: "7wqjqov5bI0",
+      videoSrc: "https://videos.improvingmuslim.com/fiqh-of-social-media/fiqh-of-social-media-ep-3.mp4",
+      captionsSrc: "./assets/captions/fiqh-of-social-media/episode-03.vtt",
       title: "Publicizing Your Sins",
       published: "2022-12-26",
       duration: 3733,
       views: 51,
-      statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah.",
     },
     {
       number: 4,
