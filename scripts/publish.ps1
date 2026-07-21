@@ -296,7 +296,7 @@ function Add-VideoSrc {
   $episodeBlock = ($lines[$episodeStart..$episodeEnd] -join "`n")
 
   $quotedKeys = $episodeBlock -match '"number"\s*:'
-  $videoSrcKey = if ($quotedKeys) { '`"videoSrc`"' } else { 'videoSrc' }
+  $videoSrcKey = if ($quotedKeys) { '"videoSrc"' } else { 'videoSrc' }
 
   if ($episodeBlock -match '"?videoSrc"?\s*:') {
     # Replace existing videoSrc (works for both single- and multi-line objects)

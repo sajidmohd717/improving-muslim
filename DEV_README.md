@@ -72,7 +72,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and eleven series episodes and all 27 standalone lectures are currently watchable, for 138 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and thirteen series episodes and all 27 standalone lectures are currently watchable, for 140 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -81,7 +81,7 @@ Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lecture
 | Enjoy Your Prayer | Ali Hammuda | Prayer | 8 / 21 |
 | Fortress of the Muslim | Assim Al-Hakeem | Dhikr | 5 / 13 |
 | Seerah of the Prophet (S) | Yasir Qadhi | Seerah | 5 / 104 |
-| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith, Righteous Predecessors | 8 / 46 |
+| 40 Hadith of Imam Nawawi | Navaid Aziz | Hadith, Righteous Predecessors | 10 / 46 |
 | Tafsir Surah al-Kahf | Navaid Aziz | Quran, Tafsir | 6 / 12 |
 | The Four Imams: Their Lives and Fiqh Principles | Navaid Aziz | Fiqh, Righteous Predecessors | 3 / 9 |
 | Fiqh of Social Media | Navaid Aziz | Fiqh | 3 / 7 |

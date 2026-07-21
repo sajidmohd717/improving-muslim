@@ -56,7 +56,7 @@ window.seriesConfig = [
   {
     globalKey: "fortyHadithSeries",
     slug: "forty-hadith-nawawi",
-    dataFile: "./data/forty-hadith-data.js?v=20260721-episodes-5-8",
+    dataFile: "./data/forty-hadith-data.js?v=20260721-episodes-9-10",
     categories: ["hadith", "righteous-predecessors"],
     label: "Deep study",
     sectionTitle: "Hadith",
@@ -68,7 +68,7 @@ window.seriesConfig = [
     episodeThumbnailPath: "./assets/thumbnail/forty-hadith-nawawi/episodes",
     playlistId: "PLANmApGKw_OoBaN2C0Y983cwJGL47842I",
     episodeCount: 46,
-    availableCount: 8,
+    availableCount: 10,
     searchKeywords: "arbaeen arbain intentions niyyah jibreel islam iman ihsan pillars awliya forgiveness sunnah nawawi",
   },
   {

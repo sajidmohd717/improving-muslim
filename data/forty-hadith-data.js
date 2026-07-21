@@ -80,19 +80,21 @@
     {
       "number": 9,
       "id": "pa8g6v48n5Y",
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-9.mp4",
       "title": "Recap and Summary of Hadiths 1 to 5",
       "published": "2014-02-23",
       "views": 4245,
       "recap": true,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-09.vtt"
     },
     {
       "number": 10,
       "id": "eQ5hrGdsuhg",
+      "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-10.mp4",
       "title": "Hadith No. 4",
       "published": "2014-03-01",
       "views": 13790,
-      "statusNote": "Video not added yet. It will be uploaded in the future, insha'Allah."
+      "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-10.vtt"
     },
     {
       "number": 11,
