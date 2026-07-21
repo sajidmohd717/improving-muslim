@@ -315,7 +315,7 @@ test("Explore reports series, available episodes, and standalone lectures accura
     "41 lectures",
   );
   await expect(page.locator('[data-category="fiqh"] .explore-card-kicker')).toHaveText(
-    "1 lecture",
+    "7 lectures",
   );
   await expect(page.getByRole("link", { name: "Open topic: Sahaba" })).toBeVisible();
   await expect(page.locator('[data-category="sahaba"] .explore-card-kicker')).toHaveText(
@@ -345,7 +345,12 @@ test("category pages show focused topic content without homepage personalization
 
   await page.goto("/pages/category.html?category=fiqh", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { level: 1, name: "Fiqh" })).toBeVisible();
-  await expect(page.locator("#category-series-section")).toBeHidden();
+  await expect(page.locator("#category-summary")).toHaveText("7 lectures available across 2 series");
+  await expect(page.locator("#category-series-grid .series-card")).toHaveCount(2);
+  await expect(page.locator("#category-series-grid .series-title")).toHaveText([
+    "The Four Imams: Their Lives and Fiqh Principles",
+    "Fiqh of Social Media",
+  ]);
   await expect(page.locator("#category-lectures-grid .series-card")).toHaveCount(1);
   await expect(page.locator("#category-lectures-grid .series-title")).toHaveText(
     "The 7 Commandments To A Successful Marriage",
@@ -353,7 +358,7 @@ test("category pages show focused topic content without homepage personalization
   expect(pageErrors).toEqual([]);
 });
 
-test("standalone-only categories stay on the local catalog", async ({ page }) => {
+test("Fiqh series and standalone lectures stay on the local catalog", async ({ page }) => {
   let fiqhFeedRequests = 0;
   page.on("request", (request) => {
     if (request.url().includes("/fiqh-data.json")) fiqhFeedRequests += 1;
@@ -361,10 +366,11 @@ test("standalone-only categories stay on the local catalog", async ({ page }) =>
   const pageErrors = await preparePage(page);
   await page.goto("/?category=fiqh#series", { waitUntil: "domcontentloaded" });
 
-  await expect(page.locator("#series-grid .series-title")).toHaveCount(1);
-  await expect(page.locator("#series-grid .series-title")).toHaveText(
-    "The 7 Commandments To A Successful Marriage",
-  );
+  const fiqhTitles = page.locator("#series-grid .series-title");
+  await expect(fiqhTitles).toHaveCount(3);
+  await expect(fiqhTitles.filter({ hasText: "The Four Imams: Their Lives and Fiqh Principles" })).toHaveCount(1);
+  await expect(fiqhTitles.filter({ hasText: "Fiqh of Social Media" })).toHaveCount(1);
+  await expect(fiqhTitles.filter({ hasText: "The 7 Commandments To A Successful Marriage" })).toHaveCount(1);
   expect(fiqhFeedRequests).toBe(0);
   expect(pageErrors).toEqual([]);
 });
