@@ -2,7 +2,7 @@
 
 This folder holds everything publicity-related for Improving Muslim: finished social assets, the templates and scripts that generate them, and this guide. It documents what has been done so far and how to continue, so anyone joining can pick up without re-deriving decisions.
 
-Status snapshot as of **21 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
+Status snapshot as of **22 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
 
 ## The pitch (use this framing everywhere)
 
@@ -63,6 +63,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 6. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
 7. **First paid speaker-promotion proposal sent:** Navaid Aziz was offered **USD $75–$100** for a short Instagram Reel introducing Improving Muslim, with permission for Improving Muslim to repost the same video organically on its own YouTube Shorts and TikTok accounts with credit. Paid-ad usage was not requested or included.
 8. **Navaid Aziz countered with a free arrangement, accepted:** instead of the paid Reel, Improving Muslim tags him (**@navaid_aziz**) in an Instagram story whenever his content goes live, and he reshares it — free of charge. This makes every release of his content a distribution moment; publish his episodes in regular batches rather than one big drop. First promoted releases: **40 Hadith of Imam Nawawi** and **The Four Imams: Their Lives and Fiqh Principles**. The release-story asset is `ig-story-navaid-aziz.png` (from `ig-story-speaker-template.html`, rendered by `render-instagram-posts.cjs`).
+9. **Reddit community outreach began:** a text post was published in **r/MuslimNoFap**, using the "YouTube without the haram distractions" framing. The post disclosed that Improving Muslim is the author's own free project, connected the platform directly to the community's struggle with triggering recommendations and social-media rabbit holes, and asked for honest feedback rather than promotion. Reddit is now the second publicity channel used after Instagram.
 
 ### Outreach status
 
@@ -131,6 +132,20 @@ Contact genuine, relevant creators in small batches and keep a record of message
 |---|---|---|---|---|
 | 20 July 2026 | Creator 01 (handle not recorded) | 53 posts; 8,142 followers; 182 following | Initial DM sent | First use of the general small-creator collaboration message |
 
+### Reddit community outreach
+
+Reddit outreach began on **22 July 2026** with a post to **r/MuslimNoFap**. The audience fit is specific: members commonly discuss leaving or limiting YouTube and social media because recommendations, ads, and endless feeds can expose them to triggering material. The post presented Improving Muslim as a practical response to that problem and kept the tone personal rather than promotional.
+
+For this and future community posts:
+
+- Disclose the relationship to the project plainly.
+- Lead with the community's actual problem, not a list of product features.
+- Ask for honest feedback in the comments rather than asking people to promote the site.
+- Read each community's rules and obtain moderator permission when self-promotion or advertising rules may apply.
+- Record the post URL, post views, upvotes, comments, shares, site referrals, and lecture starts where those measurements are available.
+
+The current site has no general referral analytics, so the first Reddit post cannot yet be attributed precisely. Do not interpret post views alone as successful acquisition; the useful signal is whether visitors reach the site and begin watching lectures.
+
 ### Caption bank (reuse/adapt)
 
 YouTube-comparison post caption: *"You open YouTube for one lecture. An hour later you've watched everything except that lecture. Improving Muslim is a free website with one job: Islamic lectures, and nothing pulling you away from them. No ads, no comments, no algorithm. Browse by topic, follow series, keep your progress. improvingmuslim.com — link in bio."*
@@ -174,10 +189,12 @@ Every dollar spent on publicity goes here, so total spend is always known at a g
 
 Ideas queued, in rough priority order:
 
-1. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
-2. **Run the first Navaid Aziz release story:** once the 40 Hadith and Four Imams batches are live, post `ig-story-navaid-aziz.png` as a story, tag **@navaid_aziz** with the mention sticker (the space between the cards and the footer is left calm for it), add a link sticker to improvingmuslim.com, and DM him that it's up so he can reshare. Repeat with a fresh render (new `stories` entry in `render-instagram-posts.cjs`) for every future batch of his content. Also post the Navaid speaker spotlight (`ig-speaker-navaid-aziz.png`) to the grid on the staggered cadence. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
-3. Post the speaker spotlights on the planned staggered cadence.
-4. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
-5. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
-6. Story/Reel variants (1080×1920) — the `ads/story-1080x1920.svg` banner is a starting point.
-7. Track boost results (reach, link clicks, cost per click) and note what worked here.
+1. **Choose and test the next acquisition medium.** Instagram and Reddit have now both been used; the next experiment should reach a relevant audience through a meaningfully different distribution mechanism rather than simply reposting the same promotional message elsewhere.
+2. Record the first Reddit post's URL and available Reddit insights, and add referral/activation measurement before the next community campaign.
+3. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
+4. **Run the first Navaid Aziz release story:** once the 40 Hadith and Four Imams batches are live, post `ig-story-navaid-aziz.png` as a story, tag **@navaid_aziz** with the mention sticker (the space between the cards and the footer is left calm for it), add a link sticker to improvingmuslim.com, and DM him that it's up so he can reshare. Repeat with a fresh render (new `stories` entry in `render-instagram-posts.cjs`) for every future batch of his content. Also post the Navaid speaker spotlight (`ig-speaker-navaid-aziz.png`) to the grid on the staggered cadence. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
+5. Post the speaker spotlights on the planned staggered cadence.
+6. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
+7. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
+8. Story/Reel variants (1080×1920) — the `ads/story-1080x1920.svg` banner is a starting point.
+9. Track boost results (reach, link clicks, cost per click) and note what worked here.
