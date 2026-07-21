@@ -54,6 +54,40 @@ const speakers = [
     TITLE2: "Enjoy Your Prayer",
     SUB2: "Prayer series",
   },
+  {
+    out: "ig-speaker-navaid-aziz.png",
+    NAME: "Navaid Aziz",
+    PHOTO: "../assets/speaker/navaid-aziz.jpg",
+    SUBLINE: "His series, <strong>free</strong> on Improving Muslim",
+    THUMB1: "../assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
+    COUNT1: "46 episodes",
+    TITLE1: "40 Hadith of Imam Nawawi",
+    SUB1: "Hadith series",
+    THUMB2: "../assets/thumbnail/four-imams/episodes/episode-01.jpg",
+    COUNT2: "9 episodes",
+    TITLE2: "The Four Imams: Their Lives & Fiqh Principles",
+    SUB2: "Fiqh series",
+  },
+];
+
+// Story assets (1080x1920) for the speaker tag-and-reshare arrangement:
+// tag the speaker in the story from the Instagram app itself (the template
+// deliberately leaves the middle-right area calm for the mention sticker).
+const stories = [
+  {
+    out: "ig-story-navaid-aziz.png",
+    NAME: "Navaid Aziz",
+    PHOTO: "../assets/speaker/navaid-aziz.jpg",
+    KICKER: "New series live",
+    THUMB1: "../assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
+    COUNT1: "46 episodes",
+    TITLE1: "40 Hadith of Imam Nawawi",
+    SUB1: "Hadith series",
+    THUMB2: "../assets/thumbnail/four-imams/episodes/episode-01.jpg",
+    COUNT2: "9 episodes",
+    TITLE2: "The Four Imams: Their Lives & Fiqh Principles",
+    SUB2: "Fiqh series",
+  },
 ];
 
 (async () => {
@@ -83,7 +117,21 @@ const speakers = [
   }
   fs.unlinkSync(tmp);
 
-  // 3. YouTube-distractions comparison post
+  // 3. Speaker release stories (1080x1920)
+  await page.setViewportSize({ width: 1080, height: 1920 });
+  const storyTemplate = fs.readFileSync(path.join(__dirname, "ig-story-speaker-template.html"), "utf8");
+  for (const s of stories) {
+    let html = storyTemplate;
+    for (const [key, value] of Object.entries(s)) {
+      if (key !== "out") html = html.split(`{{${key}}}`).join(value);
+    }
+    fs.writeFileSync(tmp, html);
+    await shoot(".ig-speaker-tmp.html", s.out);
+  }
+  fs.unlinkSync(tmp);
+  await page.setViewportSize(SIZE);
+
+  // 4. YouTube-distractions comparison post
   await shoot(
     "instagram/youtube-comparison/template.html",
     "instagram/youtube-comparison/instagram-feed-1080x1350.png",

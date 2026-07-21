@@ -34,8 +34,10 @@ Product imagery (thumbnails, speaker photos) comes straight from the repo: `asse
 |---|---|
 | `instagram-post-1080x1350.png` | Main launch/ad post (4:5 feed) — headline + phone mockup of the app |
 | `instagram-post-template.html` | Editable source for the above |
-| `ig-speaker-{mufti-menk,omar-suleiman,ali-hammuda}.png` | Speaker spotlight posts (4:5 feed) |
+| `ig-speaker-{mufti-menk,omar-suleiman,ali-hammuda,navaid-aziz}.png` | Speaker spotlight posts (4:5 feed) |
 | `ig-speaker-template.html` | Speaker spotlight source with `{{TOKENS}}` — one template, any speaker |
+| `ig-story-navaid-aziz.png` | Release story (9:16) for the Navaid Aziz tag-and-reshare arrangement |
+| `ig-story-speaker-template.html` | Release story source with `{{TOKENS}}` — reuse for every speaker release story |
 | `render-instagram-posts.cjs` | Regenerates **all** post PNGs from the templates (see below) |
 | `instagram/first-post/` | 5-slide intro carousel (SVG sources + PNGs + generator) |
 | `instagram/youtube-comparison/` | "You came for one lecture" comparison post (4:5 feed) — left panel mocks a YouTube-style feed (parody clickbait/gaming/Shorts, no real channels or IP), right panel shows real lecture cards. `distractions-collage.png` holds the AI-generated distraction imagery; the deliberately immodest crop from it is unused. Rendered by `render-instagram-posts.cjs`. |
@@ -59,7 +61,8 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 4. **Speaker/partner outreach via Instagram DM** began — see the table below.
 5. **YouTube-comparison post** (`instagram/youtube-comparison/`) created — planned as the account's **5th post**, with a boost intended after posting. Left panel mocks a YouTube feed (parody clickbait/gaming/Shorts — no real channels or third-party IP, deliberately, so Meta doesn't reject the boost); right panel mirrors the real website cards with episode-count/duration badges. Note: the Change of Heart badge says **16 episodes** because that's the site's registry total (`data/series-registry.js`), even though the older advertised-counts list below says 20 — reconcile that list if the registry is right.
 6. **First direct speaker permission received:** Navaid Aziz granted written permission to place his content on Improving Muslim and invited a conversation about collaboration. The immediate priority remains publishing more content and bringing more speakers on board; any partnership can be explored later, with no expectation placed on him.
-7. **First paid speaker-promotion proposal sent:** Navaid Aziz was offered **USD $75–$100** for a short Instagram Reel introducing Improving Muslim, with permission for Improving Muslim to repost the same video organically on its own YouTube Shorts and TikTok accounts with credit. The proposal is awaiting his response; paid-ad usage was not requested or included.
+7. **First paid speaker-promotion proposal sent:** Navaid Aziz was offered **USD $75–$100** for a short Instagram Reel introducing Improving Muslim, with permission for Improving Muslim to repost the same video organically on its own YouTube Shorts and TikTok accounts with credit. Paid-ad usage was not requested or included.
+8. **Navaid Aziz countered with a free arrangement, accepted:** instead of the paid Reel, Improving Muslim tags him (**@navaid_aziz**) in an Instagram story whenever his content goes live, and he reshares it — free of charge. This makes every release of his content a distribution moment; publish his episodes in regular batches rather than one big drop. First promoted releases: **40 Hadith of Imam Nawawi** and **The Four Imams: Their Lives and Fiqh Principles**. The release-story asset is `ig-story-navaid-aziz.png` (from `ig-story-speaker-template.html`, rendered by `render-instagram-posts.cjs`).
 
 ### Outreach status
 
@@ -68,7 +71,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
 | Hisham Abu Yusuf | DM sent | His lecture "Why Am I Here?" is featured; feedback + consent + collaboration |
 | Ali Dawah | DM sent | General platform pitch; feedback + collaboration |
 | OnePath Network | Drafted, not yet sent | **Forward-looking permission** — no OnePath content is on the platform yet; asking before featuring any |
-| Navaid Aziz | Permission granted; nine additional playlists supplied; paid Reel proposal sent, awaiting response | His 40 Hadith of Imam Nawawi series is featured; proposed USD $75–$100 Instagram Reel with credited organic reposting on Improving Muslim's YouTube Shorts and TikTok accounts |
+| Navaid Aziz | Permission granted; nine additional playlists supplied; story-tag/reshare arrangement in place (he declined the paid Reel in favour of resharing for free) | Tag @navaid_aziz in a story on every release of his content; he reshares. First promoted releases: 40 Hadith of Imam Nawawi + The Four Imams |
 | Majed Mahmoud | Drafted, not yet sent | His Prophet-stories lectures + du'aa lecture are featured; consent + feedback |
 
 **Outreach principles — keep these:**
@@ -172,7 +175,7 @@ Every dollar spent on publicity goes here, so total spend is always known at a g
 Ideas queued, in rough priority order:
 
 1. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
-2. Await Navaid Aziz's response to the paid Reel proposal while continuing to add the playlists he supplied. If he is interested, agree in writing on the Reel length and content, posting account and timing, sponsorship disclosure, revisions, payment timing, and credited organic reposting rights for Improving Muslim's YouTube Shorts and TikTok accounts. Any paid-ad usage must be negotiated separately. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
+2. **Run the first Navaid Aziz release story:** once the 40 Hadith and Four Imams batches are live, post `ig-story-navaid-aziz.png` as a story, tag **@navaid_aziz** with the mention sticker (the space between the cards and the footer is left calm for it), add a link sticker to improvingmuslim.com, and DM him that it's up so he can reshare. Repeat with a fresh render (new `stories` entry in `render-instagram-posts.cjs`) for every future batch of his content. Also post the Navaid speaker spotlight (`ig-speaker-navaid-aziz.png`) to the grid on the staggered cadence. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
 3. Post the speaker spotlights on the planned staggered cadence.
 4. More speaker spotlights from the template (Belal Assaad, Abu Taymiyyah, Abu Bakr Zoud, Majed Mahmoud — assets all exist).
 5. A features post (My Notes, streaks, progress sync) — differentiators no re-upload channel has.
