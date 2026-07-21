@@ -1467,7 +1467,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "fiqh"
+        "fiqh",
+        "righteous-predecessors"
       ],
       "duration": 3989,
       "published": "2023-03-01",
@@ -1512,7 +1513,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "fiqh"
+        "fiqh",
+        "righteous-predecessors"
       ],
       "duration": 3791,
       "published": "2023-03-01",
@@ -1557,7 +1559,8 @@ window.catalogIndex = {
       "speaker": "Navaid Aziz",
       "speakerSlug": "navaid-aziz",
       "categories": [
-        "fiqh"
+        "fiqh",
+        "righteous-predecessors"
       ],
       "duration": 3531,
       "published": "2023-03-01",
@@ -3233,7 +3236,8 @@ window.catalogIndex = {
       "speaker": "AbdulRahman Hassan",
       "speakerSlug": "abdurrahman-hassan",
       "categories": [
-        "sahaba"
+        "sahaba",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2021-06-01",
@@ -3278,7 +3282,8 @@ window.catalogIndex = {
       "speaker": "AbdulRahman Hassan",
       "speakerSlug": "abdurrahman-hassan",
       "categories": [
-        "sahaba"
+        "sahaba",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2021-06-03",
@@ -3323,7 +3328,8 @@ window.catalogIndex = {
       "speaker": "AbdulRahman Hassan",
       "speakerSlug": "abdurrahman-hassan",
       "categories": [
-        "sahaba"
+        "sahaba",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2021-06-05",
@@ -3368,7 +3374,8 @@ window.catalogIndex = {
       "speaker": "AbdulRahman Hassan",
       "speakerSlug": "abdurrahman-hassan",
       "categories": [
-        "sahaba"
+        "sahaba",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2021-06-08",
@@ -3413,7 +3420,8 @@ window.catalogIndex = {
       "speaker": "AbdulRahman Hassan",
       "speakerSlug": "abdurrahman-hassan",
       "categories": [
-        "sahaba"
+        "sahaba",
+        "righteous-predecessors"
       ],
       "duration": null,
       "published": "2021-06-14",

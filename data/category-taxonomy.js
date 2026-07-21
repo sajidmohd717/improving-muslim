@@ -55,6 +55,13 @@
       public: true,
     },
     {
+      name: "Righteous Predecessors",
+      value: "righteous-predecessors",
+      description: "Lives and lessons of the salaf — companions, scholars, and the early generations.",
+      aliases: ["salaf", "salaf as-salih", "pious predecessors", "early generations"],
+      public: true,
+    },
+    {
       name: "Quran",
       value: "quran",
       description: "Reflection, recitation, and lessons from revelation.",
