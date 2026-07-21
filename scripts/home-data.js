@@ -49,6 +49,8 @@
   const fallbackData = (() => {
     const sections = [];
     for (const entry of (window.seriesConfig || [])) {
+      const available = entry.availableCount ?? entry.episodeCount ?? 0;
+      if (available === 0) continue;
       const name = entry.sectionTitle || "Series";
       let section = sections.find((s) => s.sectionTitle === name);
       if (!section) {
@@ -70,6 +72,8 @@
     const map = {};
     for (const entry of (window.seriesConfig || [])) {
       if (!entry.title) continue;
+      const available = entry.availableCount ?? entry.episodeCount ?? 0;
+      if (available === 0) continue;
       const cats = entryCategories(entry);
       for (const cat of cats) {
         if (!map[cat]) map[cat] = [];
