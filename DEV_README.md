@@ -72,7 +72,7 @@ Explore category counts have explicit meanings: registered series are counted fr
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and ten series episodes and all 27 standalone lectures are currently watchable, for 137 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and eleven series episodes and all 27 standalone lectures are currently watchable, for 138 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -88,7 +88,7 @@ Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lecture
 | Change of Heart | Ali Hammuda | Purification | 10 / 16 |
 | Why Me? | Omar Suleiman | Purification | 13 / 30 |
 | Angels in Your Presence | Omar Suleiman | Angels | 11 / 30 |
-| Life of Muhammad (PBUH) | Mufti Menk | Seerah | 23 / 30 |
+| Life of Muhammad (PBUH) | Mufti Menk | Seerah | 24 / 30 |
 | Stories of the Prophets | Mufti Menk | Prophets | 4 / 29 |
 | 10 Promised Jannah | AbdulRahman Hassan | Sahaba | 5 / 10 |
 | Madina Arabic Books | Asif Meherali | Arabic | 3 / 123 |
