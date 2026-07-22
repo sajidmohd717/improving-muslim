@@ -57,11 +57,11 @@ h2 {
 
 @media (min-width: 900px) {
   .hero {
-    padding: clamp(42px, 6vw, 68px) 0 12px;
+    padding: clamp(36px, 4vw, 52px) 0 10px;
   }
 
   .hero h1 {
-    font-size: clamp(3.25rem, 5.6vw, 4.9rem);
+    font-size: clamp(3rem, 4.6vw, 4.1rem);
   }
 
   .hero-copy {
