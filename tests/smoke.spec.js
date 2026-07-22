@@ -908,6 +908,13 @@ test.describe("mobile navigation", () => {
         completed: false,
         updatedAt: Date.now(),
       }));
+      localStorage.setItem("lecture-progress:standalone:qadr-and-sabr", JSON.stringify({
+        currentTime: 74,
+        duration: 2700,
+        percent: 0.03,
+        completed: false,
+        updatedAt: Date.now() - 1000,
+      }));
       localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
         targetMinutes: 15,
         todayDate: todayKey,
@@ -935,11 +942,15 @@ test.describe("mobile navigation", () => {
           Boolean(streakSection.compareDocumentPosition(continueSection) & Node.DOCUMENT_POSITION_FOLLOWING),
         streakCardHeight: document.querySelector("#streak-card").getBoundingClientRect().height,
         continueCardHeight: document.querySelector(".continue-hero").getBoundingClientRect().height,
+        continueContentHeight: document.querySelector(".continue-hero .continue-card-link").getBoundingClientRect().height,
+        continueAlignItems: getComputedStyle(document.querySelector("#continue-list")).alignItems,
       };
     });
     expect(layout.streakBeforeContinue).toBe(true);
     expect(layout.streakCardHeight).toBeLessThanOrEqual(80);
     expect(layout.continueCardHeight).toBeLessThanOrEqual(140);
+    expect(Math.abs(layout.continueCardHeight - layout.continueContentHeight)).toBeLessThanOrEqual(3);
+    expect(layout.continueAlignItems).toBe("flex-start");
     expect(pageErrors).toEqual([]);
   });
 

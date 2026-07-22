@@ -266,34 +266,32 @@
   stroke-linecap: round;
 }
 
-/* Desktop: the full-width "hero" resume card pushed the main grid roughly two
-   screens down, so every item is levelled to the same compact card and one row
-   holds all four. Must come after the .continue-hero base rules to win the
-   cascade. Tablet (≤900px) and mobile keep the hero treatment. */
-@media (min-width: 901px) {
-  .continue-strip {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
+/* Tablet and desktop: keep resume choices short and scannable. Landscape cards
+   leave more of the lecture feed visible, including in a half-width window. */
+@media (min-width: 601px) {
   .continue-hero {
     grid-column: auto;
   }
 
+  .continue-card-link,
   .continue-hero .continue-card-link {
-    grid-template-columns: none;
+    grid-template-columns: minmax(108px, 38%) minmax(0, 1fr);
     align-items: stretch;
+    min-height: 112px;
   }
 
+  .continue-thumb,
   .continue-hero .continue-thumb {
-    height: auto;
+    height: 100%;
     min-height: 0;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: auto;
   }
 
+  .continue-body,
   .continue-hero .continue-body {
     gap: 5px;
-    align-content: start;
-    padding: 12px 13px 16px;
+    align-content: center;
+    padding: 11px 42px 11px 13px;
   }
 
   .continue-hero .continue-body strong {
@@ -316,6 +314,12 @@
   .continue-hero .continue-resume-btn,
   .continue-hero .continue-bar {
     display: none;
+  }
+}
+
+@media (min-width: 901px) {
+  .continue-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

@@ -312,6 +312,7 @@
 
   .continue-strip {
     display: flex;
+    align-items: flex-start;
     gap: 10px;
     overflow-x: auto;
     padding: 2px 0 8px;
