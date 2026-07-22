@@ -268,6 +268,21 @@
   padding: 16px;
 }
 
+/* The light panel is a translucent near-white. Left unchanged in dark mode it
+   composites to a flat grey slab that fights the rest of the page, so flip it
+   to the dark surface tint at the same opacity. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .episode-sidebar {
+    border-color: rgba(51, 67, 60, 0.7);
+    background: rgba(23, 33, 29, 0.68);
+  }
+}
+
+:root[data-theme="dark"] .episode-sidebar {
+  border-color: rgba(51, 67, 60, 0.7);
+  background: rgba(23, 33, 29, 0.68);
+}
+
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(-50%) translateY(10px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -441,6 +456,22 @@
   outline: none;
 }
 
+/* Dark accent tint — the light-mode green is near-invisible on a dark panel,
+   which loses the "you are here" cue on the current episode. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .compact-episode:hover,
+  :root:not([data-theme="light"]) .compact-episode:focus-visible,
+  :root:not([data-theme="light"]) .compact-episode.is-current {
+    background: rgba(108, 196, 173, 0.13);
+  }
+}
+
+:root[data-theme="dark"] .compact-episode:hover,
+:root[data-theme="dark"] .compact-episode:focus-visible,
+:root[data-theme="dark"] .compact-episode.is-current {
+  background: rgba(108, 196, 173, 0.13);
+}
+
 .compact-episode.is-unavailable {
   opacity: 0.68;
 }
@@ -503,6 +534,18 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .now-playing-chip {
+    background: rgba(108, 196, 173, 0.13);
+    border-color: rgba(108, 196, 173, 0.28);
+  }
+}
+
+:root[data-theme="dark"] .now-playing-chip {
+  background: rgba(108, 196, 173, 0.13);
+  border-color: rgba(108, 196, 173, 0.28);
 }
 
 /* ─── My Notes panel ─────────────────────────────────────────────────────── */
@@ -633,6 +676,17 @@
   box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
 }
 
+/* Focus ring needs more weight on a dark field to stay visible. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .notes-textarea:focus-visible {
+    box-shadow: 0 0 0 3px rgba(108, 196, 173, 0.28);
+  }
+}
+
+:root[data-theme="dark"] .notes-textarea:focus-visible {
+  box-shadow: 0 0 0 3px rgba(108, 196, 173, 0.28);
+}
+
 .notes-textarea::placeholder {
   color: var(--muted);
 }
@@ -696,6 +750,16 @@
   font-weight: 800;
   padding: 1px 6px;
   cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .note-timestamp {
+    background: rgba(108, 196, 173, 0.16);
+  }
+}
+
+:root[data-theme="dark"] .note-timestamp {
+  background: rgba(108, 196, 173, 0.16);
 }
 
 .note-timestamp:hover,

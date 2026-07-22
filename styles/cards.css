@@ -61,6 +61,25 @@
   border-color: var(--accent);
 }
 
+/* Same translucent-near-white issue as .episode-sidebar: composites to grey
+   on a dark page, and the active tint disappears. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .speaker-card {
+    background: rgba(23, 33, 29, 0.78);
+  }
+  :root:not([data-theme="light"]) .speaker-card.is-active {
+    background: rgba(108, 196, 173, 0.11);
+  }
+}
+
+:root[data-theme="dark"] .speaker-card {
+  background: rgba(23, 33, 29, 0.78);
+}
+
+:root[data-theme="dark"] .speaker-card.is-active {
+  background: rgba(108, 196, 173, 0.11);
+}
+
 .speaker-card img {
   width: 64px;
   height: 64px;
