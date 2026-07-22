@@ -52,6 +52,11 @@
   // Per-item saved changes made on this device since its last acknowledged
   // write. This is the user's intent, unlike the possibly stale whole array.
   var _savedChanges = {};
+  var syncModel = window.IMAccountSyncModel;
+  var authUI = window.IMAuthUI;
+  var mergePersonalData = syncModel.mergePersonalData;
+  var savedArrayFromCloud = syncModel.savedArrayFromCloud;
+  var savedChangesBetween = syncModel.savedChangesBetween;
 
   /* ── Firestore document reference ────────────────────────────────────── */
 
@@ -158,104 +163,6 @@
     }
   }
 
-  function newerValue(cloudValue, guestValue) {
-    if (!cloudValue) return guestValue;
-    if (!guestValue) return cloudValue;
-    return (Number(guestValue.updatedAt) || 0) > (Number(cloudValue.updatedAt) || 0)
-      ? guestValue
-      : cloudValue;
-  }
-
-  function mergeProgressValue(cloudValue, guestValue) {
-    var latest = Object.assign({}, newerValue(cloudValue, guestValue) || {});
-    if ((cloudValue && cloudValue.completed) || (guestValue && guestValue.completed)) {
-      latest.completed = true;
-      latest.currentTime = Math.max(Number(cloudValue && cloudValue.currentTime) || 0, Number(guestValue && guestValue.currentTime) || 0);
-      latest.duration = Math.max(Number(cloudValue && cloudValue.duration) || 0, Number(guestValue && guestValue.duration) || 0);
-      latest.updatedAt = Math.max(Number(cloudValue && cloudValue.updatedAt) || 0, Number(guestValue && guestValue.updatedAt) || 0);
-    }
-    return latest;
-  }
-
-  function mergeStreak(cloudStreak, guestStreak) {
-    cloudStreak = cloudStreak || {};
-    guestStreak = guestStreak || {};
-    var latest = Object.assign({}, newerValue(cloudStreak, guestStreak) || {});
-    var days = Object.assign({}, cloudStreak.days || {});
-    Object.keys(guestStreak.days || {}).forEach(function (date) {
-      var cloudDay = days[date] || {};
-      var guestDay = guestStreak.days[date] || {};
-      days[date] = {
-        seconds: Math.max(Number(cloudDay.seconds) || 0, Number(guestDay.seconds) || 0),
-        completed: Boolean(cloudDay.completed || guestDay.completed),
-      };
-    });
-    latest.days = days;
-    latest.current = Math.max(Number(cloudStreak.current) || 0, Number(guestStreak.current) || 0);
-    latest.best = Math.max(Number(cloudStreak.best) || 0, Number(guestStreak.best) || 0);
-    latest.freezesAvailable = Math.max(Number(cloudStreak.freezesAvailable) || 0, Number(guestStreak.freezesAvailable) || 0);
-    latest.lastCompletedDate = [cloudStreak.lastCompletedDate || '', guestStreak.lastCompletedDate || ''].sort().pop();
-    if (cloudStreak.todayDate && cloudStreak.todayDate === guestStreak.todayDate) {
-      latest.todayDate = cloudStreak.todayDate;
-      latest.todaySeconds = Math.max(Number(cloudStreak.todaySeconds) || 0, Number(guestStreak.todaySeconds) || 0);
-    }
-    // Public leaderboard choices belong to the signed-in account, never to a guest import.
-    ['publicOptIn', 'publicName'].forEach(function (key) {
-      if (Object.prototype.hasOwnProperty.call(cloudStreak, key)) latest[key] = cloudStreak[key];
-      else delete latest[key];
-    });
-    latest.updatedAt = Math.max(Number(cloudStreak.updatedAt) || 0, Number(guestStreak.updatedAt) || 0);
-    return latest;
-  }
-
-  function mergeQuranStreak(cloudStreak, guestStreak) {
-    cloudStreak = cloudStreak || {};
-    guestStreak = guestStreak || {};
-    var latest = Object.assign({}, newerValue(cloudStreak, guestStreak) || {});
-    var days = Object.assign({}, cloudStreak.days || {});
-    Object.keys(guestStreak.days || {}).forEach(function (date) {
-      var cloudDay = days[date] || {};
-      var guestDay = guestStreak.days[date] || {};
-      days[date] = {
-        completed: Boolean(cloudDay.completed || guestDay.completed),
-        minutes: Math.max(Number(cloudDay.minutes) || 0, Number(guestDay.minutes) || 0),
-      };
-    });
-    latest.days = days;
-    latest.current = Math.max(Number(cloudStreak.current) || 0, Number(guestStreak.current) || 0);
-    latest.best = Math.max(Number(cloudStreak.best) || 0, Number(guestStreak.best) || 0, latest.current);
-    latest.lastCompletedDate = [cloudStreak.lastCompletedDate || '', guestStreak.lastCompletedDate || ''].sort().pop();
-    latest.targetMinutes = 15;
-    latest.updatedAt = Math.max(Number(cloudStreak.updatedAt) || 0, Number(guestStreak.updatedAt) || 0);
-    return latest;
-  }
-
-  function mergePersonalData(cloud, guest) {
-    cloud = cloud || {};
-    guest = guest || {};
-    var progress = Object.assign({}, cloud.progress || {});
-    Object.keys(guest.progress || {}).forEach(function (key) {
-      progress[key] = mergeProgressValue(progress[key], guest.progress[key]);
-    });
-    var notes = Object.assign({}, cloud.notes || {});
-    Object.keys(guest.notes || {}).forEach(function (key) {
-      notes[key] = newerValue(notes[key], guest.notes[key]);
-    });
-    var savedMap = {};
-    savedArrayFromCloud(cloud).concat(Array.isArray(guest.saved) ? guest.saved : []).forEach(function (item) {
-      if (!item || !item.key) return;
-      var existing = savedMap[item.key];
-      if (!existing || (Number(item.savedAt) || 0) > (Number(existing.savedAt) || 0)) savedMap[item.key] = item;
-    });
-    return {
-      progress: progress,
-      notes: notes,
-      saved: Object.keys(savedMap).map(function (key) { return savedMap[key]; }).sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); }),
-      streak: mergeStreak(cloud.streak || {}, guest.streak || {}),
-      quranStreak: mergeQuranStreak(cloud.quranStreak || {}, guest.quranStreak || {}),
-    };
-  }
-
   // A signed-in user's click can happen before Firebase finishes restoring
   // auth/account state, or immediately before a full-page navigation. Keep a
   // small write-ahead journal so those personal-data changes survive the gap.
@@ -273,28 +180,6 @@
       writes: journal.writes,
       savedChanges: journal.savedChanges && typeof journal.savedChanges === 'object' ? journal.savedChanges : {},
     };
-  }
-
-  function savedItemsByKey(raw) {
-    var items;
-    try { items = JSON.parse(raw || '[]'); } catch (_) { items = []; }
-    var result = {};
-    if (!Array.isArray(items)) return result;
-    items.forEach(function (item) { if (item && item.key) result[item.key] = item; });
-    return result;
-  }
-
-  function savedChangesBetween(previousRaw, currentRaw) {
-    var previous = savedItemsByKey(previousRaw);
-    var current = savedItemsByKey(currentRaw);
-    var changes = {};
-    Object.keys(previous).forEach(function (key) {
-      if (!current[key]) changes[key] = null;
-    });
-    Object.keys(current).forEach(function (key) {
-      if (!previous[key] || JSON.stringify(previous[key]) !== JSON.stringify(current[key])) changes[key] = current[key];
-    });
-    return changes;
   }
 
   function rememberPendingAccountWrite(key, previousRaw) {
@@ -396,16 +281,6 @@
   }
 
   /* ── Authoritative Firestore pull ─────────────────────────────────────── */
-
-  function savedArrayFromCloud(cloud) {
-    if (cloud.savedItems && typeof cloud.savedItems === 'object') {
-      return Object.keys(cloud.savedItems)
-        .map(function (k) { return cloud.savedItems[k]; })
-        .filter(Boolean)
-        .sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); });
-    }
-    return Array.isArray(cloud.saved) ? cloud.saved : [];
-  }
 
   function applyAccountSnapshot(cloud, captured) {
     var savedArr = savedArrayFromCloud(cloud);
@@ -670,7 +545,7 @@
   /* ── Notify state listeners ───────────────────────────────────────────── */
 
   function notifyListeners() {
-    updateSyncIndicator();
+    authUI.updateSyncIndicator();
     _listeners.forEach(function (fn) {
       try { fn(_user); } catch (_) {}
     });
@@ -683,10 +558,6 @@
     _syncStatus = status;
     _syncError = error || '';
     notifyListeners();
-  }
-
-  function pageUrl(path) {
-    return new URL(path, document.baseURI || window.location.href).href;
   }
 
   function logSearchEvent(event) {
@@ -712,123 +583,7 @@
 
   /* -- Auth button injection ----------------------------------------------- */
 
-  function buildAuthButton() {
-    var btn = document.createElement('button');
-    btn.className = 'auth-btn';
-    btn.type = 'button';
-    setAuthButtonState(btn);
-    btn.addEventListener('click', function () {
-      if (_user) {
-        window.location.href = pageUrl('pages/settings.html');
-      } else {
-        window.location.href = pageUrl('pages/sign-in.html');
-      }
-    });
-    return btn;
-  }
-
-  function setAuthButtonState(btn) {
-    if (!btn) return;
-    if (_user) {
-      var name = _user.displayName || _user.email || 'Account';
-      if (_user.photoURL) {
-        btn.innerHTML = '<img src="' + _user.photoURL + '" alt="" class="auth-avatar" referrerpolicy="no-referrer" />';
-      } else {
-        btn.innerHTML = '<span class="auth-avatar auth-initials" aria-hidden="true">' +
-          name[0].toUpperCase() + '</span>';
-      }
-      btn.setAttribute('aria-label', 'Account — ' + name);
-      btn.classList.add('is-signed-in');
-    } else {
-      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
-        'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ' +
-        'aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>' +
-        '<circle cx="12" cy="7" r="4"/></svg><span>Sign in</span>';
-      btn.setAttribute('aria-label', 'Sign in with Google');
-      btn.classList.remove('is-signed-in');
-    }
-  }
-
-  function updateAllAuthButtons() {
-    document.querySelectorAll('.auth-btn').forEach(setAuthButtonState);
-  }
-
-  function injectAuthButton() {
-    var navShell = document.querySelector('.nav-shell');
-    if (!navShell || navShell.querySelector('.auth-btn')) return;
-    var btn = buildAuthButton();
-    var navMore = navShell.querySelector('.nav-more');
-    if (navMore) {
-      navShell.insertBefore(btn, navMore);
-    } else {
-      navShell.appendChild(btn);
-    }
-  }
-
   /* ── Settings page wiring ─────────────────────────────────────────────── */
-
-  function wireSettingsPage() {
-    var signInBtn  = document.getElementById('settings-sign-in-btn');
-    var signOutBtn = document.getElementById('settings-sign-out-btn');
-    if (signInBtn) {
-      signInBtn.addEventListener('click', function () {
-        window.IMAuth.signIn().catch(function (err) {
-          if (err.code !== 'auth/popup-closed-by-user' &&
-              err.code !== 'auth/cancelled-popup-request') {
-            console.warn('[IMAuth] Sign-in error:', err.message);
-          }
-        });
-      });
-    }
-    if (signOutBtn) {
-      signOutBtn.addEventListener('click', function () {
-        window.IMAuth.signOut();
-      });
-    }
-  }
-
-  function updateSettingsPanel(user) {
-    var signedOut = document.getElementById('auth-signed-out');
-    var signedIn  = document.getElementById('auth-signed-in');
-    if (!signedOut || !signedIn) return;
-    var localProgress = document.getElementById('local-progress-section');
-    if (localProgress) localProgress.hidden = Boolean(user);
-
-    if (user) {
-      signedOut.hidden = true;
-      signedIn.hidden  = false;
-      var photoEl = document.getElementById('auth-profile-photo');
-      var nameEl  = document.getElementById('auth-profile-name');
-      var emailEl = document.getElementById('auth-profile-email');
-      if (photoEl) {
-        if (user.photoURL) {
-          photoEl.src = user.photoURL;
-          photoEl.hidden = false;
-        } else {
-          photoEl.hidden = true;
-        }
-      }
-      if (nameEl)  nameEl.textContent  = user.displayName || '';
-      if (emailEl) emailEl.textContent = user.email || '';
-      updateSyncIndicator();
-    } else {
-      signedOut.hidden = false;
-      signedIn.hidden  = true;
-    }
-  }
-
-  function updateSyncIndicator() {
-    var status = document.getElementById('auth-sync-status');
-    if (!status || !_user) return;
-    var copy = {
-      connecting: 'Connecting to your synced learning data…',
-      syncing: 'Saving your latest changes…',
-      offline: 'Saved on this device. Your changes will sync when the connection returns.',
-      synced: 'Your learning progress is synced across devices.',
-    };
-    status.textContent = copy[_syncStatus] || copy.connecting;
-    status.dataset.syncStatus = _syncStatus;
-  }
 
   /* ── Public API ───────────────────────────────────────────────────────── */
 
@@ -910,11 +665,12 @@
     },
   };
 
-  if (window.__IM_TEST__) {
-    window.IMAuthTestHooks = {
-      mergePersonalData: mergePersonalData,
-    };
-  }
+  authUI.configure({
+    getUser: function () { return _user; },
+    getSyncStatus: function () { return _syncStatus; },
+    signIn: window.IMAuth.signIn,
+    signOut: window.IMAuth.signOut,
+  });
 
   if (window.IMStreakUI) {
     window.IMStreakUI.configure({
@@ -996,10 +752,10 @@
           });
         }
         if (window.IMStreakUI) window.IMStreakUI.injectButton();
-        injectAuthButton();
+        authUI.injectButton();
         if (!user && window.IMStreakUI) window.IMStreakUI.updateButtons();
-        updateAllAuthButtons();
-        updateSettingsPanel(user);
+        authUI.updateButtons();
+        authUI.updateSettingsPanel(user);
         // Announce the auth state immediately so UI that only depends on
         // signed-in-vs-guest (e.g. the "Synced across your devices" storage
         // note on History/Saved) updates right away, instead of waiting on --
@@ -1052,8 +808,8 @@
   // so the nav doesn't visually shift when auth state resolves.
   function earlyInject() {
     if (window.IMStreakUI) window.IMStreakUI.injectButton();
-    injectAuthButton();
-    wireSettingsPage();
+    authUI.injectButton();
+    authUI.wireSettingsPage();
   }
 
   if (document.readyState === 'loading') {

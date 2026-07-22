@@ -21,11 +21,15 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `styles/styles.css` is the CSS entry point — it only `@import`s focused sub-files from `styles/`. Do not add rules directly to `styles.css`; add them to the appropriate sub-file and bump that import's `?v=` version.
 - `data/category-taxonomy.js` is the single source of truth for public topic names, descriptions, aliases, ordering, and homepage system filters. Both the homepage and Explore derive their category UI from it.
 - `scripts/home-config.js` holds homepage service endpoints, curated descriptions, remote-feed exclusions, and the `catalogVersion` cache key. Bump `catalogVersion` whenever the remote catalog JSON changes.
-- `scripts/script.js` is the homepage controller: page state, the main results grid, search result rendering, and event wiring. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
+- `scripts/script.js` is the homepage coordinator: page state, category loading, and event wiring. Catalogue rendering, category navigation, and secondary search results live in focused modules.
 - `scripts/home-data.js` (`window.IMHomeData`) assembles homepage catalogue data: the category name map, local series/standalone card sections, remote-feed normalization and merging, the remote-card allow-list filter, and the offline fallback sections. No DOM.
 - `scripts/home-feed.js` (`window.IMHomeFeed`) owns grid ordering: the stable per-session shuffle, the explicit sort modes, the balanced discovery mix, and the watch-history-seeded personalized blend built on the catalog + `IMRelated` ranking. No DOM.
 - `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning, Popular right now, and the daily streak card.
-- `scripts/home-card-actions.js` (`window.IMCardActions`) implements the grid cards' save/share actions and card-menu open/close bookkeeping; `script.js` owns the event delegation.
+- `scripts/home-category-nav.js` (`window.IMHomeCategoryNav`) renders the scrollable category row and owns its previous/next controls.
+- `scripts/home-grid.js` (`window.IMHomeGrid`) owns catalogue filtering, pagination, progress summaries, and card rendering.
+- `scripts/home-search-results.js` (`window.IMHomeSearchResults`) owns episode, transcript, analytics, and optional AI-search result orchestration.
+- `scripts/content-actions.js` (`window.IMContentActions`) is the shared save/remove/share layer used by homepage, series, and watch-page actions.
+- `scripts/home-card-actions.js` (`window.IMCardActions`) adapts the shared content actions for grid cards and owns card-menu bookkeeping; `script.js` owns the event delegation.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
@@ -40,6 +44,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `data/speaker-data.js` controls speaker ordering and profile metadata.
 - `data/catalog-data.js` is a generated flat index of every watchable episode and standalone lecture, each with normalized metadata and a TF-IDF term vector (built from titles, descriptions, keywords, takeaways, recaps, and caption transcripts). Never edit by hand — regenerate with `npm run catalog` after any content change, and CI verifies it with `npm run check:catalog`.
 - `scripts/generate-catalog.js` builds `data/catalog-data.js` from the registry, series data files, standalone lectures, and `assets/captions/`.
+- `scripts/catalog-lookup.js` builds lightweight maps over the generated catalogue and series registry. History and Saved use it to resolve legacy records without loading and executing every series data file.
 - `scripts/generate-mobile-api.js` publishes the maintained catalog as the platform-neutral `api/v1/catalog.json` contract and refreshes the iOS app's bundled offline copy. Both outputs are generated; run `npm run mobile-api` rather than editing either file.
 - `ios/` contains the native SwiftUI client, its product specification, and an XcodeGen project definition. It consumes the public v1 catalog at runtime and falls back to the generated bundled catalog when the network is unavailable.
 - `ios/DEV_README.md` is the continuation guide for native development: current architecture, setup, implementation sequence, shared-data rules, testing expectations, and release guardrails.
@@ -49,7 +54,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/generate-transcript-index.js` builds that index from the registry, data files, and `assets/captions/`.
 - `scripts/popularity.js`, `workers/popularity-worker.js`, and `wrangler.popularity.jsonc` implement the anonymous popularity counters ("Popular right now" shelf, play counts, ranking prior). See the Popularity Signals section below.
 - `scripts/transcript-search.js` powers the homepage's "Mentioned inside lectures" search section: it lazy-loads the transcript index on first search, picks candidate lectures from the postings, fetches only those lectures' VTT files, and returns timestamped snippets. Each result links to the watch page with a `?t=` parameter, which `watch-page.js` honours on load (a `?t=` seek wins over the saved resume position). Query tokenization/stemming/synonyms are shared with `home-search.js` via `window.IMHomeSearch.queryTokens`/`tokenVariants`.
-- `scripts/firebase-auth.js` handles Google sign-in, Firestore sync, and exposes `window.IMAuth`. Loaded on all pages. See the Firebase Authentication section below.
+- `scripts/firebase-auth.js` handles Google sign-in, account lifecycle, and Firestore transport, and exposes `window.IMAuth`. Pure conflict-resolution rules live in `scripts/account-sync-model.js`; auth-navigation and Settings DOM rendering live in `scripts/auth-ui.js`. All three are loaded on every page in that order. See the Firebase Authentication section below.
 - `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
 - `pages/admin.html` is a direct-link private admin dashboard. It currently reads submitted search analytics for allowlisted admin emails only.
 - `assets/captions/` contains WebVTT captions, grouped by series slug or `standalone/{speaker-slug}/`.
@@ -231,7 +236,7 @@ Current production Worker:
 1. User types in the homepage search box.
 2. `scripts/home-search.js` shows suggestions only; it does not rerender the whole feed on every keystroke.
 3. User presses Enter or clicks Search.
-4. `scripts/script.js` immediately renders normal local keyword results, logs the submitted search event when signed in, and starts the AI rerank request in the background.
+4. `scripts/script.js` submits the state change; `scripts/home-grid.js` immediately renders local keyword results while `scripts/home-search-results.js` logs the signed-in search and starts the AI rerank request in the background.
 5. The Worker receives `{ query, items }`, validates CORS/origin, calls the active AI provider, and returns ranked IDs.
 6. If ranked IDs come back, the homepage reorders/filters results and shows an "AI match" badge.
 7. If the Worker fails, the active provider is unavailable, or no useful IDs come back, the homepage keeps the normal local search results.
@@ -274,7 +279,7 @@ During initial deployment on July 6, 2026, the Worker deployed correctly and the
 
 ### Editing AI Search
 
-- Frontend search UX and fallback behavior: `scripts/home-search.js` and `scripts/script.js`.
+- Frontend search UX and fallback behavior: `scripts/home-search.js`, `scripts/home-search-results.js`, `scripts/home-grid.js`, and `scripts/script.js`.
 - Worker provider selection, prompt/schema/CORS/fallback behavior: `workers/ai-search-worker.js`.
 - Endpoint URL and homepage metadata: `scripts/home-config.js`.
 - Deployment name, Worker vars, and required secrets: `wrangler.jsonc`.
@@ -292,7 +297,7 @@ Anonymous, aggregate-only play/completion counters per lecture — no user ids, 
 | Wrangler config | `wrangler.popularity.jsonc` |
 | Browser client (beacons + cached counts) | `scripts/popularity.js` |
 | Play/complete beacons | `scripts/watch-page.js` |
-| "Popular right now" shelf | `renderPopularShelf` in `scripts/script.js` |
+| "Popular right now" shelf | `renderPopularShelf` in `scripts/home-shelves.js` |
 
 The frontend degrades silently until the Worker is deployed: no errors, no shelf, no ranking boost. Wrangler provisions the declared `POPULARITY` KV namespace automatically on the first deployment, so no account-specific namespace ID belongs in the repository. To deploy:
 
@@ -811,7 +816,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 
 ### How sync works
 
-`scripts/firebase-auth.js` is loaded on every page. It:
+The common runtime loads `scripts/account-sync-model.js`, `scripts/auth-ui.js`, then `scripts/firebase-auth.js` on every page. `firebase-auth.js`:
 
 1. Initialises the Firebase app using the project config.
 2. Listens for Google auth state changes.
@@ -819,6 +824,8 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 4. On every localStorage write: debounces a push to Firestore (3-second delay) so frequent progress saves don't burn write quota.
 5. Hands Firebase user/database access to `scripts/streak-ui.js`, which writes only opt-in public display names and streak summaries to `leaderboard/{uid}`. Watch history and saved items are never public.
 6. On sign-out: stops account syncing, clears the account cache, and restores the isolated guest browser data.
+
+`account-sync-model.js` owns deterministic guest/cloud merges and saved-item journal diffs; it has no Firebase, DOM, or storage dependency and is covered by Node unit tests. `auth-ui.js` owns injected account buttons, Settings-page account rendering, and sync-status copy. Keep transport changes in `firebase-auth.js`, merge-policy changes in the model, and presentation in the UI module.
 
 ### Firestore data structure
 
@@ -896,7 +903,7 @@ firebase deploy --only firestore:rules --project improving-muslim
 
 The daily learning streak goal is fixed at 15 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. `normalizeStreak` migrates stored 30-minute records to 15 minutes and immediately credits the current day when its saved watch time already reaches the new threshold. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and forces merged cloud records onto the current fixed target before writing them back.
 
-The same panel has a separate Qur'an tab for a once-per-day self-attested recitation streak. A learner clocks in only after reciting for at least 15 minutes. It uses `improving-muslim:quran-streak` locally and the independent `quranStreak` Firestore field, so it does not change lecture minutes, freezes, ranks, or the public leaderboard. Its normalization and clock-in logic live in `scripts/utils.js`; guest/account merges union completed recitation days in `scripts/firebase-auth.js`.
+The same panel has a separate Qur'an tab for a once-per-day self-attested recitation streak. A learner clocks in only after reciting for at least 15 minutes. It uses `improving-muslim:quran-streak` locally and the independent `quranStreak` Firestore field, so it does not change lecture minutes, freezes, ranks, or the public leaderboard. Its normalization and clock-in logic live in `scripts/utils.js`; guest/account merges union completed recitation days in `scripts/account-sync-model.js`.
 
 **Ranks** (`STREAK_RANKS`, derived from `current`, highest match wins):
 
@@ -1032,12 +1039,13 @@ When changing UI, run the accessibility checks and inspect at least one mobile-w
 
 The static architecture is still a good fit for the current product: it is inexpensive to host, resilient when optional services fail, and easy to deploy. `npm run check:content` now blocks the main catalog-drift and publishing-error classes locally and in CI. It intentionally performs no network requests; external R2 availability belongs in the scheduled content-health check below.
 
+The generated page shell, homepage feature modules, shared content actions, lightweight account-page catalogue lookups, and pure account-sync merge model are now established. Preserve those boundaries instead of moving behavior back into page controllers.
+
 Prioritize these improvements before the catalog and contributor count grow substantially:
 
-1. **Generate the shared page shell.** Headers, navigation, footers, Firebase script order, and cache-bust strings are duplicated across many HTML templates. Introduce a small repository-owned generator or include system that still emits plain static HTML; do not add a client framework merely to solve authoring duplication.
-2. **Split the largest controllers by feature boundary.** As `scripts/script.js` and `scripts/watch-page.js` grow, extract search orchestration, catalog rendering, progress, notes, and player recovery into testable modules with explicit interfaces. Preserve the current global APIs temporarily for compatibility.
-3. **Add focused data and behavior tests.** Unit-test catalog merging, progress/streak normalization, Firebase merge behavior, route helpers, and search ranking. Keep Playwright for a few critical end-to-end journeys instead of making every edge case a browser test.
-4. **Automate content-health checks separately from pull-request CI.** A scheduled or manually triggered job can check external R2 media, caption URLs, remote-feed availability, and broken outbound links without making ordinary development depend on network stability.
+1. **Continue splitting the watch controller at proven seams.** Notes, sidebar rendering, and stall recovery are already isolated. Extract playback progress/study-time accounting only when its interface can be covered by focused tests; avoid abstractions that merely move lines without separating state ownership.
+2. **Expand focused data and behavior tests.** Add coverage for catalog merging, progress/streak normalization, route helpers, and search ranking. Keep Playwright for critical end-to-end journeys instead of making every edge case a browser test.
+3. **Automate content-health checks separately from ordinary CI.** A scheduled or manually triggered job can check external R2 media, caption URLs, remote-feed availability, and broken outbound links without making routine development depend on network stability.
 
 Defer a service worker until there is an explicit offline/cache invalidation policy. Videos should remain network-only; an eventual PWA should cache only the app shell and safe static assets.
 

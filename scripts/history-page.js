@@ -1,20 +1,13 @@
 const {
   escapeHtml,
-  episodeThumbnailUrl,
-  episodeUrl,
   formatDuration,
-  getAllSeries,
-  getStandaloneLectureRegistry,
-  standaloneLectureThumbnailUrl,
-  standaloneLectureUrl,
   PROGRESS_PREFIX,
   readJsonStorage,
   removeStorageItem,
   storageKeysWithPrefix,
 } = window.IMUtils;
 
-const allSeries = getAllSeries();
-const standaloneRegistry = getStandaloneLectureRegistry();
+const { progressItem } = window.IMCatalogLookup;
 
 function readAllHistory() {
   const items = [];
@@ -48,39 +41,21 @@ function readAllHistory() {
       const playlistId = parts[1];
       const episodeId = parts.slice(2).join(":");
 
-      if (playlistId === "standalone") {
-        // Old standalone save without _card
-        const lecture = standaloneRegistry[episodeId];
-        if (!lecture) continue;
-        items.push({
-          key,
-          currentTime,
-          duration,
-          percent,
-          updatedAt,
-          thumb: standaloneLectureThumbnailUrl(lecture),
-          url: standaloneLectureUrl(lecture),
-          eyebrow: `${lecture.speaker} — Standalone video`,
-          title: lecture.title,
-        });
-      } else {
-        // Old series episode save without _card
-        const series = allSeries.find((s) => s.playlistId === playlistId);
-        if (!series) continue;
-        const episode = series.episodes.find((e) => String(e.id) === episodeId);
-        if (!episode) continue;
-        items.push({
-          key,
-          currentTime,
-          duration,
-          percent,
-          updatedAt,
-          thumb: episodeThumbnailUrl(series, episode),
-          url: episodeUrl(series, episode),
-          eyebrow: `${series.title} — Episode ${episode.number}`,
-          title: episode.title,
-        });
-      }
+      const catalogItem = progressItem(playlistId, episodeId);
+      if (!catalogItem) continue;
+      items.push({
+        key,
+        currentTime,
+        duration,
+        percent,
+        updatedAt,
+        thumb: catalogItem.thumb,
+        url: catalogItem.url,
+        eyebrow: catalogItem.kind === "standalone"
+          ? `${catalogItem.speaker} — Standalone video`
+          : `${catalogItem.seriesTitle} — Episode ${catalogItem.number}`,
+        title: catalogItem.title,
+      });
     }
   } catch {}
 

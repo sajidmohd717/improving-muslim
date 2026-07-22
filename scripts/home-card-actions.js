@@ -3,12 +3,12 @@
  * "More options" menu, and the menu open/close bookkeeping. Exposes
  * window.IMCardActions. script.js owns the event delegation and calls in.
  *
- * Loaded on the homepage after utils.js and before script.js.
+ * Loaded on the homepage after content-actions.js and before script.js.
  */
 (() => {
   "use strict";
 
-  const { readSavedItems, writeSavedItems } = window.IMUtils;
+  const { isSaved, toggleSaved, shareContent } = window.IMContentActions;
 
   function savedSeriesItem(series, url) {
     return {
@@ -22,7 +22,7 @@
   }
 
   function isSeriesSaved(url) {
-    return readSavedItems().some((item) => item.key === `series:${url}` || item.key === `video:${url}`);
+    return isSaved([`series:${url}`, `video:${url}`]);
   }
 
   function updateSeriesSaveButton(button, saved) {
@@ -44,41 +44,28 @@
 
   function toggleSavedSeries(series, url, button) {
     const item = savedSeriesItem(series, url);
-    const items = readSavedItems();
-    const existing = items.findIndex((saved) => saved.key === item.key);
-    const nextItems =
-      existing >= 0
-        ? items.filter((saved) => saved.key !== item.key)
-        : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
-
-    if (!writeSavedItems(nextItems)) {
+    const result = toggleSaved(item);
+    if (!result.ok) {
       button.setAttribute("aria-label", "Could not save series");
       return;
     }
-
-    const saved = existing < 0;
-    updateSeriesSaveButton(button, saved);
+    updateSeriesSaveButton(button, result.saved);
   }
 
   async function shareSeries(series, url, button) {
     const absoluteUrl = new URL(url, document.baseURI).href;
-    const shareData = {
-      title: series.title,
-      text: [series.title, series.speaker].filter(Boolean).join(" by "),
-      url: absoluteUrl,
-    };
-
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        return;
+      const method = await shareContent({
+        title: series.title,
+        text: [series.title, series.speaker].filter(Boolean).join(" by "),
+        url: absoluteUrl,
+      });
+      if (method === "copied") {
+        button.setAttribute("aria-label", "Series link copied");
+        setTimeout(() => {
+          button.setAttribute("aria-label", "Share series");
+        }, 1800);
       }
-
-      await navigator.clipboard.writeText(absoluteUrl);
-      button.setAttribute("aria-label", "Series link copied");
-      setTimeout(() => {
-        button.setAttribute("aria-label", "Share series");
-      }, 1800);
     } catch {
       button.setAttribute("aria-label", "Could not share series");
     }

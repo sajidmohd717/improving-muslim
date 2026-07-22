@@ -4,37 +4,12 @@ import test from "node:test";
 import vm from "node:vm";
 
 function loadMergeHelper() {
-  const storage = new Map();
-  const localStorage = {
-    get length() { return storage.size; },
-    getItem(key) { return storage.has(key) ? storage.get(key) : null; },
-    key(index) { return [...storage.keys()][index] || null; },
-    removeItem(key) { storage.delete(key); },
-    setItem(key, value) { storage.set(key, String(value)); },
-  };
-  const document = {
-    readyState: "loading",
-    addEventListener() {},
-    getElementById() { return null; },
-    querySelector() { return null; },
-    querySelectorAll() { return []; },
-  };
-  const window = {
-    __IM_TEST__: true,
-    addEventListener() {},
-    dispatchEvent() {},
-    IMUtils: {},
-  };
-  const context = {
-    clearTimeout,
-    console,
-    document,
-    localStorage,
-    setTimeout,
-    window,
-  };
-  vm.runInNewContext(readFileSync(new URL("../scripts/firebase-auth.js", import.meta.url), "utf8"), context);
-  return window.IMAuthTestHooks.mergePersonalData;
+  const window = {};
+  vm.runInNewContext(
+    readFileSync(new URL("../scripts/account-sync-model.js", import.meta.url), "utf8"),
+    { window },
+  );
+  return window.IMAccountSyncModel.mergePersonalData;
 }
 
 test("guest learning data merges without losing newer cloud state", () => {
@@ -123,4 +98,19 @@ test("guest learning data merges without losing newer cloud state", () => {
   assert.equal(result.quranStreak.lastCompletedDate, "2026-07-20");
   assert.equal(result.quranStreak.days["2026-07-19"].completed, true);
   assert.equal(result.quranStreak.days["2026-07-20"].completed, true);
+});
+
+test("saved-item journal captures additions, edits, and removals", () => {
+  const window = {};
+  vm.runInNewContext(
+    readFileSync(new URL("../scripts/account-sync-model.js", import.meta.url), "utf8"),
+    { window },
+  );
+  const changes = window.IMAccountSyncModel.savedChangesBetween(
+    JSON.stringify([{ key: "removed", title: "Old" }, { key: "edited", title: "Before" }]),
+    JSON.stringify([{ key: "edited", title: "After" }, { key: "added", title: "New" }]),
+  );
+  assert.equal(changes.removed, null);
+  assert.equal(changes.edited.title, "After");
+  assert.equal(changes.added.title, "New");
 });

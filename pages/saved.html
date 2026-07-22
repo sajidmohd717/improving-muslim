@@ -168,7 +168,9 @@
     <!-- page-shell:runtime:start -->
     <script src="./scripts/utils.js?v=20260723-quran-streak" defer></script>
     <script src="./scripts/streak-ui.js?v=20260723-quran-streak" defer></script>
-    <script src="./scripts/firebase-auth.js?v=20260723-quran-streak" defer></script>
+    <script src="./scripts/account-sync-model.js?v=20260723-modularization" defer></script>
+    <script src="./scripts/auth-ui.js?v=20260723-modularization" defer></script>
+    <script src="./scripts/firebase-auth.js?v=20260723-modularization" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
     <script src="./scripts/nav-state.js?v=20260723-desktop-shell" defer></script>
     <!-- page-shell:runtime:end -->
@@ -197,15 +199,9 @@
       </a>
     </nav>
     <!-- page-shell:bottom-nav:end -->
-    <script src="./data/series-registry.js?v=20260721-forty-hadith-episodes-9-10"></script>
-    <script>
-      /* Load every registered series data file straight from the registry */
-      (window.seriesConfig || []).forEach(function (c) {
-        document.write('<script src="' + c.dataFile + '"><\/script>');
-      });
-    </script>
-    <script src="./data/standalone-lectures-data.js?v=20260723-maintenance" defer></script>
-    <script src="./data/speaker-data.js" defer></script>
-    <script src="./scripts/saved-page.js?v=20260720-availability-sync" defer></script>
+    <script src="./data/series-registry.js?v=20260721-forty-hadith-episodes-9-10" defer></script>
+    <script src="./data/catalog-data.js?v=20260723-modularization" defer></script>
+    <script src="./scripts/catalog-lookup.js?v=20260723-modularization" defer></script>
+    <script src="./scripts/saved-page.js?v=20260723-modularization" defer></script>
   </body>
 </html>

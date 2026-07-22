@@ -34,7 +34,9 @@ const VERSIONS = {
   theme: "20260705-system-theme",
   utils: "20260723-quran-streak",
   streak: "20260723-quran-streak",
-  firebase: "20260723-quran-streak",
+  accountSync: "20260723-modularization",
+  authUi: "20260723-modularization",
+  firebase: "20260723-modularization",
   navState: "20260723-desktop-shell",
 };
 
@@ -189,6 +191,8 @@ ${BOTTOM_LINKS.map(([href, label, itemIcon]) => `      <a class="bottom-nav-item
 export function renderRuntime() {
   return region("runtime", `    <script src="./scripts/utils.js?v=${VERSIONS.utils}" defer></script>
     <script src="./scripts/streak-ui.js?v=${VERSIONS.streak}" defer></script>
+    <script src="./scripts/account-sync-model.js?v=${VERSIONS.accountSync}" defer></script>
+    <script src="./scripts/auth-ui.js?v=${VERSIONS.authUi}" defer></script>
     <script src="./scripts/firebase-auth.js?v=${VERSIONS.firebase}" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
     <script src="./scripts/nav-state.js?v=${VERSIONS.navState}" defer></script>`);
@@ -216,7 +220,7 @@ export function applyPageShell(input, options = {}) {
   html = replaceRegion(html, "header", renderHeader({ home, admin }), /    <header class="site-header">[\s\S]*?<\/header>/);
   html = replaceRegion(html, "footer", renderFooter({ admin }), /    <footer class="site-footer">[\s\S]*?<\/footer>/);
 
-  const commonScript = /\n?[ \t]*<script src="\.\/scripts\/(?:utils|streak-ui|firebase-auth|nav-more|nav-state)\.js[^\"]*"(?: defer)?><\/script>[ \t]*/g;
+  const commonScript = /\n?[ \t]*<script src="\.\/scripts\/(?:utils|streak-ui|account-sync-model|auth-ui|firebase-auth|nav-more|nav-state)\.js[^\"]*"(?: defer)?><\/script>[ \t]*/g;
   html = html.replace(commonScript, "");
 
   if (markerPattern("runtime").test(html)) {

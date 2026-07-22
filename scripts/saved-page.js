@@ -2,14 +2,11 @@ const {
   escapeHtml,
   readSavedItems,
   writeSavedItems,
-  getSeriesRegistry,
-  getStandaloneLectureRegistry,
-  episodeThumbnailUrl,
-  standaloneLectureThumbnailUrl,
   readJsonStorage,
   PROGRESS_PREFIX,
   formatDuration,
 } = window.IMUtils;
+const catalog = window.IMCatalogLookup;
 
 const list = document.getElementById("saved-list");
 const emptyState = document.getElementById("saved-empty");
@@ -38,26 +35,19 @@ function episodeRefFromItem(item) {
 
 function getThumbnail(item) {
   try {
-    const registry = getSeriesRegistry();
     if (item.type === "series") {
-      const series = Object.values(registry).find((s) => item.url.includes(s.slug));
+      const series = catalog.seriesFromUrl(item.url);
       return series?.thumbnailSrc || null;
     }
     if (item.type === "video") {
       const lectureId = standaloneIdFromItem(item);
-      if (lectureId) {
-        const lecture = getStandaloneLectureRegistry()[lectureId];
-        if (lecture) return standaloneLectureThumbnailUrl(lecture);
-      }
-      return null;
+      return lectureId ? catalog.standalone(lectureId)?.thumb || null : null;
     }
     if (item.type === "episode") {
       const { slug, videoId } = episodeRefFromItem(item);
-      const series = registry[slug];
-      if (series && videoId) {
-        const episode = series.episodes.find((e) => String(e.id) === videoId);
-        if (episode) return episodeThumbnailUrl(series, episode);
-      }
+      const episode = catalog.episode(slug, videoId);
+      if (episode) return episode.thumb;
+      const series = catalog.series(slug);
       return series?.thumbnailSrc || null;
     }
   } catch {}
@@ -68,10 +58,9 @@ function getResumeTime(item) {
   if (item.type !== "episode") return null;
   try {
     const { slug, videoId } = episodeRefFromItem(item);
-    const registry = getSeriesRegistry();
-    const series = registry[slug];
-    if (!series || !videoId) return null;
-    const key = `${PROGRESS_PREFIX}${series.playlistId}:${videoId}`;
+    const episode = catalog.episode(slug, videoId);
+    if (!episode?.playlistId) return null;
+    const key = `${PROGRESS_PREFIX}${episode.playlistId}:${videoId}`;
     const p = readJsonStorage(key, {});
     const t = Number(p.currentTime) || 0;
     const d = Number(p.duration) || 0;
@@ -90,12 +79,8 @@ function renderSeriesCard(item, i) {
   const speaker = parts[0] || "";
   let epCount = parts[1] || "";
   try {
-    const series = Object.values(getSeriesRegistry()).find((entry) => item.url.includes(entry.slug));
-    if (series) {
-      const available = series.episodes.filter(window.IMUtils.isEpisodeAvailable).length;
-      const total = series.episodes.length;
-      epCount = available < total ? `${available} available · ${total} total` : `${total} episodes`;
-    }
+    const series = catalog.seriesFromUrl(item.url);
+    if (series?.episodeCount) epCount = `${series.episodeCount} episodes`;
   } catch {}
   return `
     <article class="saved-series-card reveal-anim" style="--reveal-delay:${i * 40}ms" data-key="${escapeHtml(item.key)}">

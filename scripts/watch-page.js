@@ -15,11 +15,10 @@ const {
   recordStudySeconds,
   readJsonStorage,
   writeJsonStorage,
-  readSavedItems,
-  writeSavedItems,
 } = window.IMUtils;
 
 const { setVideoLoading } = window.IMWatchStall;
+const { isSaved, toggleSaved, shareContent } = window.IMContentActions;
 
 function renderGrammarNotes(notes) {
   return notes.map(({ term, arabic, definition }) =>
@@ -164,8 +163,7 @@ function savedItem() {
 }
 
 function isEpisodeSaved() {
-  const key = savedItem().key;
-  return readSavedItems().some((item) => item.key === key);
+  return isSaved(savedItem().key);
 }
 
 function updateSaveButton() {
@@ -175,16 +173,10 @@ function updateSaveButton() {
 
 function toggleSavedEpisode() {
   const item = savedItem();
-  const items = readSavedItems();
-  const existing = items.findIndex((saved) => saved.key === item.key);
-  const nextItems =
-    existing >= 0
-      ? items.filter((saved) => saved.key !== item.key)
-      : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
-
-  if (writeSavedItems(nextItems)) {
+  const result = toggleSaved(item);
+  if (result.ok) {
     updateSaveButton();
-    setActionStatus(existing >= 0 ? "Removed from saved items." : "Saved for later on this device.");
+    setActionStatus(result.saved ? "Saved for later on this device." : "Removed from saved items.");
   } else {
     setActionStatus("Could not save on this device.");
   }
@@ -192,21 +184,13 @@ function toggleSavedEpisode() {
 
 async function shareEpisode() {
   const url = new URL(savedItem().url, document.baseURI).href;
-  const shareData = {
-    title: currentTitleLabel,
-    text: isStandalone ? `A standalone lecture by ${series.speaker}` : `${series.title} by ${series.speaker}`,
-    url,
-  };
-
   try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-      setActionStatus("Share sheet opened.");
-      return;
-    }
-
-    await navigator.clipboard.writeText(url);
-    setActionStatus("Episode link copied.");
+    const method = await shareContent({
+      title: currentTitleLabel,
+      text: isStandalone ? `A standalone lecture by ${series.speaker}` : `${series.title} by ${series.speaker}`,
+      url,
+    });
+    setActionStatus(method === "copied" ? "Episode link copied." : "Share sheet opened.");
   } catch {
     setActionStatus("Could not share from this browser.");
   }

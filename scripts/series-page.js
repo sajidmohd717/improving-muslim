@@ -24,7 +24,8 @@
   document.head.appendChild(script);
 
   function initPage(series) {
-    const { formatViews, formatDuration, readJsonStorage, writeJsonStorage, readSavedItems, writeSavedItems } = window.IMUtils;
+    const { formatViews, formatDuration, readJsonStorage, writeJsonStorage } = window.IMUtils;
+    const { isSaved, toggleSaved, shareContent } = window.IMContentActions;
     const episodeList = document.querySelector("#episode-list");
     const heroContent = document.querySelector(".series-hero > div");
     const episodeUrl = (episode) => window.IMUtils.episodeUrl(series, episode);
@@ -194,7 +195,7 @@
     }
 
     function isSeriesSaved() {
-      return readSavedItems().some((item) => item.key === `series:${currentSeriesUrl()}`);
+      return isSaved(`series:${currentSeriesUrl()}`);
     }
 
     function updateSeriesSaveButton(button) {
@@ -216,16 +217,10 @@
         url: currentSeriesUrl(),
         savedAt: Date.now(),
       };
-      const items = readSavedItems();
-      const existing = items.findIndex((saved) => saved.key === item.key);
-      const nextItems =
-        existing >= 0
-          ? items.filter((saved) => saved.key !== item.key)
-          : [item, ...items.filter((saved) => saved.key !== item.key)].slice(0, 60);
-
-      if (writeSavedItems(nextItems)) {
+      const result = toggleSaved(item);
+      if (result.ok) {
         updateSeriesSaveButton(button);
-        status.textContent = existing >= 0 ? "Removed from saved items." : "Saved for later on this device.";
+        status.textContent = result.saved ? "Saved for later on this device." : "Removed from saved items.";
       } else {
         status.textContent = "Could not save on this device.";
       }
@@ -233,21 +228,13 @@
 
     async function shareSeries(status) {
       const url = new URL(currentSeriesUrl(), document.baseURI).href;
-      const shareData = {
-        title: series.title,
-        text: `${series.title} by ${series.speaker}`,
-        url,
-      };
-
       try {
-        if (navigator.share) {
-          await navigator.share(shareData);
-          status.textContent = "Share sheet opened.";
-          return;
-        }
-
-        await navigator.clipboard.writeText(url);
-        status.textContent = "Series link copied.";
+        const method = await shareContent({
+          title: series.title,
+          text: `${series.title} by ${series.speaker}`,
+          url,
+        });
+        status.textContent = method === "copied" ? "Series link copied." : "Share sheet opened.";
       } catch {
         status.textContent = "Could not share from this browser.";
       }
