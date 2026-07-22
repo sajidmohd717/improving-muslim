@@ -60,6 +60,13 @@ test("guest learning data merges without losing newer cloud state", () => {
       days: { "2026-07-19": { seconds: 900, completed: true } },
       updatedAt: 500,
     },
+    quranStreak: {
+      current: 2,
+      best: 3,
+      lastCompletedDate: "2026-07-19",
+      days: { "2026-07-19": { completed: true, minutes: 15 } },
+      updatedAt: 500,
+    },
   };
   const guest = {
     progress: {
@@ -85,6 +92,13 @@ test("guest learning data merges without losing newer cloud state", () => {
       },
       updatedAt: 400,
     },
+    quranStreak: {
+      current: 3,
+      best: 4,
+      lastCompletedDate: "2026-07-20",
+      days: { "2026-07-20": { completed: true, minutes: 15 } },
+      updatedAt: 400,
+    },
   };
 
   const result = merge(cloud, guest);
@@ -104,4 +118,9 @@ test("guest learning data merges without losing newer cloud state", () => {
   assert.equal(result.streak.days["2026-07-20"].seconds, 450);
   assert.equal(result.streak.publicOptIn, true);
   assert.equal(result.streak.publicName, "Learner");
+  assert.equal(result.quranStreak.current, 3);
+  assert.equal(result.quranStreak.best, 4);
+  assert.equal(result.quranStreak.lastCompletedDate, "2026-07-20");
+  assert.equal(result.quranStreak.days["2026-07-19"].completed, true);
+  assert.equal(result.quranStreak.days["2026-07-20"].completed, true);
 });

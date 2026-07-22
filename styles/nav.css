@@ -250,7 +250,7 @@
 
 .streak-tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -476,6 +476,111 @@
 
 .streak-day.is-future {
   opacity: 0.42;
+}
+
+.quran-streak-view {
+  display: grid;
+  gap: 16px;
+}
+
+.quran-streak-intro,
+.quran-clock-in-card {
+  display: flex;
+  align-items: center;
+}
+
+.quran-streak-intro {
+  gap: 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: rgba(23, 107, 91, 0.08);
+  padding: 12px 14px;
+}
+
+.quran-streak-intro > svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.quran-streak-intro div,
+.quran-clock-in-card div {
+  display: grid;
+  gap: 3px;
+}
+
+.quran-streak-intro p,
+.quran-clock-in-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.quran-streak-summary {
+  border-color: rgba(23, 107, 91, 0.34);
+  background: linear-gradient(135deg, rgba(23, 107, 91, 0.14), rgba(200, 155, 60, 0.08));
+}
+
+.quran-streak-orb {
+  background:
+    radial-gradient(circle at 50% 50%, var(--surface-strong) 0 56%, transparent 57%),
+    conic-gradient(var(--accent) var(--streak-progress), rgba(102, 112, 106, 0.18) 0);
+}
+
+.quran-streak-orb .quran-streak-book {
+  width: 19px;
+  height: 19px;
+}
+
+.quran-clock-in-card {
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 13px 14px;
+}
+
+.quran-clock-in-card button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 800;
+  padding: 10px 17px;
+}
+
+.quran-clock-in-card button:hover:not(:disabled),
+.quran-clock-in-card button:focus-visible:not(:disabled) {
+  background: var(--accent-strong);
+  outline: none;
+}
+
+.quran-clock-in-card button:disabled {
+  cursor: default;
+  background: rgba(23, 107, 91, 0.12);
+  color: var(--accent-strong);
+}
+
+.quran-clock-in-status {
+  margin: -8px 0 0;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.quran-clock-in-status:empty {
+  display: none;
+}
+
+.quran-streak-note strong {
+  color: var(--ink);
 }
 
 .leaderboard-intro,

@@ -31,11 +31,11 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260723-single-desktop-nav",
+  styles: "20260723-quran-streak",
   theme: "20260705-system-theme",
-  utils: "20260717-streak-pure-read",
-  streak: "20260720-streak-label",
-  firebase: "20260720-guest-merge",
+  utils: "20260723-quran-streak",
+  streak: "20260723-quran-streak",
+  firebase: "20260723-quran-streak",
   navState: "20260723-desktop-shell",
 };
 

@@ -223,6 +223,19 @@
     gap: 5px;
   }
 
+  .streak-tabs button {
+    padding-inline: 7px;
+  }
+
+  .quran-clock-in-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .quran-clock-in-card button {
+    width: 100%;
+  }
+
   .series-hero .hero-copy {
     font-size: 0.92rem;
     margin: 10px 0 16px;

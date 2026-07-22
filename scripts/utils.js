@@ -3,6 +3,7 @@
   const PROGRESS_PREFIX = "lecture-progress:";
   const NOTES_PREFIX = "lecture-notes:";
   const STREAK_KEY = "improving-muslim:study-streak";
+  const QURAN_STREAK_KEY = "improving-muslim:quran-streak";
   // Fixed for everyone (not user-selectable) so the leaderboard's day counts
   // are directly comparable -- a 20-min learner and a 40-min learner used to
   // rank against each other unevenly.
@@ -302,6 +303,72 @@
     return streak;
   }
 
+  function normalizeQuranStreak(raw = {}) {
+    const today = localDateKey();
+    const targetMinutes = DEFAULT_STREAK_TARGET_MINUTES;
+    const lastCompletedDate = raw.lastCompletedDate || "";
+    const stillContinuous = lastCompletedDate === today || isYesterday(lastCompletedDate, today);
+    const days = {};
+    const sourceDays = raw.days && typeof raw.days === "object" ? raw.days : {};
+
+    Object.keys(sourceDays)
+      .sort()
+      .slice(-90)
+      .forEach((dateKey) => {
+        const day = sourceDays[dateKey] || {};
+        if (!day.completed) return;
+        days[dateKey] = {
+          completed: true,
+          minutes: Math.max(targetMinutes, Number(day.minutes) || 0),
+        };
+      });
+
+    if (lastCompletedDate === today) {
+      days[today] = { completed: true, minutes: targetMinutes };
+    }
+
+    const current = stillContinuous ? Math.max(0, Number(raw.current) || 0) : 0;
+    return {
+      targetMinutes,
+      todayDate: today,
+      completedToday: lastCompletedDate === today,
+      current,
+      best: Math.max(0, Number(raw.best) || 0, current),
+      lastCompletedDate,
+      days,
+      updatedAt: Number(raw.updatedAt) || 0,
+    };
+  }
+
+  // The Qur'an streak is intentionally independent from lecture watch time,
+  // streak freezes, ranks, and the public leaderboard. It is a once-per-day
+  // self-attestation after at least 15 minutes of recitation.
+  function readQuranStreak() {
+    return normalizeQuranStreak(readJsonStorage(QURAN_STREAK_KEY, {}));
+  }
+
+  function writeQuranStreak(streak) {
+    return writeJsonStorage(QURAN_STREAK_KEY, normalizeQuranStreak(streak));
+  }
+
+  function clockInQuranRecitation() {
+    const today = localDateKey();
+    const streak = readQuranStreak();
+    if (streak.completedToday) return streak;
+
+    streak.current = isYesterday(streak.lastCompletedDate, today) ? streak.current + 1 : 1;
+    streak.best = Math.max(streak.best, streak.current);
+    streak.lastCompletedDate = today;
+    streak.completedToday = true;
+    streak.days[today] = {
+      completed: true,
+      minutes: streak.targetMinutes,
+    };
+    streak.updatedAt = Date.now();
+    writeQuranStreak(streak);
+    return normalizeQuranStreak(streak);
+  }
+
   function readSavedItems() {
     return readJsonStorage(SAVED_KEY, []);
   }
@@ -353,6 +420,7 @@
     PROGRESS_PREFIX,
     NOTES_PREFIX,
     STREAK_KEY,
+    QURAN_STREAK_KEY,
     DEFAULT_STREAK_TARGET_MINUTES,
     FREEZE_MILESTONE_DAYS,
     MAX_BANKED_FREEZES,
@@ -380,6 +448,9 @@
     readStudyStreak,
     writeStudyStreak,
     recordStudySeconds,
+    readQuranStreak,
+    writeQuranStreak,
+    clockInQuranRecitation,
     readSavedItems,
     writeSavedItems,
     getAllSeries,

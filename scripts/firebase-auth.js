@@ -20,6 +20,7 @@
   var NOTES_PREFIX     = utils.NOTES_PREFIX || 'lecture-notes:';
   var SAVED_KEY        = utils.SAVED_KEY || 'improving-muslim:saved-items';
   var STREAK_KEY       = utils.STREAK_KEY || 'improving-muslim:study-streak';
+  var QURAN_STREAK_KEY = utils.QURAN_STREAK_KEY || 'improving-muslim:quran-streak';
   var STORAGE_OWNER_KEY = 'improving-muslim:personal-data-owner';
   var GUEST_DATA_KEY    = 'improving-muslim:guest-personal-data';
   var GUEST_IMPORT_KEY  = 'improving-muslim:pending-guest-import';
@@ -62,7 +63,7 @@
   /* ── Read / write localStorage ────────────────────────────────────────── */
 
   function readLocal() {
-    var progress = {}, notes = {}, saved = [], streak = {};
+    var progress = {}, notes = {}, saved = [], streak = {}, quranStreak = {};
     try {
       for (var i = 0; i < localStorage.length; i++) {
         var k = localStorage.key(i);
@@ -75,7 +76,8 @@
     } catch (_) {}
     try { saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
     try { streak = JSON.parse(localStorage.getItem(STREAK_KEY) || '{}'); } catch (_) {}
-    return { progress: progress, notes: notes, saved: saved, streak: streak };
+    try { quranStreak = JSON.parse(localStorage.getItem(QURAN_STREAK_KEY) || '{}'); } catch (_) {}
+    return { progress: progress, notes: notes, saved: saved, streak: streak, quranStreak: quranStreak };
   }
 
   function writeLocal(data) {
@@ -92,6 +94,9 @@
       if (data.streak) {
         localStorage.setItem(STREAK_KEY, JSON.stringify(data.streak));
       }
+      if (data.quranStreak) {
+        localStorage.setItem(QURAN_STREAK_KEY, JSON.stringify(data.quranStreak));
+      }
     } catch (_) {}
   }
 
@@ -101,7 +106,7 @@
       for (var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
         if (key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) ||
-            key === SAVED_KEY || key === STREAK_KEY)) keys.push(key);
+            key === SAVED_KEY || key === STREAK_KEY || key === QURAN_STREAK_KEY)) keys.push(key);
       }
       keys.forEach(function (key) { localStorage.removeItem(key); });
     } catch (_) {}
@@ -122,7 +127,8 @@
         Object.keys(data.progress || {}).length ||
         Object.keys(data.notes || {}).length ||
         (Array.isArray(data.saved) && data.saved.length) ||
-        Object.keys(data.streak || {}).length
+        Object.keys(data.streak || {}).length ||
+        Object.keys(data.quranStreak || {}).length
       )
     );
   }
@@ -202,6 +208,28 @@
     return latest;
   }
 
+  function mergeQuranStreak(cloudStreak, guestStreak) {
+    cloudStreak = cloudStreak || {};
+    guestStreak = guestStreak || {};
+    var latest = Object.assign({}, newerValue(cloudStreak, guestStreak) || {});
+    var days = Object.assign({}, cloudStreak.days || {});
+    Object.keys(guestStreak.days || {}).forEach(function (date) {
+      var cloudDay = days[date] || {};
+      var guestDay = guestStreak.days[date] || {};
+      days[date] = {
+        completed: Boolean(cloudDay.completed || guestDay.completed),
+        minutes: Math.max(Number(cloudDay.minutes) || 0, Number(guestDay.minutes) || 0),
+      };
+    });
+    latest.days = days;
+    latest.current = Math.max(Number(cloudStreak.current) || 0, Number(guestStreak.current) || 0);
+    latest.best = Math.max(Number(cloudStreak.best) || 0, Number(guestStreak.best) || 0, latest.current);
+    latest.lastCompletedDate = [cloudStreak.lastCompletedDate || '', guestStreak.lastCompletedDate || ''].sort().pop();
+    latest.targetMinutes = 15;
+    latest.updatedAt = Math.max(Number(cloudStreak.updatedAt) || 0, Number(guestStreak.updatedAt) || 0);
+    return latest;
+  }
+
   function mergePersonalData(cloud, guest) {
     cloud = cloud || {};
     guest = guest || {};
@@ -224,6 +252,7 @@
       notes: notes,
       saved: Object.keys(savedMap).map(function (key) { return savedMap[key]; }).sort(function (a, b) { return (b.savedAt || 0) - (a.savedAt || 0); }),
       streak: mergeStreak(cloud.streak || {}, guest.streak || {}),
+      quranStreak: mergeQuranStreak(cloud.quranStreak || {}, guest.quranStreak || {}),
     };
   }
 
@@ -385,6 +414,7 @@
       notes: cloud.notes || {},
       saved: savedArr,
       streak: cloud.streak || {},
+      quranStreak: cloud.quranStreak || {},
     });
     _lastSavedKeys = {};
     savedArr.forEach(function (it) { if (it && it.key) _lastSavedKeys[it.key] = true; });
@@ -449,6 +479,7 @@
       savedItems: savedItems,
       saved: firebase.firestore.FieldValue.delete(),
       streak: merged.streak || {},
+      quranStreak: merged.quranStreak || {},
       lastSyncedAt: Date.now(),
     };
     setSyncStatus('syncing');
@@ -509,11 +540,12 @@
     var del = firebase.firestore.FieldValue.delete();
     var payload = {};
     var progress = {}, notes = {};
-    var touchedProgress = false, touchedNotes = false, touchedSaved = false, touchedStreak = false;
+    var touchedProgress = false, touchedNotes = false, touchedSaved = false, touchedStreak = false, touchedQuranStreak = false;
 
     keys.forEach(function (key) {
       if (key === SAVED_KEY) { touchedSaved = true; return; }
       if (key === STREAK_KEY) { touchedStreak = true; return; }
+      if (key === QURAN_STREAK_KEY) { touchedQuranStreak = true; return; }
       var raw = null;
       try { raw = localStorage.getItem(key); } catch (_) {}
       if (key.indexOf(PROGRESS_PREFIX) === 0) {
@@ -570,6 +602,11 @@
       if (streak && typeof streak === 'object') payload.streak = streak;
     }
 
+    if (touchedQuranStreak) {
+      var quranStreak = safeParse(localStorage.getItem(QURAN_STREAK_KEY) || '{}');
+      if (quranStreak && typeof quranStreak === 'object') payload.quranStreak = quranStreak;
+    }
+
     if (!Object.keys(payload).length) return null;
     return { payload: payload, committedSavedKeys: committedSavedKeys, savedChanges: pushedSavedChanges };
   }
@@ -600,7 +637,7 @@
       forgetPendingAccountWrites(_user, committedKeys);
       _lastSyncedAt = built.payload.lastSyncedAt;
       setSyncStatus(Object.keys(_dirty).length ? 'syncing' : 'synced');
-      if (window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
+      if (keys.indexOf(STREAK_KEY) !== -1 && window.IMStreakUI) window.IMStreakUI.pushLeaderboardEntry();
     }).catch(function (err) {
       keys.forEach(function (k) { _dirty[k] = true; });
       if (built.savedChanges) _savedChanges = Object.assign({}, built.savedChanges, _savedChanges);
@@ -823,7 +860,7 @@
     },
 
     onLocalWrite: function (key, previousRaw) {
-      var personalKey = key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY);
+      var personalKey = key && (key.startsWith(PROGRESS_PREFIX) || key.startsWith(NOTES_PREFIX) || key === SAVED_KEY || key === STREAK_KEY || key === QURAN_STREAK_KEY);
       // IMAuth is available before the Firebase SDK/auth callback completes.
       // Journal writes made in that startup window when this browser cache is
       // already owned by an account, as well as normal signed-in writes.

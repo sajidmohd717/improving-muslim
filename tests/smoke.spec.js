@@ -545,6 +545,74 @@ test("stored 30-minute streaks migrate to the 15-minute goal", async ({ page }) 
   expect(pageErrors).toEqual([]);
 });
 
+test("Qur'an recitation clocks into a separate synced streak", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  const now = new Date();
+  const todayKey = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+  await mockSignedInFirebase(page, {
+    progress: {},
+    notes: {},
+    savedItems: {},
+    streak: {
+      targetMinutes: 15,
+      todayDate: todayKey,
+      todaySeconds: 900,
+      current: 7,
+      best: 7,
+      lastCompletedDate: todayKey,
+      days: { [todayKey]: { seconds: 900, completed: true } },
+      freezesAvailable: 1,
+      freezeMilestonesClaimed: 1,
+      publicOptIn: false,
+      updatedAt: Date.now() - 1000,
+    },
+    quranStreak: {},
+  });
+  await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
+  await expect.poll(() => page.evaluate(() => window.IMAuth?.syncStatus)).toBe("synced");
+
+  await page.evaluate(() => window.IMStreakUI.openPanel());
+  await expect(page.locator('[data-streak-tab="quran"]')).toHaveText("Qur’an");
+  await page.locator('[data-streak-tab="quran"]').click();
+  await expect(page.getByText("Lectures support your learning, but they never replace your own recitation.")).toBeVisible();
+  const clockIn = page.getByRole("button", { name: "Clock in 15 minutes" });
+  await expect(clockIn).toBeEnabled();
+
+  const lectureBefore = await page.evaluate(() => localStorage.getItem("improving-muslim:study-streak"));
+  await clockIn.click();
+  await expect(page.getByRole("heading", { level: 3, name: "1 day Qur’an streak" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Clocked in today" })).toBeDisabled();
+  await expect(page.locator(".quran-clock-in-status")).toHaveText("Your Qur’an recitation has been clocked in for today.");
+
+  const localState = await page.evaluate(() => ({
+    lecture: localStorage.getItem("improving-muslim:study-streak"),
+    quran: JSON.parse(localStorage.getItem("improving-muslim:quran-streak")),
+  }));
+  expect(localState.lecture).toBe(lectureBefore);
+  expect(localState.quran).toMatchObject({
+    current: 1,
+    best: 1,
+    lastCompletedDate: todayKey,
+    completedToday: true,
+  });
+  expect(localState.quran.days[todayKey]).toEqual({ completed: true, minutes: 15 });
+
+  await expect.poll(() => page.evaluate(() =>
+    window.__firebaseTest.sets.some((value) => value.quranStreak),
+  ), { timeout: 5000 }).toBe(true);
+  const quranPush = await page.evaluate(() =>
+    window.__firebaseTest.sets.find((value) => value.quranStreak),
+  );
+  expect(quranPush.quranStreak).toMatchObject({ current: 1, best: 1 });
+  expect(quranPush).not.toHaveProperty("streak");
+  expect(await page.evaluate(() => window.__firebaseTest.leaderboardSets)).toHaveLength(0);
+  expect(pageErrors).toEqual([]);
+});
+
 test("leaderboard expires stale rows and awaits the signed-in learner refresh", async ({ page }) => {
   const pageErrors = await preparePage(page);
   const dateKey = (date) => {
@@ -929,6 +997,38 @@ test("clearing saved items sends deletions to the signed-in account", async ({ p
 
 test.describe("mobile navigation", () => {
   test.use({ viewport: { width: 390, height: 844 } });
+
+  test("keeps the Qur'an clock-in panel within the mobile viewport", async ({ page }) => {
+    const pageErrors = await preparePage(page);
+    await page.goto("/pages/settings.html", { waitUntil: "domcontentloaded" });
+
+    await page.getByRole("button", { name: "Start your daily learning streak." }).click();
+    await page.locator('[data-streak-tab="quran"]').click();
+    await expect(page.getByRole("button", { name: "Clock in 15 minutes" })).toBeVisible();
+
+    const layout = await page.locator(".streak-panel-sheet").evaluate((sheet) => {
+      const sheetRect = sheet.getBoundingClientRect();
+      const tabRect = sheet.querySelector(".streak-tabs").getBoundingClientRect();
+      const clockCard = sheet.querySelector(".quran-clock-in-card").getBoundingClientRect();
+      const clockButton = sheet.querySelector("[data-quran-clock-in]").getBoundingClientRect();
+      return {
+        sheetLeft: sheetRect.left,
+        sheetRight: sheetRect.right,
+        sheetScrollWidth: sheet.scrollWidth,
+        sheetClientWidth: sheet.clientWidth,
+        tabsInside: tabRect.left >= sheetRect.left && tabRect.right <= sheetRect.right,
+        clockButtonInside: clockButton.left >= clockCard.left && clockButton.right <= clockCard.right,
+        clockButtonWidthRatio: clockButton.width / clockCard.width,
+      };
+    });
+    expect(layout.sheetLeft).toBeGreaterThanOrEqual(0);
+    expect(layout.sheetRight).toBeLessThanOrEqual(390);
+    expect(layout.sheetScrollWidth).toBe(layout.sheetClientWidth);
+    expect(layout.tabsInside).toBe(true);
+    expect(layout.clockButtonInside).toBe(true);
+    expect(layout.clockButtonWidthRatio).toBeGreaterThan(0.85);
+    expect(pageErrors).toEqual([]);
+  });
 
   test("explains the product before asking a new visitor to browse", async ({ page }) => {
     const pageErrors = await preparePage(page);

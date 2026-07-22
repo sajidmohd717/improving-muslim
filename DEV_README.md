@@ -750,7 +750,7 @@ lecture-progress:standalone:${lecture.id}             // standalone lecture
 
 Progress is tied to the stable YouTube video ID, not the R2 file URL. An R2 file can be replaced without resetting progress.
 
-**Cloud sync (Firebase):** When a user signs in from guest mode, `scripts/firebase-auth.js` merges the device's learning data into the account before continuing real-time sync. Newer progress and notes win, completed lectures stay completed, saved items are unioned, and the account's public-leaderboard choice remains authoritative. Signing in on a new device with no guest activity pulls the previous account progress immediately. See the Firebase Authentication section below.
+**Cloud sync (Firebase):** When a user signs in from guest mode, `scripts/firebase-auth.js` merges the device's learning data into the account before continuing real-time sync. Newer progress and notes win, completed lectures stay completed, saved items are unioned, Qur'an recitation days are unioned into their own streak, and the account's public-leaderboard choice remains authoritative. Signing in on a new device with no guest activity pulls the previous account progress immediately. See the Firebase Authentication section below.
 
 Important implications for localStorage-only (guest) users:
 
@@ -876,7 +876,9 @@ firebase deploy --only firestore:rules --project improving-muslim
 
 ### Streak Ranks and Freezes
 
-The daily streak goal is fixed at 15 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. `normalizeStreak` migrates stored 30-minute records to 15 minutes and immediately credits the current day when its saved watch time already reaches the new threshold. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and forces merged cloud records onto the current fixed target before writing them back.
+The daily learning streak goal is fixed at 15 minutes of actual lecture playback for every user (not user-selectable) so the leaderboard's day counts are directly comparable across everyone. `normalizeStreak` migrates stored 30-minute records to 15 minutes and immediately credits the current day when its saved watch time already reaches the new threshold. The storage and normalization logic lives in `scripts/utils.js` (`normalizeStreak`, used by `watch-page.js` when recording playback). The streak navigation button, panel, heatmap, and leaderboard UI live in `scripts/streak-ui.js`. `scripts/firebase-auth.js` stays focused on auth/sync and forces merged cloud records onto the current fixed target before writing them back.
+
+The same panel has a separate Qur'an tab for a once-per-day self-attested recitation streak. A learner clocks in only after reciting for at least 15 minutes. It uses `improving-muslim:quran-streak` locally and the independent `quranStreak` Firestore field, so it does not change lecture minutes, freezes, ranks, or the public leaderboard. Its normalization and clock-in logic live in `scripts/utils.js`; guest/account merges union completed recitation days in `scripts/firebase-auth.js`.
 
 **Ranks** (`STREAK_RANKS`, derived from `current`, highest match wins):
 

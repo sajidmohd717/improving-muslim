@@ -98,6 +98,18 @@
     }
   }
 
+  function readQuranStreak() {
+    if (utils.readQuranStreak) return utils.readQuranStreak();
+    return {
+      targetMinutes: DEFAULT_STREAK_TARGET_MINUTES,
+      todayDate: localDateKey(),
+      completedToday: false,
+      current: 0,
+      best: 0,
+      days: {},
+    };
+  }
+
   function formatStreakMinutes(seconds) {
     return Math.floor((Number(seconds) || 0) / 60);
   }
@@ -106,6 +118,13 @@
     return '<svg class="streak-flame" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M12 2s4 4.4 4 8a4 4 0 0 1-8 0c0-1.9 1.1-3.4 2.2-4.7"/>' +
       '<path d="M6.6 10.8A7 7 0 1 0 18 8c.4 1.8-.1 3.4-1.1 4.5"/>' +
+      '</svg>';
+  }
+
+  function buildQuranSvg() {
+    return '<svg class="quran-streak-book" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H11v18H4.5A2.5 2.5 0 0 0 2 22Z"/>' +
+      '<path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H13v18h6.5A2.5 2.5 0 0 1 22 22Z"/>' +
       '</svg>';
   }
 
@@ -201,10 +220,11 @@
           '</button>' +
         '</div>' +
         '<div class="streak-tabs" role="tablist" aria-label="Streak views">' +
-          '<button type="button" role="tab" class="is-active" data-streak-tab="personal">My month</button>' +
-          '<button type="button" role="tab" data-streak-tab="leaderboard">Leaderboard</button>' +
+          '<button type="button" role="tab" class="is-active" aria-selected="true" aria-controls="streak-panel-body" data-streak-tab="personal">My month</button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="streak-panel-body" data-streak-tab="leaderboard">Leaderboard</button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="streak-panel-body" data-streak-tab="quran">Qur&#8217;an</button>' +
         '</div>' +
-        '<div class="streak-panel-body" id="streak-panel-body"></div>' +
+        '<div class="streak-panel-body" id="streak-panel-body" role="tabpanel"></div>' +
       '</section>';
     document.body.appendChild(panel);
 
@@ -219,6 +239,11 @@
       if (editBtn) startEditLeaderboardName(editBtn.closest('.leaderboard-row'));
       var cancelBtn = event.target.closest('[data-cancel-name]');
       if (cancelBtn) renderPanel('leaderboard');
+      var quranClockIn = event.target.closest('[data-quran-clock-in]');
+      if (quranClockIn && !quranClockIn.disabled && utils.clockInQuranRecitation) {
+        utils.clockInQuranRecitation();
+        renderQuranPanel(panel.querySelector('#streak-panel-body'), true);
+      }
     });
 
     panel.addEventListener('submit', function (event) {
@@ -262,6 +287,11 @@
       tab.classList.toggle('is-active', active);
       tab.setAttribute('aria-selected', String(active));
     });
+
+    if (tabName === 'quran') {
+      renderQuranPanel(body, false);
+      return;
+    }
 
     if (tabName === 'leaderboard') {
       renderLeaderboard(body);
@@ -312,6 +342,56 @@
       '<p class="streak-panel-note">Only actual lecture playback time counts. Skipping ahead does not fill the streak. Earn 1 streak freeze every 7-day streak (up to 2 banked) - it silently covers one missed day.</p>';
   }
 
+  function renderQuranPanel(body, justClockedIn) {
+    var streak = readQuranStreak();
+    var complete = Boolean(streak.completedToday || streak.lastCompletedDate === streak.todayDate);
+    var monthCompleted = Object.keys(streak.days || {}).filter(function (dateKey) {
+      return dateKey.slice(0, 7) === streak.todayDate.slice(0, 7) && streak.days[dateKey] && streak.days[dateKey].completed;
+    }).length;
+
+    body.innerHTML =
+      '<div class="quran-streak-view">' +
+        '<div class="quran-streak-intro">' +
+          buildQuranSvg() +
+          '<div><strong>Keep returning to the Qur&#8217;an</strong>' +
+          '<p>Lectures support your learning, but they never replace your own recitation.</p></div>' +
+        '</div>' +
+        '<div class="streak-panel-summary quran-streak-summary">' +
+          '<div class="streak-panel-orb quran-streak-orb ' + (streak.current > 0 ? 'is-active' : '') + '" style="--streak-progress:' + (complete ? '100%' : '0%') + '">' +
+            buildQuranSvg() +
+            '<strong>' + streak.current + '</strong>' +
+          '</div>' +
+          '<div class="streak-panel-copy">' +
+            '<small>' + (complete ? 'Recitation clocked in today' : 'Your separate recitation streak') + '</small>' +
+            '<h3>' + (streak.current > 0 ? streak.current + ' day Qur&#8217;an streak' : 'Begin with 15 minutes today') + '</h3>' +
+            '<p>' + (complete
+              ? 'May this daily return keep the Qur&#8217;an close to your heart.'
+              : 'After reciting for at least ' + streak.targetMinutes + ' minutes, clock in once for today.') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="streak-panel-stats quran-streak-stats">' +
+          '<span><strong>' + streak.current + '</strong><small>Current</small></span>' +
+          '<span><strong>' + streak.best + '</strong><small>Best</small></span>' +
+          '<span><strong>' + monthCompleted + '</strong><small>This month</small></span>' +
+        '</div>' +
+        '<div class="quran-clock-in-card">' +
+          '<div><strong>' + (complete ? 'Today is complete' : 'Recited for 15 minutes?') + '</strong>' +
+          '<p>' + (complete ? 'Come back tomorrow to continue your recitation streak.' : 'Clock in honestly after completing today&#8217;s recitation.') + '</p></div>' +
+          '<button type="button" data-quran-clock-in ' + (complete ? 'disabled ' : '') + '>' +
+            (complete ? buildCheckIconSvg() + ' Clocked in today' : 'Clock in 15 minutes') +
+          '</button>' +
+        '</div>' +
+        '<p class="quran-clock-in-status" role="status" aria-live="polite">' +
+          (justClockedIn ? 'Your Qur&#8217;an recitation has been clocked in for today.' : '') +
+        '</p>' +
+        '<div class="streak-heatmap-wrap">' +
+          '<div class="streak-heatmap-head"><strong>This month</strong><span>Filled days were clocked in</span></div>' +
+          '<div class="streak-heatmap quran-streak-heatmap" aria-label="Monthly Qur&#8217;an recitation heatmap">' + buildQuranHeatmap(streak) + '</div>' +
+        '</div>' +
+        '<p class="streak-panel-note quran-streak-note"><strong>Separate by design:</strong> lecture watch time does not count here, and Qur&#8217;an recitation does not change your learning streak, freezes, ranks, or leaderboard position.</p>' +
+      '</div>';
+  }
+
   function buildHeatmap(streak) {
     var today = new Date();
     var year = today.getFullYear();
@@ -325,6 +405,24 @@
       var isFuture = date > today;
       var level = isFuture ? 'future' : item.completed ? 'complete' : item.seconds > 0 ? 'partial' : 'empty';
       var label = key + ': ' + (isFuture ? 'future day' : item.completed ? 'goal complete' : item.seconds > 0 ? formatStreakMinutes(item.seconds) + ' minutes watched' : 'no streak progress');
+      html += '<span class="streak-day is-' + level + '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '">' + day + '</span>';
+    }
+    return html;
+  }
+
+  function buildQuranHeatmap(streak) {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth();
+    var totalDays = new Date(year, month + 1, 0).getDate();
+    var html = '';
+    for (var day = 1; day <= totalDays; day++) {
+      var date = new Date(year, month, day);
+      var key = localDateKey(date);
+      var item = streak.days[key] || {};
+      var isFuture = date > today;
+      var level = isFuture ? 'future' : item.completed ? 'complete' : 'empty';
+      var label = key + ': ' + (isFuture ? 'future day' : item.completed ? '15 minutes of Qur\'an recitation clocked in' : 'not clocked in');
       html += '<span class="streak-day is-' + level + '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '">' + day + '</span>';
     }
     return html;
