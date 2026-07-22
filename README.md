@@ -16,7 +16,7 @@ The application is intentionally built with plain HTML, CSS, and JavaScript; it 
 - Light, dark, and system themes, reduced-motion support, responsive navigation, and generated crawlable series/watch pages
 - Local keyword search that works independently, with optional AI reranking through a Cloudflare Worker
 
-As of 21 July 2026, the catalog contains 13 series and 27 standalone lectures, with 126 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
+As of 23 July 2026, the catalog contains 15 series and 27 standalone lectures, with 140 lectures currently watchable on the platform. More episodes are uploaded progressively; the live [upload roadmap](https://improvingmuslim.com/pages/roadmap.html) shows the current schedule.
 
 ## Run locally
 
@@ -68,11 +68,9 @@ The site is deployed from `main` with GitHub Pages. Videos are stored outside Gi
 
 For the repeatable video-publishing and release checklist, see [CONTENT_OPERATIONS.md](./CONTENT_OPERATIONS.md). For the repository layout, architecture, security boundaries, and detailed maintenance rules, see [DEV_README.md](./DEV_README.md).
 
-## Content rights and privacy
+## Content rights
 
 Only upload or distribute material when the project has permission to do so. The platform records permission status and attribution on its [copyright page](https://improvingmuslim.com/pages/copyright.html).
-
-The core experience works without an account and stores learning data on the device. Google sign-in is optional. See the live [privacy page](https://improvingmuslim.com/pages/privacy.html) for the data model and sync behavior.
 
 Feedback is available through the site's [feedback page](https://improvingmuslim.com/pages/feedback.html).
 

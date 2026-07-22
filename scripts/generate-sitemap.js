@@ -25,7 +25,6 @@ const staticPaths = [
   "/pages/partnerships.html",
   "/pages/donations.html",
   "/pages/feedback.html",
-  "/pages/privacy.html",
 ];
 
 const sandbox = { window: {} };

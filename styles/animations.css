@@ -119,7 +119,6 @@
   .series-card:hover,
   .continue-card:hover,
   .episode-card:hover,
-  .speaker-card:hover,
   .nav-more-trigger[aria-expanded="true"] svg,
   .autoplay-toast {
     animation: none !important;
@@ -160,11 +159,6 @@
     transform: translateY(-3px);
     box-shadow: 0 18px 38px rgba(24, 32, 27, 0.12), 0 0 0 1px rgba(23, 107, 91, 0.16);
     border-color: rgba(23, 107, 91, 0.22);
-  }
-
-  .speaker-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(23, 107, 91, 0.16);
   }
 }
 

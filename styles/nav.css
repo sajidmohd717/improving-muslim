@@ -123,12 +123,6 @@
   color: var(--accent);
 }
 
-.icon-button {
-  display: none;
-  border: 0;
-  background: transparent;
-}
-
 .nav-more {
   position: relative;
   flex-shrink: 0;

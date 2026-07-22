@@ -16,7 +16,6 @@ export const PUBLIC_PAGE_FILES = [
   "pages/feedback.html",
   "pages/history.html",
   "pages/partnerships.html",
-  "pages/privacy.html",
   "pages/roadmap.html",
   "pages/saved.html",
   "pages/series-detail.html",
@@ -31,7 +30,7 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260723-quran-streak",
+  styles: "20260723-maintenance",
   theme: "20260705-system-theme",
   utils: "20260723-quran-streak",
   streak: "20260723-quran-streak",
@@ -66,7 +65,6 @@ const ADMIN_MORE_LINKS = [
   ["./pages/settings.html", "Settings"],
   ["./pages/roadmap.html", "Roadmap"],
   ["./pages/feedback.html", "Feedback"],
-  ["./pages/privacy.html", "Privacy"],
 ];
 
 const BOTTOM_LINKS = [
@@ -173,7 +171,6 @@ export function renderFooter({ admin = false } = {}) {
       <a href="./pages/feedback.html">Feedback</a>
       <a href="./pages/roadmap.html">Roadmap</a>
       <a href="./pages/copyright.html">Copyright</a>
-      <a href="./pages/privacy.html">Privacy</a>
       <a class="donate-link" href="./pages/donations.html">Donate</a>
     </footer>`;
   return region("footer", content);

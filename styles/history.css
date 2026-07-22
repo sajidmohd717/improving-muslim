@@ -85,12 +85,6 @@
   letter-spacing: 0.03em;
 }
 
-.history-ep-num {
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
 .history-title {
   font-size: 0.95rem;
   font-weight: 700;

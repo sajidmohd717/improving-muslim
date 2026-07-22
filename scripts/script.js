@@ -3,7 +3,7 @@
 // loaded before this file:
 //   - home-data.js (IMHomeData): section assembly, merging, allow-list filter
 //   - home-feed.js (IMHomeFeed): shuffle/sort/personalized feed ordering
-//   - home-shelves.js (IMHomeShelves): Continue, Popular, streak, speakers
+//   - home-shelves.js (IMHomeShelves): Continue, Popular, and streak
 //   - home-card-actions.js (IMCardActions): card save/share/menu actions
 const homeConfig = window.IMHomeConfig || {};
 const API_ROOT = homeConfig.apiRoot || "https://sajidmohd717.github.io/series-api";
@@ -42,7 +42,6 @@ const {
   renderContinueWatching,
   renderPopularShelf,
   renderStudyStreak,
-  renderSpeakers,
 } = window.IMHomeShelves;
 
 function initialCategoryFromUrl() {
@@ -903,7 +902,6 @@ function bindEvents() {
   });
 }
 
-renderSpeakers();
 renderCategories();
 renderContinueWatching();
 renderPopularShelf();

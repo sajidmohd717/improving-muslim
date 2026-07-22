@@ -1,6 +1,6 @@
 /*
  * Homepage shelves outside the main grid: Continue learning, Popular right
- * now, the daily streak card, and the speaker rail. Exposes
+ * now, and the daily streak card. Exposes
  * window.IMHomeShelves. Each renderer queries its own section and hides it
  * when there is nothing to show; script.js calls them at startup and again
  * when history or auth state changes.
@@ -252,26 +252,10 @@
     `;
   }
 
-  function renderSpeakers() {
-    const speakerList = document.querySelector("#speaker-list");
-    if (!speakerList) return;
-    speakerList.innerHTML = (window.speakers || [])
-      .map(
-        (speaker, i) => `
-          <a class="speaker-card reveal-anim" style="--reveal-delay:${Math.min(i, 8) * 40}ms" href="./pages/speaker.html?speaker=${encodeURIComponent(speaker.slug)}">
-            <img src="${speaker.image}" alt="${escapeHtml(speaker.name)}" loading="lazy" />
-            <span>${escapeHtml(speaker.name)}</span>
-          </a>
-        `,
-      )
-      .join("");
-  }
-
   window.IMHomeShelves = {
     shelfCardHtml,
     renderContinueWatching,
     renderPopularShelf,
     renderStudyStreak,
-    renderSpeakers,
   };
 })();

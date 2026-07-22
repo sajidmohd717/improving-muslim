@@ -63,8 +63,7 @@
   }
 
   .site-menu,
-  .page-menu,
-  .icon-button {
+  .page-menu {
     display: none;
   }
 
@@ -454,10 +453,6 @@
     padding: 3px 5px;
   }
 
-  .continue-empty {
-    min-width: min(340px, calc(100vw - 32px));
-  }
-
   .continue-body {
     gap: 3px;
     padding: 8px 8px 12px;
@@ -480,11 +475,6 @@
     font-size: 0.64rem;
   }
 
-  .speaker-strip {
-    gap: 8px;
-    padding-bottom: 8px;
-  }
-
   .category-strip {
     gap: 6px;
     padding-bottom: 8px;
@@ -493,23 +483,6 @@
   .category-button {
     font-size: 0.82rem;
     padding: 8px 11px;
-  }
-
-  .speaker-card {
-    flex-basis: 74px;
-    gap: 6px;
-    padding: 9px 6px;
-  }
-
-  .speaker-card img {
-    width: 42px;
-    height: 42px;
-  }
-
-  .speaker-card span {
-    min-height: 28px;
-    font-size: 0.64rem;
-    line-height: 1.18;
   }
 
   .speaker-directory {

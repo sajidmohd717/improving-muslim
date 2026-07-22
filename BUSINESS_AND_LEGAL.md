@@ -17,7 +17,6 @@ This document records the current planning position for giving Improving Muslim 
 Relevant project pages:
 
 - `pages/about.html`
-- `pages/privacy.html`
 - `pages/copyright.html`
 - `pages/donations.html`
 - `pages/partnerships.html`

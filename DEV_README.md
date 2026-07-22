@@ -13,7 +13,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 
 - `index.html` stays at the repository root because GitHub Pages serves it as the entry point.
 - `pages/` contains maintained secondary page templates and query-string compatibility routes such as series detail, watch, speaker profiles, settings, and about.
-- `scripts/page-shell.js` is the single source of truth for shared head assets, public/admin headers, footers, mobile bottom navigation, common script order, and their cache versions. Edit the shell there, then run `npm run page-shell`; do not hand-edit the generated regions between `page-shell:*` comments.
+- `scripts/page-shell.js` is the single source of truth for the maintained public/admin page lists, shared head assets, headers, footers, mobile bottom navigation, common script order, and their cache versions. Edit the shell there, then run `npm run page-shell`; do not hand-edit the generated regions between `page-shell:*` comments.
 - `scripts/generate-page-shell.js` writes those regions into `index.html` and the maintained files in `pages/`. Its `--check` mode is part of CI. `404.html` intentionally remains a minimal standalone emergency page.
 - `series/` and `watch/` contain canonical, crawlable pages generated from the maintained templates and catalog data by `scripts/generate-seo-pages.js`. Never edit generated pages by hand.
 - `scripts/` contains browser logic and utility scripts.
@@ -24,7 +24,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/script.js` is the homepage controller: page state, the main results grid, search result rendering, and event wiring. Keep static homepage metadata in `home-config.js` when possible so this controller stays focused on behavior.
 - `scripts/home-data.js` (`window.IMHomeData`) assembles homepage catalogue data: the category name map, local series/standalone card sections, remote-feed normalization and merging, the remote-card allow-list filter, and the offline fallback sections. No DOM.
 - `scripts/home-feed.js` (`window.IMHomeFeed`) owns grid ordering: the stable per-session shuffle, the explicit sort modes, the balanced discovery mix, and the watch-history-seeded personalized blend built on the catalog + `IMRelated` ranking. No DOM.
-- `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning, Popular right now, the daily streak card, and the speaker rail.
+- `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning, Popular right now, and the daily streak card.
 - `scripts/home-card-actions.js` (`window.IMCardActions`) implements the grid cards' save/share actions and card-menu open/close bookkeeping; `script.js` owns the event delegation.
 - `scripts/home-search.js` owns homepage search behavior: suggestions while typing, submit-only search, result matching, and the search-mode handoff back to `script.js`.
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
@@ -71,11 +71,19 @@ For the short, repeatable checklist used whenever a video or series episode is a
 
 All pages in `pages/` include a `<base href="../" />` tag. Keep all project links in the form `./pages/...`, `./scripts/...`, `./data/...`, `./assets/...`, and `./styles/...` so links resolve correctly from both `index.html` and inner pages.
 
+### Removing pages and obsolete code
+
+Treat removal as a source-of-truth change, not a generated-file edit. For a public page, remove its entry from `PUBLIC_PAGE_FILES` and any navigation/footer definitions in `scripts/page-shell.js`, remove its sitemap source in `scripts/generate-sitemap.js`, delete the maintained template, and run `npm run generate:content`. Search the repository for the old route before committing. Generated `series/` and `watch/` pages will inherit the updated shell automatically.
+
+For code, styles, or assets, verify that there is no maintained HTML reference, JavaScript import/runtime lookup, data-registry reference, generator/package-script consumer, or documented operational use before deleting it. Dynamic class names and constructed asset paths need manual review; a text search alone is not proof. Publicity assets under `marketing/` are an intentional archive and may be used outside the website even when no site file references them. After a cleanup, bump affected browser cache versions, regenerate content, and run the full check suite.
+
+Guest storage remains a deliberate offline and signed-out fallback: learning data stays in the current browser until the learner signs in, then it is merged into the account. Removing a public explanatory page does not remove this behavior or the data-protection obligations documented in `BUSINESS_AND_LEGAL.md`.
+
 Explore category counts have explicit meanings: registered series are counted from `seriesConfig`, currently watchable series episodes are the sum of matching registry `availableCount` values, standalone lectures are matching records with a real `videoSrc`, and total watchable content is available episodes plus standalone lectures. A category is browseable only when that total is greater than zero. The Explore card shows only the total watchable lecture count; the focused category page separates series from individual lectures and gives the detailed context.
 
 ## Current Content State
 
-Snapshot as of 21 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and thirteen series episodes and all 27 standalone lectures are currently watchable, for 140 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
+Snapshot as of 23 July 2026: the catalog has 15 series and 27 standalone lectures. One hundred and thirteen series episodes and all 27 standalone lectures are currently watchable, for 140 hosted lectures in total. Treat `data/series-registry.js` and the episode data files as authoritative; this table is a human-readable snapshot and should be updated when upload milestones change.
 
 ### Series
 
@@ -799,7 +807,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 | Service | Purpose |
 |---|---|
 | Firebase Authentication | Google Sign-In only |
-| Cloud Firestore | Cloud storage for watch progress, notes, saved items, streaks, and opt-in public leaderboard rows |
+| Cloud Firestore | Cloud storage for watch progress, notes, saved items, lecture and Qur'an streaks, and opt-in public leaderboard rows |
 
 ### How sync works
 
@@ -818,7 +826,7 @@ Firebase console: `console.firebase.google.com/project/improving-muslim`
 users/{uid}/data/sync  (single document)
   progress: { "lecture-progress:playlistId:episodeId": { currentTime, duration, updatedAt, completed, _card }, ... }
   notes: { "lecture-notes:playlistId:episodeId": { text, updatedAt }, ... }
-  saved: [ { key, type, title, subtitle, url, savedAt }, ... ]
+  savedItems: { "item-key": { key, type, title, subtitle, url, savedAt }, ... }
   streak: {
     targetMinutes,       // always 15 -- fixed, not user-selectable (see below)
     todayDate,
@@ -833,6 +841,16 @@ users/{uid}/data/sync  (single document)
     publicName,
     updatedAt,
     targetUpdatedAt
+  }
+  quranStreak: {
+    targetMinutes,       // always 15
+    todayDate,
+    completedToday,
+    current,
+    best,
+    lastCompletedDate,
+    days: { "YYYY-MM-DD": { completed, minutes }, ... },
+    updatedAt
   }
   lastSyncedAt: timestamp in milliseconds
 
@@ -910,7 +928,8 @@ Add any new domains here if the site is ever served from a different origin.
 | Watch progress | Yes |
 | Episode notes | Yes |
 | Saved items | Yes |
-| Daily streak stats | Yes |
+| Lecture streak stats | Yes |
+| Qur'an recitation streak | Yes |
 | Public leaderboard row | Optional, opt-in only |
 | Theme preference | No — device-local by design |
 | Autoplay setting | No — device-local by design |

@@ -50,6 +50,8 @@ The lecture closes with the three types of Sabr: patience in obeying Allah's com
     sourceUrl: "https://www.youtube.com/watch?v=UQNNt60p0a0",
     thumbnailSrc: "./assets/thumbnail/standalone/mufti-menk/purpose-of-creation.jpg",
     videoSrc: "https://videos.improvingmuslim.com/mufti-menk/stand-alone/purpose-of-creation.mp4",
+    description:
+      "Mufti Menk reflects on why Allah created us and how a clear sense of purpose should shape worship, priorities, and everyday choices.",
   },
   {
     id: "why-am-i-here",
@@ -108,6 +110,8 @@ The solution is the daily Quran. The first continuous obligation Allah gave the 
     sourceUrl: "https://www.youtube.com/watch?v=XnbGBmJ_NTU",
     thumbnailSrc: "./assets/thumbnail/standalone/yahya-al-raaby/dua-how-to-get-your-dreams.jpg",
     videoSrc: "https://videos.improvingmuslim.com/yahya-raaby/stand-alone/DUA-How-to-get-your-dreams.mp4",
+    description:
+      "An encouraging lecture on making dua consistently, asking Allah with sincerity, and trusting His timing and wisdom while pursuing what you hope for.",
   },
   {
     id: "only-allah-knows-what-you-went-through",
@@ -122,6 +126,8 @@ The solution is the daily Quran. The first continuous obligation Allah gave the 
     sourceUrl: "https://www.youtube.com/watch?v=hEygwMaMDyU",
     thumbnailSrc: "./assets/thumbnail/standalone/omar-suleiman/only-allah-knows.jpg",
     videoSrc: "https://videos.improvingmuslim.com/omar-suleiman/stand-alone/Only-Allah-Knows-What-You-Went-Through.mp4",
+    description:
+      "Omar Suleiman offers reassurance for anyone carrying unseen hardship, reminding listeners that Allah fully knows every trial, intention, and act of patience.",
   },
   {
     id: "poem-to-soften-the-hardened-heart",

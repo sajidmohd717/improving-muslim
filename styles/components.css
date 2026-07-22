@@ -24,16 +24,11 @@
   background: var(--surface);
 }
 
-.card-actions,
-.series-utility-actions {
+.card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
-}
-
-.series-utility-actions {
-  align-items: center;
 }
 
 .mini-action,
@@ -351,12 +346,6 @@
 .sort-option.is-selected {
   color: var(--accent-strong);
   font-weight: 700;
-}
-
-.sort-option-hint {
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 0.82rem;
 }
 
 /* ─── Site footer ────────────────────────────────────────────────────────── */

@@ -37,6 +37,7 @@ test("page shell migration preserves unique content and scripts", () => {
   assert.match(generated, /class="desktop-nav-search"/);
   assert.match(generated, /class="desktop-sidebar"/);
   assert.match(generated, /class="site-menu page-menu sidebar-replaced-menu"/);
+  assert.doesNotMatch(generated, /pages\/privacy\.html/);
   assert.equal((generated.match(/firebase-auth\.js/g) || []).length, 1);
   assert.equal((generated.match(/nav-state\.js/g) || []).length, 1);
 });
@@ -50,7 +51,7 @@ test("admin variant keeps the private footer and omits mobile bottom navigation"
   const generated = applyPageShell(legacyPage, { admin: true });
   assert.match(generated, /Private product dashboard/);
   assert.doesNotMatch(generated, /<nav class="bottom-nav"/);
-  assert.match(generated, /pages\/privacy\.html/);
+  assert.doesNotMatch(generated, /pages\/privacy\.html/);
   assert.doesNotMatch(generated, /class="desktop-sidebar"/);
   assert.doesNotMatch(generated, /class="desktop-nav-search"/);
   assert.doesNotMatch(generated, /sidebar-replaced-menu/);
