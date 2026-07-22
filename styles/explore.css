@@ -63,6 +63,18 @@
   background: rgba(255, 255, 255, 0.42);
 }
 
+/* White at 42% composites to a pale slab on the dark page, dropping the card's
+   kicker and action text to ~2.2:1. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .explore-card.is-coming-soon {
+    background: rgba(23, 33, 29, 0.55);
+  }
+}
+
+:root[data-theme="dark"] .explore-card.is-coming-soon {
+  background: rgba(23, 33, 29, 0.55);
+}
+
 @media (max-width: 900px) {
   .explore-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

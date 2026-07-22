@@ -37,6 +37,34 @@
   animation: skel-shimmer 1.6s ease-in-out infinite;
 }
 
+/* Loading placeholders — the beige shimmer flashes bright on a dark page
+   before content paints. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .skel {
+    background: linear-gradient(
+      90deg,
+      #1a241f 0%,
+      #212d28 40%,
+      #283530 50%,
+      #212d28 60%,
+      #1a241f 100%
+    );
+    background-size: 1200px 100%;
+  }
+}
+
+:root[data-theme="dark"] .skel {
+  background: linear-gradient(
+    90deg,
+    #1a241f 0%,
+    #212d28 40%,
+    #283530 50%,
+    #212d28 60%,
+    #1a241f 100%
+  );
+  background-size: 1200px 100%;
+}
+
 .skel-thumb {
   aspect-ratio: 16 / 9;
   border-radius: 0;

@@ -12,6 +12,18 @@
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
+/* Near-white button with a light-teal chevron on it reads as ~1.5:1 in dark
+   mode — the icon all but disappears. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .details-toggle {
+    background: var(--surface);
+  }
+}
+
+:root[data-theme="dark"] .details-toggle {
+  background: var(--surface);
+}
+
 .card-actions,
 .series-utility-actions {
   display: flex;
@@ -144,6 +156,18 @@
   border-color: rgba(23, 107, 91, 0.35);
   background: rgba(23, 107, 91, 0.1);
   color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .details-toggle[aria-expanded="true"] {
+    border-color: rgba(108, 196, 173, 0.38);
+    background: rgba(108, 196, 173, 0.14);
+  }
+}
+
+:root[data-theme="dark"] .details-toggle[aria-expanded="true"] {
+  border-color: rgba(108, 196, 173, 0.38);
+  background: rgba(108, 196, 173, 0.14);
 }
 
 .details-toggle svg {
@@ -364,6 +388,20 @@
   border-radius: 999px;
   background: rgba(23, 107, 91, 0.08);
   padding: 7px 12px;
+}
+
+/* Appears in the footer of every page — the light tint made the pill shape
+   disappear, so Donate read as plain text next to the other footer links. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-footer .donate-link {
+    border-color: rgba(108, 196, 173, 0.3);
+    background: rgba(108, 196, 173, 0.13);
+  }
+}
+
+:root[data-theme="dark"] .site-footer .donate-link {
+  border-color: rgba(108, 196, 173, 0.3);
+  background: rgba(108, 196, 173, 0.13);
 }
 
 @media (min-width: 720px) {

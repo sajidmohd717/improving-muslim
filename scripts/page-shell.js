@@ -31,7 +31,7 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260722-dark-surfaces",
+  styles: "20260722-dark-sweep",
   theme: "20260705-system-theme",
   utils: "20260717-streak-pure-read",
   streak: "20260720-streak-label",

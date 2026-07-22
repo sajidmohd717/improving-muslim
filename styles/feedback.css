@@ -20,6 +20,17 @@
   line-height: 1.7;
 }
 
+/* Hardcoded dark grey — 1.91:1 against the dark page. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .feedback-hero > p:not(.eyebrow) {
+    color: var(--muted);
+  }
+}
+
+:root[data-theme="dark"] .feedback-hero > p:not(.eyebrow) {
+  color: var(--muted);
+}
+
 .feedback-section {
   padding: 0 0 72px;
 }
@@ -80,12 +91,38 @@
   resize: vertical;
 }
 
+/* The hardcoded near-white field left dark-mode text (--ink is near-white too)
+   at ~1.05:1 — typed input was effectively invisible. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .form-field input[type="email"],
+  :root:not([data-theme="light"]) .form-field textarea {
+    background: var(--surface);
+  }
+}
+
+:root[data-theme="dark"] .form-field input[type="email"],
+:root[data-theme="dark"] .form-field textarea {
+  background: var(--surface);
+}
+
 .form-field input[type="email"]:focus,
 .form-field textarea:focus {
   border-color: var(--accent);
   background: var(--surface-strong);
   box-shadow: 0 0 0 3px rgba(23, 107, 91, 0.1);
   outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .form-field input[type="email"]:focus,
+  :root:not([data-theme="light"]) .form-field textarea:focus {
+    box-shadow: 0 0 0 3px rgba(108, 196, 173, 0.28);
+  }
+}
+
+:root[data-theme="dark"] .form-field input[type="email"]:focus,
+:root[data-theme="dark"] .form-field textarea:focus {
+  box-shadow: 0 0 0 3px rgba(108, 196, 173, 0.28);
 }
 
 .form-field input[type="email"]::placeholder,

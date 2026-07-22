@@ -80,6 +80,16 @@
   background: #e5ded0;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .continue-thumb {
+    background: #1d2a25;
+  }
+}
+
+:root[data-theme="dark"] .continue-thumb {
+  background: #1d2a25;
+}
+
 .continue-thumb img {
   display: block;
   width: 100%;
@@ -326,6 +336,18 @@
   height: 8px;
   border-radius: 999px;
   background: rgba(23, 107, 91, 0.12);
+}
+
+/* Unfilled portion of the streak bar — the light tint reads as nothing on a
+   dark surface, so the bar looks like it has no track at all. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .streak-track {
+    background: rgba(108, 196, 173, 0.16);
+  }
+}
+
+:root[data-theme="dark"] .streak-track {
+  background: rgba(108, 196, 173, 0.16);
 }
 
 .streak-track span {
