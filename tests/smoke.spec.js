@@ -202,6 +202,39 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   expect(pageErrors).toEqual([]);
 });
 
+test("desktop shell expands the feed and leaves mobile navigation intact", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.setViewportSize({ width: 2048, height: 1152 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expectCatalog(page);
+
+  await expect(page.locator(".desktop-sidebar")).toBeVisible();
+  await expect(page.locator(".desktop-sidebar-link.is-active")).toHaveText("Home");
+  await expect(page.locator(".desktop-nav-search")).toBeVisible();
+  await expect(page.locator("#category-scroll-next")).toHaveCount(1);
+
+  const desktopLayout = await page.evaluate(() => ({
+    categoryRows: new Set(
+      Array.from(document.querySelectorAll(".category-button"), (button) =>
+        Math.round(button.getBoundingClientRect().top),
+      ),
+    ).size,
+    gridColumns: getComputedStyle(document.querySelector("#series-grid")).gridTemplateColumns.split(" ").length,
+    horizontalOverflow: document.body.scrollWidth > document.documentElement.clientWidth,
+  }));
+  expect(desktopLayout).toEqual({ categoryRows: 1, gridColumns: 5, horizontalOverflow: false });
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(page.locator("#category-scroll-next")).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator(".desktop-sidebar")).toBeHidden();
+  await expect(page.locator(".desktop-nav-search")).toBeHidden();
+  await expect(page.locator(".search-form")).toBeVisible();
+  await expect(page.locator(".bottom-nav")).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});
+
 test("homepage blends watch-based recommendations into the For you grid", async ({ page }) => {
   const pageErrors = await preparePage(page);
   await page.addInitScript(() => {

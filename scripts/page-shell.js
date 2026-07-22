@@ -31,12 +31,12 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260722-home-density",
+  styles: "20260723-desktop-shell",
   theme: "20260705-system-theme",
   utils: "20260717-streak-pure-read",
   streak: "20260720-streak-label",
   firebase: "20260720-guest-merge",
-  navState: "20260720-available-first",
+  navState: "20260723-desktop-shell",
 };
 
 const icon = (body, size = 16, extra = "") =>
@@ -77,6 +77,16 @@ const BOTTOM_LINKS = [
   ["./pages/speakers.html", "Speakers", icon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>', 22)],
 ];
 
+const SIDEBAR_LINKS = [
+  ["./index.html", "Home", icon('<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>', 22)],
+  ["./pages/explore.html", "Explore", icon('<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>', 22)],
+  ["./pages/speakers.html", "Speakers", icon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>', 22)],
+  null,
+  ["./pages/history.html", "History", icon('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>', 22)],
+  ["./pages/saved.html", "Saved", icon('<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>', 22)],
+  ["./pages/settings.html", "Settings", icon('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/>', 22)],
+];
+
 const region = (name, content) => `    <!-- page-shell:${name}:start -->\n${content}\n    <!-- page-shell:${name}:end -->`;
 
 export function renderHeadAssets() {
@@ -95,12 +105,35 @@ export function renderHeader({ home = false, admin = false } = {}) {
   const moreLinks = admin ? ADMIN_MORE_LINKS : MORE_LINKS;
   const desktopLinks = MAIN_LINKS.map(([href, label]) => `          <a href="${href}">${label}</a>`).join("\n");
   const menuLinks = moreLinks.map(([href, label, itemIcon]) => `            <a href="${href}" role="menuitem">${itemIcon ? `\n              ${itemIcon}` : ""}\n              ${label}\n            </a>`).join("\n");
+  const search = admin ? "" : `
+        <form class="desktop-nav-search" action="./index.html" method="get" role="search">
+          <label class="sr-only" for="desktop-site-search">Search lectures</label>
+          <input id="desktop-site-search" name="q" type="search" placeholder="Search lectures, speakers, or topics" autocomplete="off" />
+          <button type="submit" aria-label="Search">
+            ${icon('<circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/>', 20)}
+          </button>
+        </form>`;
+  const sidebar = admin ? "" : `
+    <aside class="desktop-sidebar" aria-label="Desktop navigation">
+      <nav class="desktop-sidebar-nav" aria-label="Study navigation">
+        <p class="desktop-sidebar-heading">Discover</p>
+${SIDEBAR_LINKS.map((item) => item
+    ? `        <a class="desktop-sidebar-link" href="${item[0]}" title="${item[1]}">
+          ${item[2]}
+          <span>${item[1]}</span>
+        </a>`
+    : `        <div class="desktop-sidebar-divider" role="separator"></div>
+        <p class="desktop-sidebar-heading">Your library</p>`).join("\n")}
+      </nav>
+      <a class="desktop-sidebar-about" href="./pages/about.html">Focused, ad-free learning</a>
+    </aside>`;
   return region("header", `    <header class="site-header">
       <nav class="nav-shell" aria-label="Primary navigation">
         <a class="brand" href="./index.html" aria-label="Improving Muslim home">
           <img src="./public/icon.png" alt="" />
           <span>Improving Muslim</span>
         </a>
+${search}
 
         <div class="${menuClass}" id="site-menu">
 ${desktopLinks}
@@ -117,7 +150,7 @@ ${menuLinks}
           </div>
         </div>
       </nav>
-    </header>`);
+    </header>${sidebar}`);
 }
 
 export function renderFooter({ admin = false } = {}) {

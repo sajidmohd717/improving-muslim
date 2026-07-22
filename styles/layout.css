@@ -343,3 +343,44 @@ body.search-mode #active-category-label {
   border-color: var(--accent);
   outline: none;
 }
+
+@media (min-width: 1200px) {
+  .home-page .hero,
+  .home-page .content-section,
+  .home-page .continue-section {
+    width: min(1920px, calc(100% - 40px));
+  }
+
+  .home-page .hero {
+    padding: 28px 0 12px;
+  }
+
+  .home-page .hero h1 {
+    max-width: 760px;
+    font-size: clamp(2.35rem, 3.3vw, 3.45rem);
+    line-height: 1.03;
+  }
+
+  .home-page .hero-copy {
+    max-width: 620px;
+    margin: 10px 0 0;
+    font-size: 1rem;
+  }
+
+  .home-page .hero .search-form {
+    display: none;
+  }
+
+  .home-page.has-watch-history .hero,
+  .home-page.search-mode .hero {
+    display: none;
+  }
+
+  .home-page #categories {
+    padding-top: 18px;
+  }
+
+  .home-page .series-section {
+    padding-top: 12px;
+  }
+}

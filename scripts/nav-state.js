@@ -78,16 +78,22 @@ if (window.location.pathname.includes('/pages/') || window.location.pathname.inc
   }
 }
 
-/* Mark the active link in the desktop site-menu */
-const siteMenu = document.querySelector('.site-menu');
-if (siteMenu) {
-  const currentPage = window.location.pathname.split('/').pop().split('?')[0];
-  siteMenu.querySelectorAll('a[href]').forEach((link) => {
+/* Mark the active destination in both desktop navigation treatments. */
+const currentPage = window.location.pathname.split('/').pop().split('?')[0] || 'index.html';
+document.querySelectorAll('.site-menu, .desktop-sidebar').forEach((navigation) => {
+  navigation.querySelectorAll('a[href]').forEach((link) => {
     const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
     if (linkPage && linkPage === currentPage) {
       link.classList.add('is-active');
+      link.setAttribute('aria-current', 'page');
     }
   });
+});
+
+/* Preserve a homepage search query in the shared desktop search field. */
+const desktopSearch = document.querySelector('#desktop-site-search');
+if (desktopSearch && currentPage === 'index.html') {
+  desktopSearch.value = new URLSearchParams(window.location.search).get('q') || '';
 }
 
 /* Inject settings gear icon into header before the More button */
@@ -109,7 +115,6 @@ if (navMore) {
 /* Mark the active link in the bottom nav */
 const bottomNav = document.querySelector('.bottom-nav');
 if (bottomNav) {
-  const currentPage = window.location.pathname.split('/').pop().split('?')[0] || 'index.html';
   bottomNav.querySelectorAll('a[href]').forEach((link) => {
     const linkPage = link.getAttribute('href').split('/').pop().split('?')[0];
     if (linkPage && linkPage === currentPage) {

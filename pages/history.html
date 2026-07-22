@@ -18,7 +18,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260722-home-density" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260723-desktop-shell" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <!-- page-shell:head-assets:end -->
     <script src="./scripts/error-handler.js?v=20260608-auth-hotfix"></script>
@@ -32,6 +32,14 @@
           <img src="./public/icon.png" alt="" />
           <span>Improving Muslim</span>
         </a>
+
+        <form class="desktop-nav-search" action="./index.html" method="get" role="search">
+          <label class="sr-only" for="desktop-site-search">Search lectures</label>
+          <input id="desktop-site-search" name="q" type="search" placeholder="Search lectures, speakers, or topics" autocomplete="off" />
+          <button type="submit" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
 
         <div class="site-menu page-menu" id="site-menu">
           <a href="./index.html">Home</a>
@@ -88,6 +96,38 @@
         </div>
       </nav>
     </header>
+    <aside class="desktop-sidebar" aria-label="Desktop navigation">
+      <nav class="desktop-sidebar-nav" aria-label="Study navigation">
+        <p class="desktop-sidebar-heading">Discover</p>
+        <a class="desktop-sidebar-link" href="./index.html" title="Home">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Home</span>
+        </a>
+        <a class="desktop-sidebar-link" href="./pages/explore.html" title="Explore">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          <span>Explore</span>
+        </a>
+        <a class="desktop-sidebar-link" href="./pages/speakers.html" title="Speakers">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Speakers</span>
+        </a>
+        <div class="desktop-sidebar-divider" role="separator"></div>
+        <p class="desktop-sidebar-heading">Your library</p>
+        <a class="desktop-sidebar-link" href="./pages/history.html" title="History">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>History</span>
+        </a>
+        <a class="desktop-sidebar-link" href="./pages/saved.html" title="Saved">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span>Saved</span>
+        </a>
+        <a class="desktop-sidebar-link" href="./pages/settings.html" title="Settings">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+      <a class="desktop-sidebar-about" href="./pages/about.html">Focused, ad-free learning</a>
+    </aside>
     <!-- page-shell:header:end -->
 
     <main>
@@ -131,7 +171,7 @@
     <script src="./scripts/streak-ui.js?v=20260720-streak-label" defer></script>
     <script src="./scripts/firebase-auth.js?v=20260720-guest-merge" defer></script>
     <script src="./scripts/nav-more.js" defer></script>
-    <script src="./scripts/nav-state.js?v=20260720-available-first" defer></script>
+    <script src="./scripts/nav-state.js?v=20260723-desktop-shell" defer></script>
     <!-- page-shell:runtime:end -->
 
     <script src="./data/series-registry.js?v=20260721-forty-hadith-episodes-9-10"></script>

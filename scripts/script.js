@@ -85,6 +85,8 @@ const els = {
   siteMenu: document.querySelector("#site-menu"),
   continueList: document.querySelector("#continue-list"),
   categoryList: document.querySelector("#category-list"),
+  categoryScrollPrevious: document.querySelector("#category-scroll-previous"),
+  categoryScrollNext: document.querySelector("#category-scroll-next"),
   seriesGrid: document.querySelector("#series-grid"),
   statusMessage: document.querySelector("#status-message"),
   resultCount: document.querySelector("#result-count"),
@@ -658,6 +660,42 @@ function renderCategories() {
       `,
     )
     .join("");
+  window.requestAnimationFrame(() => {
+    keepActiveCategoryVisible();
+    updateCategoryScrollButtons();
+  });
+}
+
+function updateCategoryScrollButtons() {
+  if (!els.categoryList) return;
+  const maxScroll = Math.max(0, els.categoryList.scrollWidth - els.categoryList.clientWidth);
+  const atStart = els.categoryList.scrollLeft <= 2;
+  const atEnd = els.categoryList.scrollLeft >= maxScroll - 2;
+  if (els.categoryScrollPrevious) els.categoryScrollPrevious.disabled = atStart;
+  if (els.categoryScrollNext) els.categoryScrollNext.disabled = atEnd;
+}
+
+function keepActiveCategoryVisible() {
+  const active = els.categoryList?.querySelector(".category-button.is-active");
+  if (!active) return;
+  const listLeft = els.categoryList.scrollLeft;
+  const listRight = listLeft + els.categoryList.clientWidth;
+  const buttonLeft = active.offsetLeft;
+  const buttonRight = buttonLeft + active.offsetWidth;
+  if (buttonLeft < listLeft) {
+    els.categoryList.scrollLeft = buttonLeft;
+  } else if (buttonRight > listRight) {
+    els.categoryList.scrollLeft = buttonRight - els.categoryList.clientWidth;
+  }
+}
+
+function scrollCategories(direction) {
+  if (!els.categoryList) return;
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  els.categoryList.scrollBy({
+    left: direction * Math.max(260, els.categoryList.clientWidth * 0.72),
+    behavior: reduceMotion ? "auto" : "smooth",
+  });
 }
 
 async function loadCategory(category, { preserveSearch = false } = {}) {
@@ -734,6 +772,11 @@ function bindEvents() {
     state.activeSpeaker = null;
     loadCategory(button.dataset.category);
   });
+
+  els.categoryScrollPrevious?.addEventListener("click", () => scrollCategories(-1));
+  els.categoryScrollNext?.addEventListener("click", () => scrollCategories(1));
+  els.categoryList.addEventListener("scroll", updateCategoryScrollButtons, { passive: true });
+  window.addEventListener("resize", updateCategoryScrollButtons);
 
   els.contentTypeFilter?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-content-type]");
