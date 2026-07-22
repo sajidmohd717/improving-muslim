@@ -4,6 +4,12 @@
   gap: 14px;
 }
 
+/* Hero card carries both indicators: the bar reads better in the wide mobile
+   layout, the ring matches the other cards once desktop levels them. */
+.continue-hero .continue-ring {
+  display: none;
+}
+
 .continue-card {
   position: relative;
   min-width: 0;
@@ -260,6 +266,59 @@
   stroke-linecap: round;
 }
 
+/* Desktop: the full-width "hero" resume card pushed the main grid roughly two
+   screens down, so every item is levelled to the same compact card and one row
+   holds all four. Must come after the .continue-hero base rules to win the
+   cascade. Tablet (≤900px) and mobile keep the hero treatment. */
+@media (min-width: 901px) {
+  .continue-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .continue-hero {
+    grid-column: auto;
+  }
+
+  .continue-hero .continue-card-link {
+    grid-template-columns: none;
+    align-items: stretch;
+  }
+
+  .continue-hero .continue-thumb {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .continue-hero .continue-body {
+    gap: 5px;
+    align-content: start;
+    padding: 12px 13px 16px;
+  }
+
+  .continue-hero .continue-body strong {
+    font-family: inherit;
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+
+  .continue-hero .continue-body em {
+    font-size: 0.78rem;
+  }
+
+  .continue-hero .continue-ring {
+    display: block;
+  }
+
+  /* The whole card is the resume link, so the button is redundant once the
+     card is compact — and the ring replaces the hero's bottom bar so all four
+     cards carry the same progress affordance. */
+  .continue-hero .continue-resume-btn,
+  .continue-hero .continue-bar {
+    display: none;
+  }
+}
+
 .streak-section {
   padding-top: 0;
 }
@@ -268,7 +327,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   overflow: hidden;
   border: 1px solid rgba(200, 155, 60, 0.4);
   border-radius: 8px;
@@ -276,15 +335,15 @@
     linear-gradient(135deg, rgba(200, 155, 60, 0.16), rgba(23, 107, 91, 0.08)),
     var(--surface-strong);
   box-shadow: 0 12px 34px rgba(24, 32, 27, 0.09);
-  padding: 18px;
+  padding: 14px 16px;
 }
 
 .streak-orb {
   --streak-progress: 0%;
   display: grid;
   place-items: center;
-  width: 92px;
-  height: 92px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, var(--surface-strong) 0 56%, transparent 57%),
@@ -300,13 +359,13 @@
 
 .streak-orb strong {
   font-family: "Inria Serif", Georgia, serif;
-  font-size: 1.9rem;
+  font-size: 1.3rem;
   line-height: 1;
 }
 
 .streak-copy {
   display: grid;
-  gap: 7px;
+  gap: 5px;
   min-width: 0;
 }
 
@@ -321,7 +380,7 @@
 .streak-copy h2 {
   margin: 0;
   font-family: "Inria Serif", Georgia, serif;
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
 }
 
 .streak-copy p {
@@ -359,7 +418,11 @@
 
 .streak-stats {
   display: grid;
-  gap: 10px;
+  /* Counter and action sat stacked, making this column the tallest thing in
+     the card. Side by side, the card is driven by its copy instead. */
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 14px;
   justify-items: end;
 }
 

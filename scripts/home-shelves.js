@@ -112,6 +112,14 @@
             <div class="continue-bar" role="img" aria-label="${heroPercent}% watched">
               <span style="width:${heroPercent}%"></span>
             </div>
+            <div class="continue-ring" aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <circle class="ring-track" cx="18" cy="18" r="15.9"/>
+                <circle class="ring-fill" cx="18" cy="18" r="15.9"
+                  stroke-dasharray="${heroPercent} 100"
+                  stroke-dashoffset="25"/>
+              </svg>
+            </div>
           </div>
           <div class="continue-body">
             <small>${escapeHtml(heroItem.eyebrow)}</small>
