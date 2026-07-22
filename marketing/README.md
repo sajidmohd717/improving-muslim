@@ -2,7 +2,7 @@
 
 This folder holds everything publicity-related for Improving Muslim: finished social assets, the templates and scripts that generate them, and this guide. It documents what has been done so far and how to continue, so anyone joining can pick up without re-deriving decisions.
 
-Status snapshot as of **22 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
+Status snapshot as of **23 July 2026**. Update this file whenever campaigns, outreach status, or assets change — treat it like `DEV_README.md` for publicity.
 
 ## The pitch (use this framing everywhere)
 
@@ -125,6 +125,35 @@ Use this as the base message, personalizing the opening when there is something 
 > JazakAllahu khayran!
 
 Contact genuine, relevant creators in small batches and keep a record of messages and replies. If someone is interested in producing promotional content, agree on the format, wording, usage rights, posting account, timing, and whether the work is paid before production begins. Send at most one polite follow-up if there is no response.
+
+#### Creator partnership email (copy-paste ready)
+
+For a longer, email-format approach to the same small-creator audience — when you have an email address rather than a DM, or want to raise partnership/sponsorship more directly. It leads with the promo-video/feedback angle and mentions paid collaboration softly. Copy-paste as-is; personalize the "I came across your work" opening when there's something genuine and specific to say.
+
+> **Subject:** A distraction-free home for Islamic lectures — would love your take
+>
+> Assalamu alaikum,
+>
+> I hope this message finds you well. My name is Sajid Mohammad, and I'm the developer behind Improving Muslim (improvingmuslim.com) — a free platform for watching Islamic lectures without the noise: no ads, no comments, no endless scrolling, and no unrelated recommendations pulling people away from what they came to learn.
+>
+> The idea is simple. People open YouTube for one lecture and close it an hour later having watched everything except that lecture. Improving Muslim gives that content a quiet home instead — 100+ lectures and full series, organized by topic, with the ability to follow a series, track your progress, build a daily learning streak, and take timestamped notes while you watch.
+>
+> I came across your work and really appreciated it, which is why I wanted to reach out. I'd love for you to take a look at the platform and, if it feels aligned with your values, explore whether there's a way we could work together. A few directions I'm open to:
+>
+> - A short promotional video or shout-out, if the project resonates with you.
+> - Featuring your content on the platform, always with full credit and your permission first.
+> - Your honest feedback as both a user and a creator — genuinely valuable to me.
+> - A paid or supported collaboration, where that makes sense for your time.
+>
+> There's no pressure and nothing is assumed on your end. If any of this interests you, just reply and we can talk through whatever you'd be comfortable with. And if it's not the right fit, no worries at all — I'd still be grateful if you gave it a look.
+>
+> JazakAllahu khayran for your time.
+>
+> Warm regards,
+> Sajid Mohammad
+> Improving Muslim · improvingmuslim.com
+
+Same rules as the DM version: contact creators in small batches, keep a record, and settle format/wording/usage rights/posting account/timing/payment before any promotional content is produced. Only mention the paid option when you can actually honour it (recall the Navaid Aziz outcome — a free reshare arrangement beat the paid Reel). Save any "yes" as a consent record.
 
 #### Creator outreach log
 
