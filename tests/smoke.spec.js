@@ -189,6 +189,17 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   );
   expect(discoveryTypes).toEqual(["series", "video", "series", "video"]);
   await expect(page.locator("#series-grid").getByText("Standalone Video", { exact: true })).toHaveCount(0);
+  const cardMetadata = await page.locator("#series-grid .series-card").evaluateAll((cards) =>
+    cards.map((card) => ({
+      isSeries: card.querySelector('.series-title')?.getAttribute('href')?.includes('/series/') || false,
+      thumbnailChip: card.querySelector('.thumb-duration')?.textContent.trim() || "",
+      bodyTags: card.querySelectorAll('.series-body .avail-badge, .series-body .avail-badge-plain, .series-body .label-badge:not(.label-ai)').length,
+    })),
+  );
+  const seriesMetadata = cardMetadata.filter((card) => card.isSeries);
+  expect(seriesMetadata.length).toBeGreaterThan(0);
+  expect(seriesMetadata.every((card) => /^\d+ Episodes?$/.test(card.thumbnailChip))).toBe(true);
+  expect(seriesMetadata.every((card) => card.bodyTags === 0)).toBe(true);
 
   const prayerFilter = page.getByRole("button", { name: "Prayer", exact: true });
   await prayerFilter.click();

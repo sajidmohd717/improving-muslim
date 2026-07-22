@@ -1,7 +1,7 @@
 const params = new URLSearchParams(window.location.search);
 const speakerSlug = params.get("speaker") || "ali-hammuda";
 const speakers = window.speakers || [];
-const { escapeHtml, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl, seriesUrl, imageMap } = window.IMUtils;
+const { escapeHtml, formatDuration, formatViewCount, getAllSeries, getStandaloneLectures, standaloneLectureThumbnailUrl, standaloneLectureUrl, seriesUrl, imageMap } = window.IMUtils;
 const localSeries = getAllSeries();
 const standaloneLectures = getStandaloneLectures();
 
@@ -39,11 +39,14 @@ function localThumbnail(series) {
 
 function localSeriesCard(series) {
   const totalViews = series.episodes.reduce((sum, episode) => sum + (episode.views || 0), 0);
+  const registryEntry = (window.seriesConfig || []).find((entry) =>
+    entry.title === series.title || window[entry.globalKey] === series
+  );
   return {
     title: series.title,
     speaker: series.speaker,
     topic: series.topic || "Series",
-    episodes: `${series.episodes.length} Lectures`,
+    episodeCount: Number(registryEntry?.episodeCount) || series.episodes.length,
     thumbnailImage: localThumbnail(series),
     link: seriesUrl(series),
     viewcount: formatViewCount(totalViews),
@@ -56,7 +59,7 @@ function speakerSeries(speakerName) {
     title: lecture.title,
     speaker: lecture.speaker,
     topic: lecture.topic || "Standalone Video",
-    episodes: lecture.typeLabel || "Standalone Video",
+    duration: lecture.duration,
     thumbnailImage: standaloneLectureThumbnailUrl(lecture),
     link: standaloneLectureUrl(lecture),
     description: lecture.description,
@@ -74,10 +77,16 @@ const detailIcon =
   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg><span class="sr-only">Show details</span>';
 
 function renderSeriesCard(series) {
+  const thumbnailMeta = series.episodeCount
+    ? `${series.episodeCount} ${series.episodeCount === 1 ? "Episode" : "Episodes"}`
+    : series.duration
+    ? formatDuration(series.duration)
+    : "";
   return `
     <article class="series-card">
       <a class="series-link" href="${series.link}">
         <img src="${series.thumbnailImage}" alt="${escapeHtml(series.title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
+        ${thumbnailMeta ? `<span class="thumb-duration">${thumbnailMeta}</span>` : ""}
       </a>
       <div class="series-body">
         <span class="series-topic">${escapeHtml(series.topic || "Series")}</span>
@@ -86,7 +95,6 @@ function renderSeriesCard(series) {
         </a>
         <div class="series-meta">
           <span>${escapeHtml(series.speaker)}</span>
-          <span>${escapeHtml(series.episodes || "Lectures")}</span>
           ${series.viewcount ? `<span>${escapeHtml(series.viewcount)}</span>` : ""}
         </div>
         <div class="card-actions">

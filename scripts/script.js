@@ -517,6 +517,11 @@ function renderSeries() {
       const durationChip = isVideo && item.duration
         ? `<span class="thumb-duration">${formatDuration(item.duration)}</span>`
         : "";
+      const parsedEpisodeCount = Number.parseInt(String(item.episodes || ""), 10);
+      const episodeCount = Number(item.episodeCount) || parsedEpisodeCount || 0;
+      const episodeChip = !isVideo && episodeCount > 0
+        ? `<span class="thumb-duration">${episodeCount} ${episodeCount === 1 ? "Episode" : "Episodes"}</span>`
+        : "";
       const progressBarHtml = seriesProgress
         ? `<div class="thumb-progress-track" aria-label="${seriesProgress.completed} of ${seriesProgress.total} episodes watched"><div class="thumb-progress-fill" style="width:${Math.round(seriesProgress.completed / seriesProgress.total * 100)}%"></div></div>`
         : videoProgress !== null
@@ -527,6 +532,7 @@ function renderSeries() {
           <a class="series-link" href="${seriesUrl}">
             <img src="${item.thumbnailImage}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
             ${durationChip}
+            ${episodeChip}
             ${progressBarHtml}
           </a>
           <div class="series-body">
@@ -538,12 +544,7 @@ function renderSeries() {
               <span>${escapeHtml(item.speaker || "Speaker TBA")}</span>
               ${item.viewcount ? `<span>${escapeHtml(item.viewcount)}</span>` : ""}
             </div>
-            ${item._label ? `<span class="label-badge label-${item._label.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(item._label)}</span>` : ""}
             ${state.aiSearch.reasonById[searchItemId(item)] ? `<span class="label-badge label-ai">AI match</span>` : ""}
-            ${item._badge
-              ? `<span class="avail-badge ${item._badge.cls}">${escapeHtml(item._badge.text)}</span>`
-              : !isVideo && item.episodes ? `<span class="avail-badge-plain ${item.episodesCls || ''}">${escapeHtml(item.episodes)}</span>` : ""
-            }
             <button class="card-menu-trigger" type="button" aria-label="More options" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/></svg>
             </button>

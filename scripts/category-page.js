@@ -41,19 +41,23 @@ function setCategoryMetadata(topic) {
   document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", description);
 }
 
-function contentCard({ title, speaker, label, meta, thumbnail, href, durationSeconds }) {
+function contentCard({ title, speaker, label, thumbnail, href, durationSeconds, episodeCount }) {
+  const thumbnailMeta = durationSeconds
+    ? formatDuration(durationSeconds)
+    : episodeCount
+    ? plural(episodeCount, "Episode")
+    : "";
   return `
     <article class="series-card category-content-card">
       <a class="series-link" href="${href}">
         <img src="${thumbnail}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.onerror=null;this.src='./public/social-preview.png';" />
-        ${durationSeconds ? `<span class="thumb-duration">${formatDuration(durationSeconds)}</span>` : ""}
+        ${thumbnailMeta ? `<span class="thumb-duration">${thumbnailMeta}</span>` : ""}
       </a>
       <div class="series-body">
         <span class="series-topic">${escapeHtml(label)}</span>
         <a class="series-title" href="${href}">${escapeHtml(title)}</a>
         <div class="series-meta">
           <span>${escapeHtml(speaker)}</span>
-          ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
         </div>
       </div>
     </article>
@@ -94,7 +98,7 @@ function renderCategoryPage() {
       title: entry.title,
       speaker: entry.speaker,
       label: "Series",
-      meta: `${plural(Number(entry.availableCount), "episode")} available`,
+      episodeCount: Number(entry.episodeCount),
       thumbnail: entry.thumbnailSrc || "./public/social-preview.png",
       href: seriesUrl(entry),
     })).join("");
@@ -107,7 +111,6 @@ function renderCategoryPage() {
       title: lecture.title,
       speaker: lecture.speaker,
       label: "Lecture",
-      meta: "",
       durationSeconds: lecture.duration,
       thumbnail: standaloneLectureThumbnailUrl(lecture),
       href: standaloneLectureUrl(lecture),

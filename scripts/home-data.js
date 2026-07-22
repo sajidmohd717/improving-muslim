@@ -60,7 +60,8 @@
       section.seriesList.push({
         title: entry.title,
         speaker: entry.speaker,
-        episodes: `${entry.episodeCount} Lectures`,
+        episodes: `${entry.episodeCount} Episodes`,
+        episodeCount: Number(entry.episodeCount) || 0,
         thumbnailImage: entry.thumbnailSrc,
         link: seriesUrl(entry),
       });
@@ -86,7 +87,8 @@
         section.seriesList.push({
           title: entry.title,
           speaker: entry.speaker,
-          episodes: `${entry.episodeCount} Lectures`,
+          episodes: `${entry.episodeCount} Episodes`,
+          episodeCount: Number(entry.episodeCount) || 0,
           thumbnailImage: entry.thumbnailSrc,
           link: seriesUrl(entry),
         });
@@ -154,7 +156,16 @@
     const local = getAllSeries().find(s => s.title === item.title);
     if (local) {
       const total = local.episodes.reduce((sum, ep) => sum + (ep.views || 0), 0);
-      if (total > 0) return { ...item, viewcount: formatViewCount(total) };
+      const registryEntry = (window.seriesConfig || []).find((entry) =>
+        entry.title === item.title || entry.apiTitle === item.title || window[entry.globalKey] === local
+      );
+      const episodeCount = Number(registryEntry?.episodeCount) || local.episodes.length;
+      return {
+        ...item,
+        episodeCount,
+        episodes: `${episodeCount} Episodes`,
+        ...(total > 0 ? { viewcount: formatViewCount(total) } : {}),
+      };
     }
     // Fuzzy match for Seerah: API may return a slightly different title spelling
     if ((item.title.includes("Seerah of Prophet") || item.title.includes("Seerah of the Prophet")) && window.seerahYasirQadhiSeries) {
@@ -162,22 +173,6 @@
       if (total > 0) return { ...item, viewcount: formatViewCount(total) };
     }
     return item;
-  }
-
-  function availLabel(entry) {
-    const total = entry.episodeCount || 0;
-    const avail = entry.availableCount ?? total;
-    if (avail >= total) return { text: `${total} Lectures`, cls: "" };
-    if (avail === 0) return { text: "Coming soon", cls: "avail-none" };
-    return { text: `${avail} of ${total} available`, cls: "avail-partial" };
-  }
-
-  function availBadge(entry) {
-    const total = entry.episodeCount || 0;
-    const avail = typeof entry.availableCount === "number" ? entry.availableCount : total;
-    if (avail === 0) return null;
-    if (avail >= total) return { text: "Fully available", cls: "badge-full" };
-    return { text: `${avail} of ${total} available`, cls: "badge-partial" };
   }
 
   function localStandaloneSections(category = "foryou") {
@@ -221,13 +216,13 @@
       if (category === "available") {
         // already filtered by avail > 0 above — show regardless of subject category
       } else if (category !== "foryou" && !cats.includes(category)) continue;
-      const { text: episodesText, cls: episodesCls } = availLabel(entry);
+      const episodeCount = Number(entry.episodeCount) || 0;
       const card = {
         title: entry.title,
         speaker: entry.speaker,
         topic: topicLabel(cats),
-        episodes: episodesText,
-        episodesCls,
+        episodes: `${episodeCount} Episodes`,
+        episodeCount,
         thumbnailImage: entry.thumbnailSrc,
         link: seriesUrl(entry),
         description: entry.description,
@@ -237,8 +232,6 @@
         _keywords: entry.searchKeywords || "",
         _topics: entry.topicKeywords || "",
         _cats: cats,
-        _badge: availBadge(entry),
-        _label: entry.label || null,
       };
       const sectionTitle = categoryNameMap[cats[0]] || cats[0];
       const existing = sections.find(sec => sec.sectionTitle === sectionTitle);
