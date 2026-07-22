@@ -841,6 +841,12 @@
     display: none;
   }
 
+  /* Public pages use the left rail at this width. The extra class keeps the
+     later .page-menu compatibility rule from restoring duplicate top links. */
+  .site-menu.sidebar-replaced-menu {
+    display: none;
+  }
+
   .desktop-nav-search {
     display: flex;
     flex: 1 1 520px;

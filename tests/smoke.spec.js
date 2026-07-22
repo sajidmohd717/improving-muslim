@@ -238,7 +238,23 @@ test("desktop shell expands the feed and leaves mobile navigation intact", async
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.locator("#category-scroll-next")).toBeVisible();
 
+  for (const [path, activeLabel] of [
+    ["/pages/explore.html", "Explore"],
+    ["/pages/speakers.html", "Speakers"],
+  ]) {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".desktop-sidebar")).toBeVisible();
+    await expect(page.locator(".desktop-sidebar-link.is-active")).toHaveText(activeLabel);
+    await expect(page.locator(".site-menu.sidebar-replaced-menu")).toBeHidden();
+  }
+
+  await page.setViewportSize({ width: 1024, height: 800 });
+  await page.goto("/pages/explore.html", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".desktop-sidebar")).toBeHidden();
+  await expect(page.locator(".site-menu.sidebar-replaced-menu")).toBeVisible();
+
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator(".desktop-sidebar")).toBeHidden();
   await expect(page.locator(".desktop-nav-search")).toBeHidden();
   await expect(page.locator(".search-form")).toBeVisible();

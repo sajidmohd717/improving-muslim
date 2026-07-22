@@ -31,7 +31,7 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260723-desktop-shell",
+  styles: "20260723-single-desktop-nav",
   theme: "20260705-system-theme",
   utils: "20260717-streak-pure-read",
   streak: "20260720-streak-label",
@@ -101,7 +101,11 @@ export function renderHeadAssets() {
 }
 
 export function renderHeader({ home = false, admin = false } = {}) {
-  const menuClass = home ? "site-menu" : "site-menu page-menu";
+  const menuClass = [
+    "site-menu",
+    home ? "" : "page-menu",
+    admin ? "" : "sidebar-replaced-menu",
+  ].filter(Boolean).join(" ");
   const moreLinks = admin ? ADMIN_MORE_LINKS : MORE_LINKS;
   const desktopLinks = MAIN_LINKS.map(([href, label]) => `          <a href="${href}">${label}</a>`).join("\n");
   const menuLinks = moreLinks.map(([href, label, itemIcon]) => `            <a href="${href}" role="menuitem">${itemIcon ? `\n              ${itemIcon}` : ""}\n              ${label}\n            </a>`).join("\n");

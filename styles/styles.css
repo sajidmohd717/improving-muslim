@@ -4,7 +4,7 @@
 ───────────────────────────────────────────────────────────────────────────── */
 
 @import "./base.css?v=20260722-dark-sweep";          /* CSS custom properties, reset, sr-only, is-hidden  */
-@import "./nav.css?v=20260723-desktop-shell"; /* Site header, top nav, bottom mobile nav             */
+@import "./nav.css?v=20260723-single-desktop-nav"; /* Site header, top nav, bottom mobile nav             */
 @import "./layout.css?v=20260723-desktop-shell"; /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260723-compact-continue";      /* Continue-watching strip & cards                    */
 @import "./cards.css?v=20260723-desktop-shell";   /* Series cards, speaker cards, category filters  */
