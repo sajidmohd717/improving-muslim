@@ -38,7 +38,9 @@ const SPEAKER_PHOTOS = {
   const ctx = await browser.newContext({
     userAgent: devices['iPhone 13 Pro'].userAgent,
     viewport: { width: 375, height: 812 },
-    deviceScaleFactor: 3,
+    // 4x density so screenshots stay sharper-than-needed even in the 2x
+    // (2160x3840) high-quality render
+    deviceScaleFactor: 4,
     isMobile: true,
     hasTouch: true,
   });

@@ -22,7 +22,18 @@ site scroll inside a 3D-tilted phone mockup over the brand's dark palette.
    npm run render        # v1 -> out/promo.mp4
    npm run render:v2     # v2 -> out/promo-v2.mp4 (30fps)
    npm run render:v3     # v3 -> out/promo-v3.mp4 (same video at 60fps)
+   npm run render:v3:hq  # v3 at 2x (2160x3840) -> out/promo-v3-hq.mp4
    ```
+
+### Render quality
+
+`remotion.config.ts` sets PNG frame capture (default JPEG q80 softens text)
+and CRF 15. **Upload the `:hq` (2160x3840) render** — Instagram/TikTok
+recompress uploads, and 4K sources survive their compression visibly crisper
+than 1080p ones. Screenshots are captured at 4x density so they stay sharp at
+2x scale. If a single `:hq` run is too long for one sitting, render in chunks
+with `--frames=A-B` into part files and concat with
+`ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4`.
 
 ## Series strategy
 

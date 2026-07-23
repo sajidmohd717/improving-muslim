@@ -7,6 +7,7 @@
     "render": "remotion render Promo out/promo.mp4",
     "render:v2": "remotion render PromoV2 out/promo-v2.mp4",
     "render:v3": "remotion render PromoV3 out/promo-v3.mp4",
+    "render:v3:hq": "remotion render PromoV3 out/promo-v3-hq.mp4 --scale=2",
     "still": "remotion still Promo"
   },
   "dependencies": {
