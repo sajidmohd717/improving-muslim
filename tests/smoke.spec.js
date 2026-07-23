@@ -230,10 +230,20 @@ test("desktop shell expands the feed and leaves mobile navigation intact", async
         Math.round(button.getBoundingClientRect().top),
       ),
     ).size,
+    categoryStartOffset:
+      Math.round(document.querySelector(".category-button").getBoundingClientRect().left) -
+      Math.round(document.querySelector("#series-grid").getBoundingClientRect().left),
+    cardRadius: getComputedStyle(document.querySelector("#series-grid .series-card")).borderRadius,
     gridColumns: getComputedStyle(document.querySelector("#series-grid")).gridTemplateColumns.split(" ").length,
     horizontalOverflow: document.body.scrollWidth > document.documentElement.clientWidth,
   }));
-  expect(desktopLayout).toEqual({ categoryRows: 1, gridColumns: 3, horizontalOverflow: false });
+  expect(desktopLayout).toEqual({
+    categoryRows: 1,
+    categoryStartOffset: 0,
+    cardRadius: "14px",
+    gridColumns: 3,
+    horizontalOverflow: false,
+  });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.locator("#category-scroll-next")).toBeVisible();

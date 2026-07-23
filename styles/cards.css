@@ -184,16 +184,16 @@
 @media (min-width: 901px) {
   .category-carousel {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 8px;
+    gap: 0;
   }
 
   .category-strip {
     min-width: 0;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding: 4px 2px 12px;
+    padding: 4px 0 12px;
     scroll-behavior: smooth;
     -webkit-mask-image: none;
     mask-image: none;
@@ -212,6 +212,14 @@
     transition: background 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
   }
 
+  .category-scroll-previous {
+    margin-right: 8px;
+  }
+
+  .category-scroll-next {
+    margin-left: 8px;
+  }
+
   .category-scroll-button:hover,
   .category-scroll-button:focus-visible {
     border-color: var(--accent);
@@ -221,17 +229,19 @@
   }
 
   .category-scroll-button:disabled {
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
+    display: none;
   }
 
   .series-card {
     overflow: visible;
     border: 0;
-    border-radius: 0;
+    border-radius: 14px;
     background: transparent;
     box-shadow: none;
+    transition:
+      transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+      box-shadow 220ms cubic-bezier(0.2, 0.75, 0.25, 1),
+      border-color 150ms ease;
   }
 
   .series-card .series-link {
