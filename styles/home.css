@@ -308,7 +308,6 @@
   }
 
   .home-page .streak-card {
-    height: 100%;
     min-height: 160px;
     border-radius: 14px;
     background:
@@ -316,6 +315,21 @@
       linear-gradient(135deg, rgba(200, 155, 60, 0.17), rgba(23, 107, 91, 0.11)),
       var(--surface-strong);
     box-shadow: 0 14px 36px rgba(24, 32, 27, 0.1);
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1450px) {
+  .home-page .streak-copy p {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .home-page .streak-stats span {
+    display: none;
+  }
+
+  .home-page .streak-action {
+    padding-inline: 12px;
   }
 }
 

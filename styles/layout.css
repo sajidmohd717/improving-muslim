@@ -373,6 +373,7 @@ body.search-mode #active-category-label {
   .home-page .home-learning-overview {
     display: grid;
     grid-template-columns: minmax(360px, 0.72fr) minmax(0, 1.65fr);
+    align-items: start;
     gap: 24px;
     width: calc(100% - 48px);
     margin: 0 auto;

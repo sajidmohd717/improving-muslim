@@ -272,6 +272,55 @@ test("desktop shell expands the feed and leaves mobile navigation intact", async
   expect(pageErrors).toEqual([]);
 });
 
+test("keeps the streak card compact at a half-screen desktop width", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.addInitScript(() => {
+    const now = new Date();
+    const todayKey = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, "0"),
+      String(now.getDate()).padStart(2, "0"),
+    ].join("-");
+    localStorage.setItem("lecture-progress:standalone:purpose-of-creation", JSON.stringify({
+      currentTime: 180,
+      duration: 900,
+      percent: 0.2,
+      completed: false,
+      updatedAt: Date.now(),
+    }));
+    localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
+      targetMinutes: 15,
+      todayDate: todayKey,
+      todaySeconds: 5 * 60,
+      current: 3,
+      best: 5,
+      lastCompletedDate: todayKey,
+      days: {},
+      freezesAvailable: 0,
+      freezeMilestonesClaimed: 0,
+      updatedAt: Date.now(),
+    }));
+  });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  await expect(page.locator("#streak-section")).toBeVisible();
+  await expect(page.locator("#continue-section")).toBeVisible();
+  const layout = await page.evaluate(() => {
+    const streakCard = document.querySelector("#streak-card").getBoundingClientRect();
+    const continueSection = document.querySelector("#continue-section").getBoundingClientRect();
+    return {
+      streakAspectRatio: streakCard.width / streakCard.height,
+      streakHeight: streakCard.height,
+      continueHeight: continueSection.height,
+    };
+  });
+
+  expect(layout.streakAspectRatio).toBeGreaterThan(1.5);
+  expect(layout.streakHeight).toBeLessThan(layout.continueHeight);
+  expect(pageErrors).toEqual([]);
+});
+
 test("homepage blends watch-based recommendations into the For you grid", async ({ page }) => {
   const pageErrors = await preparePage(page);
   await page.addInitScript(() => {
