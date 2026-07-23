@@ -7,7 +7,7 @@
 @import "./nav.css?v=20260723-desktop-feed"; /* Site header, top nav, bottom mobile nav             */
 @import "./layout.css?v=20260723-desktop-feed"; /* Hero, content-section wrappers, section headings   */
 @import "./home.css?v=20260723-desktop-feed";      /* Continue-watching strip & cards                    */
-@import "./cards.css?v=20260723-feed-polish";   /* Series cards, speaker directory, category filters */
+@import "./cards.css?v=20260723-full-card-link";   /* Series cards, speaker directory, category filters */
 @import "./components.css?v=20260723-maintenance"; /* Shared UI: buttons, panels, sort, footer, errors  */
 @import "./about.css";         /* About page                                         */
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */

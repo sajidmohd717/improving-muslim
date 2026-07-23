@@ -311,6 +311,10 @@ function bindEvents() {
       return;
     }
 
+    const card = event.target.closest(".series-card");
+    if (card && !event.target.closest("a, button, .card-menu")) {
+      card.querySelector(".series-link")?.click();
+    }
   });
 
   document.addEventListener("click", (event) => {

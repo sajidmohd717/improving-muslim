@@ -181,6 +181,10 @@
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.15s;
 }
 
+.home-page .series-card {
+  cursor: pointer;
+}
+
 @media (min-width: 901px) {
   .category-carousel {
     display: grid;

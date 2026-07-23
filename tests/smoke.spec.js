@@ -303,7 +303,10 @@ test("homepage links through a generated series page to its watch page", async (
   await page.goto("/?category=purification#series", { waitUntil: "domcontentloaded" });
   await expectCatalog(page);
 
-  await page.locator('.series-title[href="./series/why-me/"]').click();
+  const whyMeCard = page.locator(".series-card", {
+    has: page.locator('.series-title[href="./series/why-me/"]'),
+  });
+  await whyMeCard.locator(".series-meta").click();
   await expect(page).toHaveURL(/\/series\/why-me\/$/);
   await expect(page.getByRole("heading", { level: 1, name: "Why Me?" })).toBeVisible();
   await expect(page.locator("#episode-filters-row .ep-filter-btn")).toHaveCount(4);
