@@ -281,19 +281,29 @@ test("keeps the streak card compact at a half-screen desktop width", async ({ pa
       String(now.getMonth() + 1).padStart(2, "0"),
       String(now.getDate()).padStart(2, "0"),
     ].join("-");
-    localStorage.setItem("lecture-progress:standalone:purpose-of-creation", JSON.stringify({
-      currentTime: 180,
-      duration: 900,
-      percent: 0.2,
+    localStorage.setItem("lecture-progress:PLEcUc6n1p_6l6wq5yJMcALvB7nP0PMRoV:q1K2ngmNbmI", JSON.stringify({
+      currentTime: 1133,
+      duration: 3252,
       completed: false,
       updatedAt: Date.now(),
+      _card: {
+        eyebrow: "Tafsir Surah al-Kahf - Episode 1",
+        title: "Session 1",
+        thumbnail: "./assets/thumbnail/tafsir-surah-al-kahf/episodes/episode-01.jpg",
+        url: "./watch/tafsir-surah-al-kahf/q1K2ngmNbmI/",
+      },
     }));
-    localStorage.setItem("lecture-progress:standalone:qadr-and-sabr", JSON.stringify({
-      currentTime: 74,
-      duration: 2700,
-      percent: 0.03,
+    localStorage.setItem("lecture-progress:PLEcUc6n1p_6m5DfAAw5uORMQlI_xad8wR:bIrZJH0LPwU", JSON.stringify({
+      currentTime: 266,
+      duration: 3989,
       completed: false,
       updatedAt: Date.now() - 1000,
+      _card: {
+        eyebrow: "The Four Imams: Their Lives and Fiqh Principles - Episode 1",
+        title: "Introduction to the Four Imams",
+        thumbnail: "./assets/thumbnail/four-imams/episodes/episode-01.jpg",
+        url: "./watch/four-imams/bIrZJH0LPwU/",
+      },
     }));
     localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
       targetMinutes: 15,
@@ -316,15 +326,37 @@ test("keeps the streak card compact at a half-screen desktop width", async ({ pa
   const layout = await page.evaluate(() => {
     const streakCard = document.querySelector("#streak-card").getBoundingClientRect();
     const continueSection = document.querySelector("#continue-section").getBoundingClientRect();
+    const continueThumbs = Array.from(document.querySelectorAll(".continue-thumb"), (thumb) => {
+      const rect = thumb.getBoundingClientRect();
+      return {
+        aspectRatio: rect.width / rect.height,
+        height: rect.height,
+      };
+    });
     return {
       streakAspectRatio: streakCard.width / streakCard.height,
       streakHeight: streakCard.height,
       continueHeight: continueSection.height,
+      continueThumbs,
+      progressBarCount: document.querySelectorAll(".continue-bar").length,
+      progressFillRatios: Array.from(document.querySelectorAll(".continue-bar"), (bar) => {
+        const trackRect = bar.getBoundingClientRect();
+        const fillRect = bar.querySelector("span").getBoundingClientRect();
+        return fillRect.width / trackRect.width;
+      }),
+      progressRingCount: document.querySelectorAll(".continue-ring").length,
     };
   });
 
   expect(layout.streakAspectRatio).toBeGreaterThan(1.5);
   expect(layout.streakHeight).toBeLessThan(layout.continueHeight);
+  expect(layout.continueThumbs).toHaveLength(2);
+  expect(layout.continueThumbs.every(({ aspectRatio }) => aspectRatio > 1.7 && aspectRatio < 1.85)).toBe(true);
+  expect(Math.abs(layout.continueThumbs[0].height - layout.continueThumbs[1].height)).toBeLessThanOrEqual(1);
+  expect(layout.progressBarCount).toBe(2);
+  expect(layout.progressFillRatios[0]).toBeCloseTo(0.35, 2);
+  expect(layout.progressFillRatios[1]).toBeCloseTo(0.07, 2);
+  expect(layout.progressRingCount).toBe(0);
   expect(pageErrors).toEqual([]);
 });
 

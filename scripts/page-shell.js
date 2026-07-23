@@ -30,7 +30,7 @@ export const PUBLIC_PAGE_FILES = [
 export const ADMIN_PAGE_FILES = ["pages/admin.html"];
 
 const VERSIONS = {
-  styles: "20260723-compact-streak",
+  styles: "20260723-continue-progress",
   theme: "20260705-system-theme",
   utils: "20260723-quran-streak",
   streak: "20260723-quran-streak",

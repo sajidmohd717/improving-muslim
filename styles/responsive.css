@@ -446,13 +446,6 @@
     font-size: 0.72rem;
   }
 
-  .continue-thumb span {
-    right: 5px;
-    bottom: 5px;
-    font-size: 0.58rem;
-    padding: 3px 5px;
-  }
-
   .continue-body {
     gap: 3px;
     padding: 8px 8px 12px;
