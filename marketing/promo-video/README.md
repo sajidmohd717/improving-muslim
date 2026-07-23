@@ -58,6 +58,20 @@ nothing ships soft:
 - Low-contrast text always *reads* blurry even when it isn't — muted gray
   sub-captions cost sharpness perception; darken a step if in doubt.
 
+**Shadows and blurs under transforms:**
+
+- **Never put a large blur radius on an element that also carries a `scale()`
+  transform.** The scale multiplies the blur, and the `--scale=2` render
+  doubles it again — a 120px shadow blur became ~380px, past the point where
+  Chrome tiles the rasterization, and the tile seams showed as rectangular
+  banding across the background. It only appeared in the 2x render, so check
+  `:hq` output specifically, not just 1x stills.
+- Author shadow offsets/blurs in final-composition pixels and divide by the
+  element's scale (see the `px()` helper in `Phone.tsx`). This keeps the
+  rendered blur fixed and identical at any device `width`.
+- Keep shadow color in the brand ink (`24,32,27`) rather than pure black —
+  black shadows read muddy on the cream background.
+
 **Source images:**
 
 - Speaker profile photos must be comfortably larger than their displayed

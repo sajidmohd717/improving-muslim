@@ -16,6 +16,8 @@ export const Phone: React.FC<{
   children: React.ReactNode;
 }> = ({ width, rotateY = 0, rotateX = 0, translateY = 0, children }) => {
   const scale = width / (SCREEN_W + BEZEL * 2);
+  // composition px -> pre-scale px, so scaling doesn't multiply the value
+  const px = (n: number) => `${n / scale}px`;
   // Layout box matches the scaled visual size so the phone doesn't overlap
   // surrounding flow content; scaling grows downward from the top.
   return (
@@ -39,8 +41,17 @@ export const Phone: React.FC<{
           transformOrigin: 'top center',
           background: 'linear-gradient(145deg, #3a3f3d, #141816 45%, #2c302e)',
           borderRadius: RADIUS + BEZEL,
-          boxShadow:
-            '0 80px 120px rgba(0,0,0,0.55), 0 30px 50px rgba(0,0,0,0.4), inset 0 0 4px rgba(255,255,255,0.25)',
+          // Shadow lengths are authored in final-composition pixels and
+          // divided by `scale`, because this element is scaled: a raw 120px
+          // blur here becomes ~380px once the scale transform and a 2x render
+          // multiply it, and Chrome tiles blurs that large — the seams show up
+          // as rectangular banding. Dividing keeps the rendered blur fixed and
+          // makes the shadow identical at any `width`.
+          boxShadow: [
+            `0 ${px(26)} ${px(52)} rgba(24,32,27,0.22)`,
+            `0 ${px(9)} ${px(18)} rgba(24,32,27,0.16)`,
+            `inset 0 0 ${px(3)} rgba(255,255,255,0.25)`,
+          ].join(', '),
           padding: BEZEL,
         }}
       >
