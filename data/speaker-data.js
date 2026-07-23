@@ -107,7 +107,7 @@ window.speakers = [
   {
     name: "Sheikh Jamal Abdinasir",
     slug: "jamal-abdinasir",
-    image: "./public/icon.png",
+    image: "./assets/speaker/jamal-abdinasir.jpg",
     bio:
       "Sheikh Jamal Abdinasir is a UK-based Qari and teacher of Qur'anic sciences who memorised the Qur'an by age 13. He holds an MA in Islamic Studies specialising in the Qur'an and its sciences, and Ijazah in the Ten Minor Qira'at under Sheikh AbdirRashid Ali Sufi, alongside continued study under Sheikh Shoieb, Dean of the Imam Jazari Institute. He teaches at the Imam Jazari Institute and Eman Academy, and is active internationally in Qur'anic da'wah, with a strong teaching presence in the UK and Qatar.",
   },
