@@ -194,10 +194,6 @@ function renderSeriesHero({ entry, series }) {
   const availableEpisodes = series.episodes.filter(isEpisodeAvailable);
   const total = entry.episodeCount ?? series.episodes.length;
   const available = entry.availableCount ?? availableEpisodes.length;
-  const firstAvailable = availableEpisodes[0];
-  const cta = firstAvailable
-    ? `<div class="series-cta-row"><a class="series-cta-btn" href="${escapeAttr(watchHref(series, firstAvailable))}"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start watching</a></div>`
-    : "";
   const availability = available < total
     ? `<p class="series-avail-note">${available} of ${total} episodes available now. More are being uploaded.</p>`
     : "";
@@ -206,7 +202,6 @@ function renderSeriesHero({ entry, series }) {
           <p class="eyebrow">${escapeHtml(series.topic || entry.sectionTitle || "Series")}</p>
           <h1>${escapeHtml(series.title)}</h1>
           <p class="hero-copy">${escapeHtml(series.description || entry.description || "")}</p>
-          ${cta}
           ${availability}
         </div>
         <img src="${escapeAttr(series.thumbnailSrc || entry.thumbnailSrc || "./public/social-preview.png")}" alt="${escapeAttr(series.title)} series thumbnail" />
@@ -222,13 +217,16 @@ function renderSeriesEpisodeCards(series) {
       const targetAttr = isYouTubeOnly ? ' target="_blank" rel="noopener noreferrer"' : "";
       const date = formatDate(episode.published);
       const duration = formatDuration(episode.duration);
-      const meta = [date, duration].filter(Boolean).join(" - ");
+      const durationChip = duration ? `<span class="thumb-duration">${escapeHtml(duration)}</span>` : "";
       const content = `
-            <img src="${escapeAttr(episodeThumbnailUrl(series, episode))}" alt="" loading="lazy" />
+            <div class="ep-thumb">
+              <img src="${escapeAttr(episodeThumbnailUrl(series, episode))}" alt="" loading="lazy" />
+              ${durationChip}
+            </div>
             <div class="episode-info">
               <span class="episode-number">Episode ${escapeHtml(episode.number || index + 1)}${episode.recap ? '<span class="recap-badge">Recap</span>' : ""}${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}</span>
               <strong>${escapeHtml(episode.title)}</strong>
-              ${meta ? `<span class="episode-date">${escapeHtml(meta)}</span>` : ""}
+              ${date ? `<span class="episode-date">${escapeHtml(date)}</span>` : ""}
               ${episode.views ? `<span class="episode-views">${escapeHtml(formatViewCount(episode.views))}</span>` : ""}
               ${available ? "" : `<span class="episode-status">${escapeHtml(episode.statusNote || "Video not added yet. It will be uploaded in the future.")}</span>`}
             </div>`.replace(/^[ \t]+$/gm, "");

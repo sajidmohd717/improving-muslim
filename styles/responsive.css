@@ -240,6 +240,27 @@
     margin: 10px 0 16px;
   }
 
+  /* Inside a series the big cover art repeats what every episode thumbnail
+     already shows — reclaim the half-screen it costs on phones */
+  .series-hero img {
+    display: none;
+  }
+
+  /* Two-line description with a Show more toggle (JS adds the button
+     only when the clamp actually hides text) */
+  .series-hero .hero-copy.is-clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  #series-desc-toggle {
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
   .speaker-hero {
     grid-template-columns: 88px minmax(0, 1fr);
     gap: 14px;
@@ -636,9 +657,13 @@
     border-bottom: none;
   }
 
-  .episode-card img {
-    width: 130px;
+  .episode-card .ep-thumb {
+    width: 148px;
     flex-shrink: 0;
+  }
+
+  .episode-card img {
+    width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 6px;
   }
@@ -659,8 +684,10 @@
     margin-inline: 0;
   }
 
+  /* Meta text steps clearly below the title so the title leads the row */
   .episode-number {
     margin-top: 0;
+    font-size: 0.68rem;
   }
 
   .episode-card strong {
@@ -670,12 +697,43 @@
 
   .episode-date {
     margin-top: 4px;
+    font-size: 0.74rem;
+    font-weight: 600;
   }
 
   .episode-views,
   .episode-status {
     margin-top: 2px;
     margin-bottom: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  /* Plain dots on the page background — the dark contrast circle is only
+     needed on desktop where the button sits on the thumbnail */
+  .ep-menu-btn {
+    color: var(--muted);
+  }
+
+  .ep-menu-btn::before {
+    background: transparent;
+  }
+
+  .ep-menu-btn:hover::before,
+  .ep-menu-btn[aria-expanded="true"]::before {
+    background: rgba(24, 32, 27, 0.08);
+  }
+
+  [data-theme="dark"] .ep-menu-btn:hover::before,
+  [data-theme="dark"] .ep-menu-btn[aria-expanded="true"]::before {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .ep-menu-btn:hover::before,
+    :root:not([data-theme="light"]) .ep-menu-btn[aria-expanded="true"]::before {
+      background: rgba(255, 255, 255, 0.08);
+    }
   }
 
   .compact-episode {

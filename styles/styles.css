@@ -13,11 +13,11 @@
 @import "./settings.css?v=20260706-streak-ranks";  /* Settings page, toggle switch, themed select        */
 @import "./feedback.css?v=20260722-dark-sweep";      /* Feedback page & form                               */
 @import "./explore.css?v=20260722-dark-sweep"; /* Explore and focused category discovery       */
-@import "./series-detail.css?v=20260720-mobile-ux";        /* Series/speaker hero, episode list & cards   */
+@import "./series-detail.css?v=20260723-series-mobile-polish";        /* Series/speaker hero, episode list & cards   */
 @import "./watch.css?v=20260722-dark-surfaces";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css?v=20260723-maintenance";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
-@import "./responsive.css?v=20260723-continue-progress"; /* Breakpoint overrides (≤900px, ≤600px)   */
+@import "./responsive.css?v=20260723-series-mobile-polish"; /* Breakpoint overrides (≤900px, ≤600px)   */
 @import "./history.css?v=20260723-maintenance";    /* Watch history page                            */
 @import "./saved.css?v=20260627-grouped-saved";      /* Saved items page                              */
 @import "./roadmap.css";       /* Roadmap page                                       */

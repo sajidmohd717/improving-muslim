@@ -3838,7 +3838,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 2453,
       "published": "2012-07-22",
       "url": "./watch/life-of-muhammad-mufti-menk/VO22l6-Qkys/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-01.jpg",
@@ -3884,7 +3884,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3282,
       "published": "2012-07-23",
       "url": "./watch/life-of-muhammad-mufti-menk/5iwZPhswyKI/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-02.jpg",
@@ -3930,7 +3930,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3760,
       "published": "2012-07-24",
       "url": "./watch/life-of-muhammad-mufti-menk/W2usJgjOSrQ/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-03.jpg",
@@ -3976,7 +3976,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3181,
       "published": "2012-07-25",
       "url": "./watch/life-of-muhammad-mufti-menk/B_S-eVQoWUc/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-04.jpg",
@@ -4022,7 +4022,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3176,
       "published": "2012-07-26",
       "url": "./watch/life-of-muhammad-mufti-menk/WbL6fwsxwLs/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-05.jpg",
@@ -4068,7 +4068,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3122,
       "published": "2012-07-27",
       "url": "./watch/life-of-muhammad-mufti-menk/CO0ETi5nFiQ/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-06.jpg",
@@ -4114,7 +4114,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3269,
       "published": "2012-07-28",
       "url": "./watch/life-of-muhammad-mufti-menk/1YkPik5y1Gw/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-07.jpg",
@@ -4160,7 +4160,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3281,
       "published": "2012-07-29",
       "url": "./watch/life-of-muhammad-mufti-menk/OF7gkEpHayA/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-08.jpg",
@@ -4206,7 +4206,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3171,
       "published": "2012-07-30",
       "url": "./watch/life-of-muhammad-mufti-menk/JziOUZOSqn8/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-09.jpg",
@@ -4252,7 +4252,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3139,
       "published": "2012-07-31",
       "url": "./watch/life-of-muhammad-mufti-menk/DgxeLiDDchs/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-10.jpg",
@@ -4298,7 +4298,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 2994,
       "published": "2012-08-01",
       "url": "./watch/life-of-muhammad-mufti-menk/Li3FwpFDePg/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-11.jpg",
@@ -4344,7 +4344,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3230,
       "published": "2012-08-02",
       "url": "./watch/life-of-muhammad-mufti-menk/wMJPAH1s4BA/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-12.jpg",
@@ -4390,7 +4390,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3223,
       "published": "2012-08-03",
       "url": "./watch/life-of-muhammad-mufti-menk/pSj_iJ8_1cE/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-13.jpg",
@@ -4436,7 +4436,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3152,
       "published": "2012-08-04",
       "url": "./watch/life-of-muhammad-mufti-menk/YudEqpMmjVY/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-14.jpg",
@@ -4482,7 +4482,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3088,
       "published": "2012-08-05",
       "url": "./watch/life-of-muhammad-mufti-menk/6LOE8bLQVyM/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-15.jpg",
@@ -4528,7 +4528,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3305,
       "published": "2012-08-06",
       "url": "./watch/life-of-muhammad-mufti-menk/NPxGHFNK31I/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-16.jpg",
@@ -4574,7 +4574,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3175,
       "published": "2012-08-07",
       "url": "./watch/life-of-muhammad-mufti-menk/CPXhZDmLuuw/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-17.jpg",
@@ -4620,7 +4620,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3581,
       "published": "2012-08-08",
       "url": "./watch/life-of-muhammad-mufti-menk/DvnHP73yUPc/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-18.jpg",
@@ -4666,7 +4666,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3162,
       "published": "2012-08-09",
       "url": "./watch/life-of-muhammad-mufti-menk/wrp0Mrf9Kf0/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-19.jpg",
@@ -4712,7 +4712,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3310,
       "published": "2012-08-10",
       "url": "./watch/life-of-muhammad-mufti-menk/Dcri8c0j7Jw/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-20.jpg",
@@ -4758,7 +4758,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3291,
       "published": "2012-08-11",
       "url": "./watch/life-of-muhammad-mufti-menk/GC2Rsk2xNWo/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-21.jpg",
@@ -4804,7 +4804,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3200,
       "published": "2012-08-12",
       "url": "./watch/life-of-muhammad-mufti-menk/mdzZXBwMkgE/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-22.jpg",
@@ -4850,7 +4850,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3570,
       "published": "2012-08-13",
       "url": "./watch/life-of-muhammad-mufti-menk/RVHj9OQDZkI/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-23.jpg",
@@ -4896,7 +4896,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 3490,
       "published": "2012-08-14",
       "url": "./watch/life-of-muhammad-mufti-menk/9ZKyYzSGhW0/",
       "thumb": "./assets/thumbnail/life-of-muhammad-mufti-menk/episodes/episode-24.jpg",

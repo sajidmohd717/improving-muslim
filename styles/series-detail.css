@@ -232,6 +232,28 @@
   object-fit: cover;
 }
 
+/* Thumbnail wrapper so the duration badge can overlay the image */
+.ep-thumb {
+  position: relative;
+  min-width: 0;
+}
+
+.ep-thumb img {
+  display: block;
+}
+
+/* Neutralize the card's generic span margins so the badge pins to the
+   corner, matching the home-feed duration chips */
+.episode-card .thumb-duration {
+  margin: 0;
+}
+
+/* The series description Show more toggle only exists on mobile,
+   where the copy is clamped to two lines */
+#series-desc-toggle {
+  display: none;
+}
+
 .episode-info {
   display: contents;
 }

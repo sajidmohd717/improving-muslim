@@ -399,9 +399,9 @@ test("homepage links through a generated series page to its watch page", async (
   await expect(page.getByRole("heading", { level: 1, name: "Why Me?" })).toBeVisible();
   await expect(page.locator("#episode-filters-row .ep-filter-btn")).toHaveCount(4);
 
-  const startWatching = page.getByRole("link", { name: "Start watching" });
-  await startWatching.focus();
-  await startWatching.press("Enter");
+  const firstEpisode = page.locator(".episode-card-link").first();
+  await firstEpisode.focus();
+  await firstEpisode.press("Enter");
   await expect(page).toHaveURL(/\/watch\/why-me\/uzE5j2qkFA0\/$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Episode 1:");
   await expect(page.getByRole("heading", { level: 2, name: "My Notes" })).toBeVisible();

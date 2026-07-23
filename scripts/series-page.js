@@ -85,25 +85,46 @@
       return best;
     }
 
-    function findFirstUnwatched() {
-      return availableEpisodes.find(ep => !readProgress(ep).completed) || null;
-    }
-
+    // Resume-only CTA: mid-series it saves hunting through the episode list,
+    // but a fresh visitor just scrolls — no "Start watching" state.
     function renderHeroCta() {
       if (!heroContent || !availableEpisodes.length) return;
       const resumeEp = findResumeEpisode();
-      const targetEp = resumeEp || findFirstUnwatched();
-      if (!targetEp) return; // all watched — no CTA needed
+      if (!resumeEp) return;
 
-      const isResume = Boolean(resumeEp);
-      const label = isResume ? `Resume · Episode ${resumeEp.number}` : "Start watching";
-      const url = episodeUrl(targetEp);
+      const url = episodeUrl(resumeEp);
       const playIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
 
       const row = document.createElement("div");
       row.className = "series-cta-row";
-      row.innerHTML = `<a class="series-cta-btn" href="${url}">${playIcon}${label}</a>`;
+      row.innerHTML = `<a class="series-cta-btn" href="${url}">${playIcon}Resume · Episode ${resumeEp.number}</a>`;
       heroContent.appendChild(row);
+    }
+
+    // Clamp the description to two lines on mobile with a Show more toggle;
+    // the toggle only appears when clamping actually hides text.
+    function renderDescriptionToggle() {
+      const heroCopy = document.querySelector(".series-hero .hero-copy");
+      if (!heroCopy || !heroCopy.textContent.trim()) return;
+      heroCopy.classList.add("is-clamped");
+      requestAnimationFrame(() => {
+        if (heroCopy.scrollHeight <= heroCopy.clientHeight + 1) {
+          heroCopy.classList.remove("is-clamped");
+          return;
+        }
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "bio-toggle";
+        btn.id = "series-desc-toggle";
+        btn.textContent = "Show more";
+        btn.setAttribute("aria-expanded", "false");
+        heroCopy.insertAdjacentElement("afterend", btn);
+        btn.addEventListener("click", () => {
+          const clamped = heroCopy.classList.toggle("is-clamped");
+          btn.textContent = clamped ? "Show more" : "Show less";
+          btn.setAttribute("aria-expanded", String(!clamped));
+        });
+      });
     }
 
     function renderProgressSummary() {
@@ -264,6 +285,7 @@
     }
 
     renderHeroCta();
+    renderDescriptionToggle();
     renderProgressSummary();
     renderAvailabilityNote();
     renderSeriesActions();
@@ -292,12 +314,15 @@
       const revealDelay = isFirstRender ? ` style="--reveal-delay:${Math.min(i, 8) * 40}ms"` : "";
       const durText = episodeDuration(episode);
       const content = `
-        <img
-          src="${episodeThumbnailUrl(episode)}"
-          alt=""
-          loading="lazy"
-          onerror="this.onerror=null;this.src='${series.thumbnailSrc || "./public/icon.png"}'"
-        />
+        <div class="ep-thumb">
+          <img
+            src="${episodeThumbnailUrl(episode)}"
+            alt=""
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${series.thumbnailSrc || "./public/icon.png"}'"
+          />
+          ${durText ? `<span class="thumb-duration">${durText}</span>` : ""}
+        </div>
         <div class="episode-info">
           <span class="episode-number">
             Episode ${episode.number}
@@ -306,7 +331,7 @@
             ${isYouTubeOnly ? '<span class="recap-badge">YouTube</span>' : available ? "" : '<span class="recap-badge muted-badge">Uploading soon</span>'}
           </span>
           <strong>${episode.title}</strong>
-          <span class="episode-date">${formatDate(episode.published)}${durText ? ` · ${durText}` : ""}</span>
+          <span class="episode-date">${formatDate(episode.published)}</span>
           ${episode.views ? `<span class="episode-views">${formatViews(episode.views)}</span>` : ""}
           ${watchStatus && !isWatched ? `<span class="episode-status">${watchStatus}</span>` : ""}
           ${available || isYouTubeOnly ? "" : `<span class="episode-status">${episode.statusNote || "Video not added yet. It will be uploaded in the future."}</span>`}
