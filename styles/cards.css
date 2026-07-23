@@ -279,31 +279,10 @@
 @media (min-width: 1200px) {
   .home-page .category-button {
     min-height: 38px;
-    border-color: transparent;
     border-radius: 10px;
-    background: rgba(23, 107, 91, 0.08);
     color: var(--ink);
     font-weight: 700;
     padding-inline: 15px;
-  }
-
-  .home-page .category-button:nth-child(4n + 2) {
-    background: rgba(200, 155, 60, 0.12);
-  }
-
-  .home-page .category-button:nth-child(4n + 3) {
-    background: rgba(166, 72, 79, 0.09);
-  }
-
-  .home-page .category-button:nth-child(4n + 4) {
-    background: rgba(74, 105, 143, 0.09);
-  }
-
-  .home-page .category-button:hover,
-  .home-page .category-button:focus-visible {
-    border-color: rgba(23, 107, 91, 0.3);
-    background: rgba(23, 107, 91, 0.16);
-    color: var(--accent-strong);
   }
 
   .home-page .category-button.is-active {
