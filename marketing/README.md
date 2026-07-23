@@ -41,6 +41,7 @@ Product imagery (thumbnails, speaker photos) comes straight from the repo: `asse
 | `render-instagram-posts.cjs` | Regenerates **all** post PNGs from the templates (see below) |
 | `instagram/first-post/` | 5-slide intro carousel (SVG sources + PNGs + generator) |
 | `instagram/youtube-comparison/` | "You came for one lecture" comparison post (4:5 feed) — left panel mocks a YouTube-style feed (parody clickbait/gaming/Shorts, no real channels or IP), right panel shows real lecture cards. `distractions-collage.png` holds the AI-generated distraction imagery; the deliberately immodest crop from it is unused. Rendered by `render-instagram-posts.cjs`. |
+| `promo-video/` | **Animated promo video experiment (Remotion)** — app-ad style vertical MP4s (1080×1920, ~27s): real site screenshots scrolling inside a 3D-tilted iPhone mockup, five scenes (hook → home feed → series → watch features → end card). Written as code (React/Remotion), so copy, pacing, and scenes are edited like any file and re-rendered. `out/promo.mp4` is v1 (dark background, speaker names as text); `out/promo-v2.mp4` is v2 (brighter cream background, speaker profile photos in the hook, iOS status bar on the mockup). Renders are silent — add a nasheed/track in CapCut before posting. See `promo-video/README.md` for the capture → render workflow |
 | `ads/` | Display banner set (leaderboard 728×90, rectangle 300×250, IG feed 1080×1080, landscape 1280×720, story 1080×1920) as SVG + generator |
 
 ### Regenerating the Instagram posts
@@ -71,6 +72,22 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
     - *Content already hosted* (Hammuda, Menk) → lead with **disclosure and consent**, name the specific series, and offer same-day removal. Hammuda's message also pre-empted the "why is only part of my series up?" question, since *Enjoy Your Prayer* (8 of 21) and *Change of Heart* (10 of 16) are both partially uploaded.
     - *Content not hosted and not planned* (Hijab) → **pure partnership/promotion ask**, no consent or hosting content in the message at all. Written in direct second person addressing him, with a soft paid-collaboration line and an explicit assurance that nothing would be published implying his involvement without agreement.
 13. **Speaker-selection risk noted (23 July 2026):** in February 2025 the Netherlands imposed an entry ban on Mohammed Hijab, **Ali Hammuda**, and **Abu Bakr Zoud** over comments on women, LGBTQ+ rights, and minors (Hijab's was later overturned). Hammuda already has two series on the platform and a spotlight post; Zoud is queued as a future spotlight in the backlog below. This is recorded as **context, not a verdict** — editorial choice is the project owner's. The practical consequence is for **paid** traffic: boosted creative featuring speakers with this kind of press carries a higher chance of Meta ad rejection or account-level friction than the same speaker simply appearing in the catalog. Decide the response to a speaker becoming a reputational liability *before* it happens, as a counterpart to the existing same-day removal promise for speakers who object.
+
+14. **Animated promo video experiment started (23 July 2026):** after DMs, emails, and static IG posts produced little traction, a new format is being attempted — a slick "app advertisement"-style animated video, built with **Remotion** (video-as-React-code) in `marketing/promo-video/`. Three versions rendered so far (v1 dark; v2 bright with speaker photos; v3 = v2 at 60fps); all are silent pending a nasheed/background track. This is the current "next acquisition medium" experiment: post as a Reel/TikTok/Short once audio is added, and record results here.
+
+### Promo video strategy: one video per feature
+
+This is the standing plan for the Remotion video series, decided 23 July 2026. **Each new video leads with a single feature of the website** rather than a general overview. Whichever feature's video performs best (views, shares, site visits) reveals what actually draws people in — the videos double as market research for the messaging. Rotate through the differentiators one at a time:
+
+- Distraction-free watching (no ads/comments/algorithm) — effectively covered by v1–v3
+- Timestamped notes while you watch (My Notes)
+- Full series in order / follow a series and track progress
+- Daily learning streaks
+- Captions on every lecture
+- Browse by topic / by speaker
+- Picking up where you left off (History)
+
+Production notes for every video in the series: reuse the `promo-video/` Remotion setup (new composition or scene swap per feature); keep the honest-claims rule (never show or say counts the site doesn't match); keep renders silent and add the nasheed at post time; and **call it a website, not an app** in all copy — there is no app to install, and "free website" avoids implying an App Store download. Track per-video results in the spending/results logs here once posted.
 
 ### Outreach status
 
