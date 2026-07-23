@@ -288,6 +288,13 @@ test("keeps the streak card compact at a half-screen desktop width", async ({ pa
       completed: false,
       updatedAt: Date.now(),
     }));
+    localStorage.setItem("lecture-progress:standalone:qadr-and-sabr", JSON.stringify({
+      currentTime: 74,
+      duration: 2700,
+      percent: 0.03,
+      completed: false,
+      updatedAt: Date.now() - 1000,
+    }));
     localStorage.setItem("improving-muslim:study-streak", JSON.stringify({
       targetMinutes: 15,
       todayDate: todayKey,
@@ -301,7 +308,7 @@ test("keeps the streak card compact at a half-screen desktop width", async ({ pa
       updatedAt: Date.now(),
     }));
   });
-  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.setViewportSize({ width: 1200, height: 900 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
   await expect(page.locator("#streak-section")).toBeVisible();
