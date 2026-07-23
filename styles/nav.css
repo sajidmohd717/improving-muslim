@@ -1061,12 +1061,12 @@
 
 @media (min-width: 1600px) {
   body {
-    --desktop-sidebar-width: 232px;
+    --desktop-sidebar-width: 204px;
   }
 
   .nav-shell .brand {
-    width: 244px;
-    flex: 0 0 244px;
+    width: 216px;
+    flex: 0 0 216px;
   }
 
   .nav-shell .brand span {

@@ -329,7 +329,7 @@ body.search-mode #active-category-label {
   .home-page .hero,
   .home-page .content-section,
   .home-page .continue-section {
-    width: min(1920px, calc(100% - 40px));
+    width: calc(100% - 48px);
   }
 
   .home-page .hero {
@@ -358,10 +358,52 @@ body.search-mode #active-category-label {
   }
 
   .home-page #categories {
-    padding-top: 18px;
+    position: sticky;
+    top: 64px;
+    z-index: 12;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    background: var(--bg);
   }
 
   .home-page .series-section {
-    padding-top: 12px;
+    padding-top: 8px;
+  }
+
+  .home-page .home-learning-overview {
+    display: grid;
+    grid-template-columns: minmax(360px, 0.72fr) minmax(0, 1.65fr);
+    gap: 24px;
+    width: calc(100% - 48px);
+    margin: 0 auto;
+    padding: 18px 0 8px;
+  }
+
+  .home-page .home-learning-overview > .content-section,
+  .home-page .home-learning-overview > .continue-section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .home-page .home-learning-overview > .streak-section:not([hidden]) + .continue-section[hidden],
+  .home-page .home-learning-overview > .streak-section[hidden] + .continue-section:not([hidden]) {
+    grid-column: 1 / -1;
+  }
+
+  .home-page .home-learning-overview .section-heading {
+    margin-bottom: 10px;
+  }
+
+  .home-page .home-learning-overview .section-heading h2 {
+    font-size: 1.5rem;
+  }
+
+  .home-page .series-section .row-heading {
+    margin-bottom: 12px;
+  }
+
+  .home-page .series-section .row-heading h2 {
+    font-size: 1.8rem;
   }
 }

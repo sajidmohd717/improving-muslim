@@ -291,6 +291,34 @@
   }
 }
 
+@media (min-width: 1200px) {
+  .home-page .continue-strip {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 580px));
+    gap: 16px;
+  }
+
+  .home-page .continue-card-link,
+  .home-page .continue-hero .continue-card-link {
+    min-height: 124px;
+  }
+
+  .home-page .continue-card {
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(24, 32, 27, 0.1);
+  }
+
+  .home-page .streak-card {
+    height: 100%;
+    min-height: 160px;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 92% 12%, rgba(200, 155, 60, 0.22), transparent 44%),
+      linear-gradient(135deg, rgba(200, 155, 60, 0.17), rgba(23, 107, 91, 0.11)),
+      var(--surface-strong);
+    box-shadow: 0 14px 36px rgba(24, 32, 27, 0.1);
+  }
+}
+
 .streak-section {
   padding-top: 0;
 }
