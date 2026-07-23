@@ -25,15 +25,45 @@ site scroll inside a 3D-tilted phone mockup over the brand's dark palette.
    npm run render:v3:hq  # v3 at 2x (2160x3840) -> out/promo-v3-hq.mp4
    ```
 
-### Render quality
+### Render quality — the crispness checklist
 
-`remotion.config.ts` sets PNG frame capture (default JPEG q80 softens text)
-and CRF 15. **Upload the `:hq` (2160x3840) render** — Instagram/TikTok
-recompress uploads, and 4K sources survive their compression visibly crisper
-than 1080p ones. Screenshots are captured at 4x density so they stay sharp at
-2x scale. If a single `:hq` run is too long for one sitting, render in chunks
-with `--frames=A-B` into part files and concat with
-`ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4`.
+Hard-won rules from v1–v3. Follow all of them for every future video so
+nothing ships soft:
+
+**Pipeline (already configured — don't undo):**
+
+- `remotion.config.ts` sets **PNG frame capture** (Remotion's default is JPEG
+  q80, which blurs text before encoding) and **CRF 15** (default 18 smears
+  fine edges).
+- **Always render and upload the `:hq` 2x (2160x3840) version.** Platforms
+  recompress every upload; 4K sources survive it visibly crisper than 1080p.
+  If a single run is too long, render chunks with `--frames=A-B` and concat
+  with `ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4`.
+- **Capture screenshots at 4x density** (set in `capture-screens.cjs`) so
+  bitmaps inside the phone are never upscaled, even at 2x render.
+- When adding audio afterwards (CapCut etc.), **export at 4K / "match
+  source"** — don't throw the resolution away at the last step.
+
+**On-screen text (the captions/headlines outside the phone):**
+
+- **Use the brand webfonts, bundled** — Inria Serif 700 for headings, Inter
+  for body (same as every other marketing asset). Do NOT fall back to Georgia
+  or other system serifs: thin tapered serifs at display sizes read soft.
+  Bolder, even strokes render crisper.
+- **Snap animated offsets to whole pixels** (`Math.round` the translateY
+  values). Fractional positions force Chrome to smear glyphs across pixel
+  boundaries for the entire animation.
+- Keep entrance animations short so text reaches its crisp resting state
+  quickly; encoders soften moving, semi-transparent elements.
+- Low-contrast text always *reads* blurry even when it isn't — muted gray
+  sub-captions cost sharpness perception; darken a step if in doubt.
+
+**Source images:**
+
+- Speaker profile photos must be comfortably larger than their displayed
+  size at 2x (e.g. a 172px circle needs a ~700px+ source). Current soft spots:
+  Mufti Menk (225px) and Omar Suleiman (176px) sources — replace with
+  higher-res photos when available.
 
 ## Series strategy
 

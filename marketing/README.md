@@ -89,6 +89,8 @@ This is the standing plan for the Remotion video series, decided 23 July 2026. *
 
 Production notes for every video in the series: reuse the `promo-video/` Remotion setup (new composition or scene swap per feature); keep the honest-claims rule (never show or say counts the site doesn't match); keep renders silent and add the nasheed at post time; and **call it a website, not an app** in all copy — there is no app to install, and "free website" avoids implying an App Store download. Track per-video results in the spending/results logs here once posted.
 
+**Quality bar:** follow the crispness checklist in `promo-video/README.md` ("Render quality") for every video — always upload the 2x/4K render, use the brand webfonts (Inria Serif 700 / Inter, bundled — never system-font stand-ins), pixel-snap text animations, and keep source images larger than their displayed size. These rules exist because v1–v3 shipped soft the first time; don't relearn them.
+
 ### Outreach status
 
 | Contact | Status | Angle used |
