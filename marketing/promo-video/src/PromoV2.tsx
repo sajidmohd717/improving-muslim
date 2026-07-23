@@ -10,7 +10,15 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import { loadFont as loadInriaSerif } from '@remotion/google-fonts/InriaSerif';
+import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { Phone, ScrollingScreen, SCREEN_W } from './Phone';
+
+// Brand fonts (same as all other marketing assets): Inria Serif 700 for
+// headings, Inter for body. Bolder even strokes render crisper than the
+// old Georgia stand-in.
+const inriaSerif = loadInriaSerif('normal', { weights: ['700'] });
+const inter = loadInter('normal', { weights: ['400', '600', '700'] });
 
 // All timings below are authored in frames at this base rate. Components
 // scale them by (fps / BASE_FPS), so the same composition can be registered
@@ -26,9 +34,9 @@ const GREEN_DEEP = '#0f4f43';
 const GOLD = '#c89b3c';
 const MUTED = '#66706a';
 
-const SERIF = "Georgia, 'Times New Roman', serif";
-const SANS =
-  "'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif";
+const SERIF = `${inriaSerif.fontFamily}, Georgia, serif`;
+const SANS = `${inter.fontFamily}, 'Segoe UI', Arial, sans-serif`;
+const SERIF_WEIGHT = 700;
 
 // Scene lengths in frames at BASE_FPS
 const S1 = 120; // hook
@@ -107,12 +115,16 @@ const fadeInOut = (
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
   );
 
+// Math.round keeps moving text on whole pixels — fractional offsets make
+// Chrome smear glyphs across pixel boundaries for the whole animation.
 const rise = (frame: number, delay: number, k: number) =>
-  interpolate(frame - delay * k, [0, 22 * k], [40, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  });
+  Math.round(
+    interpolate(frame - delay * k, [0, 22 * k], [40, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.out(Easing.cubic),
+    })
+  );
 
 const riseOpacity = (frame: number, delay: number, k: number) =>
   interpolate(frame - delay * k, [0, 18 * k], [0, 1], {
@@ -199,6 +211,7 @@ const Hook: React.FC = () => {
         <div
           style={{
             fontFamily: SERIF,
+            fontWeight: SERIF_WEIGHT,
             fontSize: 92,
             lineHeight: 1.15,
             color: INK,
@@ -211,6 +224,7 @@ const Hook: React.FC = () => {
         <div
           style={{
             fontFamily: SERIF,
+            fontWeight: SERIF_WEIGHT,
             fontSize: 92,
             lineHeight: 1.15,
             color: GREEN,
@@ -311,6 +325,7 @@ const PhoneScene: React.FC<{
         <div
           style={{
             fontFamily: SERIF,
+            fontWeight: SERIF_WEIGHT,
             fontSize: 62,
             color: INK,
             opacity: riseOpacity(frame, 6, k),
@@ -408,6 +423,7 @@ const WatchPage: React.FC = () => {
         <div
           style={{
             fontFamily: SERIF,
+            fontWeight: SERIF_WEIGHT,
             fontSize: 62,
             color: INK,
             opacity: riseOpacity(frame, 6, k),
@@ -477,6 +493,7 @@ const EndCard: React.FC = () => {
         <div
           style={{
             fontFamily: SERIF,
+            fontWeight: SERIF_WEIGHT,
             fontSize: 100,
             color: INK,
             opacity: riseOpacity(frame, 4, k),
