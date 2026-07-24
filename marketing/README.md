@@ -73,7 +73,7 @@ To add a new speaker spotlight: copy an entry in the `speakers` array inside `re
     - *Content not hosted and not planned* (Hijab) → **pure partnership/promotion ask**, no consent or hosting content in the message at all. Written in direct second person addressing him, with a soft paid-collaboration line and an explicit assurance that nothing would be published implying his involvement without agreement.
 13. **Speaker-selection risk noted (23 July 2026):** in February 2025 the Netherlands imposed an entry ban on Mohammed Hijab, **Ali Hammuda**, and **Abu Bakr Zoud** over comments on women, LGBTQ+ rights, and minors (Hijab's was later overturned). Hammuda already has two series on the platform and a spotlight post; Zoud is queued as a future spotlight in the backlog below. This is recorded as **context, not a verdict** — editorial choice is the project owner's. The practical consequence is for **paid** traffic: boosted creative featuring speakers with this kind of press carries a higher chance of Meta ad rejection or account-level friction than the same speaker simply appearing in the catalog. Decide the response to a speaker becoming a reputational liability *before* it happens, as a counterpart to the existing same-day removal promise for speakers who object.
 
-14. **Animated promo video experiment started (23 July 2026):** after DMs, emails, and static IG posts produced little traction, a new format is being attempted — a slick "app advertisement"-style animated video, built with **Remotion** (video-as-React-code) in `marketing/promo-video/`. Three versions rendered so far (v1 dark; v2 bright with speaker photos; v3 = v2 at 60fps); all are silent pending a nasheed/background track. This is the current "next acquisition medium" experiment: post as a Reel/TikTok/Short once audio is added, and record results here.
+14. **Animated promo video experiment started (23 July 2026):** after DMs, emails, and static IG posts produced little traction, a new format is being attempted — a slick "app advertisement"-style animated video, built with **Remotion** (video-as-React-code) in `marketing/promo-video/`. Three versions rendered so far (v1 dark; v2 bright with speaker photos; v3 = v2 at 60fps); all are silent pending a nasheed/background track. This was the "next acquisition medium" experiment — **and it worked.** Video #1 posted to Instagram as a boosted Reel returned 128 likes, 19 saves, 13 shares, **57 follows**, and 39 link clicks: the best-performing asset the account has made, and the first to convert viewers into followers at scale. Animated video is now the proven format; keep producing the series. Per-video numbers go in the results log above. TikTok upload deliberately held for now.
 
 ### Promo video strategy: one video per feature
 
@@ -89,7 +89,26 @@ This is the standing plan for the Remotion video series, decided 23 July 2026. *
 
 Production notes for every video in the series: reuse the `promo-video/` Remotion setup (new composition or scene swap per feature); keep the honest-claims rule (never show or say counts the site doesn't match); keep renders silent and add the nasheed at post time; and **call it a website, not an app** in all copy — there is no app to install, and "free website" avoids implying an App Store download. Track per-video results in the spending/results logs here once posted.
 
-**Quality bar:** follow the crispness checklist in `promo-video/README.md` ("Render quality") for every video — always upload the 2x/4K render, use the brand webfonts (Inria Serif 700 / Inter, bundled — never system-font stand-ins), pixel-snap text animations, and keep source images larger than their displayed size. These rules exist because v1–v3 shipped soft the first time; don't relearn them.
+**Quality bar:** follow the crispness checklist in `promo-video/README.md` ("Render quality") for every video — always upload the 2x/4K render, use the brand webfonts (Inria Serif 700 / Inter, bundled — never system-font stand-ins), pixel-snap text animations, keep source images larger than their displayed size, and never put a large blur on a scaled element. These rules exist because v1–v3 shipped soft or banded the first time; don't relearn them.
+
+#### Video results log
+
+The comparison is the whole point — fill a row in as soon as each video has run a week, otherwise there's nothing to learn from. "Feature led" is the single differentiator the video was built around.
+
+| # | Feature led | Posted | Platform(s) | Likes | Saves | Shares | Follows | Link clicks |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Distraction-free (no ads/comments/algorithm) | July 2026 (boosted) | Instagram Reel | 128 | 19 | 13 | **57** | 39 |
+
+**Video #1 is the best-performing asset the account has produced.** Read it carefully before making the next one:
+
+- **57 follows is the headline, not the 128 likes.** A follow rate that high relative to likes means people didn't just approve of the post, they wanted *more of this* — the video converted viewers into an audience, which none of the static posts did. The account is now a distribution channel in its own right, so the next video starts with a warm base instead of from zero.
+- **32 saves+shares** is a strong intent signal — saves in particular mean "I want to come back to this," which is the closest thing to a bookmark of the site itself.
+- **39 link clicks** — the first meaningful direct traffic from social.
+- Caveat: this was **boosted**, so reach was paid. The engagement *rates* are what carry over to an organic post, not the raw totals. Log the boost spend in the spending log below.
+
+Verdict: the format works, so keep making them. Continue rotating the feature per video (next up: My Notes) — but hold the "distraction-free" framing in the caption/hook of each one, since that's the message that earned these numbers. The feature changes; the promise doesn't.
+
+Site visits still can't be attributed beyond Instagram's own link-click counter — there's no referral analytics (see the Reddit note above). Until that exists, compare videos on follows/saves/shares, which Instagram reports reliably.
 
 ### Outreach status
 
@@ -207,6 +226,22 @@ The current site has no general referral analytics, so the first Reddit post can
 
 ### Caption bank (reuse/adapt)
 
+**Promo video #1 (distraction-free / "the noise")** — caption chosen for the first Remotion promo Reel. Problem-first opening, because Instagram truncates after roughly the first line and describing the reader's own experience outperforms leading with the product:
+
+> You open YouTube for one lecture. An hour later, you've watched everything except that lecture.
+>
+> So I built the place I wanted to watch them in.
+>
+> Improving Muslim is a free website for Islamic lectures — and nothing else. No ads. No comments. No Shorts. No algorithm deciding what you "should" watch next.
+>
+> Just full series from teachers you already trust — Mufti Menk, Omar Suleiman, Ali Hammuda, Navaid Aziz and more — organised in order, with your progress saved and notes you can take while you watch.
+>
+> Free, and staying free.
+>
+> 🔗 improvingmuslim.com (link in bio)
+
+Note "full series" here means *organised in order*, not *fully uploaded* — the video itself honestly shows "24 of 30 available" on screen, so don't escalate the caption to claim complete uploads. Hashtags go in the first comment, not the caption: speaker names plus #islamiclectures #islamicreminders #seerah #islamicknowledge outperform generic #islam.
+
 YouTube-comparison post caption: *"You open YouTube for one lecture. An hour later you've watched everything except that lecture. Improving Muslim is a free website with one job: Islamic lectures, and nothing pulling you away from them. No ads, no comments, no algorithm. Browse by topic, follow series, keep your progress. improvingmuslim.com — link in bio."*
 
 Main ad post — caption as actually posted (and boosted):
@@ -241,14 +276,17 @@ Every dollar spent on publicity goes here, so total spend is always known at a g
 | Date | What | Amount | Results |
 |---|---|---|---|
 | July 2026 | Boost of the main ad post ("Tired of opening YouTube for one lecture…" — `instagram-post-1080x1350.png`), targeting Singapore, UK, US, France, Spain | $20.00 | Not yet recorded — pull reach/clicks from Meta Ads Manager and note here |
+| July 2026 | Boost of **promo video #1** (Reel, distraction-free angle) | _amount not yet recorded_ | 128 likes · 19 saves · 13 shares · 57 follows · 39 link clicks — best-performing asset to date |
 
-**Total spent to date: $20.00**
+**Total spent to date: $20.00 + the video #1 boost (fill in the amount).**
+
+Fill in that boost figure when convenient: it's the first spend with real engagement numbers attached, so it gives a first cost-per-follow and cost-per-click to judge future boosts against.
 
 ## Where to pick up
 
 Ideas queued, in rough priority order:
 
-1. **Choose and test the next acquisition medium.** Instagram and Reddit have now both been used; the next experiment should reach a relevant audience through a meaningfully different distribution mechanism rather than simply reposting the same promotional message elsewhere.
+1. **Make promo video #2 (My Notes).** The acquisition-medium question is answered — animated video won (see the video results log). The highest-value next action is another video, not another channel. My Notes is the pick: it's the most tangible thing YouTube can't do, it demos well (typing a timestamped note while a lecture plays), and no re-upload channel can copy it. Keep the distraction-free promise in the hook; change the feature.
 2. Record the first Reddit post's URL and available Reddit insights, and add referral/activation measurement before the next community campaign.
 3. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
 4. **Run the first Navaid Aziz release story:** once the 40 Hadith and Four Imams batches are live, post `ig-story-navaid-aziz.png` as a story, tag **@navaid_aziz** with the mention sticker (the space between the cards and the footer is left calm for it), add a link sticker to improvingmuslim.com, and DM him that it's up so he can reshare. Repeat with a fresh render (new `stories` entry in `render-instagram-posts.cjs`) for every future batch of his content. Also post the Navaid speaker spotlight (`ig-speaker-navaid-aziz.png`) to the grid on the staggered cadence. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
