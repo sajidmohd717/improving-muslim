@@ -74,10 +74,13 @@ nothing ships soft:
 
 **Source images:**
 
-- Speaker profile photos must be comfortably larger than their displayed
-  size at 2x (e.g. a 172px circle needs a ~700px+ source). Current soft spots:
-  Mufti Menk (225px) and Omar Suleiman (176px) sources — replace with
-  higher-res photos when available.
+- Speaker profile photos must be comfortably larger than their displayed size
+  at 2x. `capture-screens.cjs` now checks this and warns (loudly, at the end)
+  for anything under 350px — it warns rather than fails because not every
+  photo it copies belongs to the video being rendered.
+- Still undersized, both used by **video #1's** row: `mufti.jpeg` (225px) and
+  `os.jpg` (176px). Replacing them in `assets/speaker/` sharpens the live
+  site's speaker pages too, not just a re-render.
 
 ## Series strategy
 
@@ -110,6 +113,25 @@ Each video is one composition file holding only its scenes and copy; the
 palette, fonts, timing helpers, background, and phone screen live in
 `src/shared.tsx`. Add video #3 as a new file the same way — don't fork the
 shared parts.
+
+### Shape of a feature video
+
+Video #2's structure, which is the template for the rest of the series —
+a viewer who has never heard of the site needs to be told what it is before
+a feature means anything:
+
+1. **Who it's for** — a row of speaker faces, a different set per video so the
+   series shows breadth. Only speakers whose content is actually on the
+   platform.
+2. **What it is** — the home feed scrolling, so the product is established.
+3. **The pivot** — a one-line full-screen card turning to the feature.
+4. **The feature** — two scenes: doing it, then the payoff.
+5. **End card** — same wordmark and URL every time.
+
+Copy rules learned so far: don't claim to *be* the viewer's favourite platform
+(attach "favourite" to the speakers instead — it's true and warmer), and don't
+call an existing feature "new". "One thing YouTube can't do" is both honest and
+a sharper hook.
 
 ### Capturing the screens
 
