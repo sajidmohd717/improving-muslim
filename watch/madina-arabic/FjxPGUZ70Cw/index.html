@@ -31,7 +31,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260724-premium-player" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260724-player-control-capsules" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <!-- page-shell:head-assets:end -->
     <script type="application/ld+json">
@@ -230,44 +230,48 @@
               </div>
 
               <div class="player-control-row">
-                <button class="player-button" id="player-play-toggle" type="button" aria-label="Play video" data-tooltip="Play (K)">
-                  <svg class="player-icon player-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
-                  <svg class="player-icon player-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
-                  <svg class="player-icon player-icon-replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 7.3A7 7 0 1 1 5 12H2l4-4 4 4H7a5 5 0 1 0 1.5-3.6z"/></svg>
-                </button>
-
-                <div class="player-volume-group">
-                  <button class="player-button" id="player-mute-toggle" type="button" aria-label="Mute video" data-tooltip="Mute (M)">
-                    <svg class="player-icon player-icon-volume" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm11.5-.7a4 4 0 0 1 0 5.4M18 7a7 7 0 0 1 0 10"/></svg>
-                    <svg class="player-icon player-icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm12-1l5 6m0-6-5 6"/></svg>
+                <div class="player-control-cluster player-control-cluster-left">
+                  <button class="player-button" id="player-play-toggle" type="button" aria-label="Play video" data-tooltip="Play (K)">
+                    <svg class="player-icon player-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+                    <svg class="player-icon player-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+                    <svg class="player-icon player-icon-replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 7.3A7 7 0 1 1 5 12H2l4-4 4 4H7a5 5 0 1 0 1.5-3.6z"/></svg>
                   </button>
-                  <input class="player-volume" id="player-volume" type="range" min="0" max="1" value="1" step="0.05" aria-label="Volume" />
-                </div>
 
-                <span class="player-time" aria-live="off">
-                  <span id="player-current-time">0:00</span>
-                  <span aria-hidden="true">/</span>
-                  <span id="player-duration">0:00</span>
-                </span>
+                  <div class="player-volume-group">
+                    <button class="player-button" id="player-mute-toggle" type="button" aria-label="Mute video" data-tooltip="Mute (M)">
+                      <svg class="player-icon player-icon-volume" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm11.5-.7a4 4 0 0 1 0 5.4M18 7a7 7 0 0 1 0 10"/></svg>
+                      <svg class="player-icon player-icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm12-1l5 6m0-6-5 6"/></svg>
+                    </button>
+                    <input class="player-volume" id="player-volume" type="range" min="0" max="1" value="1" step="0.05" aria-label="Volume" />
+                  </div>
+
+                  <span class="player-time" aria-live="off">
+                    <span id="player-current-time">0:00</span>
+                    <span aria-hidden="true">/</span>
+                    <span id="player-duration">0:00</span>
+                  </span>
+                </div>
 
                 <span class="player-control-spacer"></span>
 
-                <button class="player-button player-text-button" id="player-speed-toggle" type="button" aria-label="Playback speed, normal" aria-expanded="false" aria-controls="player-speed-menu" data-tooltip="Playback speed">
-                  <span id="player-speed-label">1×</span>
-                </button>
+                <div class="player-control-cluster player-control-cluster-right">
+                  <button class="player-button player-text-button" id="player-speed-toggle" type="button" aria-label="Playback speed, normal" aria-expanded="false" aria-controls="player-speed-menu" data-tooltip="Playback speed">
+                    <span id="player-speed-label">1×</span>
+                  </button>
 
-                <button class="player-button player-cc-button" id="player-captions-toggle" type="button" aria-label="Turn captions off" aria-pressed="true" data-tooltip="Captions (C)">
-                  <span>CC</span>
-                </button>
+                  <button class="player-button player-cc-button" id="player-captions-toggle" type="button" aria-label="Turn captions off" aria-pressed="true" data-tooltip="Captions (C)">
+                    <span>CC</span>
+                  </button>
 
-                <button class="player-button" id="player-pip-toggle" type="button" aria-label="Enter Picture in Picture" data-tooltip="Picture in Picture">
-                  <svg class="player-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 11h7v6h-7z"/></svg>
-                </button>
+                  <button class="player-button" id="player-pip-toggle" type="button" aria-label="Enter Picture in Picture" data-tooltip="Picture in Picture">
+                    <svg class="player-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 11h7v6h-7z"/></svg>
+                  </button>
 
-                <button class="player-button" id="player-fullscreen-toggle" type="button" aria-label="Enter fullscreen" data-tooltip="Fullscreen (F)">
-                  <svg class="player-icon player-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
-                  <svg class="player-icon player-icon-compress" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
-                </button>
+                  <button class="player-button" id="player-fullscreen-toggle" type="button" aria-label="Enter fullscreen" data-tooltip="Fullscreen (F)">
+                    <svg class="player-icon player-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+                    <svg class="player-icon player-icon-compress" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1462,7 +1466,7 @@
     <script src="./scripts/related-videos.js?v=20260711-popularity" defer></script>
     <script src="./scripts/watch-notes.js?v=20260720-watch-split" defer></script>
     <script src="./scripts/watch-stall.js?v=20260720-resume-stall-fix" defer></script>
-    <script src="./scripts/custom-video-player.js?v=20260724-premium-player" data-error-severity="recoverable" defer></script>
+    <script src="./scripts/custom-video-player.js?v=20260724-player-hover-controls" data-error-severity="recoverable" defer></script>
     <script src="./scripts/watch-sidebar.js?v=20260720-watch-split" defer></script>
     <script src="./scripts/content-actions.js?v=20260723-modularization" defer></script>
     <script src="./scripts/watch-page.js?v=20260724-premium-player" defer></script>

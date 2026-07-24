@@ -71,6 +71,7 @@
   let lastVolume = 1;
   let timelineActive = false;
   let keyboardInteraction = false;
+  let mouseInside = false;
 
   function formatTime(value) {
     const seconds = Number.isFinite(Number(value)) ? Math.max(0, Math.floor(Number(value))) : 0;
@@ -107,16 +108,27 @@
 
   function scheduleControlsHide() {
     clearTimeout(controlsTimer);
-    if (video.paused || video.ended || speedMenu.hidden === false || timelineActive) {
+    const preserveKeyboardFocus = keyboardInteraction && frame.contains(document.activeElement);
+    if (mouseInside || preserveKeyboardFocus || speedMenu.hidden === false || timelineActive) {
       setControlsVisible(true);
       return;
     }
     controlsTimer = setTimeout(() => {
-      const preserveKeyboardFocus = keyboardInteraction && frame.contains(document.activeElement);
-      if (!preserveKeyboardFocus && speedMenu.hidden && !timelineActive) {
+      const keepKeyboardFocus = keyboardInteraction && frame.contains(document.activeElement);
+      if (!mouseInside && !keepKeyboardFocus && speedMenu.hidden && !timelineActive) {
         setControlsVisible(false);
       }
     }, 2600);
+  }
+
+  function hideControlsIfIdle() {
+    clearTimeout(controlsTimer);
+    const preserveKeyboardFocus = keyboardInteraction && frame.contains(document.activeElement);
+    if (preserveKeyboardFocus || speedMenu.hidden === false || timelineActive) {
+      setControlsVisible(true);
+      return;
+    }
+    setControlsVisible(false);
   }
 
   function showControls() {
@@ -136,7 +148,7 @@
     playToggle.dataset.tooltip = tooltip;
     centerToggle.setAttribute("aria-label", label);
     surface.setAttribute("aria-label", label);
-    if (!isPlaying) setControlsVisible(true);
+    if (!isPlaying) showControls();
   }
 
   function togglePlayback() {
@@ -452,20 +464,35 @@
     }
   }, true);
 
-  ["pointermove", "pointerdown", "touchstart"].forEach((eventName) => {
-    frame.addEventListener(eventName, showControls, { passive: true });
-  });
-  frame.addEventListener("pointerdown", () => {
+  frame.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse") mouseInside = true;
+    showControls();
+  }, { passive: true });
+  frame.addEventListener("pointermove", (event) => {
+    if (event.pointerType === "mouse") mouseInside = true;
+    showControls();
+  }, { passive: true });
+  frame.addEventListener("pointerdown", (event) => {
     keyboardInteraction = false;
+    if (event.pointerType === "mouse") mouseInside = true;
+    showControls();
+  });
+  frame.addEventListener("touchstart", showControls, { passive: true });
+  frame.addEventListener("pointerleave", (event) => {
+    if (event.pointerType !== "mouse") return;
+    mouseInside = false;
+    hideControlsIfIdle();
   }, { passive: true });
   frame.addEventListener("focusin", () => {
     clearTimeout(controlsTimer);
     setControlsVisible(true);
   });
   frame.addEventListener("focusout", () => window.setTimeout(scheduleControlsHide, 0));
-  frame.addEventListener("mouseleave", scheduleControlsHide);
 
-  video.addEventListener("play", updatePlayState);
+  video.addEventListener("play", () => {
+    frame.classList.add("has-started");
+    updatePlayState();
+  });
   video.addEventListener("playing", () => {
     frame.classList.remove("is-buffering");
     updatePlayState();
@@ -498,6 +525,7 @@
   updatePipState();
   updateCaptionsState();
   setControlsVisible(true);
+  scheduleControlsHide();
 
   // Native controls disappear only after every required custom control exists
   // and all event listeners above have been attached successfully.

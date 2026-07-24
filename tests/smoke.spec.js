@@ -506,9 +506,27 @@ test("watch page progressively enhances the video controls", async ({ page }) =>
   await expect(video).not.toHaveAttribute("controls", "");
   await expect(page.locator("#player-ui")).toBeVisible();
   await expect(page.locator("#player-duration")).toHaveText("10:00");
+  await expect(frame).toHaveCSS("box-shadow", "none");
+  await expect(page.locator(".player-control-gradient")).toHaveCSS("background-image", "none");
+  await expect(page.locator(".player-control-cluster-left")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0.48)",
+  );
+  await expect(video).toHaveCSS("object-fit", "cover");
+
+  const playerBox = await frame.boundingBox();
+  await page.mouse.move(playerBox.x + playerBox.width / 2, playerBox.y + playerBox.height / 2);
+  await expect(frame).toHaveClass(/\bcontrols-visible\b/);
+  await page.mouse.move(1, 1);
+  await expect(frame).toHaveClass(/\bcontrols-hidden\b/);
+  await expect(page.locator(".player-control-gradient")).toHaveCSS("opacity", "0");
+  await page.mouse.move(playerBox.x + playerBox.width / 2, playerBox.y + playerBox.height / 2);
+  await expect(frame).toHaveClass(/\bcontrols-visible\b/);
 
   await page.locator("#player-center-toggle").click();
   await expect(frame).toHaveClass(/\bis-playing\b/);
+  await expect(frame).toHaveClass(/\bhas-started\b/);
+  await expect(video).toHaveCSS("object-fit", "contain");
   await expect(page.locator("#player-play-toggle")).toHaveAttribute("aria-label", "Pause video");
 
   await page.evaluate(() => document.activeElement?.blur());
