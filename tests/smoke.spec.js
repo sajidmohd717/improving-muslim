@@ -213,6 +213,17 @@ test("homepage renders and supports search and topic filtering", async ({ page }
   expect(pageErrors).toEqual([]);
 });
 
+test("homepage keeps the core catalogue when optional shelves fail to load", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.route("**/scripts/home-shelves.js*", (route) => route.abort("failed"));
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  await expectCatalog(page);
+  await expect(page.locator(".error-fallback")).toHaveCount(0);
+  await expect(page.locator("#continue-section")).toBeHidden();
+  expect(pageErrors).toEqual([]);
+});
+
 test("desktop shell expands the feed and leaves mobile navigation intact", async ({ page }) => {
   const pageErrors = await preparePage(page);
   await page.setViewportSize({ width: 2048, height: 1152 });

@@ -190,11 +190,21 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 
 `scripts/error-handler.js` is loaded on the heavy interactive pages (index, history, saved, watch). On any page that includes it, it must be the first script, before all other scripts including `utils.js`. It:
 
-- Registers `window.onerror` and `window.addEventListener('unhandledrejection', ...)` before anything else can crash.
-- Shows a friendly fallback UI inside `<main>` if a script error occurs, rather than leaving the user with a blank or broken page.
-- Silently POSTs error details (message, page URL, browser) to `contact@improvingmuslim.com` via FormSubmit — fire and forget, never surfaced to the user.
+- Registers `window.onerror`, a capture-phase resource-error listener, and `window.addEventListener('unhandledrejection', ...)` before anything else can crash.
+- Shows a friendly fallback UI with an incident reference inside `<main>` for fatal failures, rather than leaving the user with a blank or broken page.
+- Lets optional scripts use `data-error-severity="recoverable"` and exposes `window.IMErrorReporter.reportRecoverable(...)`, so enhancements can report a failure while the usable page continues.
+- Batches related failures for 700 ms so a missing asset and its downstream dependency error arrive as one incident instead of separate emails.
+- Silently POSTs the incident ID/fingerprint, release, error/stack/location, failed source, related events, asset versions, browser/device/network context, and privacy-safe route/acquisition context to `contact@improvingmuslim.com` via FormSubmit.
+- Omits URL query values from the reported page and referrer, lists only query parameter names, and sends only the explicit `utm_*` acquisition fields. It does not report from localhost and suppresses the same fingerprint for 10 minutes within one browser tab.
 - Filters out non-crash rejections: `AbortError` (fetch cancelled on navigation), network `TypeError`s (Safari "Load failed", Chrome "Failed to fetch"), and any rejection that fires while `document.hidden` is true (bfcache artifacts).
 - Resets its state on `pageshow` with `persisted: true` so Safari's back-forward cache restoration never incorrectly triggers the fallback UI.
+
+The homepage treats `scripts/home-shelves.js` as a recoverable enhancement. If
+that file fails to download, Continue learning, Popular right now, and the
+streak card are skipped, but the core catalogue, search, and navigation still
+initialize. Required homepage modules throw a named `MissingDependencyError`
+with the expected asset path so their incident email identifies the dependency
+instead of only showing a generic destructuring error.
 
 **Video stall detection** lives in `scripts/watch-stall.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message with a user-controlled Retry button and silently fires the same FormSubmit report with the exact `videoSrc` URL. Never silently call `player.load()` to recover: doing so can cancel a play request or saved-position seek. The custom loading pill is only for the initial metadata request; resume-seek and mid-playback buffering use the browser's native player feedback.
 
@@ -1017,7 +1027,7 @@ Speaker photos belong in `assets/speaker/`. Series thumbnails should remain sepa
 
 Every page footer links to `pages/feedback.html`. Feedback form submissions POST to FormSubmit at `contact@improvingmuslim.com`.
 
-`scripts/error-handler.js` uses the same FormSubmit endpoint to silently report production JS crashes. `scripts/watch-page.js` uses the same endpoint to report video stall events. All three share the same confirmed endpoint. FormSubmit may require re-confirmation if the endpoint has been inactive — check the inbox if emails stop arriving.
+`scripts/error-handler.js` uses the same FormSubmit endpoint to silently report batched production incidents. Reports include an incident ID, stable fingerprint, severity, release, root error, related errors, stack/location, asset versions, and browser/device/network context. `scripts/watch-page.js` uses the same endpoint to report video stall events. All three share the same confirmed endpoint. FormSubmit may require re-confirmation if the endpoint has been inactive — check the inbox if emails stop arriving.
 
 Do not link public feedback to a personal GitHub profile while the project is intended to stay anonymous.
 

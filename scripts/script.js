@@ -5,18 +5,41 @@
 //   - home-feed.js (IMHomeFeed): shuffle/sort/personalized feed ordering
 //   - home-shelves.js (IMHomeShelves): Continue, Popular, and streak
 //   - home-card-actions.js (IMCardActions): card save/share/menu actions
+function requireHomeDependency(name, expectedAsset) {
+  const dependency = window[name];
+  if (dependency) return dependency;
+  const error = new Error(`Required homepage dependency ${name} is unavailable.`);
+  error.name = "MissingDependencyError";
+  error.dependency = name;
+  error.expectedAsset = expectedAsset;
+  throw error;
+}
+
+function reportMissingOptionalDependency(name, expectedAsset) {
+  window.IMErrorReporter?.reportRecoverable(
+    `Optional homepage dependency ${name} is unavailable; its enhancements were skipped.`,
+    {
+      kind: "dependency",
+      source: new URL(expectedAsset, document.baseURI).href,
+      context: { dependency: name, expectedAsset },
+    },
+  );
+}
+
 const homeConfig = window.IMHomeConfig || {};
 const API_ROOT = homeConfig.apiRoot || "https://sajidmohd717.github.io/series-api";
 const CATALOG_VERSION = homeConfig.catalogVersion || "1";
 const AI_SEARCH_ENDPOINT = homeConfig.aiSearchEndpoint || "";
 
+const homeUtils = requireHomeDependency("IMUtils", "scripts/utils.js");
 const {
   escapeHtml,
   formatDuration,
   getAllSeries,
   seriesUrl,
-} = window.IMUtils;
+} = homeUtils;
 
+const homeData = requireHomeDependency("IMHomeData", "scripts/home-data.js");
 const {
   categories,
   categoryNameMap,
@@ -30,14 +53,32 @@ const {
   uniqueBy,
   enrichSeries,
   mergeLocalSeries,
-} = window.IMHomeData;
+} = homeData;
 
-const { toggleSavedSeries, shareSeries, closeCardMenu } = window.IMCardActions;
+const homeCardActions = requireHomeDependency("IMCardActions", "scripts/home-card-actions.js");
+const { toggleSavedSeries, shareSeries, closeCardMenu } = homeCardActions;
+
+const noOpShelfRenderer = () => {};
+const homeShelves = window.IMHomeShelves;
+if (!homeShelves) {
+  reportMissingOptionalDependency("IMHomeShelves", "scripts/home-shelves.js");
+}
 const {
-  renderContinueWatching,
-  renderPopularShelf,
-  renderStudyStreak,
-} = window.IMHomeShelves;
+  renderContinueWatching = noOpShelfRenderer,
+  renderPopularShelf = noOpShelfRenderer,
+  renderStudyStreak = noOpShelfRenderer,
+} = homeShelves || {};
+
+const homeCategoryNavModule = requireHomeDependency(
+  "IMHomeCategoryNav",
+  "scripts/home-category-nav.js",
+);
+const homeSearchModule = requireHomeDependency("IMHomeSearch", "scripts/home-search.js");
+const homeGridModule = requireHomeDependency("IMHomeGrid", "scripts/home-grid.js");
+const homeSearchResultsModule = requireHomeDependency(
+  "IMHomeSearchResults",
+  "scripts/home-search-results.js",
+);
 
 function initialCategoryFromUrl() {
   const requestedCategory = new URLSearchParams(window.location.search).get("category");
@@ -99,7 +140,7 @@ const els = {
   catalogLoadMore: document.querySelector("#catalog-load-more"),
 };
 
-const categoryNav = window.IMHomeCategoryNav.create({ state, els, categories, escapeHtml });
+const categoryNav = homeCategoryNavModule.create({ state, els, categories, escapeHtml });
 
 function searchCatalog() {
   return uniqueBy(
@@ -114,7 +155,7 @@ function searchItemId(item) {
 
 let grid;
 let searchResults;
-const homeSearch = window.IMHomeSearch.create({
+const homeSearch = homeSearchModule.create({
   els,
   escapeHtml,
   formatDuration,
@@ -146,7 +187,7 @@ function getSeriesUrl(series) {
   return series.link;
 }
 
-grid = window.IMHomeGrid.create({
+grid = homeGridModule.create({
   state,
   els,
   batchSize: catalogBatchSize,
@@ -157,7 +198,7 @@ grid = window.IMHomeGrid.create({
   homeSearch,
 });
 
-searchResults = window.IMHomeSearchResults.create({
+searchResults = homeSearchResultsModule.create({
   state,
   endpoint: AI_SEARCH_ENDPOINT,
   categoryNameMap,
