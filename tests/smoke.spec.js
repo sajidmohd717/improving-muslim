@@ -181,6 +181,8 @@ test("homepage renders and supports search and topic filtering", async ({ page }
     "Find meaningful Islamic lectures without the noise.",
   );
   await expect(page.getByRole("searchbox", { name: "Search lectures" })).toBeVisible();
+  await expect(page.locator("#popular-section")).toHaveCount(0);
+  expect(await page.evaluate(() => "IMPopularity" in window)).toBe(false);
   await expectCatalog(page);
   await expect(page.getByRole("heading", { level: 2, name: "Discover" })).toBeVisible();
   await expect(page.locator("#series-grid")).toHaveAttribute("data-feed-mode", "discovery");

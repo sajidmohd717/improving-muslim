@@ -3,7 +3,7 @@
 // loaded before this file:
 //   - home-data.js (IMHomeData): section assembly, merging, allow-list filter
 //   - home-feed.js (IMHomeFeed): shuffle/sort/personalized feed ordering
-//   - home-shelves.js (IMHomeShelves): Continue, Popular, and streak
+//   - home-shelves.js (IMHomeShelves): Continue and streak
 //   - home-card-actions.js (IMCardActions): card save/share/menu actions
 function requireHomeDependency(name, expectedAsset) {
   const dependency = window[name];
@@ -65,7 +65,6 @@ if (!homeShelves) {
 }
 const {
   renderContinueWatching = noOpShelfRenderer,
-  renderPopularShelf = noOpShelfRenderer,
   renderStudyStreak = noOpShelfRenderer,
 } = homeShelves || {};
 
@@ -402,7 +401,7 @@ function bindEvents() {
     state.visibleCount += catalogBatchSize;
     grid.render();
     // Query inside the frame callback: a re-render landing between click and
-    // rAF (remote feed merge, popularity refresh) replaces the card nodes, and
+    // rAF (for example, a remote feed merge) can replace the card nodes, and
     // focusing a captured-but-detached node silently does nothing.
     window.requestAnimationFrame(() => {
       const cards = els.seriesGrid.querySelectorAll(".series-card");
@@ -420,7 +419,6 @@ function bindEvents() {
 
 categoryNav.render();
 renderContinueWatching();
-renderPopularShelf();
 renderStudyStreak();
 bindEvents();
 loadCategory(state.activeCategory, { preserveSearch: Boolean(state.searchTerm) }).then(() => {

@@ -109,7 +109,6 @@
       return { items: getDiscoveryHomeOrder(list), personalized: false };
     }
 
-    const popularity = window.IMPopularity ? window.IMPopularity.cachedCounts() : {};
     const recommendationScores = new Map();
     seeds.forEach(({ item: seed }, seedIndex) => {
       const seedWeight = 1 / (seedIndex + 1);
@@ -120,7 +119,6 @@
           isWatched: (item) => Boolean(
             readJsonStorage(`${PROGRESS_PREFIX}${item.playlistId}:${item.id}`, {}).completed,
           ),
-          popularity,
           limit: 36,
         })
         .forEach((item, rank) => {

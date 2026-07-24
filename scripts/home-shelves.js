@@ -1,11 +1,11 @@
 /*
- * Homepage shelves outside the main grid: Continue learning, Popular right
- * now, and the daily streak card. Exposes
+ * Homepage shelves outside the main grid: Continue learning and the daily
+ * streak card. Exposes
  * window.IMHomeShelves. Each renderer queries its own section and hides it
  * when there is nothing to show; script.js calls them at startup and again
  * when history or auth state changes.
  *
- * Loaded on the homepage after utils.js/popularity.js and before script.js.
+ * Loaded on the homepage after utils.js and before script.js.
  */
 (() => {
   "use strict";
@@ -155,41 +155,6 @@
     continueList.innerHTML = heroCard + compactCards;
   }
 
-  // "Popular right now": anonymous play counts from the popularity Worker,
-  // shown to everyone — it is the one personalization-free shelf, so brand-new
-  // visitors get social proof even with no watch history. Hidden until the
-  // Worker is deployed and enough plays accumulate.
-  function renderPopularShelf() {
-    const section = document.querySelector("#popular-section");
-    const list = document.querySelector("#popular-list");
-    if (!section || !list || !window.IMPopularity) return;
-    const catalogItems = window.catalogIndex?.items || [];
-    if (!catalogItems.length) return;
-
-    window.IMPopularity.refreshCounts().then((counts) => {
-      const ranked = catalogItems
-        .map((item) => ({ item, plays: counts[item.key]?.p || 0 }))
-        .filter(({ plays }) => plays >= 2)
-        .sort((a, b) => b.plays - a.plays)
-        .slice(0, 8);
-
-      // A "popular" shelf with one or two entries reads as noise, not signal.
-      if (ranked.length < 4) {
-        section.hidden = true;
-        list.innerHTML = "";
-        return;
-      }
-
-      list.innerHTML = ranked
-        .map(({ item, plays }) => {
-          const mins = item.duration ? `${Math.round(item.duration / 60)} min` : "";
-          return shelfCardHtml(item, [`${plays} plays`, mins].filter(Boolean).join(" · "));
-        })
-        .join("");
-      section.hidden = false;
-    });
-  }
-
   function renderStudyStreak() {
     const streakSection = document.querySelector("#streak-section");
     const streakCard = document.querySelector("#streak-card");
@@ -242,7 +207,6 @@
   window.IMHomeShelves = {
     shelfCardHtml,
     renderContinueWatching,
-    renderPopularShelf,
     renderStudyStreak,
   };
 })();

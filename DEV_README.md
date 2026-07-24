@@ -24,7 +24,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `scripts/script.js` is the homepage coordinator: page state, category loading, and event wiring. Catalogue rendering, category navigation, and secondary search results live in focused modules.
 - `scripts/home-data.js` (`window.IMHomeData`) assembles homepage catalogue data: the category name map, local series/standalone card sections, remote-feed normalization and merging, the remote-card allow-list filter, and the offline fallback sections. No DOM.
 - `scripts/home-feed.js` (`window.IMHomeFeed`) owns grid ordering: the stable per-session shuffle, the explicit sort modes, the balanced discovery mix, and the watch-history-seeded personalized blend built on the catalog + `IMRelated` ranking. No DOM.
-- `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning, Popular right now, and the daily streak card.
+- `scripts/home-shelves.js` (`window.IMHomeShelves`) renders the homepage shelves outside the main grid: Continue learning and the daily streak card.
 - `scripts/home-category-nav.js` (`window.IMHomeCategoryNav`) renders the scrollable category row and owns its previous/next controls.
 - `scripts/home-grid.js` (`window.IMHomeGrid`) owns catalogue filtering, pagination, progress summaries, and card rendering.
 - `scripts/home-search-results.js` (`window.IMHomeSearchResults`) owns episode, transcript, analytics, and optional AI-search result orchestration.
@@ -52,7 +52,7 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - The homepage's main **For you** grid reuses the catalog + `IMRelated` ranking. Up to three recent meaningfully-watched lectures (completed, or 2+ minutes in) seed a blended order: two relevant cards followed by one discovery card. Started-but-unfinished standalone lectures stay in Continue learning instead of being duplicated in the recommendation pool. New visitors retain the fresh discovery shuffle, while Featured order, category, search, and explicit sort choices remain deterministic overrides. There is intentionally no separate "Because you watched" shelf.
 - `data/transcript-index-data.js` is a generated token → lecture index over every caption transcript. Never edit by hand — regenerate with `npm run transcript-index` whenever captions or lecture data change; CI verifies it with `npm run check:transcript-index`. Transcript text is never duplicated into the index.
 - `scripts/generate-transcript-index.js` builds that index from the registry, data files, and `assets/captions/`.
-- `scripts/popularity.js`, `workers/popularity-worker.js`, and `wrangler.popularity.jsonc` implement the anonymous popularity counters ("Popular right now" shelf, play counts, ranking prior). See the Popularity Signals section below.
+- `scripts/popularity.js`, `workers/popularity-worker.js`, and `wrangler.popularity.jsonc` retain the currently paused anonymous popularity-counter infrastructure. See the Popularity Signals section below.
 - `scripts/transcript-search.js` powers the homepage's "Mentioned inside lectures" search section: it lazy-loads the transcript index on first search, picks candidate lectures from the postings, fetches only those lectures' VTT files, and returns timestamped snippets. Each result links to the watch page with a `?t=` parameter, which `watch-page.js` honours on load (a `?t=` seek wins over the saved resume position). Query tokenization/stemming/synonyms are shared with `home-search.js` via `window.IMHomeSearch.queryTokens`/`tokenVariants`.
 - `scripts/firebase-auth.js` handles Google sign-in, account lifecycle, and Firestore transport, and exposes `window.IMAuth`. Pure conflict-resolution rules live in `scripts/account-sync-model.js`; auth-navigation and Settings DOM rendering live in `scripts/auth-ui.js`. All three are loaded on every page in that order. See the Firebase Authentication section below.
 - `scripts/streak-ui.js` handles the nav streak button, streak panel, monthly heatmap, and public leaderboard UI. It loads after `utils.js` and before `firebase-auth.js`.
@@ -153,7 +153,7 @@ statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah
 
 At desktop widths, keep that feed visually led by large 16:9 thumbnails: three columns from 1200px and four only on ultra-wide displays (2200px+). The desktop learning-streak and Continue learning surfaces share a compact overview row, while the category rail remains sticky and horizontally scrollable. These density changes are intentionally scoped to desktop; the single-column mobile hierarchy stays independent.
 
-The homepage feed defaults to a fresh discovery shuffle for new visitors. Once someone meaningfully watches a lecture, the same grid becomes a personalized **For you** blend driven by semantic similarity, category and speaker affinity, recency, popularity, completion state, and diversity caps. It deliberately interleaves two relevant cards with one discovery card so no topic or speaker can trap the learner in a narrow loop. The order stays stable for that page session so loading another batch never moves cards already seen. The catalog renders 36 cards initially on desktop and 18 at mobile widths, then exposes an accessible `Load more` control in equal-sized batches. Search, category, content-type, sort, and hide-watched changes reset to the first batch. New series and standalone lectures join automatically after the normal content generation step. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
+The homepage feed defaults to a fresh discovery shuffle for new visitors. Once someone meaningfully watches a lecture, the same grid becomes a personalized **For you** blend driven by semantic similarity, category and speaker affinity, recency, completion state, and diversity caps. It deliberately interleaves two relevant cards with one discovery card so no topic or speaker can trap the learner in a narrow loop. The order stays stable for that page session so loading another batch never moves cards already seen. The catalog renders 36 cards initially on desktop and 18 at mobile widths, then exposes an accessible `Load more` control in equal-sized batches. Search, category, content-type, sort, and hide-watched changes reset to the first batch. New series and standalone lectures join automatically after the normal content generation step. The curated registry order remains available as the "Featured order" sort option, and the continue-watching hero always renders above the feed for returning users. Series should still be assigned to the topic that best matches the learner's intent, not merely the speaker or source playlist.
 
 ## Git Workflow
 
@@ -200,8 +200,8 @@ Do not skip the checks before pushing. A red CI run means something is broken in
 - Resets its state on `pageshow` with `persisted: true` so Safari's back-forward cache restoration never incorrectly triggers the fallback UI.
 
 The homepage treats `scripts/home-shelves.js` as a recoverable enhancement. If
-that file fails to download, Continue learning, Popular right now, and the
-streak card are skipped, but the core catalogue, search, and navigation still
+that file fails to download, Continue learning and the streak card are skipped,
+but the core catalogue, search, and navigation still
 initialize. Required homepage modules throw a named `MissingDependencyError`
 with the expected asset path so their incident email identifies the dependency
 instead of only showing a generic destructuring error.
@@ -301,15 +301,16 @@ The current AI feature is a lightweight reranker: the browser sends the current 
 
 ## Popularity Signals
 
-Anonymous, aggregate-only play/completion counters per lecture — no user ids, no IPs stored. They power the homepage "Popular right now" shelf, the play-count labels on it, and a mild log-scaled popularity prior inside `IMRelated.rankRelated`.
+**Paused on 24 July 2026:** the audience is currently too small for aggregate play counts to be a reliable popularity signal. The homepage shelf has been removed, the homepage recommendation blend no longer receives popularity scores, and the browser client is not loaded on watch pages, so new play/completion events are not sent. Keep the infrastructure dormant for a possible future return, but do not re-enable it without a meaningful recent-time window or another minimum-sample safeguard; reset or disregard the early cumulative counters at that point.
+
+The retained implementation records anonymous, aggregate-only play/completion counters per lecture — no user ids, no IPs stored.
 
 | Piece | Location |
 |---|---|
 | Worker (POST /event, GET /popular, GET /health) | `workers/popularity-worker.js` |
 | Wrangler config | `wrangler.popularity.jsonc` |
-| Browser client (beacons + cached counts) | `scripts/popularity.js` |
-| Play/complete beacons | `scripts/watch-page.js` |
-| "Popular right now" shelf | `renderPopularShelf` in `scripts/home-shelves.js` |
+| Dormant browser client (beacons + cached counts) | `scripts/popularity.js` |
+| Dormant play/complete hooks | `scripts/watch-page.js` |
 
 The frontend degrades silently until the Worker is deployed: no errors, no shelf, no ranking boost. Wrangler provisions the declared `POPULARITY` KV namespace automatically on the first deployment, so no account-specific namespace ID belongs in the repository. To deploy:
 
@@ -325,7 +326,7 @@ curl.exe -sS "https://improving-muslim-popularity.improving-muslim.workers.dev/h
 curl.exe -sS "https://improving-muslim-popularity.improving-muslim.workers.dev/popular" -H "Origin: https://improvingmuslim.com"
 ```
 
-Behavioral notes: the browser sends at most one play and one complete per lecture per device per day (localStorage dedupe); the browser caches `GET /popular` in localStorage for 30 minutes; the shelf only appears once at least four lectures have 2+ plays. The response includes a 15-minute cache hint for a future custom-domain deployment, but the Cache API is deliberately not used because it is unavailable on `*.workers.dev`. KV increments are read-modify-write, so rare concurrent plays can lose a count — acceptable for a best-effort signal. The Worker endpoint URL is a constant at the top of `scripts/popularity.js`.
+Historical behavioral notes for any future redesign: the browser client dedupes to at most one play and one completion per lecture per device per day and caches `GET /popular` in localStorage for 30 minutes. The response includes a 15-minute cache hint for a future custom-domain deployment, but the Cache API is deliberately not used because it is unavailable on `*.workers.dev`. KV increments are read-modify-write, so rare concurrent plays can lose a count. The Worker endpoint URL is a constant at the top of `scripts/popularity.js`.
 
 ## Video Hosting Pattern
 
