@@ -99,6 +99,8 @@ The comparison is the whole point — fill a row in as soon as each video has ru
 |---|---|---|---|---|---|---|---|---|
 | 1 | Distraction-free (no ads/comments/algorithm) | July 2026 (boosted) | Instagram Reel | 128 | 19 | 13 | **57** | 39 |
 
+Audience note: ~91% of this Reel's paid delivery landed in Pakistan despite seven countries being targeted — see "Paid delivery concentrates in the cheapest country" below. Compare future videos against this one with that in mind; a video boosted to a different geography is not a like-for-like comparison of the *feature*, only of the feature-plus-audience.
+
 **Video #1 is the best-performing asset the account has produced.** Read it carefully before making the next one:
 
 - **57 follows is the headline, not the 128 likes.** A follow rate that high relative to likes means people didn't just approve of the post, they wanted *more of this* — the video converted viewers into an audience, which none of the static posts did. The account is now a distribution channel in its own right, so the next video starts with a warm base instead of from zero.
@@ -268,6 +270,20 @@ Speaker post captions lead with the speaker's theme, not the platform: e.g. Omar
 - Ads and posts name real speakers whose consent is still being gathered. That is factually accurate (their content is on the platform) — but if a speaker declines or asks for removal, pull the related posts/ads the same day, no argument.
 - Always link `improvingmuslim.com`. Put it in the account bio (organic captions aren't clickable); use the real destination URL on boosted posts.
 - Instagram bio, boosts: choose interests like Islam, Quran, and the featured speakers' audiences; ages ~18–40; small daily budget over a week beats one large burst.
+
+### Paid delivery concentrates in the cheapest country — plan for it
+
+Video #1 was boosted to Spain, Egypt, UK, Indonesia, US, Pakistan and Singapore. **~91% of delivery went to Pakistan** (Punjab 50%, Sindh 26.2%, Khyber Pakhtunkhwa 7.9%, Islamabad 5.1%, Balochistan 1.9%) — all five top locations were Pakistani provinces, and no region of any other targeted country placed.
+
+This is how Meta works, not a misconfiguration: it buys the cheapest available results inside the targeting, and Pakistani CPMs are a fraction of US/UK/Spain/Singapore ones. Two settings amplified it — **Advantage+ audience was ON** (Meta may re-weight and expand the audience freely) and the audience was **376–443M, flagged "Too broad"**.
+
+Rules that follow:
+
+- **Countries inside one ad set/boost always compete, and cheap always wins.** You cannot split budget by country within a single boost. To reach an expensive market, give it **its own boost with its own budget** — one per country, or per group with similar CPMs.
+- **Turn Advantage+ audience off** when the point of the campaign is to respect a specific targeting choice.
+- Narrow the audience (specific speaker interests, tighter age band) — "Too broad" plus a small budget hands Meta maximum freedom to chase cheap inventory.
+- **The audience you buy shapes the audience you get for free.** Instagram serves new posts to existing followers first and finds lookalikes from them, so a bought follower base biases *organic* reach on every later post. Paid geography decisions compound; make them deliberately.
+- Decide the goal before the next boost. For a free platform, cheap engaged reach in a large Muslim country is a genuinely good outcome. It matters more if donations, or credibility with Western speakers during outreach, become priorities — those depend on audience composition, not just size.
 
 ## Spending log
 
