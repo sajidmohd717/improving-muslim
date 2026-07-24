@@ -15,6 +15,7 @@ window.pageByPageSeries = {
       "title": "Page 1 - Surah Al-Faatiha (The Opening)",
       "published": "2023-10-17",
       "views": 92000,
+      "duration": 1793,
       "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-1.mp4"
     },
     {
@@ -23,6 +24,7 @@ window.pageByPageSeries = {
       "title": "Page 2 - Alif Laam Meem",
       "published": "2023-10-20",
       "views": 36000,
+      "duration": 1606,
       "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-2.mp4"
     },
     {
@@ -31,6 +33,7 @@ window.pageByPageSeries = {
       "title": "Page 3 - Addressing Disbelievers & Hypocrites",
       "published": "2023-10-22",
       "views": 23000,
+      "duration": 1696,
       "videoSrc": "https://videos.improvingmuslim.com/page-by-page-tafseer/page-by-page-tafseer-ep-3.mp4"
     },
     {

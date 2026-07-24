@@ -18,7 +18,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 1831,
       "published": "2023-02-06",
       "url": "./watch/enjoy-your-prayer/J0-j61fwIoU/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-01.jpg",
@@ -63,7 +63,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 1406,
       "published": "2023-02-13",
       "url": "./watch/enjoy-your-prayer/VfCT_g75yEE/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-02.jpg",
@@ -108,7 +108,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 1475,
       "published": "2023-02-20",
       "url": "./watch/enjoy-your-prayer/YYpD2ltaIaQ/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-03.jpg",
@@ -153,7 +153,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 2069,
       "published": "2023-02-27",
       "url": "./watch/enjoy-your-prayer/R8KKme0b-8s/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-04.jpg",
@@ -198,7 +198,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 2482,
       "published": "2023-03-06",
       "url": "./watch/enjoy-your-prayer/UkjFC0upHyU/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-05.jpg",
@@ -243,7 +243,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 733,
       "published": "2023-03-13",
       "url": "./watch/enjoy-your-prayer/GUt98wgMo-4/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-06.jpg",
@@ -288,7 +288,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 1657,
       "published": "2023-03-20",
       "url": "./watch/enjoy-your-prayer/FbTrDp4xhu0/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-07.jpg",
@@ -333,7 +333,7 @@ window.catalogIndex = {
       "categories": [
         "prayer"
       ],
-      "duration": null,
+      "duration": 990,
       "published": "2023-04-24",
       "url": "./watch/enjoy-your-prayer/Rl-lXxpcDHM/",
       "thumb": "./assets/thumbnail/enjoy-your-prayer/episodes/episode-08.jpg",
@@ -604,7 +604,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 2730,
       "published": "2011-04-01",
       "url": "./watch/seerah-yasir-qadhi/VOUp3ZZ9t3A/",
       "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-01.jpg",
@@ -650,7 +650,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 4060,
       "published": "2011-05-01",
       "url": "./watch/seerah-yasir-qadhi/udjM4dBVicE/",
       "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-02.jpg",
@@ -696,7 +696,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 4145,
       "published": "2011-05-01",
       "url": "./watch/seerah-yasir-qadhi/4F5qzMI2IKs/",
       "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-03.jpg",
@@ -742,7 +742,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 4657,
       "published": "2011-06-01",
       "url": "./watch/seerah-yasir-qadhi/ey7UAi_Emgs/",
       "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-04.jpg",
@@ -788,7 +788,7 @@ window.catalogIndex = {
         "seerah",
         "prophets"
       ],
-      "duration": null,
+      "duration": 4145,
       "published": "2015-01-14",
       "url": "./watch/seerah-yasir-qadhi/629isa8LujE/",
       "thumb": "./assets/thumbnail/seerah-yasir-qadhi/episodes/episode-05.jpg",
@@ -834,7 +834,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3678,
       "published": "2013-03-24",
       "url": "./watch/forty-hadith-nawawi/3p4P6ZttAcI/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-01.jpg",
@@ -880,7 +880,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3772,
       "published": "2013-04-13",
       "url": "./watch/forty-hadith-nawawi/MfsG8-Ica3M/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-02.jpg",
@@ -926,7 +926,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3794,
       "published": "2013-04-22",
       "url": "./watch/forty-hadith-nawawi/zfB-6Btl0Gg/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-03.jpg",
@@ -972,7 +972,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3059,
       "published": "2013-04-28",
       "url": "./watch/forty-hadith-nawawi/d62t_mwIGtQ/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-04.jpg",
@@ -1018,7 +1018,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 4193,
       "published": "2013-05-19",
       "url": "./watch/forty-hadith-nawawi/HKv6OfJhwaM/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-05.jpg",
@@ -1064,7 +1064,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3718,
       "published": "2013-05-30",
       "url": "./watch/forty-hadith-nawawi/B6PSGibcqDc/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-06.jpg",
@@ -1110,7 +1110,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 3832,
       "published": "2013-06-03",
       "url": "./watch/forty-hadith-nawawi/GPfXXRHv8Qs/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-07.jpg",
@@ -1156,7 +1156,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 4520,
       "published": "2013-06-10",
       "url": "./watch/forty-hadith-nawawi/k2BkAggpaRc/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-08.jpg",
@@ -1202,7 +1202,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 2942,
       "published": "2014-02-23",
       "url": "./watch/forty-hadith-nawawi/pa8g6v48n5Y/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-09.jpg",
@@ -1248,7 +1248,7 @@ window.catalogIndex = {
         "hadith",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 2854,
       "published": "2014-03-01",
       "url": "./watch/forty-hadith-nawawi/eQ5hrGdsuhg/",
       "thumb": "./assets/thumbnail/forty-hadith-nawawi/episodes/episode-10.jpg",
@@ -1842,7 +1842,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3424,
       "published": "2021-11-26",
       "url": "./watch/change-of-heart/vLb4YF-0F5M/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-01.jpg",
@@ -1887,7 +1887,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3610,
       "published": "2021-12-03",
       "url": "./watch/change-of-heart/4mUe_i19dlE/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-02.jpg",
@@ -1932,7 +1932,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3347,
       "published": "2021-12-10",
       "url": "./watch/change-of-heart/tcBUIvcsQrc/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-03.jpg",
@@ -1977,7 +1977,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3605,
       "published": "2022-02-04",
       "url": "./watch/change-of-heart/diqdqrYnuMQ/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-04.jpg",
@@ -2022,7 +2022,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3947,
       "published": "2022-02-18",
       "url": "./watch/change-of-heart/PRnxCiJpV6Q/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-05.jpg",
@@ -2067,7 +2067,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 4392,
       "published": "2022-03-04",
       "url": "./watch/change-of-heart/ZaOvrx0B-3I/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-06.jpg",
@@ -2112,7 +2112,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 4026,
       "published": "2022-03-18",
       "url": "./watch/change-of-heart/s4BB5b98YjU/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-07.jpg",
@@ -2157,7 +2157,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3175,
       "published": "2022-04-04",
       "url": "./watch/change-of-heart/LBvKNhyufQg/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-08.jpg",
@@ -2202,7 +2202,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 4046,
       "published": "2022-07-18",
       "url": "./watch/change-of-heart/r9CjYq15I8g/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-09.jpg",
@@ -2247,7 +2247,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 3133,
       "published": "2022-07-25",
       "url": "./watch/change-of-heart/YajMLwVorxA/",
       "thumb": "./assets/thumbnail/change-of-heart/episodes/episode-10.jpg",
@@ -2292,7 +2292,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 634,
       "published": "2024-03-11",
       "url": "./watch/why-me/uzE5j2qkFA0/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-01.jpg",
@@ -2337,7 +2337,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 587,
       "published": "2024-03-12",
       "url": "./watch/why-me/5hDUB6yFwBQ/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-02.jpg",
@@ -2382,7 +2382,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 728,
       "published": "2024-03-13",
       "url": "./watch/why-me/L6caeSh2bd8/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-03.jpg",
@@ -2427,7 +2427,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 592,
       "published": "2024-03-14",
       "url": "./watch/why-me/xbp_whdYYIw/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-04.jpg",
@@ -2472,7 +2472,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 601,
       "published": "2024-03-15",
       "url": "./watch/why-me/I6VBsllL0bI/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-05.jpg",
@@ -2517,7 +2517,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 641,
       "published": "2024-03-16",
       "url": "./watch/why-me/UwK4rsBRXuI/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-06.jpg",
@@ -2562,7 +2562,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 687,
       "published": "2024-03-17",
       "url": "./watch/why-me/N9larZxwXcc/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-07.jpg",
@@ -2606,7 +2606,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 638,
       "published": "2024-03-18",
       "url": "./watch/why-me/JpwDs25yrRc/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-08.jpg",
@@ -2651,7 +2651,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 641,
       "published": "2024-03-19",
       "url": "./watch/why-me/pXx8Bk1C-VU/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-09.jpg",
@@ -2696,7 +2696,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 729,
       "published": "2024-03-20",
       "url": "./watch/why-me/SGdznSHyJUQ/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-10.jpg",
@@ -2741,7 +2741,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 716,
       "published": "2024-03-21",
       "url": "./watch/why-me/Ffg9fO_NXZA/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-11.jpg",
@@ -2786,7 +2786,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 569,
       "published": "2024-03-22",
       "url": "./watch/why-me/1E76SyachR4/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-12.jpg",
@@ -2831,7 +2831,7 @@ window.catalogIndex = {
       "categories": [
         "purification"
       ],
-      "duration": null,
+      "duration": 760,
       "published": "2024-03-23",
       "url": "./watch/why-me/abp-0PHtHCg/",
       "thumb": "./assets/thumbnail/why-me/episodes/episode-13.jpg",
@@ -2876,7 +2876,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 320,
       "published": "2020-04-24",
       "url": "./watch/angels-in-your-presence/9VtsVxVyn1g/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-01.jpg",
@@ -2918,7 +2918,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 318,
       "published": "2020-04-25",
       "url": "./watch/angels-in-your-presence/swoO1nd2VKw/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-02.jpg",
@@ -2960,7 +2960,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 246,
       "published": "2020-04-26",
       "url": "./watch/angels-in-your-presence/W7gEyqqSPpU/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-03.jpg",
@@ -3004,7 +3004,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 254,
       "published": "2020-04-27",
       "url": "./watch/angels-in-your-presence/mOuiRGRIhak/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-04.jpg",
@@ -3046,7 +3046,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 309,
       "published": "2020-04-28",
       "url": "./watch/angels-in-your-presence/NDfvYIG4Dr4/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-05.jpg",
@@ -3088,7 +3088,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 212,
       "published": "2020-04-29",
       "url": "./watch/angels-in-your-presence/wHYlw82qDAE/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-06.jpg",
@@ -3129,7 +3129,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 207,
       "published": "2020-04-30",
       "url": "./watch/angels-in-your-presence/gOtXMstUHCU/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-07.jpg",
@@ -3171,7 +3171,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 293,
       "published": "2020-05-01",
       "url": "./watch/angels-in-your-presence/wuhFCf6eifE/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-08.jpg",
@@ -3213,7 +3213,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 250,
       "published": "2020-05-02",
       "url": "./watch/angels-in-your-presence/rMCbdcH3qSk/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-09.jpg",
@@ -3255,7 +3255,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 316,
       "published": "2020-05-03",
       "url": "./watch/angels-in-your-presence/Ulkz2JIAqEw/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-10.jpg",
@@ -3297,7 +3297,7 @@ window.catalogIndex = {
       "categories": [
         "angels"
       ],
-      "duration": null,
+      "duration": 293,
       "published": "2020-05-04",
       "url": "./watch/angels-in-your-presence/MXWlFL4fWI4/",
       "thumb": "./assets/thumbnail/angels-in-your-presence/episodes/episode-11.jpg",
@@ -3339,7 +3339,7 @@ window.catalogIndex = {
         "sahaba",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 2903,
       "published": "2021-06-01",
       "url": "./watch/ten-promised-jannah/zRzcXWU0VLo/",
       "thumb": "./assets/thumbnail/ten-promised-jannah/episodes/episode-01.jpg",
@@ -3385,7 +3385,7 @@ window.catalogIndex = {
         "sahaba",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 2765,
       "published": "2021-06-03",
       "url": "./watch/ten-promised-jannah/zrRSP4feVmY/",
       "thumb": "./assets/thumbnail/ten-promised-jannah/episodes/episode-02.jpg",
@@ -3431,7 +3431,7 @@ window.catalogIndex = {
         "sahaba",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 1973,
       "published": "2021-06-05",
       "url": "./watch/ten-promised-jannah/KyvurEQBiZU/",
       "thumb": "./assets/thumbnail/ten-promised-jannah/episodes/episode-03.jpg",
@@ -3477,7 +3477,7 @@ window.catalogIndex = {
         "sahaba",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 1733,
       "published": "2021-06-08",
       "url": "./watch/ten-promised-jannah/5W5Mpg3BAO8/",
       "thumb": "./assets/thumbnail/ten-promised-jannah/episodes/episode-04.jpg",
@@ -3523,7 +3523,7 @@ window.catalogIndex = {
         "sahaba",
         "righteous-predecessors"
       ],
-      "duration": null,
+      "duration": 2278,
       "published": "2021-06-14",
       "url": "./watch/ten-promised-jannah/4cT7BoQPLm8/",
       "thumb": "./assets/thumbnail/ten-promised-jannah/episodes/episode-05.jpg",
@@ -3704,7 +3704,7 @@ window.catalogIndex = {
         "quran",
         "tafsir"
       ],
-      "duration": null,
+      "duration": 1793,
       "published": "2023-10-17",
       "url": "./watch/page-by-page/v0r76TgXL4E/",
       "thumb": "./assets/thumbnail/page-by-page/episodes/episode-01.jpg",
@@ -3748,7 +3748,7 @@ window.catalogIndex = {
         "quran",
         "tafsir"
       ],
-      "duration": null,
+      "duration": 1606,
       "published": "2023-10-20",
       "url": "./watch/page-by-page/YMNEgAGqAIk/",
       "thumb": "./assets/thumbnail/page-by-page/episodes/episode-02.jpg",
@@ -3793,7 +3793,7 @@ window.catalogIndex = {
         "quran",
         "tafsir"
       ],
-      "duration": null,
+      "duration": 1696,
       "published": "2023-10-22",
       "url": "./watch/page-by-page/zCniltPLzsg/",
       "thumb": "./assets/thumbnail/page-by-page/episodes/episode-03.jpg",

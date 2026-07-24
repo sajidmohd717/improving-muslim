@@ -16,6 +16,7 @@
       title: "Setting The Scene",
       published: "2023-02-06",
       views: 219000,
+      duration: 1831,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-1.mp4",
     },
     {
@@ -24,6 +25,7 @@
       title: "A Peek Into Their Prayer",
       published: "2023-02-13",
       views: 92000,
+      duration: 1406,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-2.mp4",
     },
     {
@@ -32,6 +34,7 @@
       title: "Prayer + Hope",
       published: "2023-02-20",
       views: 78000,
+      duration: 1475,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-3.mp4",
     },
     {
@@ -40,6 +43,7 @@
       title: "Prayer + Fear",
       published: "2023-02-27",
       views: 67000,
+      duration: 2069,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-4.mp4",
     },
     {
@@ -48,6 +52,7 @@
       title: "Prayer + Love",
       published: "2023-03-06",
       views: 62000,
+      duration: 2482,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-5.mp4",
     },
     {
@@ -56,6 +61,7 @@
       title: "The Greatest Key to Deep Prayer",
       published: "2023-03-13",
       views: 41000,
+      duration: 733,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-6.mp4",
     },
     {
@@ -64,6 +70,7 @@
       title: "Understanding The Whudu (Pre-Prayer Washing)",
       published: "2023-03-20",
       views: 42000,
+      duration: 1657,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-7.mp4",
     },
     {
@@ -72,6 +79,7 @@
       title: "Going to The Mosque",
       published: "2023-04-24",
       views: 26000,
+      duration: 990,
       videoSrc: "https://videos.improvingmuslim.com/enjoy-your-prayer/enjoy-your-prayer-ep-8.mp4",
     },
     {

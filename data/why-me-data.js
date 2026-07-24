@@ -16,6 +16,7 @@
       title: "Where Was I Before I Was Born?",
       published: "2024-03-11",
       views: 1700000,
+      duration: 634,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-1.mp4",
     },
     {
@@ -24,6 +25,7 @@
       title: "Why Did Allah Choose This Time for Me?",
       published: "2024-03-12",
       views: 1100000,
+      duration: 587,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-2.mp4",
     },
     {
@@ -32,6 +34,7 @@
       title: "What Happened On My Birth Day?",
       published: "2024-03-13",
       views: 964000,
+      duration: 728,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-3.mp4",
     },
     {
@@ -40,6 +43,7 @@
       title: "Why Is This My Family?",
       published: "2024-03-14",
       views: 853000,
+      duration: 592,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-4.mp4",
     },
     {
@@ -48,6 +52,7 @@
       title: "What Shaped My Personality?",
       published: "2024-03-15",
       views: 756000,
+      duration: 601,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-5.mp4",
     },
     {
@@ -56,6 +61,7 @@
       title: "Why Do I Have These Abilities?",
       published: "2024-03-16",
       views: 642000,
+      duration: 641,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-6.mp4",
     },
     {
@@ -64,6 +70,7 @@
       title: "Why Do I Look Like This?",
       published: "2024-03-17",
       views: 621000,
+      duration: 687,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-7.mp4",
     },
     {
@@ -72,6 +79,7 @@
       title: "Why Am I Rich or Poor?",
       published: "2024-03-18",
       views: 589000,
+      duration: 638,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-8.mp4",
     },
     {
@@ -79,11 +87,13 @@
       id: "pXx8Bk1C-VU",
       title: "Why Am I Responsible for Someone Else's Mistake?",
       published: "2024-03-19",
+      duration: 641,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-9.mp4",
     },
     {
       number: 10,
       id: "SGdznSHyJUQ",
+      duration: 729,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-10.mp4",
       title: "Did I Ever Choose To Be Muslim?",
       published: "2024-03-20",
@@ -91,6 +101,7 @@
     {
       number: 11,
       id: "Ffg9fO_NXZA",
+      duration: 716,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-11.mp4",
       title: "Why Won't Allah Answer Me?",
       published: "2024-03-21",
@@ -98,6 +109,7 @@
     {
       number: 12,
       id: "1E76SyachR4",
+      duration: 569,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-12.mp4",
       title: "Why Did Allah Send Me Down This Path?",
       published: "2024-03-22",
@@ -105,6 +117,7 @@
     {
       number: 13,
       id: "abp-0PHtHCg",
+      duration: 760,
       videoSrc: "https://videos.improvingmuslim.com/why-me/why-me-ep-13.mp4",
       title: "Will I Ever Find True Love?",
       published: "2024-03-23",

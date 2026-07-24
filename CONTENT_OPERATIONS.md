@@ -121,7 +121,7 @@ The `speaker` and `speakerSlug` values in the lecture must exactly match this re
 ### 4. Validate the media and assets
 
 - Confirm the source URL opens and is the intended lecture.
-- Confirm title, upload date, and duration against the source.
+- Confirm title, upload date, and duration against the source. Every watchable series episode must store a positive `duration` in seconds so its series-page thumbnail shows the standard bottom-right runtime badge.
 - Confirm the R2 URL returns `200 OK` and `Content-Type: video/mp4`.
 - Confirm the server advertises `Accept-Ranges: bytes` so seeking works.
 - Confirm the MP4 is H.264 video with AAC audio.

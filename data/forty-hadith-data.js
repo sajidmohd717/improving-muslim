@@ -15,6 +15,8 @@
       "title": "Biography of Imam Al-Nawawi",
       "published": "2013-03-24",
       "views": 61504,
+      "duration": 3678,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-1.mp4"
     },
     {
@@ -23,6 +25,8 @@
       "title": "Introduction",
       "published": "2013-04-13",
       "views": 20179,
+      "duration": 3772,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-2.mp4"
     },
     {
@@ -31,6 +35,8 @@
       "title": "Hadith No. 1",
       "published": "2013-04-22",
       "views": 46287,
+      "duration": 3794,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-3.mp4"
     },
     {
@@ -39,6 +45,8 @@
       "title": "Hadith No. 1 and 5",
       "published": "2013-04-28",
       "views": 16694,
+      "duration": 3059,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-4.mp4"
     },
     {
@@ -47,6 +55,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part I)",
       "published": "2013-05-19",
       "views": 21386,
+      "duration": 4193,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-5.mp4",
       "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-05.vtt"
     },
@@ -56,6 +66,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part II)",
       "published": "2013-05-30",
       "views": 9316,
+      "duration": 3718,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-6.mp4",
       "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-06.vtt"
     },
@@ -65,6 +77,8 @@
       "title": "Hadith No. 2 - Hadith of Jibreel (Part III)",
       "published": "2013-06-03",
       "views": 6948,
+      "duration": 3832,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-7.mp4",
       "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-07.vtt"
     },
@@ -74,12 +88,16 @@
       "title": "Hadith No. 3 - Pillars of Islam",
       "published": "2013-06-10",
       "views": 11411,
+      "duration": 4520,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-8.mp4",
       "captionsSrc": "./assets/captions/forty-hadith-nawawi/episode-08.vtt"
     },
     {
       "number": 9,
       "id": "pa8g6v48n5Y",
+      "duration": 2942,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-9.mp4",
       "title": "Recap and Summary of Hadiths 1 to 5",
       "published": "2014-02-23",
@@ -90,6 +108,8 @@
     {
       "number": 10,
       "id": "eQ5hrGdsuhg",
+      "duration": 2854,
+
       "videoSrc": "https://videos.improvingmuslim.com/forty-hadith-nawawi/forty-hadith-nawawi-ep-10.mp4",
       "title": "Hadith No. 4",
       "published": "2014-03-01",

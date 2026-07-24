@@ -143,7 +143,7 @@ Snapshot as of 23 July 2026: the catalog has 15 series and 27 standalone lecture
 | Approaching The Qur'an: The Mind, The Soul & The Limbs | Sheikh Jamal Abdinasir | Quran | Uploaded |
 
 
-Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths.
+Episodes without an uploaded R2 MP4 should not have a `videoSrc`. The UI automatically shows them as `Uploading soon`. Do not add placeholder local paths. Every watchable episode must also have a positive `duration` in seconds; series cards use it for the bottom-right runtime badge, and `npm run check:content` enforces this for new uploads.
 
 ```js
 statusNote: "Video not added yet. It will be uploaded in the future, insha'Allah."

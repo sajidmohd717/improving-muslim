@@ -16,6 +16,7 @@
       title: "An introduction",
       published: "2021-11-26",
       views: 231000,
+      duration: 3424,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-1.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-01.vtt",
       takeaways: [
@@ -66,6 +67,7 @@ The lecture is ultimately a call to stop neglecting the heart, to examine what w
       title: "An introduction (Part 2)",
       published: "2021-12-03",
       views: 104000,
+      duration: 3610,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-2.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-02.vtt",
       takeaways: [
@@ -122,6 +124,7 @@ The lecture ends with hope. If the heart has not softened yet, the answer is not
       title: "Sincerity (Ikhlas)",
       published: "2021-12-10",
       views: 94000,
+      duration: 3347,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-3.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-03.vtt",
       takeaways: [
@@ -188,6 +191,7 @@ The lecture leaves the listener with a serious but hopeful message: sincerity is
       title: "Certainty (Yaqin)",
       published: "2022-02-04",
       views: 78000,
+      duration: 3605,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-4.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-04.vtt",
       takeaways: [
@@ -254,6 +258,7 @@ The lecture closes with humility and aspiration: bring yourself as close as you 
       title: "Watchfulness (Muraqabah)",
       published: "2022-02-18",
       views: 70000,
+      duration: 3947,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-5.mp4",
       captionsSrc: "./assets/captions/change-of-heart/episode-05.vtt",
       takeaways: [
@@ -312,6 +317,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Reliance (Tawakkul)",
       published: "2022-03-04",
       views: 61000,
+      duration: 4392,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-6.mp4",
     },
     {
@@ -320,6 +326,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Humble Submissiveness (Khushu)",
       published: "2022-03-18",
       views: 48000,
+      duration: 4026,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-7.mp4",
     },
     {
@@ -328,6 +335,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Love of Allah (Mahabbah)",
       published: "2022-04-04",
       views: 40000,
+      duration: 3175,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-8.mp4",
     },
     {
@@ -336,6 +344,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Healthy Shame (Haya)",
       published: "2022-07-18",
       views: 59000,
+      duration: 4046,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-9.mp4",
     },
     {
@@ -344,6 +353,7 @@ The lecture leaves the listener with a vivid picture: muraqabah is not theory. I
       title: "Gratitude (Shukr)",
       published: "2022-07-25",
       views: 38000,
+      duration: 3133,
       videoSrc: "https://videos.improvingmuslim.com/change-of-heart/change-of-heart-ep-10.mp4",
     },
     {

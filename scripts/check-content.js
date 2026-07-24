@@ -215,7 +215,7 @@ for (const entry of seriesConfig) {
     requireText(episodeOwner, "title", episode.title);
     if (!/^[A-Za-z0-9_-]+$/.test(String(episode.id || ""))) errors.push(`${episodeOwner} has an invalid canonical ID.`);
     validateDate(episodeOwner, episode.published);
-    validateDuration(episodeOwner, episode.duration);
+    validateDuration(episodeOwner, episode.duration, Boolean(episode.videoSrc || episode.youtubeId));
     if (!Number.isInteger(Number(episode.number)) || Number(episode.number) <= 0) {
       errors.push(`${episodeOwner} has an invalid episode number: ${JSON.stringify(episode.number)}.`);
     }

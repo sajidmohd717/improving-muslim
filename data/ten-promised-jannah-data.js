@@ -13,6 +13,7 @@
     {
       number: 1,
       id: "zRzcXWU0VLo",
+      duration: 2903,
       videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-1.mp4",
       captionsSrc: "./assets/captions/ten-promised-jannah/episode-01.vtt",
       title: "Abu Bakr As-Siddeeq",
@@ -22,6 +23,7 @@
     {
       number: 2,
       id: "zrRSP4feVmY",
+      duration: 2765,
       videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-2.mp4",
       captionsSrc: "./assets/captions/ten-promised-jannah/episode-02.vtt",
       title: "Umar Bin Al-Khattab",
@@ -31,6 +33,7 @@
     {
       number: 3,
       id: "KyvurEQBiZU",
+      duration: 1973,
       videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-3.mp4",
       captionsSrc: "./assets/captions/ten-promised-jannah/episode-03.vtt",
       title: "Uthman Bin Affan",
@@ -40,6 +43,7 @@
     {
       number: 4,
       id: "5W5Mpg3BAO8",
+      duration: 1733,
       videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-4.mp4",
       captionsSrc: "./assets/captions/ten-promised-jannah/episode-04.vtt",
       title: "Ali ibn Abi Talib",
@@ -49,6 +53,7 @@
     {
       number: 5,
       id: "4cT7BoQPLm8",
+      duration: 2278,
       videoSrc: "https://videos.improvingmuslim.com/ten-promised-jannah/ten-promised-jannah-ep-5.mp4",
       captionsSrc: "./assets/captions/ten-promised-jannah/episode-05.vtt",
       title: "Abu Ubaidah ibn Al-Jarrah",
