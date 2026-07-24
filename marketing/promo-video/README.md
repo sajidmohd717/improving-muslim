@@ -99,9 +99,44 @@ not an app** — never imply a download.
   scale with the composition's fps (see `BASE_FPS` in `PromoV2.tsx`), so edits
   to `PromoV2.tsx` change both v2 and v3.
 
+## Videos
+
+| Video | Feature led | Composition | Render |
+|---|---|---|---|
+| #1 | Distraction-free | `PromoV3` (`src/PromoV2.tsx`) | `npm run render:v3:hq` |
+| #2 | My Notes | `PromoNotes` (`src/PromoNotes.tsx`) | `npm run render:notes:hq` |
+
+Each video is one composition file holding only its scenes and copy; the
+palette, fonts, timing helpers, background, and phone screen live in
+`src/shared.tsx`. Add video #3 as a new file the same way — don't fork the
+shared parts.
+
+### Capturing the screens
+
+Screens are **real captures of the site**, never mock-ups — the promise is that
+the video shows the product. Two capture scripts, both needing the dev server:
+
+- `capture-screens.cjs` — the browsing screens (home, series, watch) plus the
+  speaker photos.
+- `capture-notes.cjs` — drives the actual notes editor: opens it, presses the
+  real timestamp button, types the note, waits for autosave, switches to
+  Preview, then taps the rendered timestamp so the player really seeks back.
+  The typing is captured **frame by frame**, so the video plays real typing
+  rather than a cross-fade. It writes `notes-manifest.json` with the typing
+  frame count and the timestamp chip's measured position.
+
+**Positioning overlays on a captured screen:** pass them to `DeviceScreen`'s
+`overlay` prop. That anchors them to the screenshot's own top-left, so
+coordinates measured in the browser line up directly — don't hand-compute
+offsets for the mockup's status bar (that was wrong the first time, and the
+tap indicator landed on the wrong line).
+
 ## Structure
 
-- `src/Promo.tsx` / `src/PromoV2.tsx` — scenes, copy, and timing (scene lengths S1–S5 at top)
+- `src/shared.tsx` — palette, brand fonts, fps-independent timing helpers,
+  `Background`, `StatusBar`, `DeviceScreen`. Shared by every video.
+- `src/Promo.tsx` / `src/PromoV2.tsx` / `src/PromoNotes.tsx` — scenes, copy,
+  and timing (scene lengths at the top of each)
 - `src/Phone.tsx` — the 3D phone mockup + scrolling screenshot
 - `src/Root.tsx` — composition registration (1080x1920 @ 30fps)
 

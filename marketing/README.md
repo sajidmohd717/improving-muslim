@@ -98,6 +98,7 @@ The comparison is the whole point — fill a row in as soon as each video has ru
 | # | Feature led | Posted | Platform(s) | Likes | Saves | Shares | Follows | Link clicks |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Distraction-free (no ads/comments/algorithm) | July 2026 (boosted) | Instagram Reel | 128 | 19 | 13 | **57** | 39 |
+| 2 | My Notes (timestamped notes that seek the player) | Not yet posted | — | — | — | — | — | — |
 
 Audience note: ~91% of this Reel's paid delivery landed in Pakistan despite seven countries being targeted — see "Paid delivery concentrates in the cheapest country" below. Compare future videos against this one with that in mind; a video boosted to a different geography is not a like-for-like comparison of the *feature*, only of the feature-plus-audience.
 
@@ -244,6 +245,18 @@ The current site has no general referral analytics, so the first Reddit post can
 
 Note "full series" here means *organised in order*, not *fully uploaded* — the video itself honestly shows "24 of 30 available" on screen, so don't escalate the caption to claim complete uploads. Hashtags go in the first comment, not the caption: speaker names plus #islamiclectures #islamicreminders #seerah #islamicknowledge outperform generic #islam.
 
+**Promo video #2 (My Notes)** — same problem-first shape as #1, which is the structure that earned video #1's numbers. Keeps the distraction-free promise in the closing lines while the feature carries the middle:
+
+> You're forty minutes into a lecture when he says the thing you needed to hear.
+>
+> A week later, you can't find it again.
+>
+> On Improving Muslim you write it down while you watch — and the timestamp you write becomes a link. Tap it, and you're back at that exact moment in the lecture.
+>
+> A free website for Islamic lectures. No ads, no comments, no algorithm pulling you away from what you came for.
+>
+> 🔗 improvingmuslim.com (link in bio)
+
 YouTube-comparison post caption: *"You open YouTube for one lecture. An hour later you've watched everything except that lecture. Improving Muslim is a free website with one job: Islamic lectures, and nothing pulling you away from them. No ads, no comments, no algorithm. Browse by topic, follow series, keep your progress. improvingmuslim.com — link in bio."*
 
 Main ad post — caption as actually posted (and boosted):
@@ -302,7 +315,7 @@ Fill in that boost figure when convenient: it's the first spend with real engage
 
 Ideas queued, in rough priority order:
 
-1. **Make promo video #2 (My Notes).** The acquisition-medium question is answered — animated video won (see the video results log). The highest-value next action is another video, not another channel. My Notes is the pick: it's the most tangible thing YouTube can't do, it demos well (typing a timestamped note while a lecture plays), and no re-upload channel can copy it. Keep the distraction-free promise in the hook; change the feature.
+1. **Post promo video #2 (My Notes)** — built and rendered (`promo-video/out/promo-notes-hq.mp4`), caption in the bank, awaiting audio. Then log its numbers in the video results table so the feature comparison has a second data point. When boosting it, hold the geography settings steady against video #1, or the comparison measures audience rather than feature.
 2. Record the first Reddit post's URL and available Reddit insights, and add referral/activation measurement before the next community campaign.
 3. **Post the YouTube-comparison post** (5th post) with its caption from the caption bank, then boost it — but only after the featured series (Why Me?, Change of Heart) are fully uploaded, per the paid-traffic rule below.
 4. **Run the first Navaid Aziz release story:** once the 40 Hadith and Four Imams batches are live, post `ig-story-navaid-aziz.png` as a story, tag **@navaid_aziz** with the mention sticker (the space between the cards and the footer is left calm for it), add a link sticker to improvingmuslim.com, and DM him that it's up so he can reshare. Repeat with a fresh render (new `stories` entry in `render-instagram-posts.cjs`) for every future batch of his content. Also post the Navaid speaker spotlight (`ig-speaker-navaid-aziz.png`) to the grid on the staggered cadence. Send the remaining drafted DMs to OnePath and Majed Mahmoud and log any replies above.
