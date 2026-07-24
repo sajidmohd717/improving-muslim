@@ -34,7 +34,8 @@ For the short, repeatable checklist used whenever a video or series episode is a
 - `pages/speakers.html` is the full speaker directory, linked from the bottom navigation.
 - `scripts/series-page.js` renders dedicated series episode lists.
 - `pages/watch.html` is the focused video player page — handles both series episodes (`?series=&video=`) and standalone lectures (`?lecture=`).
-- `scripts/watch-page.js` is the watch-page controller: it resolves the selected episode or standalone lecture and wires native playback, progress saving, resume, completion state, study-time tracking, media-session controls, autoplay-next, and keyboard seeking.
+- `scripts/custom-video-player.js` progressively enhances the native `<video>` element with the branded watch controls, timeline, keyboard shortcuts, playback-speed menu, captions, picture-in-picture, and fullscreen handling. The HTML keeps its native `controls` attribute as a no-JavaScript/error fallback; add `?nativePlayer=1` to any watch URL to force that fallback during support or testing.
+- `scripts/watch-page.js` is the watch-page controller: it resolves the selected episode or standalone lecture and wires playback data, progress saving, resume, completion state, study-time tracking, media-session controls, and autoplay-next. Presentation and keyboard controls belong to `custom-video-player.js`.
 - `scripts/watch-notes.js` (`window.IMWatchNotes`) is the per-episode "My Notes" panel — markdown-lite editing, preview with clickable timestamps, debounced autosave. See the My Notes section below.
 - `scripts/watch-stall.js` (`window.IMWatchStall`) diagnoses video stalls and errors, auto-retries, shows the user-facing failure message, and reports investigable causes to the contact inbox.
 - `scripts/watch-sidebar.js` (`window.IMWatchSidebar`) renders the watch sidebar: the "Up next" card, the compact episode list, the mobile collapse behavior, and the related lectures ranked by `IMRelated`.
@@ -206,7 +207,7 @@ initialize. Required homepage modules throw a named `MissingDependencyError`
 with the expected asset path so their incident email identifies the dependency
 instead of only showing a generic destructuring error.
 
-**Video stall detection** lives in `scripts/watch-stall.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message with a user-controlled Retry button and silently fires the same FormSubmit report with the exact `videoSrc` URL. Never silently call `player.load()` to recover: doing so can cancel a play request or saved-position seek. The custom loading pill is only for the initial metadata request; resume-seek and mid-playback buffering use the browser's native player feedback.
+**Video stall detection** lives in `scripts/watch-stall.js`. If a video has buffered zero data after 20 seconds, it shows a friendly error message with a user-controlled Retry button and silently fires the same FormSubmit report with the exact `videoSrc` URL. Never silently call `player.load()` to recover: doing so can cancel a play request or saved-position seek. The loading pill is only for the initial metadata request; resume-seek and mid-playback buffering use the custom player's buffering state.
 
 **FormSubmit note:** The first email from a new endpoint requires a one-time confirmation click from `contact@improvingmuslim.com`. If error reports stop arriving, check the inbox for a re-confirmation request.
 

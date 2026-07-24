@@ -421,6 +421,131 @@ test("homepage links through a generated series page to its watch page", async (
   expect(pageErrors).toEqual([]);
 });
 
+test("watch page progressively enhances the video controls", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.addInitScript(() => {
+    const states = new WeakMap();
+    const stateFor = (media) => {
+      if (!states.has(media)) {
+        states.set(media, {
+          currentTime: 0,
+          duration: Number.NaN,
+          ended: false,
+          paused: true,
+        });
+      }
+      return states.get(media);
+    };
+
+    Object.defineProperties(HTMLMediaElement.prototype, {
+      buffered: {
+        configurable: true,
+        get() {
+          const duration = stateFor(this).duration;
+          return {
+            length: Number.isFinite(duration) ? 1 : 0,
+            end: () => duration / 2,
+          };
+        },
+      },
+      currentTime: {
+        configurable: true,
+        get() {
+          return stateFor(this).currentTime;
+        },
+        set(value) {
+          stateFor(this).currentTime = Number(value) || 0;
+          this.dispatchEvent(new Event("timeupdate"));
+        },
+      },
+      duration: {
+        configurable: true,
+        get() {
+          return stateFor(this).duration;
+        },
+      },
+      ended: {
+        configurable: true,
+        get() {
+          return stateFor(this).ended;
+        },
+      },
+      paused: {
+        configurable: true,
+        get() {
+          return stateFor(this).paused;
+        },
+      },
+    });
+
+    HTMLMediaElement.prototype.play = function play() {
+      stateFor(this).paused = false;
+      this.dispatchEvent(new Event("play"));
+      this.dispatchEvent(new Event("playing"));
+      return Promise.resolve();
+    };
+    HTMLMediaElement.prototype.pause = function pause() {
+      stateFor(this).paused = true;
+      this.dispatchEvent(new Event("pause"));
+    };
+    window.__setMockVideoDuration = (media, duration) => {
+      stateFor(media).duration = duration;
+      media.dispatchEvent(new Event("loadedmetadata"));
+      media.dispatchEvent(new Event("durationchange"));
+    };
+  });
+
+  await page.goto("/watch/change-of-heart/vLb4YF-0F5M/", { waitUntil: "domcontentloaded" });
+  await page.locator("#video-player").evaluate((video) => {
+    window.__setMockVideoDuration(video, 600);
+  });
+
+  const frame = page.locator(".video-frame");
+  const video = page.locator("#video-player");
+  await expect(frame).toHaveClass(/\bhas-custom-controls\b/);
+  await expect(video).not.toHaveAttribute("controls", "");
+  await expect(page.locator("#player-ui")).toBeVisible();
+  await expect(page.locator("#player-duration")).toHaveText("10:00");
+
+  await page.locator("#player-center-toggle").click();
+  await expect(frame).toHaveClass(/\bis-playing\b/);
+  await expect(page.locator("#player-play-toggle")).toHaveAttribute("aria-label", "Pause video");
+
+  await page.evaluate(() => document.activeElement?.blur());
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(() => video.evaluate((element) => element.currentTime)).toBe(10);
+
+  await page.locator("#player-speed-toggle").click();
+  await page.locator('[data-speed="1.5"]').click();
+  await expect(page.locator("#player-speed-label")).toHaveText("1.5×");
+  await expect.poll(() => video.evaluate((element) => element.playbackRate)).toBe(1.5);
+  expect(pageErrors).toEqual([]);
+});
+
+test("watch page can explicitly keep the native player controls", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.goto("/watch/change-of-heart/vLb4YF-0F5M/?nativePlayer=1", {
+    waitUntil: "domcontentloaded",
+  });
+
+  await expect(page.locator(".video-frame")).not.toHaveClass(/\bhas-custom-controls\b/);
+  await expect(page.locator("#video-player")).toHaveAttribute("controls", "");
+  await expect(page.locator("#player-ui")).toBeHidden();
+  expect(pageErrors).toEqual([]);
+});
+
+test("watch page keeps native controls when the custom-player script is unavailable", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.route("**/scripts/custom-video-player.js*", (route) => route.abort("failed"));
+  await page.goto("/watch/change-of-heart/vLb4YF-0F5M/", { waitUntil: "domcontentloaded" });
+
+  await expect(page.locator(".error-fallback")).toHaveCount(0);
+  await expect(page.locator(".video-frame")).not.toHaveClass(/\bhas-custom-controls\b/);
+  await expect(page.locator("#video-player")).toHaveAttribute("controls", "");
+  await expect(page.locator("#player-ui")).toBeHidden();
+  expect(pageErrors).toEqual([]);
+});
+
 test("Explore renders every public category from the shared taxonomy", async ({ page }) => {
   const pageErrors = await preparePage(page);
   await page.goto("/pages/explore.html", { waitUntil: "domcontentloaded" });
@@ -1272,6 +1397,24 @@ test.describe("mobile navigation", () => {
     )).toBe(true);
 
     await page.goto("/watch/change-of-heart/vLb4YF-0F5M/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".video-frame")).toHaveClass(/\bhas-custom-controls\b/);
+    const playerLayout = await page.locator(".video-frame").evaluate((frame) => {
+      const frameRect = frame.getBoundingClientRect();
+      const controlsRect = frame.querySelector(".player-controls").getBoundingClientRect();
+      return {
+        documentFits: document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+        frameFits: frameRect.left >= 0 && frameRect.right <= document.documentElement.clientWidth,
+        controlsFit:
+          controlsRect.left >= frameRect.left - 1
+          && controlsRect.right <= frameRect.right + 1,
+      };
+    });
+    expect(playerLayout).toEqual({
+      documentFits: true,
+      frameFits: true,
+      controlsFit: true,
+    });
+
     const notesPanel = page.locator(".notes-panel");
     const notesToggle = page.getByRole("button", { name: "Open notes editor" });
     await expect(notesPanel).toHaveClass(/\bis-collapsed\b/);

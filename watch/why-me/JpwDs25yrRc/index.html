@@ -31,7 +31,7 @@
       href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/styles.css?v=20260723-series-mobile-polish" />
+    <link rel="stylesheet" href="./styles/styles.css?v=20260724-premium-player" />
     <script src="./scripts/theme.js?v=20260705-system-theme"></script>
     <!-- page-shell:head-assets:end -->
     <script type="application/ld+json">
@@ -185,6 +185,104 @@
             <track id="caption-track" kind="captions" srclang="en" label="English" default />
             Your browser does not support the video tag.
           </video>
+          <div class="player-ui" id="player-ui" aria-label="Video controls" hidden>
+            <button class="player-surface" id="player-surface" type="button" aria-label="Play video"></button>
+
+            <div class="player-top-bar" aria-hidden="true">
+              <span class="player-brand-mark"></span>
+              <span>Improving Muslim</span>
+            </div>
+
+            <button class="player-center-toggle" id="player-center-toggle" type="button" aria-label="Play video">
+              <svg class="player-icon player-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+              <svg class="player-icon player-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+              <svg class="player-icon player-icon-replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 7.3A7 7 0 1 1 5 12H2l4-4 4 4H7a5 5 0 1 0 1.5-3.6z"/></svg>
+            </button>
+
+            <div class="player-seek-feedback player-seek-back" id="player-seek-back" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M11 8l-4 4 4 4v-3.1c3.5 0 5.9 1.1 7.5 3.6-.6-4-3-6.5-7.5-6.5z"/></svg>
+              <span>10 seconds</span>
+            </div>
+            <div class="player-seek-feedback player-seek-forward" id="player-seek-forward" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M13 8l4 4-4 4v-3.1c-3.5 0-5.9 1.1-7.5 3.6.6-4 3-6.5 7.5-6.5z"/></svg>
+              <span>10 seconds</span>
+            </div>
+
+            <div class="player-control-gradient"></div>
+            <div class="player-controls" id="player-controls">
+              <div class="player-timeline-wrap" id="player-timeline-wrap">
+                <div class="player-time-preview" id="player-time-preview" aria-hidden="true">0:00</div>
+                <div class="player-timeline-track" aria-hidden="true">
+                  <span class="player-buffered"></span>
+                  <span class="player-played"></span>
+                </div>
+                <input
+                  class="player-timeline"
+                  id="player-timeline"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value="0"
+                  step="1"
+                  aria-label="Video progress"
+                  aria-valuetext="0:00 of 0:00"
+                />
+              </div>
+
+              <div class="player-control-row">
+                <button class="player-button" id="player-play-toggle" type="button" aria-label="Play video" data-tooltip="Play (K)">
+                  <svg class="player-icon player-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
+                  <svg class="player-icon player-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+                  <svg class="player-icon player-icon-replay" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 7.3A7 7 0 1 1 5 12H2l4-4 4 4H7a5 5 0 1 0 1.5-3.6z"/></svg>
+                </button>
+
+                <div class="player-volume-group">
+                  <button class="player-button" id="player-mute-toggle" type="button" aria-label="Mute video" data-tooltip="Mute (M)">
+                    <svg class="player-icon player-icon-volume" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm11.5-.7a4 4 0 0 1 0 5.4M18 7a7 7 0 0 1 0 10"/></svg>
+                    <svg class="player-icon player-icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10zm12-1l5 6m0-6-5 6"/></svg>
+                  </button>
+                  <input class="player-volume" id="player-volume" type="range" min="0" max="1" value="1" step="0.05" aria-label="Volume" />
+                </div>
+
+                <span class="player-time" aria-live="off">
+                  <span id="player-current-time">0:00</span>
+                  <span aria-hidden="true">/</span>
+                  <span id="player-duration">0:00</span>
+                </span>
+
+                <span class="player-control-spacer"></span>
+
+                <button class="player-button player-text-button" id="player-speed-toggle" type="button" aria-label="Playback speed, normal" aria-expanded="false" aria-controls="player-speed-menu" data-tooltip="Playback speed">
+                  <span id="player-speed-label">1×</span>
+                </button>
+
+                <button class="player-button player-cc-button" id="player-captions-toggle" type="button" aria-label="Turn captions off" aria-pressed="true" data-tooltip="Captions (C)">
+                  <span>CC</span>
+                </button>
+
+                <button class="player-button" id="player-pip-toggle" type="button" aria-label="Enter Picture in Picture" data-tooltip="Picture in Picture">
+                  <svg class="player-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM12 11h7v6h-7z"/></svg>
+                </button>
+
+                <button class="player-button" id="player-fullscreen-toggle" type="button" aria-label="Enter fullscreen" data-tooltip="Fullscreen (F)">
+                  <svg class="player-icon player-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+                  <svg class="player-icon player-icon-compress" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="player-menu" id="player-speed-menu" role="menu" aria-label="Playback speed" hidden>
+              <p>Playback speed</p>
+              <button type="button" role="menuitemradio" aria-checked="false" data-speed="0.75">0.75×</button>
+              <button type="button" role="menuitemradio" aria-checked="true" data-speed="1">Normal</button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-speed="1.25">1.25×</button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-speed="1.5">1.5×</button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-speed="1.75">1.75×</button>
+              <button type="button" role="menuitemradio" aria-checked="false" data-speed="2">2×</button>
+            </div>
+
+            <p class="sr-only" id="player-status" role="status" aria-live="polite"></p>
+          </div>
           <div class="video-loading is-hidden" id="video-loading" role="status" aria-live="polite">
             <span class="loading-spinner" aria-hidden="true"></span>
             <span>Loading video...</span>
@@ -215,8 +313,8 @@
           <p class="action-status" id="watch-action-status" role="status"></p>
           <h1 id="watch-title">Episode 8: Why Am I Rich or Poor?</h1>
           <p id="watch-meta">Omar Suleiman &middot; Reflection and Contemplation &middot; Mar 18, 2024</p>
-          <p class="watch-note">
-            Space: pause &nbsp;·&nbsp; &#8592; &#8594; skip 10s &nbsp;·&nbsp; F: fullscreen
+          <p class="watch-note" id="watch-player-shortcuts">
+            Space or K: pause &nbsp;·&nbsp; &#8592; &#8594; skip 10s &nbsp;·&nbsp; F: fullscreen
           </p>
 
           <div class="watch-help-tips" aria-label="Playback tips">
@@ -620,9 +718,10 @@
     <script src="./scripts/related-videos.js?v=20260711-popularity" defer></script>
     <script src="./scripts/watch-notes.js?v=20260720-watch-split" defer></script>
     <script src="./scripts/watch-stall.js?v=20260720-resume-stall-fix" defer></script>
+    <script src="./scripts/custom-video-player.js?v=20260724-premium-player" data-error-severity="recoverable" defer></script>
     <script src="./scripts/watch-sidebar.js?v=20260720-watch-split" defer></script>
     <script src="./scripts/content-actions.js?v=20260723-modularization" defer></script>
-    <script src="./scripts/watch-page.js?v=20260723-modularization" defer></script>
+    <script src="./scripts/watch-page.js?v=20260724-premium-player" defer></script>
 
     <!-- page-shell:bottom-nav:start -->
     <nav class="bottom-nav" aria-label="Main navigation">

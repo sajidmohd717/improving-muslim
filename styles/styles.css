@@ -14,7 +14,7 @@
 @import "./feedback.css?v=20260722-dark-sweep";      /* Feedback page & form                               */
 @import "./explore.css?v=20260722-dark-sweep"; /* Explore and focused category discovery       */
 @import "./series-detail.css?v=20260723-series-mobile-polish";        /* Series/speaker hero, episode list & cards   */
-@import "./watch.css?v=20260722-dark-surfaces";  /* Video player, watch layout, sidebar, autoplay, notes */
+@import "./watch.css?v=20260724-premium-player";  /* Video player, watch layout, sidebar, autoplay, notes */
 @import "./animations.css?v=20260723-maintenance";    /* Keyframes, skeletons, scroll reveal, motion prefs  */
 @import "./dark.css";          /* Grouped cross-page dark-mode overrides             */
 @import "./responsive.css?v=20260723-series-mobile-polish"; /* Breakpoint overrides (≤900px, ≤600px)   */

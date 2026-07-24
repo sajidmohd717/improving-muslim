@@ -602,28 +602,3 @@ player.addEventListener("ended", () => {
 
 autoplayToastCancel?.addEventListener("click", cancelAutoplay);
 autoplayToastLink?.addEventListener("click", () => clearInterval(autoplayTimer));
-
-// ── Keyboard shortcuts ───────────────────────────────────────────────────────
-// Override the browser's native arrow-key seek (varies: 5s Chrome, 15s Firefox)
-// to a consistent 10 seconds. Only active when no text input is focused.
-//
-// Must run in the CAPTURE phase with stopPropagation: when the <video> has
-// focus, Chrome's built-in controls handle arrow keys via listeners inside the
-// player's shadow DOM that ignore preventDefault from page listeners. Without
-// this, both the native seek and ours fire on every press, so a single tap
-// (or a brief key-repeat hold) compounds into a much larger jump.
-document.addEventListener("keydown", (e) => {
-  if (e.target.matches("input, textarea, select, [contenteditable]")) return;
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (!currentEpisode.videoSrc || player.readyState === 0) return;
-
-  if (e.key === "ArrowLeft") {
-    e.preventDefault();
-    e.stopPropagation();
-    player.currentTime = Math.max(0, player.currentTime - 10);
-  } else if (e.key === "ArrowRight") {
-    e.preventDefault();
-    e.stopPropagation();
-    player.currentTime = Math.min(player.duration || Infinity, player.currentTime + 10);
-  }
-}, true);
