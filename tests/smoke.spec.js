@@ -1454,6 +1454,10 @@ test.describe("mobile navigation", () => {
 
     await page.goto("/watch/change-of-heart/vLb4YF-0F5M/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".video-frame")).toHaveClass(/\bhas-custom-controls\b/);
+    await expect(page.locator(".player-top-bar")).toHaveCount(0);
+    await expect(page.locator("#player-center-toggle")).toBeVisible();
+    await expect(page.locator("#player-play-toggle")).toBeHidden();
+    await expect(page.locator(".player-volume-group")).toBeHidden();
     const playerLayout = await page.locator(".video-frame").evaluate((frame) => {
       const frameRect = frame.getBoundingClientRect();
       const controlsRect = frame.querySelector(".player-controls").getBoundingClientRect();
