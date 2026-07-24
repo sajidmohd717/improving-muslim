@@ -12,6 +12,15 @@
   min-width: 0;
 }
 
+@media (min-width: 1200px) {
+  .desktop-sidebar + main.watch-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(340px, 22vw, 420px);
+    width: calc(100% - var(--desktop-sidebar-width) - 32px);
+    margin-left: calc(var(--desktop-sidebar-width) + 16px);
+    margin-right: 16px;
+  }
+}
+
 .video-frame {
   position: relative;
   overflow: hidden;

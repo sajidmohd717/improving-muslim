@@ -356,8 +356,13 @@
   }
 
   function isEditableTarget(target) {
-    return target instanceof Element
-      && Boolean(target.closest("input, textarea, select, button, [contenteditable]"));
+    if (!(target instanceof Element)) return false;
+
+    // Player controls should keep the global media shortcuts active after a
+    // click. Outside the player, protect form fields and controls so arrows and
+    // letter shortcuts still behave normally while someone types or navigates.
+    if (target.closest(".video-frame")) return false;
+    return Boolean(target.closest("input, textarea, select, button, [contenteditable]"));
   }
 
   playToggle.addEventListener("click", togglePlayback);

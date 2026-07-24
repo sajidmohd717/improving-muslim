@@ -529,14 +529,52 @@ test("watch page progressively enhances the video controls", async ({ page }) =>
   await expect(video).toHaveCSS("object-fit", "contain");
   await expect(page.locator("#player-play-toggle")).toHaveAttribute("aria-label", "Pause video");
 
-  await page.evaluate(() => document.activeElement?.blur());
   await page.keyboard.press("ArrowRight");
   await expect.poll(() => video.evaluate((element) => element.currentTime)).toBe(10);
+  await page.keyboard.press("ArrowLeft");
+  await expect.poll(() => video.evaluate((element) => element.currentTime)).toBe(0);
+
+  await page.locator("#notes-textarea").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(() => video.evaluate((element) => element.currentTime)).toBe(0);
 
   await page.locator("#player-speed-toggle").click();
   await page.locator('[data-speed="1.5"]').click();
   await expect(page.locator("#player-speed-label")).toHaveText("1.5×");
   await expect.poll(() => video.evaluate((element) => element.playbackRate)).toBe(1.5);
+  expect(pageErrors).toEqual([]);
+});
+
+test("watch page uses the available width on wide desktop screens", async ({ page }) => {
+  const pageErrors = await preparePage(page);
+  await page.setViewportSize({ width: 2048, height: 1152 });
+  await page.goto("/watch/life-of-muhammad-mufti-menk/W2usJgjOSrQ/", {
+    waitUntil: "domcontentloaded",
+  });
+
+  const metrics = await page.evaluate(() => {
+    const rect = (selector) => {
+      const bounds = document.querySelector(selector)?.getBoundingClientRect();
+      return bounds
+        ? { left: bounds.left, right: bounds.right, width: bounds.width }
+        : null;
+    };
+
+    return {
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      layout: rect(".watch-layout"),
+      frame: rect(".video-frame"),
+      playlist: rect(".episode-sidebar"),
+      navigation: rect(".desktop-sidebar"),
+    };
+  });
+
+  expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth);
+  expect(metrics.layout.left).toBeGreaterThanOrEqual(metrics.navigation.right);
+  expect(metrics.layout.right).toBeLessThanOrEqual(metrics.viewportWidth);
+  expect(metrics.frame.width).toBeGreaterThan(1200);
+  expect(metrics.playlist.width).toBeGreaterThanOrEqual(340);
   expect(pageErrors).toEqual([]);
 });
 
